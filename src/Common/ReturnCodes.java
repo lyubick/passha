@@ -1,7 +1,7 @@
 /**
  * 
  */
-package passha;
+package Common;
 
 /**
  * @author lyubick

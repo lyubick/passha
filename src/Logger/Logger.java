@@ -7,9 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
+import Common.ReturnCodes;
 import Logger.LOGLEVELS;
-
-import passha.ReturnCodes;
 
 /**
  * @author lyubick
@@ -70,7 +69,7 @@ public final class Logger // Static class
         if (!initialized)
         {
             try {
-                writer = new PrintWriter(getTime());
+                writer = new PrintWriter("bin/" + getTime());
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

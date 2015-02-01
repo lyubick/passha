@@ -1,13 +1,11 @@
 /**
  *
  */
-package passha;
-
-import passha.RSA;
-import passha.ReturnCodes;
+package Common;
 
 import Logger.Logger;
 import Logger.LOGLEVELS;
+import RSA.RSA;
 
 /**
  * @author lyubick
