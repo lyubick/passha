@@ -1,7 +1,7 @@
 /**
  *
  */
-package Common;
+package Test;
 
 import Logger.Logger;
 import Logger.LOGLEVELS;
