@@ -58,8 +58,8 @@ public final class Logger // Static class
                 break;
         }
 
-        System.out.println(LOG_ADDS + msg + " [" + getTime() + "]");
-        writer.println(LOG_ADDS + msg + " [" + getTime() + "]");
+        System.out.println("[" + getTime() + "]" + LOG_ADDS + msg);
+        writer.println("[" + getTime() + "]" + LOG_ADDS + msg);
     }
 
     public static ReturnCodes loggerON(LOGLEVELS lvl)

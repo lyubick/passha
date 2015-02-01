@@ -11,7 +11,7 @@ public class PasswordsCollection
 {
     SpecialPassword passwords[];
 
-    public void generateSpecialPassword(String name, String comment, String hotKey, MasterPassword mpwd)
+    public void generateSpecialPassword(String name, String comment, String hotKey)
     {
 
     }

@@ -7,7 +7,9 @@ import Logger.Logger;
 import Logger.LOGLEVELS;
 import RSA.RSA;
 import SHA.SHA;
+import Common.Exceptions;
 import Common.ReturnCodes;
+import CryptoSystem.CryptoSystem;
 
 /**
  * @author lyubick
@@ -34,20 +36,27 @@ public class Test
 /* Test set */
     public static ReturnCodes TestRSA()
     {
-        RSA rsa = new RSA("12345", "54321", "6789");
+        try
+        {
+            RSA rsa = new RSA("12345", "54321", "6789");
 
-        if (!rsa.getAuthorizationStatus().equals("PASS"))
-                return ReturnCodes.RC_NOK;
+            if (!rsa.getAuthorizationStatus().equals("PASS"))
+                    return ReturnCodes.RC_NOK;
 
-        rsa = new RSA("97531", "13579", "5463");
+            rsa = new RSA("97531", "13579", "5463");
 
-        if (!rsa.getAuthorizationStatus().equals("PASS"))
-                return ReturnCodes.RC_NOK;
+            if (!rsa.getAuthorizationStatus().equals("PASS"))
+                    return ReturnCodes.RC_NOK;
 
-        rsa = new RSA("15156", "6855", "232232");
+            rsa = new RSA("15156", "6855", "232232");
 
-        if (!rsa.getAuthorizationStatus().equals("PASS"))
-                return ReturnCodes.RC_NOK;
+            if (!rsa.getAuthorizationStatus().equals("PASS"))
+                    return ReturnCodes.RC_NOK;
+        }
+        catch (Exceptions e)
+        {
+            return ReturnCodes.RC_NOK;
+        }
 
         return ReturnCodes.RC_OK;
     }
@@ -78,10 +87,11 @@ public class Test
      */
     public static void main(String[] args)
     {
-        Logger.loggerON(LOGLEVELS.SILENT);
+        Logger.loggerON(LOGLEVELS.DEBUG);
 
         /*1. */ launchTest(TestRSA());
         /*2. */ launchTest(TestSHA());
+        /*3. */ launchTest(CryptoSystem.initCryptoSystem("qwerty123"));
 
         Logger.loggerOFF();
     }

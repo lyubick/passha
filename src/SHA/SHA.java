@@ -1,6 +1,6 @@
 package SHA;
 
-//TODO: Make singleton class;
+import Common.Utilities;
 
 public class SHA
 {
@@ -104,43 +104,6 @@ public class SHA
         return s(x, 19) ^ s(x, 61) ^ r(x, 6);
     }
 
-    /**@brief converts byte[] to long (8 bytes). Big Endian;
-     *
-     * @param [in] input - bytes array input
-     * @param [in] indexFrom - index to first byte
-     * @return long value
-     *
-     * @note does not validate input array length
-     */
-    private long load64(byte[] input, int indexFrom)
-    {
-        long value = 0;
-
-        for (int i = 0; i < 8; i++)
-        {
-            value = (value << 8) + (input[indexFrom + i] & 0xff);
-        }
-
-        return value;
-    }
-
-    /**@brief converts long value to byte[] (8 bytes). Big Endian
-     *
-     * @param [in] value - long value to be converted
-     * @param [out] output - bytes array to be converted to
-     * @param [in] indexFrom - start index in bytes array
-     *
-     * @note does not validate output array length
-     */
-    private void store64(long value, byte[] output, int indexFrom)
-    {
-        for (int i = 7; i >= 0; i--)
-        {
-            output[indexFrom + i] = (byte) (value & 0xff);
-            value = value >> 8;
-        }
-    }
-
     void initializeSHA512()
     {
         for (int i = 0; i < SHA_STATES_COUNT; ++i)
@@ -167,7 +130,7 @@ public class SHA
         /* WRITE W[0.. 15] FROM MSG */
         for (int i = 0; i < 16; i++)
         {
-            W[i] = load64(hashBlock, 8 * i);
+            W[i] = Utilities.load64(hashBlock, 8 * i);
         }
 
         /* CALCULATE W[16.. 63] */
@@ -219,7 +182,7 @@ public class SHA
 
         MessageBlock[length] = (byte) 0x80;
 
-        store64(length * 8, MessageBlock, SHA_BYTES_LENGTH * hashBlocksCount - 8);
+        Utilities.store64(length * 8, MessageBlock, SHA_BYTES_LENGTH * hashBlocksCount - 8);
 
     }
 
@@ -229,7 +192,7 @@ public class SHA
 
         for (int i = 0; i < SHA_STATES_COUNT; i++)
         {
-            store64(state[i], output, i * 8);
+            Utilities.store64(state[i], output, i * 8);
         }
 
         return output;
