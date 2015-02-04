@@ -1,7 +1,11 @@
 /**
- * test
+ *
  */
 package Test;
+
+// todo: write test text (name or/and description) in addition to its index number and result
+// explicit variable initialization missing
+// functions and file missing headers 
 
 import Logger.Logger;
 import Logger.LOGLEVELS;
@@ -21,7 +25,7 @@ public class Test
 
     public static void launchTest(ReturnCodes result)
     {
-        ++TestNr;
+        ++TestNr; // srsly? increment before use??? // it kind of breaking logic.
 
         if (result.equals(ReturnCodes.RC_OK))
         {
@@ -36,6 +40,8 @@ public class Test
 /* Test set */
     public static ReturnCodes TestRSA()
     {
+       // why compare with PASS and negate the result, if can compare to FAIL?
+       // actually we don.t need any getAutorizationStatus() as constructor throws in case of error
         try
         {
             RSA rsa = new RSA("12345", "54321", "6789");
@@ -63,6 +69,7 @@ public class Test
 
     public static ReturnCodes TestSHA()
     {
+       // maybe groupt initializations???
         SHA test = new SHA();
         String testStr = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
         byte[] testInput = testStr.getBytes();
@@ -87,6 +94,7 @@ public class Test
      */
     public static void main(String[] args)
     {
+       //maybe receive log level from args as well??
         Logger.loggerON(LOGLEVELS.DEBUG);
 
         /*1. */ launchTest(TestRSA());

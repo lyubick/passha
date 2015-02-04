@@ -1,5 +1,9 @@
 package SHA;
 
+// functions and file missing headers 
+// check for explicit variable initialization
+// create public constructor and run self-test (throw on error)
+
 import Common.Utilities;
 
 public class SHA
@@ -35,9 +39,9 @@ public class SHA
             0x5fcb6fab3ad6faecL, 0x6c44198c4a475817L };
 
     private final long[]          state            = new long[SHA_STATES_COUNT];
-    private byte[]                MessageBlock;
+    private byte[]                MessageBlock     = null;
     private final byte[]          hashBlock        = new byte[SHA_BYTES_LENGTH];
-    private int                   hashBlocksCount;
+    private int                   hashBlocksCount  = 0;
     private long                  callCounter      = 0;
 
     final protected static char[] hexArray         = "0123456789abcdef".toCharArray();
@@ -114,6 +118,7 @@ public class SHA
 
     void compressSHA512()
     {
+       /// no hardcode '80'
         long W[] = new long[80];
         long a, b, c, d, e, f, g, h; // for calculation
         long t1, t2; // temporary shit
@@ -128,14 +133,17 @@ public class SHA
         h = state[7];
 
         /* WRITE W[0.. 15] FROM MSG */
+        // no hardcode '16'
         for (int i = 0; i < 16; i++)
         {
+           // no harcode '8'
             W[i] = Utilities.load64(hashBlock, 8 * i);
         }
 
         /* CALCULATE W[16.. 63] */
         for (int i = 16; i < 80; i++)
         {
+           // use constants instead of hardcode
             W[i] = gamma1(W[i - 2]) + W[i - 7] + gamma0(W[i - 15]) + W[i - 16];
         }
 
@@ -169,8 +177,10 @@ public class SHA
     public void padMessage(byte[] input)
     {
         int length = input.length;
-        long bitLength = length * 8 + 1 + 128;
+        long bitLength = length * 8 + 1 + 128;     // no hardcode
 
+        // also remove hardcode
+        // comment mb?
         hashBlocksCount = (int) ((bitLength >>> 10) + Math.min(bitLength & 0x3FFFF, 1));
 
         MessageBlock = new byte[SHA_BYTES_LENGTH * hashBlocksCount];
@@ -192,6 +202,7 @@ public class SHA
 
         for (int i = 0; i < SHA_STATES_COUNT; i++)
         {
+           // no hardcode
             Utilities.store64(state[i], output, i * 8);
         }
 
@@ -202,6 +213,7 @@ public class SHA
     {
         if (callCounter == 0)
         {
+           // move to constructor
             initializeSHA512();
         }
         callCounter++;
@@ -222,6 +234,7 @@ public class SHA
 
     public String getStringSHA512(final byte[] input)
     {
+       // is it really necessary to create variable?
         byte[] shaBytes = getBytesSHA512(input);
         return shaBytes.toString();
     }

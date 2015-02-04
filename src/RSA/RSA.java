@@ -3,6 +3,8 @@
  */
 package RSA;
 
+// explicit variable initialization missing
+// functions and file missing headers 
 
 import java.math.BigInteger;
 
@@ -17,9 +19,10 @@ import Logger.LOGLEVELS;
  *
  */
 public final class RSA {
+   // init them to null, maybe?
     private BigInteger p, q, n, f, e, d;
 
-    private String authorization;
+    private String authorization = "";
 
     private static final int RSA_BYTE_ENCRYPTION_LENGTH = 40;
 
@@ -80,6 +83,8 @@ public final class RSA {
 
     private ReturnCodes init() {
 
+    
+         // maybe don't use hardcode, no?
         while (!p.isProbablePrime(100))
             p = p.add(BigInteger.ONE);
 
@@ -126,8 +131,11 @@ public final class RSA {
         Logger.print(LOGLEVELS.DEBUG, "qin: " + q.toString());
         Logger.print(LOGLEVELS.DEBUG, "ein: " + e.toString());
 
+        // it's better to write call first, then constant
+        // it's more reliable to accept RC_OK as succes, and else fail, rather than RC_NOK fail and all else - success
         if (ReturnCodes.RC_NOK == init())
         {
+           // no need for this variable, since if failed - no object is eligible for grabage collection
             authorization = "FAIL";
             throw new Common.Exceptions(CODES.INIT_FAILURE);
         }

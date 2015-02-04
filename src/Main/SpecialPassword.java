@@ -51,10 +51,10 @@ public class SpecialPassword implements Serializable
         this.hotKey = hotKey;
     }
 
-    private String name;
-    private String comment;
-    private int shaCount;
-    private String hotKey;
+    private String name = null;
+    private String comment = null;
+    private int shaCount = 0;
+    private String hotKey = null;
 
 
 }

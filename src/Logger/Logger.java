@@ -20,11 +20,11 @@ public final class Logger // Static class
 
     private static String LOG_ADDS = "";
 
-    private static long time;
+    private static long time; // wby this variable is needed??
 
-    private static boolean initialized;
+    private static boolean initialized = false;
 
-    private static PrintWriter writer;
+    private static PrintWriter writer = null;
 
     private static String getTime()
     {
@@ -32,8 +32,12 @@ public final class Logger // Static class
         return Long.toString(time);
     }
 
+    // probably it will be easier to create print for each log level in addition,
+    // like printError(String msg), printWarning(String msg) etc.. it will be easier to use from code
+    
     public static void print(LOGLEVELS lvl, String msg)
     {
+       /// don't we need to check initialized variable here??
         if (lvl.ordinal() > logLevel.ordinal())
             return;
 
@@ -57,7 +61,17 @@ public final class Logger // Static class
                 LOG_ADDS = "DEBUG : ";
                 break;
         }
+        
+        // we can use this to find method that called log function and add this info to log as well
+        /*
+StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+//// The last element of the array represents the bottom of the stack, which is the least recent method invocation in the sequence.
+StackTraceElement e = stacktrace[2];//maybe this number needs to be corrected
+String methodName = e.getMethodName();
+        */
 
+        // maybe create getFormattedTimeForLog() for ("[" + getTime() + "]")
+        // or writeToFileAndToScreen(String log) - event better
         System.out.println("[" + getTime() + "]" + LOG_ADDS + msg);
         writer.println("[" + getTime() + "]" + LOG_ADDS + msg);
     }

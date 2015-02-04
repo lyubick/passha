@@ -27,32 +27,35 @@ public final class CryptoSystem
 
 
 
-    private static SHA sha;
-    private static RSA rsa;
+    private static SHA sha = null;
+    private static RSA rsa = null;
 
-    private static byte[] masterHash;
+    private static byte[] masterHash = null;
 
-    private static boolean isInitialized;
+    private static boolean isInitialized = false;
 
     private CryptoSystem() {}; // Not used...
 
 
     private static byte[] getMasterHash(String masterPassword)
     {
-            return sha.getBytesSHA512(masterPassword.getBytes());
+        return sha.getBytesSHA512(masterPassword.getBytes());
     }
 
     private static String getKey(int mod)
     {
+       // why initialize and then overwrite
         long x = 0;
 
         x = Utilities.load64(masterHash, RSA_NUMBER_HASH_OFFSET * mod);
 
+        // do we need intermediate variable x here????
         return Long.toString(Math.abs(x));
     }
 
     public static ReturnCodes initCryptoSystem(String masterPassword)
     {
+       /// this is always false currently - remove or set it to true somewhere :D
         if (isInitialized)
         {
             Logger.print(LOGLEVELS.ERROR, "CryptoSystem already initialized... potential Security Breach... exiting...");
@@ -61,6 +64,7 @@ public final class CryptoSystem
 
         sha = new SHA();
 
+        // wouldn't it be better to name it setMasterHash(); and make assignment inside?
         masterHash = getMasterHash(masterPassword);
 
         try
