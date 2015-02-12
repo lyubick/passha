@@ -5,13 +5,14 @@ package Test;
 
 // todo: write test text (name or/and description) in addition to its index number and result
 // explicit variable initialization missing
-// functions and file missing headers 
+// functions and file missing headers
 
 import Logger.Logger;
 import Logger.LOGLEVELS;
 import RSA.RSA;
 import SHA.SHA;
 import Common.Exceptions;
+import Common.RC;
 import Common.ReturnCodes;
 import CryptoSystem.CryptoSystem;
 
@@ -89,6 +90,14 @@ public class Test
         return ReturnCodes.RC_NOK;
     }
 
+    public static ReturnCodes TestRC()
+    {
+        RC.check(ReturnCodes.RC_SECURITY_BREACH);
+        RC.check(ReturnCodes.RC_NOK);
+
+        return RC.check(ReturnCodes.RC_OK);
+    }
+
     /**
      * @param args
      */
@@ -100,6 +109,8 @@ public class Test
         /*1. */ launchTest(TestRSA());
         /*2. */ launchTest(TestSHA());
         /*3. */ launchTest(CryptoSystem.initCryptoSystem("qwerty123"));
+        /*4. */ launchTest(TestRC());
+
 
         Logger.loggerOFF();
     }

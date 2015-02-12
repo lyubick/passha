@@ -5,11 +5,9 @@ package CryptoSystem;
 
 import SHA.SHA;
 import RSA.RSA;
-
+import Common.RC;
 import Common.ReturnCodes;
 import Common.Utilities;
-import Common.Exceptions;
-
 import Logger.Logger;
 import Logger.LOGLEVELS;
 
@@ -79,6 +77,6 @@ public final class CryptoSystem
             System.exit(ReturnCodes.RC_SECURITY_FAILURE.ordinal()); // Fatal error...
         }
 
-        return ReturnCodes.RC_OK;
+        return RC.check(ReturnCodes.RC_OK);
     }
 }

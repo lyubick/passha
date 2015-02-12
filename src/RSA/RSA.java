@@ -4,12 +4,13 @@
 package RSA;
 
 // explicit variable initialization missing
-// functions and file missing headers 
+// functions and file missing headers
 
 import java.math.BigInteger;
 
 import Common.Exceptions;
 import Common.Exceptions.CODES;
+import Common.RC;
 import Common.ReturnCodes;
 import Logger.Logger;
 import Logger.LOGLEVELS;
@@ -76,14 +77,14 @@ public final class RSA {
         Logger.print(LOGLEVELS.DEBUG, cipher);
 
         if (cipher.equals(alphabet))
-            return ReturnCodes.RC_OK;
+            return RC.check(ReturnCodes.RC_OK);
         else
-            return ReturnCodes.RC_NOK;
+            return RC.check(ReturnCodes.RC_NOK);
     }
 
     private ReturnCodes init() {
 
-    
+
          // maybe don't use hardcode, no?
         while (!p.isProbablePrime(100))
             p = p.add(BigInteger.ONE);
@@ -116,7 +117,7 @@ public final class RSA {
 
         Logger.print(LOGLEVELS.DEBUG, "d: " + d.toString());
 
-        return test();
+        return RC.check(test());
     }
 
     public RSA(String p, String q, String e) throws Exceptions {

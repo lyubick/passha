@@ -5,7 +5,6 @@ package Logger;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 
 import Common.ReturnCodes;
 import Logger.LOGLEVELS;
@@ -32,12 +31,36 @@ public final class Logger // Static class
         return Long.toString(time);
     }
 
-    // probably it will be easier to create print for each log level in addition,
-    // like printError(String msg), printWarning(String msg) etc.. it will be easier to use from code
-    
+    public static void printError(String msg)
+    {
+        prepareAndLog(LOGLEVELS.ERROR, msg);
+    }
+
+    public static void printWarning(String msg)
+    {
+        prepareAndLog(LOGLEVELS.WARNING, msg);
+    }
+
+    public static void printInfo(String msg)
+    {
+        prepareAndLog(LOGLEVELS.INFO, msg);
+    }
+
+    public static void printDebug(String msg)
+    {
+        prepareAndLog(LOGLEVELS.DEBUG, msg);
+    }
+
+    // left for backwards compability
     public static void print(LOGLEVELS lvl, String msg)
     {
-       /// don't we need to check initialized variable here??
+        // all content moved inside to align caller method position in stack with print<something> methods
+        prepareAndLog(lvl, msg);
+    }
+
+    private static void prepareAndLog(LOGLEVELS lvl, String msg)
+    {
+        /// don't we need to check initialized variable here??
         if (lvl.ordinal() > logLevel.ordinal())
             return;
 
@@ -61,19 +84,22 @@ public final class Logger // Static class
                 LOG_ADDS = "DEBUG : ";
                 break;
         }
-        
-        // we can use this to find method that called log function and add this info to log as well
-        /*
-StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
-//// The last element of the array represents the bottom of the stack, which is the least recent method invocation in the sequence.
-StackTraceElement e = stacktrace[2];//maybe this number needs to be corrected
-String methodName = e.getMethodName();
-        */
 
-        // maybe create getFormattedTimeForLog() for ("[" + getTime() + "]")
-        // or writeToFileAndToScreen(String log) - event better
-        System.out.println("[" + getTime() + "]" + LOG_ADDS + msg);
-        writer.println("[" + getTime() + "]" + LOG_ADDS + msg);
+        StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+        // The last element of the array represents the bottom of the stack,
+        // which is the least recent method invocation in the sequence.
+        StackTraceElement e = stacktrace[3];// maybe this number needs to be
+                                            // corrected
+        String methodName = e.getMethodName();
+        String fileName = e.getFileName();
+        int line = e.getLineNumber();
+        writeToFileAndToScreen(String.format("[%1$s] %2$20s @ %3$4d %4$20s ", getTime(), fileName, line, methodName) + LOG_ADDS + msg);
+    }
+
+    private static void writeToFileAndToScreen(String log)
+    {
+        System.out.println(log);
+        writer.println(log);
     }
 
     public static ReturnCodes loggerON(LOGLEVELS lvl)

@@ -9,6 +9,10 @@ package Common;
  */
 public final class Exceptions extends Throwable
 {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     private CODES code;
 
     public static enum CODES
