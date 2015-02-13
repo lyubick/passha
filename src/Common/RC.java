@@ -11,6 +11,11 @@ import Logger.Logger;
  */
 public final class RC
 {
+    /**@brief Adds log entry if @a c is not RC_OK adding caller function name.
+     * @author curious-odd-man
+     * @param c - ReturnCodes value.
+     * @return @a c
+     */
     public static ReturnCodes check(ReturnCodes c)
     {
         if (!c.equals(ReturnCodes.RC_OK))

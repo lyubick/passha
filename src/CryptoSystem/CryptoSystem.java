@@ -42,13 +42,7 @@ public final class CryptoSystem
 
     private static String getKey(int mod)
     {
-       // why initialize and then overwrite
-        long x = 0;
-
-        x = Utilities.load64(masterHash, RSA_NUMBER_HASH_OFFSET * mod);
-
-        // do we need intermediate variable x here????
-        return Long.toString(Math.abs(x));
+        return Long.toString(Math.abs(Utilities.load64(masterHash, RSA_NUMBER_HASH_OFFSET * mod)));
     }
 
     public static ReturnCodes initCryptoSystem(String masterPassword)
