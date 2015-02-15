@@ -3,6 +3,8 @@
  */
 package Common;
 
+import Logger.Logger;
+
 /**
  * @author lyubick
  *
@@ -39,6 +41,14 @@ public final class Exceptions extends Throwable
 
     public Exceptions(CODES code)
     {
+        StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+        // The last element of the array represents the bottom of the stack,
+        // which is the least recent method invocation in the sequence.
+        StackTraceElement e = stacktrace[2];// maybe this number needs to be
+                                            // corrected
+        String methodName = e.getMethodName();
+        Logger.printDebug("Function " + methodName + " thrown: " + code.toString()
+                + "!");
         this.code = code;
     }
 }
