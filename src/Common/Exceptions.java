@@ -17,7 +17,14 @@ public final class Exceptions extends Throwable
 
     public static enum CODES
     {
-        INIT_FAILURE
+        INIT_FAILURE,
+
+        FILE_NAME_ABSENT,
+        FILE_DOES_NOT_EXISTS,
+
+        WRITE_ERROR,
+
+        BLACK_MAGIC
     }
 
     public CODES getCode()

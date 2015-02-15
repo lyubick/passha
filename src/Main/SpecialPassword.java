@@ -11,10 +11,22 @@ import java.io.Serializable;
  */
 public class SpecialPassword implements Serializable
 {
-    /**
-     *
-     */
+
+    private String            name             = "";
+    private String            comment          = "";
+    private String            url              = "";
+    private int               shaCount         = 0;
+
     private static final long serialVersionUID = 1L;
+
+    public SpecialPassword()
+    {
+        this.name = "TEST";
+        this.comment = "COMMNET";
+        this.url = "URL";
+        this.shaCount = 1;
+    }
+
     public String getName()
     {
         return name;
@@ -45,20 +57,38 @@ public class SpecialPassword implements Serializable
         this.shaCount = shaCount;
     }
 
-    public String getHotKey()
+    public String getUrl()
     {
-        return hotKey;
+        return url;
     }
 
-    public void setHotKey(String hotKey)
+    public void setUrl(String url)
     {
-        this.hotKey = hotKey;
+        this.url = url;
     }
 
-    private String name = null;
-    private String comment = null;
-    private int shaCount = 0;
-    private String hotKey = null;
+    /* curious`s Mother Fucker Useless Function Set */
+    @Override
+    public boolean equals(Object other)
+    {
+        if (other == null)
+            return false;
+        if (other == this)
+            return true;
+        if (!(other instanceof SpecialPassword))
+            return false;
 
+        SpecialPassword otherCasted = (SpecialPassword) other;
 
+        if (otherCasted.name.equals(this.name) == false)
+            return false;
+        if (otherCasted.comment.equals(this.comment) == false)
+            return false;
+        if (otherCasted.url.equals(this.url) == false)
+            return false;
+        if (otherCasted.shaCount != this.shaCount)
+            return false;
+
+        return true;
+    }
 }

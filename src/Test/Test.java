@@ -16,12 +16,14 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import Logger.Logger;
 import Logger.LOGLEVELS;
+import Main.SpecialPassword;
 import RSA.RSA;
 import SHA.SHA;
 import UI.SpecialPasswordForm;
 import Common.Exceptions;
 import Common.RC;
 import Common.ReturnCodes;
+import Common.Utilities;
 import CryptoSystem.CryptoSystem;
 
 
@@ -47,6 +49,8 @@ public class Test extends Application
             System.out.println(TestNr + ": FAILED!");
         }
     }
+
+
 
 /* Test set */
     public static ReturnCodes TestRSA()
@@ -95,25 +99,76 @@ public class Test extends Application
         return RC.check(ReturnCodes.RC_OK);
     }
 
+    public static ReturnCodes TestSerialization()
+    {
+        SpecialPassword sp = new SpecialPassword();
+        SpecialPassword sp1 = null;
+
+        try
+        {
+            sp1 = (SpecialPassword) Utilities.bytesToObject(Utilities.objectToBytes(sp));
+        }
+        catch (Exceptions e)
+        {
+            return ReturnCodes.RC_NOK;
+        }
+
+        Logger.printDebug(sp.getName());
+        Logger.printDebug(sp.getComment());
+        Logger.printDebug(sp.getUrl());
+        Logger.printDebug("" + sp.getShaCount());
+        Logger.printDebug(sp1.getName());
+        Logger.printDebug(sp1.getComment());
+        Logger.printDebug(sp1.getUrl());
+        Logger.printDebug("" + sp1.getShaCount());
+
+        if (sp.equals(sp1) != true)
+        {
+            return ReturnCodes.RC_NOK;
+        }
+
+
+
+        return ReturnCodes.RC_OK;
+    }
+
+
+
+
+
+
+
+
     /**
      * @param args
      */
     public static void main(String[] args)
     {
-       //maybe receive log level from args as well??
-        Logger.loggerON(LOGLEVELS.DEBUG);
+        if (args.length > 0)
+        {
+            /* TODO for curious, u need it then think of format :) */
+            Logger.loggerON(LOGLEVELS.SILENT);
+        }
+        else
+        {
+            Logger.loggerON(LOGLEVELS.DEBUG);
+        }
+
+
 
         /*1. */ launchTest(TestRSA());
         /*2. */ launchTest(TestSHA());
         /*3. */ launchTest(CryptoSystem.initCryptoSystem("qwerty123"));
         /*4. */ launchTest(TestRC());
+        /*5. */ launchTest(TestSerialization());
 
 
-        Logger.loggerOFF();
 
         // launches GUI.
         launch(args);
 
+
+        Logger.loggerOFF();
     }
 
     @Override
