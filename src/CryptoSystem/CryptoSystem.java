@@ -29,25 +29,19 @@ public final class CryptoSystem
     private static RSA rsa = null;
 
     private static byte[] masterHash = null;
+    private static byte[] keyHash    = null;
 
     private static boolean isInitialized = false;
 
     private CryptoSystem() {}; // Not used...
 
-
-    private static byte[] getMasterHash(String masterPassword)
-    {
-        return sha.getBytesSHA512(masterPassword.getBytes());
-    }
-
     private static String getKey(int mod)
     {
-        return Long.toString(Math.abs(Utilities.load64(masterHash, RSA_NUMBER_HASH_OFFSET * mod)));
+        return Long.toString(Math.abs(Utilities.load64(keyHash, RSA_NUMBER_HASH_OFFSET * mod)));
     }
 
     public static ReturnCodes initCryptoSystem(String masterPassword)
     {
-       /// this is always false currently - remove or set it to true somewhere :D
         if (isInitialized)
         {
             Logger.print(LOGLEVELS.ERROR, "CryptoSystem already initialized... potential Security Breach... exiting...");
@@ -57,7 +51,8 @@ public final class CryptoSystem
         sha = new SHA();
 
         // wouldn't it be better to name it setMasterHash(); and make assignment inside?
-        masterHash = getMasterHash(masterPassword);
+        masterHash = sha.getBytesSHA512(masterPassword.getBytes());
+        keyHash    = sha.getBytesSHA512(masterHash);
 
         try
         {
@@ -70,6 +65,8 @@ public final class CryptoSystem
             Logger.print(LOGLEVELS.ERROR, "RSA initialization failed... exiting...");
             System.exit(ReturnCodes.RC_SECURITY_FAILURE.ordinal()); // Fatal error...
         }
+
+        isInitialized = true;
 
         return RC.check(ReturnCodes.RC_OK);
     }

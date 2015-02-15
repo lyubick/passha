@@ -20,18 +20,17 @@ import Logger.LOGLEVELS;
  *
  */
 public final class RSA {
-   // init them to null, maybe?
     private BigInteger p, q, n, f, e, d;
 
-    private String authorization = "";
-
+    /* Constants */
     private static final int RSA_BYTE_ENCRYPTION_LENGTH = 40;
+    private static final int RSA_PRIME_CERTAINCY = 100; /* 1 - (1/2) ^ Certainty */
 
-    public String getAuthorizationStatus()
-    {
-        return this.authorization;
-    }
-
+    /** @brief function to encrypt incoming message using private key pair (e, n)
+     *
+     * @param [in]msg
+     * @return
+     */
     public String encrypt(String msg)
     {
         String cipher  = "";
@@ -52,6 +51,11 @@ public final class RSA {
         return cipher;
     }
 
+    /**
+     *
+     * @param msg
+     * @return
+     */
     public String decrypt(String msg) {
         String decipher = "";
         String ASCII    = "";
@@ -65,6 +69,10 @@ public final class RSA {
         return decipher;
     }
 
+    /**
+     *
+     * @return
+     */
     private ReturnCodes test()
     {
         String alphabet = "qwertyuiopasdfghjklzxcvbnm1234567890";
@@ -82,11 +90,14 @@ public final class RSA {
             return RC.check(ReturnCodes.RC_NOK);
     }
 
+    /**
+     *
+     * @return
+     */
     private ReturnCodes init() {
 
 
-         // maybe don't use hardcode, no?
-        while (!p.isProbablePrime(100))
+        while (!p.isProbablePrime(RSA_PRIME_CERTAINCY))
             p = p.add(BigInteger.ONE);
 
         Logger.print(LOGLEVELS.DEBUG, "p: " + p.toString());
@@ -120,7 +131,15 @@ public final class RSA {
         return RC.check(test());
     }
 
+    /**
+     *
+     * @param p
+     * @param q
+     * @param e
+     * @throws Exceptions
+     */
     public RSA(String p, String q, String e) throws Exceptions {
+        /* Initial values */
         this.p = new BigInteger(p);
         this.q = new BigInteger(q);
         this.n = new BigInteger("0");
@@ -128,21 +147,11 @@ public final class RSA {
         this.e = new BigInteger(e);
         this.d = new BigInteger("0");
 
-        Logger.print(LOGLEVELS.DEBUG, "pin: " + p.toString());
-        Logger.print(LOGLEVELS.DEBUG, "qin: " + q.toString());
-        Logger.print(LOGLEVELS.DEBUG, "ein: " + e.toString());
+        Logger.printDebug("p In: " + p.toString());
+        Logger.printDebug("q In: " + q.toString());
+        Logger.printDebug("e In: " + e.toString());
 
-        // it's better to write call first, then constant
-        // it's more reliable to accept RC_OK as succes, and else fail, rather than RC_NOK fail and all else - success
-        if (ReturnCodes.RC_NOK == init())
-        {
-           // no need for this variable, since if failed - no object is eligible for grabage collection
-            authorization = "FAIL";
+        if (ReturnCodes.RC_OK != init())
             throw new Common.Exceptions(CODES.INIT_FAILURE);
-        }
-        else
-        {
-            authorization = "PASS";
-        }
     }
 }
