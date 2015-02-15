@@ -51,24 +51,11 @@ public class Test extends Application
 /* Test set */
     public static ReturnCodes TestRSA()
     {
-       // why compare with PASS and negate the result, if can compare to FAIL?
-       // actually we don.t need any getAutorizationStatus() as constructor throws in case of error
         try
         {
             RSA rsa = new RSA("12345", "54321", "6789");
-
-            if (!rsa.getAuthorizationStatus().equals("PASS"))
-                    return ReturnCodes.RC_NOK;
-
             rsa = new RSA("97531", "13579", "5463");
-
-            if (!rsa.getAuthorizationStatus().equals("PASS"))
-                    return ReturnCodes.RC_NOK;
-
             rsa = new RSA("15156", "6855", "232232");
-
-            if (!rsa.getAuthorizationStatus().equals("PASS"))
-                    return ReturnCodes.RC_NOK;
         }
         catch (Exceptions e)
         {
