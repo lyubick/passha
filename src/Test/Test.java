@@ -103,6 +103,17 @@ public class Test extends Application
     {
         SpecialPassword sp = new SpecialPassword();
         SpecialPassword sp1 = null;
+        SpecialPassword sp2 = null;
+
+        RSA rsa;
+        try
+        {
+            rsa = new RSA("12345", "54321", "6789");
+        }
+        catch (Exceptions e1)
+        {
+            return ReturnCodes.RC_NOK;
+        }
 
         try
         {
@@ -113,21 +124,25 @@ public class Test extends Application
             return ReturnCodes.RC_NOK;
         }
 
-        Logger.printDebug(sp.getName());
-        Logger.printDebug(sp.getComment());
-        Logger.printDebug(sp.getUrl());
-        Logger.printDebug("" + sp.getShaCount());
-        Logger.printDebug(sp1.getName());
-        Logger.printDebug(sp1.getComment());
-        Logger.printDebug(sp1.getUrl());
-        Logger.printDebug("" + sp1.getShaCount());
-
         if (sp.equals(sp1) != true)
         {
             return ReturnCodes.RC_NOK;
         }
 
+        try
+        {
+            Logger.printDebug(rsa.encrypt(Utilities.objectToBytes(sp)));
+            sp2 = (SpecialPassword)Utilities.bytesToObject(rsa.decryptBytes(rsa.encrypt(Utilities.objectToBytes(sp))));
+        }
+        catch (Exceptions e)
+        {
+            return ReturnCodes.RC_NOK;
+        }
 
+        if (sp.equals(sp2) != true)
+        {
+            return ReturnCodes.RC_NOK;
+        }
 
         return ReturnCodes.RC_OK;
     }

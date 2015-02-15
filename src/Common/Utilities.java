@@ -11,6 +11,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
 import Common.Exceptions.CODES;
+import Logger.Logger;
 
 /**
  * @author lyubick
