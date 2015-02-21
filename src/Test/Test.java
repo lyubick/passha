@@ -7,17 +7,13 @@ package Test;
 // explicit variable initialization missing
 // functions and file missing headers
 
-import javax.imageio.stream.FileImageOutputStream;
+import java.util.Vector;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
 import Logger.Logger;
 import Logger.LOGLEVELS;
 import Main.SpecialPassword;
 import RSA.RSA;
 import SHA.SHA;
-import UI.LoginForm;
-import UI.SpecialPasswordForm;
 import Common.Exceptions;
 import Common.FileIO;
 import Common.RC;
@@ -25,33 +21,33 @@ import Common.ReturnCodes;
 import Common.Utilities;
 import CryptoSystem.CryptoSystem;
 
-
-
 /**
  * @author lyubick
  *
  */
-public class Test extends Application
+public class Test
 {
-    private static int TestNr = 0;
+    private static int                 TestNr     = 0;
+    private static Vector<ReturnCodes> TestStatus = new Vector<ReturnCodes>();
+    private static int                 TestOK     = 0;
 
     public static void launchTest(ReturnCodes result)
     {
-        ++TestNr; // srsly? increment before use??? // it kind of breaking logic.
+        ++TestNr;
 
         if (result.equals(ReturnCodes.RC_OK))
         {
             System.out.println(TestNr + ": PASSED!");
-        }
-        else
+            ++TestOK;
+        } else
         {
             System.out.println(TestNr + ": FAILED!");
         }
+
+        TestStatus.addElement(result);
     }
 
-
-
-/* Test set */
+    /* Test set */
     public static ReturnCodes TestRSA()
     {
         try
@@ -59,8 +55,7 @@ public class Test extends Application
             RSA rsa = new RSA("12345", "54321", "6789");
             rsa = new RSA("97531", "13579", "5463");
             rsa = new RSA("15156", "6855", "232232");
-        }
-        catch (Exceptions e)
+        } catch (Exceptions e)
         {
             return ReturnCodes.RC_NOK;
         }
@@ -70,7 +65,7 @@ public class Test extends Application
 
     public static ReturnCodes TestSHA()
     {
-       // maybe groupt initializations???
+        // maybe groupt initializations???
         SHA test = new SHA();
         String testStr = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
         byte[] testInput = testStr.getBytes();
@@ -79,8 +74,7 @@ public class Test extends Application
 
         String actualSha = SHA.bytesToHex(result);
 
-        String expectedSha =
-                "8e959b75dae313da8cf4f72814fc143f8f7779c6eb9f7fa17299aeadb6889018501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909";
+        String expectedSha = "8e959b75dae313da8cf4f72814fc143f8f7779c6eb9f7fa17299aeadb6889018501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909";
 
         if (actualSha.compareTo(expectedSha) == 0)
         {
@@ -108,8 +102,7 @@ public class Test extends Application
         try
         {
             rsa = new RSA("12345", "54321", "6789");
-        }
-        catch (Exceptions e1)
+        } catch (Exceptions e1)
         {
             return ReturnCodes.RC_NOK;
         }
@@ -117,8 +110,7 @@ public class Test extends Application
         try
         {
             sp1 = (SpecialPassword) Utilities.bytesToObject(Utilities.objectToBytes(sp));
-        }
-        catch (Exceptions e)
+        } catch (Exceptions e)
         {
             return ReturnCodes.RC_NOK;
         }
@@ -131,9 +123,9 @@ public class Test extends Application
         try
         {
             Logger.printDebug(rsa.encrypt(Utilities.objectToBytes(sp)));
-            sp2 = (SpecialPassword)Utilities.bytesToObject(rsa.decryptBytes(rsa.encrypt(Utilities.objectToBytes(sp))));
-        }
-        catch (Exceptions e)
+            sp2 = (SpecialPassword) Utilities.bytesToObject(rsa.decryptBytes(rsa.encrypt(Utilities
+                    .objectToBytes(sp))));
+        } catch (Exceptions e)
         {
             return ReturnCodes.RC_NOK;
         }
@@ -175,13 +167,11 @@ public class Test extends Application
                         return RC.check(ReturnCodes.RC_NOK);
                     }
                 }
-            }
-            else
+            } else
             {
                 return RC.check(ReturnCodes.RC_NOK);
             }
-        }
-        catch (Exceptions e)
+        } catch (Exceptions e)
         {
             return RC.check(ReturnCodes.RC_NOK);
         }
@@ -189,51 +179,37 @@ public class Test extends Application
         return ReturnCodes.RC_OK;
     }
 
-
-
-
-
-
-
-
-    /**
-     * @param args
-     */
     public static void main(String[] args)
     {
         if (args.length > 0)
         {
             /* TODO for curious, u need it then think of format :) */
             Logger.loggerON(LOGLEVELS.SILENT);
-        }
-        else
+        } else
         {
             Logger.loggerON(LOGLEVELS.DEBUG);
         }
 
+        /* 1. */launchTest(TestRSA());
+        /* 2. */launchTest(TestSHA());
+        /* 3. */launchTest(CryptoSystem.initCryptoSystem("qwerty123"));
+        /* 4. */launchTest(TestRC());
+        /* 5. */launchTest(TestSerialization());
+        /* 6. */launchTest(testFileIO());
 
+        /* Summary */
+        System.out.println("\n-= SUMMARY =-");
+        for (int i = 0; i < TestStatus.size(); ++i)
+            System.out.println(""
+                    + (i + 1)
+                    + ": "
+                    + (TestStatus.elementAt(i).ordinal() == ReturnCodes.RC_OK.ordinal() ? "PASSED"
+                            : "FAILED"));
 
-        /*1. */ launchTest(TestRSA());
-        /*2. */ launchTest(TestSHA());
-        /*3. */ launchTest(CryptoSystem.initCryptoSystem("qwerty123"));
-        /*4. */ launchTest(TestRC());
-        /*5. */ launchTest(TestSerialization());
-        /*6. */ launchTest(testFileIO());
-
-
-
-        // launches GUI.
-        launch(args);
+        System.out.println("OVERALL: " + (float)(TestOK / TestNr * 100) + "%");
+        System.out.println("STATUS: " + (TestOK == TestNr ? "OK":"NOK"));
 
 
         Logger.loggerOFF();
     }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception
-    {
-        SpecialPasswordForm.drawUIForm(primaryStage);
-        LoginForm.draw(primaryStage);
-    }
-
 }
