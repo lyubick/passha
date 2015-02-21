@@ -46,7 +46,6 @@ public class SpecialPasswordForm
         TextField tf_length = new TextField();
         tf_length.setMaxWidth(40);
 
-
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
         grid.setHgap(10);
@@ -76,18 +75,17 @@ public class SpecialPasswordForm
         grid1.add(b_cancel, 1, 0);
         grid.add(grid1, 1, 5);
 
-
         b_OK.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent arg0)
             {
-                Logger.printDebug("Fields: " + tf_name.getText() + tf_comment.getText() + tf_url.getText() + tf_length.getText() + tf_generatedPassword.getText());
+                Logger.printDebug("Fields: " + tf_name.getText() + tf_comment.getText()
+                        + tf_url.getText() + tf_length.getText() + tf_generatedPassword.getText());
 
             }
 
         });
-
 
         Scene scene = new Scene(grid, 440, 300);
         primaryStage.setScene(scene);
