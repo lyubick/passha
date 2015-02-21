@@ -7,6 +7,8 @@ package Test;
 // explicit variable initialization missing
 // functions and file missing headers
 
+import javax.imageio.stream.FileImageOutputStream;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,6 +23,7 @@ import RSA.RSA;
 import SHA.SHA;
 import UI.SpecialPasswordForm;
 import Common.Exceptions;
+import Common.FileIO;
 import Common.RC;
 import Common.ReturnCodes;
 import Common.Utilities;
@@ -147,6 +150,49 @@ public class Test extends Application
         return ReturnCodes.RC_OK;
     }
 
+    public static ReturnCodes testFileIO()
+    {
+        String fileName = "Test.txt";
+        final int strCount = 5;
+        String initialStrings[] = new String[strCount];
+        String resultStrings[] = null;
+        int i = 0;
+
+        initialStrings[i++] = "This";
+        initialStrings[i++] = "is";
+        initialStrings[i++] = "sparta";
+        initialStrings[i++] = "you";
+        initialStrings[i++] = "motherfucker";
+
+        try
+        {
+            FileIO.writeTextFile(initialStrings, fileName);
+            resultStrings = FileIO.readTextFile(fileName);
+
+            if (strCount == resultStrings.length)
+            {
+                for (int j = 0; j < strCount; ++j)
+                {
+                    if (!resultStrings[j].equals(initialStrings[j]))
+                    {
+                        Logger.printError("strings does not match");
+                        return RC.check(ReturnCodes.RC_NOK);
+                    }
+                }
+            }
+            else
+            {
+                return RC.check(ReturnCodes.RC_NOK);
+            }
+        }
+        catch (Exceptions e)
+        {
+            return RC.check(ReturnCodes.RC_NOK);
+        }
+
+        return ReturnCodes.RC_OK;
+    }
+
 
 
 
@@ -176,6 +222,7 @@ public class Test extends Application
         /*3. */ launchTest(CryptoSystem.initCryptoSystem("qwerty123"));
         /*4. */ launchTest(TestRC());
         /*5. */ launchTest(TestSerialization());
+        /*6. */ launchTest(testFileIO());
 
 
 

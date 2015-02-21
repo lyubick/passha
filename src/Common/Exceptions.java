@@ -25,6 +25,8 @@ public final class Exceptions extends Throwable
         FILE_DOES_NOT_EXISTS,
 
         WRITE_ERROR,
+        READ_ERROR,
+        CLOSE_ERROR,
 
         BLACK_MAGIC
     }
