@@ -7,6 +7,7 @@ package Main;
 import Logger.LOGLEVELS;
 import Logger.Logger;
 import UI.LoginForm;
+import UI.ManagePasswordsForm;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -41,6 +42,7 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        LoginForm.draw(primaryStage);
+        //LoginForm.draw(primaryStage);
+        ManagePasswordsForm.draw(primaryStage);
     }
 }
