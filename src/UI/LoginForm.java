@@ -14,7 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import Common.Defines;
+import Languages.Texts.TextID;
 import Logger.Logger;
 
 /**
@@ -29,9 +29,9 @@ public class LoginForm
     {
         GridPane grid = new GridPane();
 
-        Label l_Welcome = new Label(Defines.WELCOME);
+        Label l_Welcome = new Label(TextID.GREETING.toString());
         TextField tf_Password = new TextField();
-        Button b_OK = new Button(Defines.OK);
+        Button b_OK = new Button(TextID.OK.toString());
 
         grid.setHgap(Defines.HGAP);
         grid.setVgap(Defines.VGAP);

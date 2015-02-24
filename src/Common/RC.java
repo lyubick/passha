@@ -11,14 +11,30 @@ import Logger.Logger;
  */
 public final class RC
 {
-    /**@brief Adds log entry if @a c is not RC_OK adding caller function name.
-     * @author curious-odd-man
-     * @param c - ReturnCodes value.
-     * @return @a c
+    /**
+     * @brief Return code enumerator must include all possible Return Codes,
+     *        errors for all classes
+     *
      */
-    public static ReturnCodes check(ReturnCodes c)
+    public static enum RETURNCODES
     {
-        if (!c.equals(ReturnCodes.RC_OK))
+        RC_OK,
+        RC_NOK,
+
+        RC_SECURITY_FAILURE,
+        RC_SECURITY_BREACH
+    }
+
+    /**
+     * @brief Adds log entry if @a c is not RC_OK adding caller function name.
+     *
+     * @param c
+     *            RETURNCODES value.
+     * @return @param c
+     */
+    public static RETURNCODES check(RETURNCODES c)
+    {
+        if (!c.equals(RETURNCODES.RC_OK))
         {
             StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
             // The last element of the array represents the bottom of the stack,

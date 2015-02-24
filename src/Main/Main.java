@@ -4,7 +4,6 @@
 package Main;
 
 
-import Logger.LOGLEVELS;
 import Logger.Logger;
 import UI.LoginForm;
 import UI.ManagePasswordsForm;
@@ -26,11 +25,11 @@ public class Main extends Application
         if (args.length > 0)
         {
             /* TODO for curious, u need it then think of format :) */
-            Logger.loggerON(LOGLEVELS.SILENT);
+            Logger.loggerON(Logger.LOGLEVELS.SILENT);
         }
         else
         {
-            Logger.loggerON(LOGLEVELS.DEBUG);
+            Logger.loggerON(Logger.LOGLEVELS.DEBUG);
         }
 
         // launches GUI.

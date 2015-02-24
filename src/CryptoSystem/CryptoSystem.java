@@ -6,10 +6,9 @@ package CryptoSystem;
 import SHA.SHA;
 import RSA.RSA;
 import Common.RC;
-import Common.ReturnCodes;
+import Common.RC.RETURNCODES;
 import Common.Utilities;
 import Logger.Logger;
-import Logger.LOGLEVELS;
 
 /**
  * @author lyubick
@@ -40,12 +39,13 @@ public final class CryptoSystem
         return Long.toString(Math.abs(Utilities.load64(keyHash, RSA_NUMBER_HASH_OFFSET * mod)));
     }
 
-    public static ReturnCodes initCryptoSystem(String masterPassword)
+    public static RETURNCODES initCryptoSystem(String masterPassword)
     {
         if (isInitialized)
         {
-            Logger.print(LOGLEVELS.ERROR, "CryptoSystem already initialized... potential Security Breach... exiting...");
-            System.exit(ReturnCodes.RC_SECURITY_BREACH.ordinal()); // Fatal error...
+            Logger.printError("CryptoSystem already initialized... potential Security Breach... exiting...");
+            System.exit(RETURNCODES.RC_SECURITY_BREACH.ordinal()); // Fatal
+                                                                   // error...
         }
 
         sha = new SHA();
@@ -62,12 +62,13 @@ public final class CryptoSystem
         }
         catch (Common.Exceptions e)
         {
-            Logger.print(LOGLEVELS.ERROR, "RSA initialization failed... exiting...");
-            System.exit(ReturnCodes.RC_SECURITY_FAILURE.ordinal()); // Fatal error...
+            Logger.printError("RSA initialization failed... exiting...");
+            System.exit(RETURNCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
+                                                                    // error...
         }
 
         isInitialized = true;
 
-        return RC.check(ReturnCodes.RC_OK);
+        return RC.check(RETURNCODES.RC_OK);
     }
 }

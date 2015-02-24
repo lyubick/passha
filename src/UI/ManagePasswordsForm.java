@@ -5,7 +5,6 @@ package UI;
 
 import java.awt.List;
 
-import Common.Defines;
 import Languages.Texts.TextID;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

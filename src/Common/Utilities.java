@@ -112,5 +112,20 @@ public final class Utilities
         return object;
     }
 
+    /* Casts ignoring sign, clang memcpy analog */
+    public static long toLong(byte in)
+    {
+        return (long) in & 0xFF;
+    }
+
+    public static long toLong(short in)
+    {
+        return (long) in & 0xFFFF;
+    }
+
+    public static long toLong(int in)
+    {
+        return (long) in & 0xFFFFFFFF;
+    }
 
 }

@@ -10,14 +10,13 @@ package Test;
 import java.util.Vector;
 
 import Logger.Logger;
-import Logger.LOGLEVELS;
 import Main.SpecialPassword;
 import RSA.RSA;
 import SHA.SHA;
 import Common.Exceptions;
 import Common.FileIO;
 import Common.RC;
-import Common.ReturnCodes;
+import Common.RC.RETURNCODES;
 import Common.Utilities;
 import CryptoSystem.CryptoSystem;
 
@@ -28,14 +27,14 @@ import CryptoSystem.CryptoSystem;
 public class Test
 {
     private static int                 TestNr     = 0;
-    private static Vector<ReturnCodes> TestStatus = new Vector<ReturnCodes>();
+    private static Vector<RETURNCODES> TestStatus = new Vector<RETURNCODES>();
     private static int                 TestOK     = 0;
 
-    public static void launchTest(ReturnCodes result)
+    public static void launchTest(RETURNCODES result)
     {
         ++TestNr;
 
-        if (result.equals(ReturnCodes.RC_OK))
+        if (result.equals(RETURNCODES.RC_OK))
         {
             System.out.println(TestNr + ": PASSED!");
             ++TestOK;
@@ -48,7 +47,7 @@ public class Test
     }
 
     /* Test set */
-    public static ReturnCodes TestRSA()
+    public static RETURNCODES TestRSA()
     {
         try
         {
@@ -57,13 +56,13 @@ public class Test
             rsa = new RSA("15156", "6855", "232232");
         } catch (Exceptions e)
         {
-            return ReturnCodes.RC_NOK;
+            return RETURNCODES.RC_NOK;
         }
 
-        return ReturnCodes.RC_OK;
+        return RETURNCODES.RC_OK;
     }
 
-    public static ReturnCodes TestSHA()
+    public static RETURNCODES TestSHA()
     {
         // maybe groupt initializations???
         SHA test = new SHA();
@@ -78,21 +77,21 @@ public class Test
 
         if (actualSha.compareTo(expectedSha) == 0)
         {
-            return ReturnCodes.RC_OK;
+            return RETURNCODES.RC_OK;
         }
 
-        return ReturnCodes.RC_NOK;
+        return RETURNCODES.RC_NOK;
     }
 
-    public static ReturnCodes TestRC()
+    public static RETURNCODES TestRC()
     {
-        RC.check(ReturnCodes.RC_SECURITY_BREACH);
-        RC.check(ReturnCodes.RC_NOK);
+        RC.check(RETURNCODES.RC_SECURITY_BREACH);
+        RC.check(RETURNCODES.RC_NOK);
 
-        return RC.check(ReturnCodes.RC_OK);
+        return RC.check(RETURNCODES.RC_OK);
     }
 
-    public static ReturnCodes TestSerialization()
+    public static RETURNCODES TestSerialization()
     {
         SpecialPassword sp = new SpecialPassword();
         SpecialPassword sp1 = null;
@@ -104,7 +103,7 @@ public class Test
             rsa = new RSA("12345", "54321", "6789");
         } catch (Exceptions e1)
         {
-            return ReturnCodes.RC_NOK;
+            return RETURNCODES.RC_NOK;
         }
 
         try
@@ -112,12 +111,12 @@ public class Test
             sp1 = (SpecialPassword) Utilities.bytesToObject(Utilities.objectToBytes(sp));
         } catch (Exceptions e)
         {
-            return ReturnCodes.RC_NOK;
+            return RETURNCODES.RC_NOK;
         }
 
         if (sp.equals(sp1) != true)
         {
-            return ReturnCodes.RC_NOK;
+            return RETURNCODES.RC_NOK;
         }
 
         try
@@ -127,20 +126,20 @@ public class Test
                     .objectToBytes(sp))));
         } catch (Exceptions e)
         {
-            return ReturnCodes.RC_NOK;
+            return RETURNCODES.RC_NOK;
         }
 
         if (sp.equals(sp2) != true)
         {
-            return ReturnCodes.RC_NOK;
+            return RETURNCODES.RC_NOK;
         }
 
-        return ReturnCodes.RC_OK;
+        return RETURNCODES.RC_OK;
     }
 
-    public static ReturnCodes testFileIO()
+    public static RETURNCODES testFileIO()
     {
-        String fileName = "Test.txt";
+        String fileName = "bin/Test.txt";
         final int strCount = 5;
         String initialStrings[] = new String[strCount];
         String resultStrings[] = null;
@@ -164,19 +163,19 @@ public class Test
                     if (!resultStrings[j].equals(initialStrings[j]))
                     {
                         Logger.printError("strings does not match");
-                        return RC.check(ReturnCodes.RC_NOK);
+                        return RC.check(RETURNCODES.RC_NOK);
                     }
                 }
             } else
             {
-                return RC.check(ReturnCodes.RC_NOK);
+                return RC.check(RETURNCODES.RC_NOK);
             }
         } catch (Exceptions e)
         {
-            return RC.check(ReturnCodes.RC_NOK);
+            return RC.check(RETURNCODES.RC_NOK);
         }
 
-        return ReturnCodes.RC_OK;
+        return RETURNCODES.RC_OK;
     }
 
     public static void main(String[] args)
@@ -184,10 +183,10 @@ public class Test
         if (args.length > 0)
         {
             /* TODO for curious, u need it then think of format :) */
-            Logger.loggerON(LOGLEVELS.SILENT);
+            Logger.loggerON(Logger.LOGLEVELS.SILENT);
         } else
         {
-            Logger.loggerON(LOGLEVELS.DEBUG);
+            Logger.loggerON(Logger.LOGLEVELS.DEBUG);
         }
 
         /* 1. */launchTest(TestRSA());
@@ -203,7 +202,7 @@ public class Test
             System.out.println(""
                     + (i + 1)
                     + ": "
-                    + (TestStatus.elementAt(i).ordinal() == ReturnCodes.RC_OK.ordinal() ? "PASSED"
+                    + (TestStatus.elementAt(i).ordinal() == RETURNCODES.RC_OK.ordinal() ? "PASSED"
                             : "FAILED"));
 
         System.out.println("OVERALL: " + (float)(TestOK / TestNr * 100) + "%");
