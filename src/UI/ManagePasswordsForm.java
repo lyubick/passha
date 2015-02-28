@@ -6,6 +6,7 @@ package UI;
 import java.awt.List;
 
 import Languages.Texts.TextID;
+import Logger.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -25,6 +26,7 @@ public class ManagePasswordsForm
 {
     public static void draw(Stage stage)
     {
+        Logger.printDebug("ManagePasswordsForm prepareing");
         ObservableList<String> personData = FXCollections.observableArrayList();
         personData.add("asdfasd");
 
@@ -71,6 +73,7 @@ public class ManagePasswordsForm
         }
 
 
+        //todo numbers to local constants
         grid.add(buttonsGrid, 0, 1);
         grid.add(table, 0, 0);
         buttonsGrid.add(b_Export, 0, 0);
@@ -78,9 +81,11 @@ public class ManagePasswordsForm
         buttonsGrid.add(b_Delete, 20, 0);
 
 
+        //todo window sizes move to (global?) constants
         Scene scene = new Scene(grid, 440, 300);
         stage.setScene(scene);
 
+        Logger.printDebug("ManagePasswordsForm displaying");
         stage.show();
 
     }

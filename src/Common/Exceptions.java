@@ -49,7 +49,7 @@ public final class Exceptions extends Throwable
         StackTraceElement e = stacktrace[2];// maybe this number needs to be
                                             // corrected
         String methodName = e.getMethodName();
-        Logger.printDebug("Function " + methodName + " thrown: " + code.toString()
+        Logger.printError("Function " + methodName + " thrown: " + code.toString()
                 + "!");
         this.code = code;
     }

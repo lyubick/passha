@@ -30,7 +30,7 @@ public final class RC
      *
      * @param c
      *            RETURNCODES value.
-     * @return @param c
+     * @return @a c
      */
     public static RETURNCODES check(RETURNCODES c)
     {
@@ -42,7 +42,7 @@ public final class RC
             StackTraceElement e = stacktrace[2];// maybe this number needs to be
                                                 // corrected
             String methodName = e.getMethodName();
-            Logger.printDebug("Function " + methodName + " returned error code " + c.toString()
+            Logger.printError("Function " + methodName + " returned error code " + c.toString()
                     + "!");
         }
 

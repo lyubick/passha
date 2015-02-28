@@ -115,13 +115,15 @@ public final class Logger // Static class
             try
             {
                 writer = new PrintWriter("bin/" + getTime());
-            } catch (FileNotFoundException e)
+            } 
+            catch (FileNotFoundException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             initialized = true;
-        } else
+        } 
+        else
             return RC.check(RETURNCODES.RC_NOK);
 
         return RETURNCODES.RC_OK;

@@ -5,6 +5,7 @@ package CryptoSystem;
 
 import SHA.SHA;
 import RSA.RSA;
+import Common.Exceptions;
 import Common.RC;
 import Common.RC.RETURNCODES;
 import Common.Utilities;
@@ -48,7 +49,16 @@ public final class CryptoSystem
                                                                    // error...
         }
 
-        sha = new SHA();
+        try
+        {
+            sha = new SHA();
+        }
+        catch (Exceptions e1)
+        {
+            Logger.printError("SHA initialization failed... exiting...");
+            System.exit(RETURNCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
+                                                                    // error...
+        }
 
         // wouldn't it be better to name it setMasterHash(); and make assignment inside?
         masterHash = sha.getBytesSHA512(masterPassword.getBytes());

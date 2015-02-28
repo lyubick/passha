@@ -54,7 +54,8 @@ public class Test
             RSA rsa = new RSA("12345", "54321", "6789");
             rsa = new RSA("97531", "13579", "5463");
             rsa = new RSA("15156", "6855", "232232");
-        } catch (Exceptions e)
+        }
+        catch (Exceptions e)
         {
             return RETURNCODES.RC_NOK;
         }
@@ -64,23 +65,16 @@ public class Test
 
     public static RETURNCODES TestSHA()
     {
-        // maybe groupt initializations???
-        SHA test = new SHA();
-        String testStr = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
-        byte[] testInput = testStr.getBytes();
-
-        byte[] result = test.getBytesSHA512(testInput);
-
-        String actualSha = SHA.bytesToHex(result);
-
-        String expectedSha = "8e959b75dae313da8cf4f72814fc143f8f7779c6eb9f7fa17299aeadb6889018501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909";
-
-        if (actualSha.compareTo(expectedSha) == 0)
+        // SHA() now throws if self-test fails
+        try
         {
-            return RETURNCODES.RC_OK;
+            SHA test = new SHA();
+        } catch (Exceptions e)
+        {
+            return RETURNCODES.RC_NOK;
         }
 
-        return RETURNCODES.RC_NOK;
+        return RETURNCODES.RC_OK;
     }
 
     public static RETURNCODES TestRC()

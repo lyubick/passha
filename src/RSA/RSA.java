@@ -21,7 +21,8 @@ import java.math.BigInteger;
 
 
 
-public final class RSA {
+public final class RSA 
+{
     private BigInteger p, q, n, f, e, d;
 
     /* Constants */
@@ -150,12 +151,12 @@ public final class RSA {
 
         Logger.printDebug("p: " + p.toString());
 
-        while (!q.isProbablePrime(100))
+        while (!q.isProbablePrime(RSA_PRIME_CERTAINCY))
             q = q.add(BigInteger.ONE);
 
         Logger.printDebug("q: " + q.toString());
 
-        while (!e.isProbablePrime(100))
+        while (!e.isProbablePrime(RSA_PRIME_CERTAINCY))
             e = e.add(BigInteger.ONE);
 
         Logger.printDebug("e: " + e.toString());

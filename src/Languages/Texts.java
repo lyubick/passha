@@ -70,6 +70,7 @@ public class Texts
         @Override
         public String toString()
         {
+            // mb add log to see language and received text??
             return text[language.ordinal()];
         }
     }

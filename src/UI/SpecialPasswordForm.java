@@ -23,8 +23,10 @@ import javafx.stage.Stage;
  */
 public class SpecialPasswordForm
 {
-    public static void drawUIForm(Stage primaryStage)
+    public static void draw(Stage primaryStage)
     {
+        Logger.printDebug("SpecialPasswordForm prepareing");
+
         final String FORM_NAME = "Add Special Password";
         Button b_OK = new Button("Create");
         Button b_cancel = new Button("Cancel");
@@ -46,6 +48,7 @@ public class SpecialPasswordForm
         TextField tf_length = new TextField();
         tf_length.setMaxWidth(40);
 
+        //todo: use global constants or create global/local constants
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
         grid.setHgap(10);
@@ -87,8 +90,12 @@ public class SpecialPasswordForm
 
         });
 
+
+        //todo: window size to (global?) constants
         Scene scene = new Scene(grid, 440, 300);
         primaryStage.setScene(scene);
+
+        Logger.printDebug("SpecialPasswordForm displaying");
 
         primaryStage.show();
 

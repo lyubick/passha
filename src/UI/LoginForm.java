@@ -27,6 +27,7 @@ public class LoginForm
     @SuppressWarnings("static-access")
     public static void draw(Stage stage)
     {
+        Logger.printDebug("LoginForm prepareing");
         GridPane grid = new GridPane();
 
         Label l_Welcome = new Label(TextID.GREETING.toString());
@@ -59,9 +60,11 @@ public class LoginForm
             }
         });
 
+        //todo window sizes move to constants
         Scene scene = new Scene(grid, 250, 200);
         stage.setScene(scene);
 
+        Logger.printDebug("LoginForm displaying");
         stage.show();
 
     }

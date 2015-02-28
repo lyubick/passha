@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.util.Vector;
 
 import Common.Exceptions.CODES;
+import Logger.Logger;
 
 /**
  * @author curious-odd-man
@@ -18,12 +19,21 @@ import Common.Exceptions.CODES;
  */
 public final class FileIO
 {
+   /**@brief gets String[] from @a fileName (reads all file)
+    *
+    * @param [in] fileName - name of file to read from
+    *
+    * @throws Exceptions
+    *
+    * @return String[] - one element, one line read from file
+    */
     public static String[] readTextFile(String fileName) throws Exceptions
     {
         String outStrings[] = null;
 
         try
         {
+            Logger.printDebug("reading: " + fileName);
             BufferedReader inFile = new BufferedReader(new FileReader(fileName));
             Vector<String> inLines = new Vector<String>();
 
@@ -37,6 +47,7 @@ public final class FileIO
                 }
 
                 outStrings = inLines.toArray(new String[inLines.size()]);
+                Logger.printDebug("got " + outStrings.length + " lines");
 
             }
             catch (IOException e)
@@ -63,9 +74,18 @@ public final class FileIO
     }
 
 
+    /**@brief writes @a outStrings to file @a fileName
+     *
+     * @param [in] outStrings    - String[] to write to file
+     * @param [in] fileName      - name of file to read from
+     *
+     * @throws Exceptions
+     */
     public static void writeTextFile(String outStrings[], String fileName) throws Exceptions
     {
-        try {
+        try
+        {
+            Logger.printDebug("writing to: " + fileName + "; " + outStrings.length + " lines");
             PrintWriter writer = new PrintWriter(fileName);
 
             for (int i = 0; i < outStrings.length; ++i )
@@ -76,7 +96,9 @@ public final class FileIO
             writer.flush();
             writer.close();
 
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e)
+        {
             throw new Exceptions(CODES.FILE_DOES_NOT_EXISTS);
         }
     }
