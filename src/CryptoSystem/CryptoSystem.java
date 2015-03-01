@@ -3,6 +3,8 @@
  */
 package CryptoSystem;
 
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import SHA.SHA;
 import RSA.RSA;
 import Common.Exceptions;
@@ -30,6 +32,9 @@ public final class CryptoSystem
 
     private static byte[] masterHash = null;
     private static byte[] keyHash    = null;
+
+    static Clipboard clipboard = null;
+    static ClipboardContent content = null;
 
     private static boolean isInitialized = false;
 
@@ -77,8 +82,18 @@ public final class CryptoSystem
                                                                     // error...
         }
 
+//        clipboard = Clipboard.getSystemClipboard();
+//        content = new ClipboardContent();
+
         isInitialized = true;
 
         return RC.check(RETURNCODES.RC_OK);
     }
+
+//    private void putTextToClipboard(String pwd)
+//    {
+//        content.clear();
+//        content.putString(pwd);
+//        clipboard.setContent(content);
+//    }
 }

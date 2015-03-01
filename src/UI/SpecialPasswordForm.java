@@ -21,9 +21,10 @@ import javafx.stage.Stage;
  * @author curious-odd-man
  *
  */
-public class SpecialPasswordForm
+public class SpecialPasswordForm extends AbstractForm
 {
-    public static void draw(Stage primaryStage)
+    @Override
+    public void draw(Stage primaryStage)
     {
         Logger.printDebug("SpecialPasswordForm prepareing");
 

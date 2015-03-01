@@ -21,11 +21,11 @@ import Logger.Logger;
  * @author lyubick
  *
  */
-public class LoginForm
+public class LoginForm extends AbstractForm
 {
-
+    @Override
     @SuppressWarnings("static-access")
-    public static void draw(Stage stage)
+    public void draw(Stage stage)
     {
         Logger.printDebug("LoginForm prepareing");
         GridPane grid = new GridPane();
@@ -34,10 +34,10 @@ public class LoginForm
         TextField tf_Password = new TextField();
         Button b_OK = new Button(TextID.OK.toString());
 
-        grid.setHgap(Defines.HGAP);
-        grid.setVgap(Defines.VGAP);
-        grid.setPadding(new Insets(Defines.PADDING.top, Defines.PADDING.right,
-                Defines.PADDING.bottom, Defines.PADDING.left));
+        grid.setHgap(HGAP);
+        grid.setVgap(VGAP);
+        grid.setPadding(new Insets(PADDING.top, PADDING.right,
+                PADDING.bottom, PADDING.left));
 
         grid.setAlignment(Pos.CENTER);
 

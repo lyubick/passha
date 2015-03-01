@@ -22,9 +22,10 @@ import javafx.stage.Stage;
  * @author curious-odd-man
  *
  */
-public class ManagePasswordsForm
+public class ManagePasswordsForm extends AbstractForm
 {
-    public static void draw(Stage stage)
+    @Override
+    public void draw(Stage stage)
     {
         Logger.printDebug("ManagePasswordsForm prepareing");
         ObservableList<String> personData = FXCollections.observableArrayList();
@@ -56,15 +57,15 @@ public class ManagePasswordsForm
         grid.setAlignment(Pos.CENTER);
         buttonsGrid.setAlignment(Pos.CENTER);
 
-        grid.setHgap(Defines.HGAP);
-        grid.setVgap(Defines.VGAP);
-        grid.setPadding(new Insets(Defines.PADDING.top, Defines.PADDING.right,
-                Defines.PADDING.bottom, Defines.PADDING.left));
+        grid.setHgap(HGAP);
+        grid.setVgap(VGAP);
+        grid.setPadding(new Insets(PADDING.top, PADDING.right,
+                PADDING.bottom, PADDING.left));
 
-        buttonsGrid.setHgap(Defines.HGAP);
-        buttonsGrid.setVgap(Defines.VGAP);
-        buttonsGrid.setPadding(new Insets(Defines.PADDING.top, Defines.PADDING.right,
-                Defines.PADDING.bottom, Defines.PADDING.left));
+        buttonsGrid.setHgap(HGAP);
+        buttonsGrid.setVgap(VGAP);
+        buttonsGrid.setPadding(new Insets(PADDING.top, PADDING.right,
+                PADDING.bottom, PADDING.left));
 
         if (Defines.DEBUG == true)
         {

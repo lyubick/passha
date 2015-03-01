@@ -7,11 +7,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
 import Common.Exceptions.CODES;
-import Logger.Logger;
 
 /**
  * @author lyubick
@@ -127,5 +125,4 @@ public final class Utilities
     {
         return (long) in & 0xFFFFFFFF;
     }
-
 }
