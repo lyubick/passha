@@ -174,14 +174,9 @@ public class Test
 
     public static void main(String[] args)
     {
-        if (args.length > 0)
-        {
-            /* TODO for curious, u need it then think of format :) */
-            Logger.loggerON(Logger.LOGLEVELS.SILENT);
-        } else
-        {
-            Logger.loggerON(Logger.LOGLEVELS.DEBUG);
-        }
+        String[] parms = Main.Main.readArgs(args);
+
+        Logger.loggerON(parms[0].toString());
 
         /* 1. */launchTest(TestRSA());
         /* 2. */launchTest(TestSHA());

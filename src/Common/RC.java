@@ -22,7 +22,9 @@ public final class RC
         RC_NOK,
 
         RC_SECURITY_FAILURE,
-        RC_SECURITY_BREACH
+        RC_SECURITY_BREACH,
+
+        FAIL_TO_LAUNCH
     }
 
     /**

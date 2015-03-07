@@ -5,6 +5,8 @@ package Logger;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import Common.RC.RETURNCODES;
 import Common.RC;
@@ -24,6 +26,21 @@ public final class Logger // Static class
         DEBUG
     }
 
+    private static Map<String, LOGLEVELS> argsMap = initArgsMap();
+
+    private static Map<String, LOGLEVELS> initArgsMap()
+    {
+        Map<String, LOGLEVELS> retMap = new HashMap<String, LOGLEVELS>();
+
+        retMap.put("DEBUG", LOGLEVELS.DEBUG);
+        retMap.put("ERROR", LOGLEVELS.ERROR);
+        retMap.put("INFO", LOGLEVELS.INFO);
+        retMap.put("SILENT", LOGLEVELS.SILENT);
+        retMap.put("WARNING", LOGLEVELS.WARNING);
+
+        return retMap;
+    }
+
     private static LOGLEVELS   logLevel;
 
     private static String      LOG_ADDS    = "";
@@ -31,7 +48,6 @@ public final class Logger // Static class
     private static boolean     initialized = false;
 
     private static PrintWriter writer      = null;
-
 
     private static String getTime()
     {
@@ -106,24 +122,22 @@ public final class Logger // Static class
         writer.println(log);
     }
 
-    public static RETURNCODES loggerON(LOGLEVELS lvl)
+    public static RETURNCODES loggerON(String log)
     {
-        logLevel = lvl;
+        logLevel = (argsMap.get(log) != null) ? argsMap.get(log) : LOGLEVELS.SILENT;
 
         if (!initialized)
         {
             try
             {
                 writer = new PrintWriter("bin/" + getTime());
-            } 
-            catch (FileNotFoundException e)
+            } catch (FileNotFoundException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             initialized = true;
-        } 
-        else
+        } else
             return RC.check(RETURNCODES.RC_NOK);
 
         return RETURNCODES.RC_OK;
@@ -140,5 +154,10 @@ public final class Logger // Static class
     private Logger(LOGLEVELS lvl)
     {
         logLevel = lvl;
+    }
+
+    public static LOGLEVELS getLogLevel()
+    {
+        return logLevel;
     }
 }
