@@ -4,6 +4,7 @@
 package UI;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -28,12 +29,12 @@ public abstract class AbstractForm
 
     public final class WINDOW
     {
-        public static final int width  = 250;
-        public static final int height = 200;
+        public static final int width  = 500;
+        public static final int height = 400;
     }
 
-    protected static GridPane grid  = new GridPane();
-    protected static Scene    scene = new Scene(grid, WINDOW.width, WINDOW.height);
+    protected GridPane grid  = new GridPane();
+    protected Scene    scene = new Scene(grid, WINDOW.width, WINDOW.height);
 
     public abstract void draw(Stage stage);
 
@@ -45,6 +46,7 @@ public abstract class AbstractForm
         grid.setHgap(HGAP);
         grid.setVgap(VGAP);
         grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
+        grid.setAlignment(Pos.CENTER);
 
     }
 

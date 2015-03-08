@@ -4,6 +4,7 @@
 package Main;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 import Logger.Logger;
 
@@ -36,7 +37,28 @@ public class SpecialPassword implements Serializable
 
     public void dump()
     {
-        Logger.printDebug("name: " + name + "; comment: " + comment + "; url" + url + "; shaCycles: " + shaCycles + ";");
+        Field[] properties = this.getClass().getDeclaredFields();
+        StringBuilder template = new StringBuilder();
+
+        template.append("SpecialPassword: ");
+
+        for (Field property : properties)
+        {
+            template.append(property.getName());
+            template.append(": ");
+
+            try
+            {
+                template.append(property.get(this));
+            } catch (IllegalAccessException e)
+            {
+                Logger.printError(e.toString());
+            }
+
+            template.append("; ");
+        }
+
+        Logger.printDebug(template.toString());
     }
 
     /**
