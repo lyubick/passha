@@ -4,6 +4,9 @@
 package UI;
 
 import Logger.Logger;
+import Main.PasswordCollection;
+import Main.SpecialPassword;
+import UI.Controller.FORMS;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -23,8 +26,9 @@ import javafx.stage.Stage;
  */
 public class SpecialPasswordForm extends AbstractForm
 {
+    // TODO Refactor it hard in da ass!
     @Override
-    public void draw(Stage primaryStage)
+    public void draw(Stage stage)
     {
         Logger.printDebug("SpecialPasswordForm prepareing");
 
@@ -49,7 +53,7 @@ public class SpecialPasswordForm extends AbstractForm
         TextField tf_length = new TextField();
         tf_length.setMaxWidth(40);
 
-        //todo: use global constants or create global/local constants
+        // TODO : use global constants or create global/local constants
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
         grid.setHgap(10);
@@ -87,18 +91,21 @@ public class SpecialPasswordForm extends AbstractForm
                 Logger.printDebug("Fields: " + tf_name.getText() + tf_comment.getText()
                         + tf_url.getText() + tf_length.getText() + tf_generatedPassword.getText());
 
+
+                PasswordCollection.addPassword(new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url.getText()));
+                Controller.switchForm(FORMS.MAN_PWD);
             }
 
         });
 
 
-        //todo: window size to (global?) constants
+        //TODO: window size to (global?) constants
         Scene scene = new Scene(grid, 440, 300);
-        primaryStage.setScene(scene);
+        stage.setScene(scene);
 
         Logger.printDebug("SpecialPasswordForm displaying");
 
-        primaryStage.show();
+        stage.show();
 
     }
 }

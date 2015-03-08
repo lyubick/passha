@@ -3,20 +3,16 @@
  */
 package UI;
 
-import java.awt.List;
-
 import Languages.Texts.TextID;
-import Logger.Logger;
 import Main.PasswordCollection;
 import Main.SpecialPassword;
 import Main.iSpecialPassword;
-import javafx.collections.FXCollections;
+import UI.Controller.FORMS;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -79,8 +75,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent ae)
             {
-                LoginForm lf = new LoginForm();
-                lf.draw(new Stage());
+                Controller.switchForm(FORMS.NEW_PWD);
             }
         });
 

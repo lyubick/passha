@@ -5,6 +5,8 @@ package Main;
 
 import Common.RC.RCODES;
 import Logger.Logger;
+import UI.Controller;
+import UI.Controller.FORMS;
 import UI.LoginForm;
 import UI.ManagePasswordsForm;
 import javafx.application.Application;
@@ -65,9 +67,8 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        LoginForm lf = new LoginForm();
-        ManagePasswordsForm mpf = new ManagePasswordsForm();
-        mpf.draw(primaryStage);
-        //lf.draw(primaryStage);
+        Controller ctrl = new Controller(primaryStage);
+
+        Controller.switchForm(FORMS.MAN_PWD);
     }
 }

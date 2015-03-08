@@ -6,6 +6,7 @@ package Main;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
+import CryptoSystem.CryptoSystem;
 import Logger.Logger;
 
 /**
@@ -18,19 +19,32 @@ public class SpecialPassword implements Serializable
     private String            name;
     private String            comment;
     private String            url;
-    private long              shaCycles;
+    private long              shaCycles;        // generated in PasswordCollection;
 
     private static final long serialVersionUID = 1L;
 
     public SpecialPassword()
     {
-        Logger.printDebug("SpecialPassword constructor... START");
+        Logger.printDebug("SpecialPassword DEFAULT constructor... START");
 
         this.name = "EMPTY";
         this.comment = "COMMENT";
         this.url = "URL";
 
         this.shaCycles = 1;
+
+        Logger.printDebug("SpecialPassword DEFAULT constructor... DONE!");
+    }
+
+    public SpecialPassword(String name, String comment, String url)
+    {
+        Logger.printDebug("SpecialPassword constructor... START");
+
+        this.name = name;
+        this.comment = comment;
+        this.url = url;
+
+        shaCycles = 0;
 
         Logger.printDebug("SpecialPassword constructor... DONE!");
     }

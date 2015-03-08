@@ -52,7 +52,7 @@ public class LoginForm extends AbstractForm
             }
         });
 
-        // todo window sizes move to constants
+        // TODO window sizes move to constants
 
         stage.setScene(scene);
 

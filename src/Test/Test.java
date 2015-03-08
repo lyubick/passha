@@ -3,7 +3,7 @@
  */
 package Test;
 
-// todo: write test text (name or/and description) in addition to its index number and result
+// TODO: write test text (name or/and description) in addition to its index number and result
 // explicit variable initialization missing
 // functions and file missing headers
 
