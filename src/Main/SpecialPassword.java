@@ -34,6 +34,11 @@ public class SpecialPassword implements Serializable
         Logger.printDebug("SpecialPassword constructor... DONE!");
     }
 
+    public void dump()
+    {
+        Logger.printDebug("name: " + name + "; comment: " + comment + "; url" + url + "; shaCycles: " + shaCycles + ";");
+    }
+
     /**
      * @return the name
      */

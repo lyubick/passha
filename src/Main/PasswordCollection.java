@@ -67,7 +67,13 @@ public class PasswordCollection
 
     public static void dump()
     {
+        Logger.printDebug("Dumping PasswordCollection... START");
+
+
+        Logger.printDebug("Collection: ");
         for (SpecialPassword sp : db)
-            Logger.printDebug("DATA: " + sp.dump() + "\n");
+            sp.dump();
+
+        Logger.printDebug("Dumping PasswordCollection... DONE!");
     }
 }

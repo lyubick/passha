@@ -26,6 +26,10 @@ public final class Logger // Static class
         DEBUG
     }
 
+    private static int fileNameWidth = 20;
+    private static int lineWidth = 4;
+    private static int methodNameWidth = 20;
+
     private static Map<String, LOGLEVELS> argsMap = initArgsMap();
 
     private static Map<String, LOGLEVELS> initArgsMap()
@@ -112,7 +116,12 @@ public final class Logger // Static class
         String methodName = e.getMethodName();
         String fileName = e.getFileName();
         int line = e.getLineNumber();
-        writeToFileAndToScreen(String.format("[%1$s] %2$20s @ %3$4d %4$20s ", getTime(), fileName,
+
+        fileNameWidth = Math.max(fileNameWidth, fileName.length());
+        lineWidth = Math.max(lineWidth, Integer.toString(line).length());
+        methodNameWidth = Math.max(methodNameWidth, methodName.length());
+
+        writeToFileAndToScreen(String.format("[%1$s] %2$" + fileNameWidth + "s @ %3$-" + lineWidth + "d %4$-" + methodNameWidth + "s ", getTime(), fileName,
                 line, methodName) + LOG_ADDS + msg);
     }
 
