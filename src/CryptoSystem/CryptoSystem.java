@@ -3,13 +3,15 @@
  */
 package CryptoSystem;
 
+import java.util.Random;
+
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import SHA.SHA;
 import RSA.RSA;
 import Common.Exceptions;
 import Common.RC;
-import Common.RC.RETURNCODES;
+import Common.RC.RCODES;
 import Common.Utilities;
 import Logger.Logger;
 
@@ -25,7 +27,10 @@ public final class CryptoSystem
     private static final int RSA_NUMBER_HASH_MODIFIER_Q = 4;
     private static final int RSA_NUMBER_HASH_MODIFIER_E = 7;
 
+    private static final int SHA_ITERATION_MIN_COUNT = 100;
+    private static final int SHA_ITERATION_MAX_COUNT = 1000000 - SHA_ITERATION_MIN_COUNT;
 
+    private static Random randomizer = new Random(System.currentTimeMillis());
 
     private static SHA sha = null;
     private static RSA rsa = null;
@@ -40,17 +45,22 @@ public final class CryptoSystem
 
     private CryptoSystem() {}; // Not used...
 
+    public static long randSHACycles()
+    {
+        return SHA_ITERATION_MIN_COUNT + randomizer.nextInt(SHA_ITERATION_MAX_COUNT);
+    }
+
     private static String getKey(int mod)
     {
         return Long.toString(Math.abs(Utilities.load64(keyHash, RSA_NUMBER_HASH_OFFSET * mod)));
     }
 
-    public static RETURNCODES initCryptoSystem(String masterPassword)
+    public static RCODES initCryptoSystem(String masterPassword)
     {
         if (isInitialized)
         {
             Logger.printError("CryptoSystem already initialized... potential Security Breach... exiting...");
-            System.exit(RETURNCODES.RC_SECURITY_BREACH.ordinal()); // Fatal
+            System.exit(RCODES.RC_SECURITY_BREACH.ordinal()); // Fatal
                                                                    // error...
         }
 
@@ -61,7 +71,7 @@ public final class CryptoSystem
         catch (Exceptions e1)
         {
             Logger.printError("SHA initialization failed... exiting...");
-            System.exit(RETURNCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
+            System.exit(RCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
                                                                     // error...
         }
 
@@ -78,16 +88,18 @@ public final class CryptoSystem
         catch (Common.Exceptions e)
         {
             Logger.printError("RSA initialization failed... exiting...");
-            System.exit(RETURNCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
+            System.exit(RCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
                                                                     // error...
         }
+
+
 
 //        clipboard = Clipboard.getSystemClipboard();
 //        content = new ClipboardContent();
 
         isInitialized = true;
 
-        return RC.check(RETURNCODES.RC_OK);
+        return RC.check(RCODES.RC_OK);
     }
 
 //    private void putTextToClipboard(String pwd)

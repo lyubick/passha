@@ -16,7 +16,7 @@ import SHA.SHA;
 import Common.Exceptions;
 import Common.FileIO;
 import Common.RC;
-import Common.RC.RETURNCODES;
+import Common.RC.RCODES;
 import Common.Utilities;
 import CryptoSystem.CryptoSystem;
 
@@ -27,14 +27,14 @@ import CryptoSystem.CryptoSystem;
 public class Test
 {
     private static int                 TestNr     = 0;
-    private static Vector<RETURNCODES> TestStatus = new Vector<RETURNCODES>();
+    private static Vector<RCODES> TestStatus = new Vector<RCODES>();
     private static int                 TestOK     = 0;
 
-    public static void launchTest(RETURNCODES result)
+    public static void launchTest(RCODES result)
     {
         ++TestNr;
 
-        if (result.equals(RETURNCODES.RC_OK))
+        if (result.equals(RCODES.RC_OK))
         {
             System.out.println(TestNr + ": PASSED!");
             ++TestOK;
@@ -47,7 +47,7 @@ public class Test
     }
 
     /* Test set */
-    public static RETURNCODES TestRSA()
+    public static RCODES TestRSA()
     {
         try
         {
@@ -57,13 +57,13 @@ public class Test
         }
         catch (Exceptions e)
         {
-            return RETURNCODES.RC_NOK;
+            return RCODES.RC_NOK;
         }
 
-        return RETURNCODES.RC_OK;
+        return RCODES.RC_OK;
     }
 
-    public static RETURNCODES TestSHA()
+    public static RCODES TestSHA()
     {
         // SHA() now throws if self-test fails
         try
@@ -71,21 +71,21 @@ public class Test
             SHA test = new SHA();
         } catch (Exceptions e)
         {
-            return RETURNCODES.RC_NOK;
+            return RCODES.RC_NOK;
         }
 
-        return RETURNCODES.RC_OK;
+        return RCODES.RC_OK;
     }
 
-    public static RETURNCODES TestRC()
+    public static RCODES TestRC()
     {
-        RC.check(RETURNCODES.RC_SECURITY_BREACH);
-        RC.check(RETURNCODES.RC_NOK);
+        RC.check(RCODES.RC_SECURITY_BREACH);
+        RC.check(RCODES.RC_NOK);
 
-        return RC.check(RETURNCODES.RC_OK);
+        return RC.check(RCODES.RC_OK);
     }
 
-    public static RETURNCODES TestSerialization()
+    public static RCODES TestSerialization()
     {
         SpecialPassword sp = new SpecialPassword();
         SpecialPassword sp1 = null;
@@ -97,7 +97,7 @@ public class Test
             rsa = new RSA("12345", "54321", "6789");
         } catch (Exceptions e1)
         {
-            return RETURNCODES.RC_NOK;
+            return RCODES.RC_NOK;
         }
 
         try
@@ -105,12 +105,12 @@ public class Test
             sp1 = (SpecialPassword) Utilities.bytesToObject(Utilities.objectToBytes(sp));
         } catch (Exceptions e)
         {
-            return RETURNCODES.RC_NOK;
+            return RCODES.RC_NOK;
         }
 
         if (sp.equals(sp1) != true)
         {
-            return RETURNCODES.RC_NOK;
+            return RCODES.RC_NOK;
         }
 
         try
@@ -120,18 +120,18 @@ public class Test
                     .objectToBytes(sp))));
         } catch (Exceptions e)
         {
-            return RETURNCODES.RC_NOK;
+            return RCODES.RC_NOK;
         }
 
         if (sp.equals(sp2) != true)
         {
-            return RETURNCODES.RC_NOK;
+            return RCODES.RC_NOK;
         }
 
-        return RETURNCODES.RC_OK;
+        return RCODES.RC_OK;
     }
 
-    public static RETURNCODES testFileIO()
+    public static RCODES testFileIO()
     {
         String fileName = "bin/Test.txt";
         final int strCount = 5;
@@ -157,19 +157,19 @@ public class Test
                     if (!resultStrings[j].equals(initialStrings[j]))
                     {
                         Logger.printError("strings does not match");
-                        return RC.check(RETURNCODES.RC_NOK);
+                        return RC.check(RCODES.RC_NOK);
                     }
                 }
             } else
             {
-                return RC.check(RETURNCODES.RC_NOK);
+                return RC.check(RCODES.RC_NOK);
             }
         } catch (Exceptions e)
         {
-            return RC.check(RETURNCODES.RC_NOK);
+            return RC.check(RCODES.RC_NOK);
         }
 
-        return RETURNCODES.RC_OK;
+        return RCODES.RC_OK;
     }
 
     public static void main(String[] args)
@@ -191,7 +191,7 @@ public class Test
             System.out.println(""
                     + (i + 1)
                     + ": "
-                    + (TestStatus.elementAt(i).ordinal() == RETURNCODES.RC_OK.ordinal() ? "PASSED"
+                    + (TestStatus.elementAt(i).ordinal() == RCODES.RC_OK.ordinal() ? "PASSED"
                             : "FAILED"));
 
         System.out.println("OVERALL: " + (float)(TestOK / TestNr * 100) + "%");

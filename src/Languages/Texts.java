@@ -58,6 +58,9 @@ public class Texts
         ENABLED(new String[]
         { "Enabled", "" }),
 
+        URL(new String[]
+        { "URL", ""}),
+
         ;
 
         private final String text[];

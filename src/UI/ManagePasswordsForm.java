@@ -7,6 +7,9 @@ import java.awt.List;
 
 import Languages.Texts.TextID;
 import Logger.Logger;
+import Main.PasswordCollection;
+import Main.SpecialPassword;
+import Main.iSpecialPassword;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -15,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -27,10 +31,13 @@ public class ManagePasswordsForm extends AbstractForm
     @Override
     public void draw(Stage stage)
     {
-        Logger.printDebug("ManagePasswordsForm prepareing");
-        ObservableList<String> personData = FXCollections.observableArrayList();
-        personData.add("asdfasd");
+        // TODO
+        PasswordCollection.addPassword(new SpecialPassword());
+        PasswordCollection.dump();
 
+        TableView<iSpecialPassword> table = new TableView<iSpecialPassword>();
+
+        ObservableList<iSpecialPassword> passwordSet = PasswordCollection.getIface();
 
         Button b_New = new Button(TextID.NEW.toString());
         Button b_Delete = new Button(TextID.DELETE.toString());
@@ -41,18 +48,17 @@ public class ManagePasswordsForm extends AbstractForm
 
         TableColumn[] columns = new TableColumn[]
         {
-                new TableColumn<String, String>(TextID.PWD_NAME.toString()),
-                new TableColumn<String, String>(TextID.PWD.toString()),
-                new TableColumn<String, String>(TextID.COMMENT.toString()),
-                new TableColumn<String, String>(TextID.SHORTCUT.toString()),
-                new TableColumn<String, String>(TextID.ENABLED.toString()),
+                new TableColumn(TextID.PWD_NAME.toString()),
+                new TableColumn(TextID.COMMENT.toString()),
+                new TableColumn(TextID.URL.toString()),
         };
-
-        TableView<String> table = new TableView<String>();
-
         table.getColumns().setAll(columns);
-        table.setItems(personData);
 
+        columns[0].setCellValueFactory(new PropertyValueFactory<iSpecialPassword,String>("name"));
+        columns[1].setCellValueFactory(new PropertyValueFactory<iSpecialPassword,String>("comment"));
+        columns[2].setCellValueFactory(new PropertyValueFactory<iSpecialPassword,String>("url"));
+
+        table.setItems(passwordSet);
 
         grid.setAlignment(Pos.CENTER);
         buttonsGrid.setAlignment(Pos.CENTER);
@@ -86,7 +92,6 @@ public class ManagePasswordsForm extends AbstractForm
         Scene scene = new Scene(grid, 440, 300);
         stage.setScene(scene);
 
-        Logger.printDebug("ManagePasswordsForm displaying");
         stage.show();
 
     }

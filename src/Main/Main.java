@@ -3,7 +3,7 @@
  */
 package Main;
 
-import Common.RC.RETURNCODES;
+import Common.RC.RCODES;
 import Logger.Logger;
 import UI.LoginForm;
 import UI.ManagePasswordsForm;
@@ -49,7 +49,7 @@ public class Main extends Application
         if (args.length == 0)
         {
             System.out.println("Welcome!\n" + "Program should be launched with:\n" + "-l=[level] where [level]=DEBUG,ERROR,WARNING,INFO,SILENT");
-            System.exit(RETURNCODES.FAIL_TO_LAUNCH.ordinal());
+            System.exit(RCODES.FAIL_TO_LAUNCH.ordinal());
         }
 
         for (String arg : args)
@@ -67,7 +67,7 @@ public class Main extends Application
     {
         LoginForm lf = new LoginForm();
         ManagePasswordsForm mpf = new ManagePasswordsForm();
-        // mpf.draw(primaryStage);
-        lf.draw(primaryStage);
+        mpf.draw(primaryStage);
+        //lf.draw(primaryStage);
     }
 }

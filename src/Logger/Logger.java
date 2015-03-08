@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import Common.RC.RETURNCODES;
+import Common.RC.RCODES;
 import Common.RC;
 
 /**
@@ -122,7 +122,7 @@ public final class Logger // Static class
         writer.println(log);
     }
 
-    public static RETURNCODES loggerON(String log)
+    public static RCODES loggerON(String log)
     {
         logLevel = (argsMap.get(log) != null) ? argsMap.get(log) : LOGLEVELS.SILENT;
 
@@ -138,17 +138,17 @@ public final class Logger // Static class
             }
             initialized = true;
         } else
-            return RC.check(RETURNCODES.RC_NOK);
+            return RC.check(RCODES.RC_NOK);
 
-        return RETURNCODES.RC_OK;
+        return RCODES.RC_OK;
     }
 
-    public static RETURNCODES loggerOFF()
+    public static RCODES loggerOFF()
     {
         if (initialized)
             writer.close();
 
-        return RETURNCODES.RC_OK;
+        return RCODES.RC_OK;
     }
 
     private Logger(LOGLEVELS lvl)

@@ -16,7 +16,7 @@ public final class RC
      *        errors for all classes
      *
      */
-    public static enum RETURNCODES
+    public static enum RCODES
     {
         RC_OK,
         RC_NOK,
@@ -34,9 +34,9 @@ public final class RC
      *            RETURNCODES value.
      * @return @a c
      */
-    public static RETURNCODES check(RETURNCODES c)
+    public static RCODES check(RCODES c)
     {
-        if (!c.equals(RETURNCODES.RC_OK))
+        if (!c.equals(RCODES.RC_OK))
         {
             StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
             // The last element of the array represents the bottom of the stack,

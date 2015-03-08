@@ -12,7 +12,7 @@ package RSA;
 import Common.Exceptions;
 import Common.Exceptions.CODES;
 import Common.RC;
-import Common.RC.RETURNCODES;
+import Common.RC.RCODES;
 import Common.Utilities;
 /* Logging */
 import Logger.Logger;
@@ -121,7 +121,7 @@ public final class RSA
      *
      * @return OK/NOK
      */
-    private RETURNCODES test()
+    private RCODES test()
     {
         String alphabet = "qwertyuiopasdfghjklzxcvbnm1234567890";
         String cipher = "";
@@ -133,16 +133,16 @@ public final class RSA
         Logger.printDebug(cipher);
 
         if (cipher.equals(alphabet))
-            return RC.check(RETURNCODES.RC_OK);
+            return RC.check(RCODES.RC_OK);
         else
-            return RC.check(RETURNCODES.RC_NOK);
+            return RC.check(RCODES.RC_NOK);
     }
 
     /**
      *
      * @return
      */
-    private RETURNCODES init()
+    private RCODES init()
     {
 
 
@@ -204,7 +204,7 @@ public final class RSA
         Logger.printDebug("Initial q: " + q.toString());
         Logger.printDebug("Initial e: " + e.toString());
 
-        if (RETURNCODES.RC_OK != init())
+        if (RCODES.RC_OK != init())
             throw new Common.Exceptions(CODES.INIT_FAILURE);
     }
 }
