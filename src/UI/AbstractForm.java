@@ -33,6 +33,7 @@ public abstract class AbstractForm
         public static final int height = 400;
     }
 
+    // TODO see http://docs.oracle.com/javafx/2/layout/builtin_layouts.htm for layouts description and use as
     protected GridPane grid  = new GridPane();
     protected Scene    scene = new Scene(grid, WINDOW.width, WINDOW.height);
 

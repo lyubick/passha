@@ -33,6 +33,7 @@ public final class Controller
 
     public static void switchForm(FORMS form)
     {
+        // TODO log when switching from one for to another ?
         forms[form.ordinal()].draw(mainStage);
     }
 }

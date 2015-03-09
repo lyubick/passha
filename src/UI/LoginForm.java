@@ -35,6 +35,8 @@ public class LoginForm extends AbstractForm
 
         grid.setAlignment(Pos.CENTER);
 
+        // TODO where only one columnt is used - use VBOX instead of grid
+        // TODO move row numbers to constants
         grid.add(l_Welcome, 0, 0);
         grid.setHalignment(grid.getChildren().get(grid.getChildren().indexOf(l_Welcome)), HPos.CENTER);
         grid.add(pf_Password, 0, 5);
@@ -51,8 +53,6 @@ public class LoginForm extends AbstractForm
                 Logger.printDebug("Entered Password: " + pf_Password.getText());
             }
         });
-
-        // TODO window sizes move to constants
 
         stage.setScene(scene);
 

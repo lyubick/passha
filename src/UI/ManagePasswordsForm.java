@@ -43,6 +43,8 @@ public class ManagePasswordsForm extends AbstractForm
 
         GridPane buttonsGrid = new GridPane();
 
+        
+        // TODO make columns/column namse same way as TextID (to ensure column has correct text)
         TableColumn[] columns =
                 new TableColumn[]
                 { new TableColumn(TextID.PWD_NAME.toString()),
@@ -50,6 +52,7 @@ public class ManagePasswordsForm extends AbstractForm
                         new TableColumn(TextID.URL.toString()), };
         table.getColumns().setAll(columns);
 
+        // TODO column numbers to enumerator
         columns[0].setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
         columns[1]
                 .setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
@@ -57,11 +60,15 @@ public class ManagePasswordsForm extends AbstractForm
 
         table.setItems(passwordSet);
 
+        
+        // TODO use HBOX where only one row is used
         buttonsGrid.setAlignment(Pos.CENTER);
         buttonsGrid.setHgap(HGAP);
         buttonsGrid.setVgap(VGAP);
         buttonsGrid
                 .setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
+                
+        // TODO numbers to local constants
         buttonsGrid.add(b_Export, 0, 0);
         buttonsGrid.add(b_New, 19, 0);
         buttonsGrid.add(b_Delete, 20, 0);
@@ -81,7 +88,5 @@ public class ManagePasswordsForm extends AbstractForm
 
         stage.setScene(scene);
         stage.show();
-
-        System.out.println("SLADKO");
     }
 }
