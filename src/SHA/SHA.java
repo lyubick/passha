@@ -260,7 +260,7 @@ public class SHA
 
     public String getStringSHA512(final byte[] input)
     {
-        return Arrays.toString(getBytesSHA512(input));
+        return bytesToHex(getBytesSHA512(input));
     }
 
 }

@@ -133,7 +133,6 @@ public class Test
 
     public static RC testFileIO()
     {
-        String fileName = "bin/Test.txt";
         final int strCount = 5;
         Vector<String> initialStrings = new Vector<String>();
         Vector<String> resultStrings = new Vector<String>();
@@ -147,8 +146,10 @@ public class Test
 
         try
         {
-            FileIO ftest = FileIO.init(fileName);
-            resultStrings = ftest.readTextFile();
+            FileIO ftest = FileIO.getInstance();
+
+            ftest.writeToFile(initialStrings);
+            resultStrings = ftest.readFromFile();
 
             if (strCount == resultStrings.size())
             {
@@ -182,11 +183,10 @@ public class Test
 
         Logger.loggerON(parms[0].toString());
 
-        /* 0. */launchTestSuite();
+        /* 1. */launchTest(CryptoSystem.init("qwerty123"));
 
-        /* 1. */launchTest(TestRSA());
-        /* 2. */launchTest(TestSHA());
-        /* 3. */launchTest(CryptoSystem.initCryptoSystem("qwerty123"));
+        /* 2. */launchTest(TestRSA());
+        /* 3. */launchTest(TestSHA());
         /* 4. */launchTest(TestRC());
         /* 5. */launchTest(TestSerialization());
         /* 6. */launchTest(testFileIO());
@@ -200,7 +200,7 @@ public class Test
                     + (TestStatus.elementAt(i).ordinal() == RC.OK.ordinal() ? "PASSED"
                             : "FAILED"));
 
-        System.out.println("OVERALL: " + (float) (TestOK / TestNr * 100) + "%");
+        System.out.println("OVERALL: " + ((float)TestOK / TestNr * 100) + "%");
         System.out.println("STATUS: " + (TestOK == TestNr ? "OK" : "NOK"));
 
         Logger.loggerOFF();

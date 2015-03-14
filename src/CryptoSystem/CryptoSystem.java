@@ -3,6 +3,7 @@
  */
 package CryptoSystem;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import javafx.scene.input.Clipboard;
@@ -10,10 +11,13 @@ import javafx.scene.input.ClipboardContent;
 import SHA.SHA;
 import RSA.RSA;
 import Common.Exceptions;
+import Common.FileIO;
 import Common.Return;
+import Common.Exceptions.XC;
 import Common.Return.RC;
 import Common.Utilities;
 import Logger.Logger;
+import Main.SpecialPassword;
 
 /**
  * @author lyubick
@@ -30,7 +34,7 @@ public final class CryptoSystem
     private static final int SHA_ITERATION_MIN_COUNT    = 100;
     private static final int SHA_ITERATION_MAX_COUNT    = 1000000 - SHA_ITERATION_MIN_COUNT;
 
-    private static Random    randomizer                 = new Random(System.currentTimeMillis());
+    private static Random    randomizer                 = null;
 
     private static SHA       sha                        = null;
     private static RSA       rsa                        = null;
@@ -41,47 +45,102 @@ public final class CryptoSystem
     static Clipboard         clipboard                  = null;
     static ClipboardContent  content                    = null;
 
-    private static boolean   isInitialized              = false;
+    private static CryptoSystem self = null;
+
+//================================================================================================
+//==========  PRIVATE: ===========================================================================
+//================================================================================================
 
     private CryptoSystem()
     {
-    }; // Not used...
-
-    public static long randSHACycles()
-    {
-        return SHA_ITERATION_MIN_COUNT + randomizer.nextInt(SHA_ITERATION_MAX_COUNT);
-    }
+        self = this;
+    };
 
     private static String getKey(int mod)
     {
         return Long.toString(Math.abs(Utilities.load64(keyHash, RSA_NUMBER_HASH_OFFSET * mod)));
     }
 
-    public static RC initCryptoSystem(String masterPassword)
+
+
+//================================================================================================
+//==========  PUBLIC: ============================================================================
+//================================================================================================
+
+    public long randSHACycles()
     {
-        if (isInitialized)
+        return SHA_ITERATION_MIN_COUNT + randomizer.nextInt(SHA_ITERATION_MAX_COUNT);
+    }
+
+    public static CryptoSystem getInstance() throws Exceptions
+    {
+        if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        return self;
+    }
+
+    public String encryptPassword(SpecialPassword sp)
+    {
+        try
         {
-            Logger.printError("CryptoSystem already initialized... potential Security Breach... exiting...");
-            System.exit(RC.RC_SECURITY_BREACH.ordinal()); // Fatal
-                                                              // error...
+            return rsa.encrypt(Utilities.objectToBytes(sp));
         }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace(); // TODO black magic
+        }
+
+        return "Error";
+    }
+
+    public SpecialPassword decryptPassword(String s)
+    {
+        try
+        {
+            return (SpecialPassword)Utilities.bytesToObject(rsa.decrypt(s).getBytes());
+        }
+        catch (Exceptions e)
+        {
+            System.exit(500); // TODO abend
+        }
+
+        return null;
+    }
+
+
+    public static RC init(String masterPassword)
+    {
+        Logger.printDebug("CryptoSystem init STARTS...");
+
+        if (self != null)
+        {
+            Logger.printError("CryptoSystem already initialized... exiting...");
+            System.exit(RC.RC_SECURITY_BREACH.ordinal()); // TODO abend
+        }
+
+//==========  SHA initialization START: ==========================================================
+        Logger.printDebug("SHA init STARTS...");
 
         try
         {
             sha = new SHA();
         }
-        catch (Exceptions e1)
+        catch (Exceptions e)
         {
             Logger.printError("SHA initialization failed... exiting...");
-            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // Fatal
-                                                               // error...
+            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // TODO abend
         }
 
-        // wouldn't it be better to name it setMasterHash(); and make assignment
-        // inside?
+        Logger.printDebug("SHA init DONE!");
+//==========  SHA initialization END: =============================================================
+
+
         masterHash = sha.getBytesSHA512(masterPassword.getBytes());
         keyHash = sha.getBytesSHA512(masterHash);
 
+
+//==========  RSA initialization START: ===========================================================
+        Logger.printDebug("RSA init STARTS...");
         try
         {
             rsa =
@@ -94,19 +153,32 @@ public final class CryptoSystem
             System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // Fatal
                                                                // error...
         }
+        Logger.printDebug("RSA init DONE!");
+//==========  RSA initialization END: =============================================================
 
-        // clipboard = Clipboard.getSystemClipboard();
-        // content = new ClipboardContent();
 
-        isInitialized = true;
+//==========  FILE I/O initialization START: ======================================================
+        Logger.printDebug("File I/O init STARTS...");
+        try
+        {
+            Logger.printDebug(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()));
+            FileIO.init(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()));
+        }
+        catch (Exceptions e)
+        {
+            Logger.printError("SHA initialization failed... exiting...");
+            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // TODO abend
+        }
+        Logger.printDebug("File I/O init DONE...");
+//==========  FILE I/O initialization END: ========================================================
 
+
+        randomizer = new Random(System.currentTimeMillis());
+
+        self = new CryptoSystem();
+
+        Logger.printDebug("CryptoSystem init DONE!");
         return Return.check(RC.OK);
     }
 
-    // private void putTextToClipboard(String pwd)
-    // {
-    // content.clear();
-    // content.putString(pwd);
-    // clipboard.setContent(content);
-    // }
 }

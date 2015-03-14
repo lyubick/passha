@@ -35,6 +35,30 @@ public final class FileIO
     {
         if (self != null) System.exit(RC.ABEND.ordinal());
         self = new FileIO(filename);
+
+        try
+        {
+            BufferedReader test = new BufferedReader(new FileReader(filename));
+            test.readLine();
+            test.close();
+            Logger.printDebug("File exists!");
+        }
+        catch (IOException e)
+        {
+            try
+            {
+                PrintWriter create = new PrintWriter(filename);
+                create.println("");
+                create.close();
+                Logger.printDebug("File created!");
+            }
+            catch (FileNotFoundException e1)
+            {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+
         return self;
     }
 
@@ -53,7 +77,7 @@ public final class FileIO
      *
      * @return String[] - one element, one line read from file
      */
-    public Vector<String> readTextFile() throws Exceptions
+    public Vector<String> readFromFile() throws Exceptions
     {
         Vector<String> inLines = new Vector<String>();
 
@@ -103,7 +127,7 @@ public final class FileIO
      *
      * @throws Exceptions
      */
-    public RC writeTextFile(Vector<String> outStrings) throws Exceptions
+    public RC writeToFile(Vector<String> outStrings) throws Exceptions
     {
         try
         {
