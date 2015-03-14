@@ -57,8 +57,7 @@ public class PasswordCollection
             if (existing.getName().equals(sp.getName())) return Return.check(RC.NOK);
 
         long sc = 0;
-        while (!isUnique(new Long(sc = cs.randSHACycles())))
-            ;
+        while (!isUnique(new Long(sc = cs.randSHACycles())));
         sp.setShaCycles(sc);
 
         db.addElement(sp);

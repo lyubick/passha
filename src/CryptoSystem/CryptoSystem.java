@@ -115,7 +115,7 @@ public final class CryptoSystem
         if (self != null)
         {
             Logger.printError("CryptoSystem already initialized... exiting...");
-            System.exit(RC.RC_SECURITY_BREACH.ordinal()); // TODO abend
+            System.exit(RC.SECURITY_BREACH.ordinal()); // TODO abend
         }
 
 //==========  SHA initialization START: ==========================================================
@@ -128,7 +128,7 @@ public final class CryptoSystem
         catch (Exceptions e)
         {
             Logger.printError("SHA initialization failed... exiting...");
-            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // TODO abend
+            System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO abend
         }
 
         Logger.printDebug("SHA init DONE!");

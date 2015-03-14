@@ -22,8 +22,10 @@ public final class Return
         NOK,
         ABEND,
 
-        RC_SECURITY_FAILURE,
-        RC_SECURITY_BREACH,
+        SECURITY_FAILURE,
+        SECURITY_BREACH,
+
+        NAME_ALREADY_TAKEN,
 
         FAIL_TO_LAUNCH,
 

@@ -81,7 +81,7 @@ public class Test
 
     public static RC TestRC()
     {
-        Return.check(RC.RC_SECURITY_BREACH);
+        Return.check(RC.SECURITY_BREACH);
         Return.check(RC.NOK);
 
         return Return.check(RC.OK);
