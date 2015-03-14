@@ -5,6 +5,7 @@ package UI;
 
 import Common.Exceptions;
 import Common.Exceptions.XC;
+import Common.RC.RCODES;
 import Logger.Logger;
 import javafx.stage.Stage;
 
@@ -28,16 +29,9 @@ public final class Controller
         NEW_PWD,
     }
 
-    public static Controller getInstance(Stage primaryStage)
-    {
-        if (self == null) self = new Controller(primaryStage);
-
-        return self;
-    }
-
     public static Controller getInstance() throws Exceptions
     {
-        if (self == null) throw new Exceptions(XC.STAGE_NOT_SET);
+        if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
 
         return self;
     }
@@ -45,6 +39,14 @@ public final class Controller
     private Controller(Stage primaryStage)
     {
         mainStage = primaryStage;
+    }
+
+    public static Controller init(Stage primaryStage)
+    {
+        if (self == null) self = new Controller(primaryStage);
+        else System.exit(RCODES.ABEND.ordinal());
+
+        return self;
     }
 
     public void switchForm(FORMS form)

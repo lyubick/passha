@@ -68,6 +68,6 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        Controller.getInstance(primaryStage).switchForm(FORMS.MAN_PWD);
+        Controller.init(primaryStage).switchForm(FORMS.MAN_PWD);
     }
 }

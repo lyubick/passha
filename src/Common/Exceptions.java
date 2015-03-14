@@ -28,7 +28,7 @@ public final class Exceptions extends Throwable
         READ_ERROR,
         CLOSE_ERROR,
 
-        STAGE_NOT_SET,
+        NO_INSTANCE_EXISTS,
 
         BLACK_MAGIC
     }
