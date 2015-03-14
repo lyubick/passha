@@ -9,14 +9,14 @@ import Logger.Logger;
  * @author curious-odd-man
  *
  */
-public final class RC
+public final class Return
 {
     /**
      * @brief Return code enumerator must include all possible Return Codes,
      *        errors for all classes
      *
      */
-    public static enum RCODES
+    public static enum RC
     {
         OK,
         NOK,
@@ -38,9 +38,9 @@ public final class RC
      *            RETURNCODES value.
      * @return @a c
      */
-    public static RCODES check(RCODES c)
+    public static RC check(RC c)
     {
-        if (!c.equals(RCODES.OK))
+        if (!c.equals(RC.OK))
         {
             StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
             // The last element of the array represents the bottom of the stack,

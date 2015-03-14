@@ -5,7 +5,7 @@ package UI;
 
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Common.RC.RCODES;
+import Common.Return.RC;
 import Logger.Logger;
 import javafx.stage.Stage;
 
@@ -44,7 +44,7 @@ public final class Controller
     public static Controller init(Stage primaryStage)
     {
         if (self == null) self = new Controller(primaryStage);
-        else System.exit(RCODES.ABEND.ordinal());
+        else System.exit(RC.ABEND.ordinal());
 
         return self;
     }

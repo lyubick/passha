@@ -10,8 +10,8 @@ package RSA;
 /* Common */
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Common.RC;
-import Common.RC.RCODES;
+import Common.Return;
+import Common.Return.RC;
 import Common.Utilities;
 /* Logging */
 import Logger.Logger;
@@ -123,7 +123,7 @@ public final class RSA
      *
      * @return OK/NOK
      */
-    private RCODES test()
+    private RC test()
     {
         String alphabet = "qwertyuiopasdfghjklzxcvbnm1234567890";
         String cipher = "";
@@ -135,16 +135,16 @@ public final class RSA
         Logger.printDebug(cipher);
 
         if (cipher.equals(alphabet))
-            return RC.check(RCODES.OK);
+            return Return.check(RC.OK);
         else
-            return RC.check(RCODES.NOK);
+            return Return.check(RC.NOK);
     }
 
     /**
      *
      * @return
      */
-    private RCODES init()
+    private RC init()
     {
 
         while (!p.isProbablePrime(RSA_PRIME_CERTAINCY))
@@ -178,7 +178,7 @@ public final class RSA
 
         Logger.printDebug("d: " + d.toString());
 
-        return RC.check(test());
+        return Return.check(test());
     }
 
     /**
@@ -206,6 +206,6 @@ public final class RSA
         Logger.printDebug("Initial q: " + q.toString());
         Logger.printDebug("Initial e: " + e.toString());
 
-        if (RCODES.OK != init()) throw new Common.Exceptions(XC.INIT_FAILURE);
+        if (RC.OK != init()) throw new Common.Exceptions(XC.INIT_FAILURE);
     }
 }

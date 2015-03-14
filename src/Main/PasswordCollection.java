@@ -7,8 +7,8 @@ import java.util.Vector;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import Common.RC;
-import Common.RC.RCODES;
+import Common.Return;
+import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
 import Logger.Logger;
 import Main.iSpecialPassword;
@@ -38,10 +38,10 @@ public class PasswordCollection
         return (shaCycles.lastIndexOf(ex) != -1) ? false : true;
     }
 
-    public static RCODES addPassword(SpecialPassword sp)
+    public static RC addPassword(SpecialPassword sp)
     {
         for (SpecialPassword existing : db)
-            if (existing.getName().equals(sp.getName())) return RC.check(RCODES.NOK);
+            if (existing.getName().equals(sp.getName())) return Return.check(RC.NOK);
 
         long sc = 0;
         while (!isUnique(new Long(sc = CryptoSystem.randSHACycles())))
@@ -50,7 +50,7 @@ public class PasswordCollection
 
         db.addElement(sp);
 
-        return RC.check(RCODES.OK);
+        return Return.check(RC.OK);
     }
 
     public static ObservableList<iSpecialPassword> getIface()
@@ -74,5 +74,10 @@ public class PasswordCollection
             sp.dump();
 
         Logger.printDebug("Dumping PasswordCollection... DONE!");
+    }
+
+    public static void save()
+    {
+
     }
 }

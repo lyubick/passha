@@ -4,7 +4,7 @@
 package UI;
 
 import Common.Exceptions;
-import Common.RC.RCODES;
+import Common.Return.RC;
 import Logger.Logger;
 import Main.PasswordCollection;
 import Main.SpecialPassword;
@@ -102,7 +102,7 @@ public class SpecialPasswordForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    System.exit(RCODES.ABEND.ordinal());
+                    System.exit(RC.ABEND.ordinal());
                 }
             }
 

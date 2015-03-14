@@ -3,7 +3,7 @@
  */
 package Main;
 
-import Common.RC.RCODES;
+import Common.Return.RC;
 import Logger.Logger;
 import UI.Controller;
 import UI.Controller.FORMS;
@@ -52,7 +52,7 @@ public class Main extends Application
         {
             System.out.println("Welcome!\n" + "Program should be launched with:\n"
                     + "-l=[level] where [level]=DEBUG,ERROR,WARNING,INFO,SILENT");
-            System.exit(RCODES.FAIL_TO_LAUNCH.ordinal());
+            System.exit(RC.FAIL_TO_LAUNCH.ordinal());
         }
 
         for (String arg : args)

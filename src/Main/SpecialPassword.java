@@ -6,8 +6,8 @@ package Main;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
-import Common.RC;
-import Common.RC.RCODES;
+import Common.Return;
+import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
 import Logger.Logger;
 
@@ -169,7 +169,7 @@ public class SpecialPassword implements Serializable
     {
         Logger.printError("Illegal call of hashCode.");
         assert false : "Illegal call of hashCode.";
-        return RCODES.NONEXISTING_FUNCTION_CALL.ordinal();
+        return RC.NONEXISTING_FUNCTION_CALL.ordinal();
     }
 
 }

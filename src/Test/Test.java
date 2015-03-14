@@ -15,8 +15,8 @@ import RSA.RSA;
 import SHA.SHA;
 import Common.Exceptions;
 import Common.FileIO;
-import Common.RC;
-import Common.RC.RCODES;
+import Common.Return;
+import Common.Return.RC;
 import Common.Utilities;
 import CryptoSystem.CryptoSystem;
 
@@ -27,14 +27,14 @@ import CryptoSystem.CryptoSystem;
 public class Test
 {
     private static int            TestNr     = 0;
-    private static Vector<RCODES> TestStatus = new Vector<RCODES>();
+    private static Vector<RC> TestStatus = new Vector<RC>();
     private static int            TestOK     = 0;
 
-    public static void launchTest(RCODES result)
+    public static void launchTest(RC result)
     {
         ++TestNr;
 
-        if (result.equals(RCODES.OK))
+        if (result.equals(RC.OK))
         {
             System.out.println(TestNr + ": PASSED!");
             ++TestOK;
@@ -48,7 +48,7 @@ public class Test
     }
 
     /* Test set */
-    public static RCODES TestRSA()
+    public static RC TestRSA()
     {
         try
         {
@@ -58,13 +58,13 @@ public class Test
         }
         catch (Exceptions e)
         {
-            return RCODES.NOK;
+            return RC.NOK;
         }
 
-        return RCODES.OK;
+        return RC.OK;
     }
 
-    public static RCODES TestSHA()
+    public static RC TestSHA()
     {
         // SHA() now throws if self-test fails
         try
@@ -73,21 +73,21 @@ public class Test
         }
         catch (Exceptions e)
         {
-            return RCODES.NOK;
+            return RC.NOK;
         }
 
-        return RCODES.OK;
+        return RC.OK;
     }
 
-    public static RCODES TestRC()
+    public static RC TestRC()
     {
-        RC.check(RCODES.RC_SECURITY_BREACH);
-        RC.check(RCODES.NOK);
+        Return.check(RC.RC_SECURITY_BREACH);
+        Return.check(RC.NOK);
 
-        return RC.check(RCODES.OK);
+        return Return.check(RC.OK);
     }
 
-    public static RCODES TestSerialization()
+    public static RC TestSerialization()
     {
         SpecialPassword sp = new SpecialPassword();
         SpecialPassword sp1 = null;
@@ -100,7 +100,7 @@ public class Test
         }
         catch (Exceptions e1)
         {
-            return RCODES.NOK;
+            return RC.NOK;
         }
 
         try
@@ -109,10 +109,10 @@ public class Test
         }
         catch (Exceptions e)
         {
-            return RCODES.NOK;
+            return RC.NOK;
         }
 
-        if (sp.equals(sp1) != true) { return RCODES.NOK; }
+        if (sp.equals(sp1) != true) { return RC.NOK; }
 
         try
         {
@@ -123,62 +123,66 @@ public class Test
         }
         catch (Exceptions e)
         {
-            return RCODES.NOK;
+            return RC.NOK;
         }
 
-        if (sp.equals(sp2) != true) { return RCODES.NOK; }
+        if (sp.equals(sp2) != true) { return RC.NOK; }
 
-        return RCODES.OK;
+        return RC.OK;
     }
 
-    public static RCODES testFileIO()
+    public static RC testFileIO()
     {
         String fileName = "bin/Test.txt";
         final int strCount = 5;
-        String initialStrings[] = new String[strCount];
-        String resultStrings[] = null;
+        Vector<String> initialStrings = new Vector<String>();
+        Vector<String> resultStrings = new Vector<String>();
         int i = 0;
 
-        initialStrings[i++] = "This";
-        initialStrings[i++] = "is";
-        initialStrings[i++] = "sparta";
-        initialStrings[i++] = "you";
-        initialStrings[i++] = "motherfucker";
+        initialStrings.add("This");
+        initialStrings.add("is");
+        initialStrings.add("sparta");
+        initialStrings.add("you");
+        initialStrings.add("motherfucker");
 
         try
         {
-            FileIO.writeTextFile(initialStrings, fileName);
-            resultStrings = FileIO.readTextFile(fileName);
+            FileIO ftest = FileIO.init(fileName);
+            resultStrings = ftest.readTextFile();
 
-            if (strCount == resultStrings.length)
+            if (strCount == resultStrings.size())
             {
                 for (int j = 0; j < strCount; ++j)
                 {
-                    if (!resultStrings[j].equals(initialStrings[j]))
+                    if (!resultStrings.elementAt(j).equals(initialStrings.elementAt(j)))
                     {
                         Logger.printError("strings does not match");
-                        return RC.check(RCODES.NOK);
+                        return Return.check(RC.NOK);
                     }
                 }
             }
             else
             {
-                return RC.check(RCODES.NOK);
+                return Return.check(RC.NOK);
             }
         }
         catch (Exceptions e)
         {
-            return RC.check(RCODES.NOK);
+            return Return.check(RC.NOK);
         }
 
-        return RCODES.OK;
+        return RC.OK;
     }
+
+     static void launchTestSuite(){} // TODO
 
     public static void main(String[] args)
     {
         String[] parms = Main.Main.readArgs(args);
 
         Logger.loggerON(parms[0].toString());
+
+        /* 0. */launchTestSuite();
 
         /* 1. */launchTest(TestRSA());
         /* 2. */launchTest(TestSHA());
@@ -193,7 +197,7 @@ public class Test
             System.out.println(""
                     + (i + 1)
                     + ": "
-                    + (TestStatus.elementAt(i).ordinal() == RCODES.OK.ordinal() ? "PASSED"
+                    + (TestStatus.elementAt(i).ordinal() == RC.OK.ordinal() ? "PASSED"
                             : "FAILED"));
 
         System.out.println("OVERALL: " + (float) (TestOK / TestNr * 100) + "%");

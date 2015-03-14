@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.util.Vector;
 
 import Common.Exceptions.XC;
+import Common.Return.RC;
 import Logger.Logger;
 
 /**
@@ -19,6 +20,30 @@ import Logger.Logger;
  */
 public final class FileIO
 {
+    private String file = "";
+    private String backup = "";
+
+    private static FileIO self = null;
+
+    private FileIO(String filename)
+    {
+        file = filename.toString();
+        backup = filename.toString() + ".bckp";
+    }
+
+    public static FileIO init(String filename) throws Exceptions
+    {
+        if (self != null) System.exit(RC.ABEND.ordinal());
+        self = new FileIO(filename);
+        return self;
+    }
+
+    public static FileIO getInstance() throws Exceptions
+    {
+        if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        return self;
+    }
+
     /**
      * @brief gets String[] from @a fileName (reads all file)
      *
@@ -28,15 +53,15 @@ public final class FileIO
      *
      * @return String[] - one element, one line read from file
      */
-    public static String[] readTextFile(String fileName) throws Exceptions
+    public Vector<String> readTextFile() throws Exceptions
     {
-        String outStrings[] = null;
+        Vector<String> inLines = new Vector<String>();
 
         try
         {
-            Logger.printDebug("reading: " + fileName);
-            BufferedReader inFile = new BufferedReader(new FileReader(fileName));
-            Vector<String> inLines = new Vector<String>();
+            Logger.printDebug("Reading: '" + file + "'");
+
+            BufferedReader inFile = new BufferedReader(new FileReader(file));
 
             try
             {
@@ -46,9 +71,6 @@ public final class FileIO
                 {
                     inLines.add(tmpString);
                 }
-
-                outStrings = inLines.toArray(new String[inLines.size()]);
-                Logger.printDebug("got " + outStrings.length + " lines");
 
             }
             catch (IOException e)
@@ -68,30 +90,30 @@ public final class FileIO
         }
         catch (FileNotFoundException e)
         {
-            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
+            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS); // TODO abend
         }
 
-        return outStrings;
+        return inLines;
     }
 
     /**
      * @brief writes @a outStrings to file @a fileName
      *
      * @param [in] outStrings - String[] to write to file
-     * @param [in] fileName - name of file to read from
      *
      * @throws Exceptions
      */
-    public static void writeTextFile(String outStrings[], String fileName) throws Exceptions
+    public RC writeTextFile(Vector<String> outStrings) throws Exceptions
     {
         try
         {
-            Logger.printDebug("writing to: " + fileName + "; " + outStrings.length + " lines");
-            PrintWriter writer = new PrintWriter(fileName);
+            Logger.printDebug("Writing: '" + file + "'; " + outStrings.size() + " lines.");
 
-            for (int i = 0; i < outStrings.length; ++i)
+            PrintWriter writer = new PrintWriter(file);
+
+            for (int i = 0; i < outStrings.size(); ++i)
             {
-                writer.println(outStrings[i]);
+                writer.println(outStrings.elementAt(i));
             }
 
             writer.flush();
@@ -100,7 +122,9 @@ public final class FileIO
         }
         catch (FileNotFoundException e)
         {
-            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
+            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS); // TODO abend
         }
+
+        return Return.check(RC.OK);
     }
 }

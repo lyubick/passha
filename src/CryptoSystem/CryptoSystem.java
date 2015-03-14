@@ -10,8 +10,8 @@ import javafx.scene.input.ClipboardContent;
 import SHA.SHA;
 import RSA.RSA;
 import Common.Exceptions;
-import Common.RC;
-import Common.RC.RCODES;
+import Common.Return;
+import Common.Return.RC;
 import Common.Utilities;
 import Logger.Logger;
 
@@ -57,12 +57,12 @@ public final class CryptoSystem
         return Long.toString(Math.abs(Utilities.load64(keyHash, RSA_NUMBER_HASH_OFFSET * mod)));
     }
 
-    public static RCODES initCryptoSystem(String masterPassword)
+    public static RC initCryptoSystem(String masterPassword)
     {
         if (isInitialized)
         {
             Logger.printError("CryptoSystem already initialized... potential Security Breach... exiting...");
-            System.exit(RCODES.RC_SECURITY_BREACH.ordinal()); // Fatal
+            System.exit(RC.RC_SECURITY_BREACH.ordinal()); // Fatal
                                                               // error...
         }
 
@@ -73,7 +73,7 @@ public final class CryptoSystem
         catch (Exceptions e1)
         {
             Logger.printError("SHA initialization failed... exiting...");
-            System.exit(RCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
+            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // Fatal
                                                                // error...
         }
 
@@ -91,7 +91,7 @@ public final class CryptoSystem
         catch (Common.Exceptions e)
         {
             Logger.printError("RSA initialization failed... exiting...");
-            System.exit(RCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
+            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // Fatal
                                                                // error...
         }
 
@@ -100,7 +100,7 @@ public final class CryptoSystem
 
         isInitialized = true;
 
-        return RC.check(RCODES.OK);
+        return Return.check(RC.OK);
     }
 
     // private void putTextToClipboard(String pwd)
