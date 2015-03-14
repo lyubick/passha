@@ -98,7 +98,7 @@ public final class CryptoSystem
     {
         try
         {
-            return (SpecialPassword)Utilities.bytesToObject(rsa.decrypt(s).getBytes());
+            return (SpecialPassword)Utilities.bytesToObject(rsa.decryptBytes(s));
         }
         catch (Exceptions e)
         {
