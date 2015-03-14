@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import Common.Exceptions.CODES;
+import Common.Exceptions.XC;
 
 /**
  * @author lyubick
@@ -80,7 +80,7 @@ public final class Utilities
         }
         catch (IOException e)
         {
-            throw new Common.Exceptions(CODES.BLACK_MAGIC);
+            throw new Common.Exceptions(XC.BLACK_MAGIC);
         }
 
         return bytes;
@@ -104,7 +104,7 @@ public final class Utilities
         }
         catch (IOException | ClassNotFoundException e)
         {
-            throw new Common.Exceptions(CODES.BLACK_MAGIC);
+            throw new Common.Exceptions(XC.BLACK_MAGIC);
         }
 
         return object;

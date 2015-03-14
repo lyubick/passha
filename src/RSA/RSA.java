@@ -5,12 +5,11 @@
  */
 package RSA;
 
-
 // TODO: still zeroes is passing as zeroes must to analyze and think something - related only to encrypt Bytes
 
 /* Common */
 import Common.Exceptions;
-import Common.Exceptions.CODES;
+import Common.Exceptions.XC;
 import Common.RC;
 import Common.RC.RCODES;
 import Common.Utilities;
@@ -19,23 +18,21 @@ import Logger.Logger;
 
 import java.math.BigInteger;
 
-
-
-public final class RSA 
+public final class RSA
 {
-    private BigInteger p, q, n, f, e, d;
+    private BigInteger       p, q, n, f, e, d;
 
     /* Constants */
     /* One byte of information will be coded into 40 bytes of information */
     private static final int RSA_BYTE_ENCRYPTION_LENGTH = 40;
     /* Certainty that generated Number is PRIME. (1 - (1/2) ^ Certainty) */
-    private static final int RSA_PRIME_CERTAINCY = 100;
+    private static final int RSA_PRIME_CERTAINCY        = 100;
 
     /**
      * @brief function to encrypt incoming message using private key pair (e, n)
-     * @category interface
+     * @category
      *
-     * @param msg String to encrypt
+     *           param msg String to encrypt
      * @return encrypted byte array
      */
     public String encrypt(String msg)
@@ -46,13 +43,14 @@ public final class RSA
     /**
      * @brief function to encrypt incoming message using private key pair (e, n)
      *
-     * @param bytes byte array to encrypt
+     * @param bytes
+     *            byte array to encrypt
      * @return encrypted byte array
      */
     public String encrypt(byte[] bytes)
     {
-        String cipher  = "";
-        String ASCII   = "";
+        String cipher = "";
+        String ASCII = "";
         String fCipher = "";
 
         for (int i = 0; i < bytes.length; ++i)
@@ -81,12 +79,14 @@ public final class RSA
     public byte[] decryptBytes(String msg)
     {
         byte[] decipher = new byte[msg.length() / RSA_BYTE_ENCRYPTION_LENGTH];
-        String ASCII    = "";
+        String ASCII = "";
 
         for (int i = 0; i < msg.length(); i += RSA_BYTE_ENCRYPTION_LENGTH)
         {
-            ASCII = new BigInteger(msg.substring(i, i + RSA_BYTE_ENCRYPTION_LENGTH)).modPow(d, n).toString();
-            decipher[i/RSA_BYTE_ENCRYPTION_LENGTH] = (byte) Long.parseLong(ASCII);
+            ASCII =
+                    new BigInteger(msg.substring(i, i + RSA_BYTE_ENCRYPTION_LENGTH)).modPow(d, n)
+                            .toString();
+            decipher[i / RSA_BYTE_ENCRYPTION_LENGTH] = (byte) Long.parseLong(ASCII);
         }
 
         return decipher;
@@ -102,12 +102,14 @@ public final class RSA
     public String decrypt(String msg)
     {
         String decipher = "";
-        String ASCII    = "";
+        String ASCII = "";
 
         for (int i = 0; i < msg.length(); i += RSA_BYTE_ENCRYPTION_LENGTH)
         {
-            ASCII = new BigInteger(msg.substring(i, i + RSA_BYTE_ENCRYPTION_LENGTH)).modPow(d, n).toString();
-            decipher += Character.toString((char)Long.parseLong(ASCII));
+            ASCII =
+                    new BigInteger(msg.substring(i, i + RSA_BYTE_ENCRYPTION_LENGTH)).modPow(d, n)
+                            .toString();
+            decipher += Character.toString((char) Long.parseLong(ASCII));
         }
 
         return decipher;
@@ -133,9 +135,9 @@ public final class RSA
         Logger.printDebug(cipher);
 
         if (cipher.equals(alphabet))
-            return RC.check(RCODES.RC_OK);
+            return RC.check(RCODES.OK);
         else
-            return RC.check(RCODES.RC_NOK);
+            return RC.check(RCODES.NOK);
     }
 
     /**
@@ -144,7 +146,6 @@ public final class RSA
      */
     private RCODES init()
     {
-
 
         while (!p.isProbablePrime(RSA_PRIME_CERTAINCY))
             p = p.add(BigInteger.ONE);
@@ -191,7 +192,8 @@ public final class RSA
      *
      * @throws Exceptions
      */
-    public RSA(String p, String q, String e) throws Exceptions {
+    public RSA(String p, String q, String e) throws Exceptions
+    {
         /* Initial values */
         this.p = new BigInteger(p);
         this.q = new BigInteger(q);
@@ -204,7 +206,6 @@ public final class RSA
         Logger.printDebug("Initial q: " + q.toString());
         Logger.printDebug("Initial e: " + e.toString());
 
-        if (RCODES.RC_OK != init())
-            throw new Common.Exceptions(CODES.INIT_FAILURE);
+        if (RCODES.OK != init()) throw new Common.Exceptions(XC.INIT_FAILURE);
     }
 }

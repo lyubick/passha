@@ -23,9 +23,9 @@ public class iSpecialPassword
     {
         Logger.printDebug("iSpecialPassword constructor... START");
 
-        this.name    = new SimpleStringProperty(example.getName());
+        this.name = new SimpleStringProperty(example.getName());
         this.comment = new SimpleStringProperty(example.getComment());
-        this.url     = new SimpleStringProperty(example.getUrl());
+        this.url = new SimpleStringProperty(example.getUrl());
 
         this.base = example;
 

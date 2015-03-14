@@ -50,7 +50,8 @@ public class Main extends Application
 
         if (args.length == 0)
         {
-            System.out.println("Welcome!\n" + "Program should be launched with:\n" + "-l=[level] where [level]=DEBUG,ERROR,WARNING,INFO,SILENT");
+            System.out.println("Welcome!\n" + "Program should be launched with:\n"
+                    + "-l=[level] where [level]=DEBUG,ERROR,WARNING,INFO,SILENT");
             System.exit(RCODES.FAIL_TO_LAUNCH.ordinal());
         }
 
@@ -67,8 +68,6 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        Controller ctrl = new Controller(primaryStage);
-
-        Controller.switchForm(FORMS.MAN_PWD);
+        Controller.getInstance(primaryStage).switchForm(FORMS.MAN_PWD);
     }
 }

@@ -26,11 +26,11 @@ public final class Logger // Static class
         DEBUG
     }
 
-    private static int fileNameWidth = 20;
-    private static int lineWidth = 4;
-    private static int methodNameWidth = 20;
+    private static int                    fileNameWidth   = 20;
+    private static int                    lineWidth       = 4;
+    private static int                    methodNameWidth = 20;
 
-    private static Map<String, LOGLEVELS> argsMap = initArgsMap();
+    private static Map<String, LOGLEVELS> argsMap         = initArgsMap();
 
     private static Map<String, LOGLEVELS> initArgsMap()
     {
@@ -80,11 +80,9 @@ public final class Logger // Static class
 
     private static void prepareAndLog(LOGLEVELS lvl, String msg)
     {
-        if (!initialized)
-            return;
+        if (!initialized) return;
 
-        if (lvl.ordinal() > logLevel.ordinal())
-            return;
+        if (lvl.ordinal() > logLevel.ordinal()) return;
 
         switch (lvl)
         {
@@ -121,8 +119,9 @@ public final class Logger // Static class
         lineWidth = Math.max(lineWidth, Integer.toString(line).length());
         methodNameWidth = Math.max(methodNameWidth, methodName.length());
 
-        writeToFileAndToScreen(String.format("[%1$s] %2$" + fileNameWidth + "s @ %3$-" + lineWidth + "d %4$-" + methodNameWidth + "s ", getTime(), fileName,
-                line, methodName) + LOG_ADDS + msg);
+        writeToFileAndToScreen(String.format("[%1$s] %2$" + fileNameWidth + "s @ %3$-" + lineWidth
+                + "d %4$-" + methodNameWidth + "s ", getTime(), fileName, line, methodName)
+                + LOG_ADDS + msg);
     }
 
     private static void writeToFileAndToScreen(String log)
@@ -140,24 +139,25 @@ public final class Logger // Static class
             try
             {
                 writer = new PrintWriter("bin/" + getTime());
-            } catch (FileNotFoundException e)
+            }
+            catch (FileNotFoundException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             initialized = true;
-        } else
-            return RC.check(RCODES.RC_NOK);
+        }
+        else
+            return RC.check(RCODES.NOK);
 
-        return RCODES.RC_OK;
+        return RCODES.OK;
     }
 
     public static RCODES loggerOFF()
     {
-        if (initialized)
-            writer.close();
+        if (initialized) writer.close();
 
-        return RCODES.RC_OK;
+        return RCODES.OK;
     }
 
     private Logger(LOGLEVELS lvl)

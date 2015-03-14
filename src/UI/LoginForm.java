@@ -38,7 +38,8 @@ public class LoginForm extends AbstractForm
         // TODO where only one columnt is used - use VBOX instead of grid
         // TODO move row numbers to constants
         grid.add(l_Welcome, 0, 0);
-        grid.setHalignment(grid.getChildren().get(grid.getChildren().indexOf(l_Welcome)), HPos.CENTER);
+        grid.setHalignment(grid.getChildren().get(grid.getChildren().indexOf(l_Welcome)),
+                HPos.CENTER);
         grid.add(pf_Password, 0, 5);
         grid.add(b_OK, 0, 6);
         grid.setHalignment(grid.getChildren().get(grid.getChildren().indexOf(b_OK)), HPos.RIGHT);

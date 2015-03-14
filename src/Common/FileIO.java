@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Vector;
 
-import Common.Exceptions.CODES;
+import Common.Exceptions.XC;
 import Logger.Logger;
 
 /**
@@ -19,14 +19,15 @@ import Logger.Logger;
  */
 public final class FileIO
 {
-   /**@brief gets String[] from @a fileName (reads all file)
-    *
-    * @param [in] fileName - name of file to read from
-    *
-    * @throws Exceptions
-    *
-    * @return String[] - one element, one line read from file
-    */
+    /**
+     * @brief gets String[] from @a fileName (reads all file)
+     *
+     * @param [in] fileName - name of file to read from
+     *
+     * @throws Exceptions
+     *
+     * @return String[] - one element, one line read from file
+     */
     public static String[] readTextFile(String fileName) throws Exceptions
     {
         String outStrings[] = null;
@@ -52,7 +53,7 @@ public final class FileIO
             }
             catch (IOException e)
             {
-                throw new Exceptions(CODES.READ_ERROR);
+                throw new Exceptions(XC.READ_ERROR);
             }
 
             try
@@ -61,23 +62,23 @@ public final class FileIO
             }
             catch (IOException e)
             {
-                throw new Exceptions(CODES.CLOSE_ERROR);
+                throw new Exceptions(XC.CLOSE_ERROR);
             }
 
         }
         catch (FileNotFoundException e)
         {
-            throw new Exceptions(CODES.FILE_DOES_NOT_EXISTS);
+            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
         }
 
         return outStrings;
     }
 
-
-    /**@brief writes @a outStrings to file @a fileName
+    /**
+     * @brief writes @a outStrings to file @a fileName
      *
-     * @param [in] outStrings    - String[] to write to file
-     * @param [in] fileName      - name of file to read from
+     * @param [in] outStrings - String[] to write to file
+     * @param [in] fileName - name of file to read from
      *
      * @throws Exceptions
      */
@@ -88,7 +89,7 @@ public final class FileIO
             Logger.printDebug("writing to: " + fileName + "; " + outStrings.length + " lines");
             PrintWriter writer = new PrintWriter(fileName);
 
-            for (int i = 0; i < outStrings.length; ++i )
+            for (int i = 0; i < outStrings.length; ++i)
             {
                 writer.println(outStrings[i]);
             }
@@ -99,7 +100,7 @@ public final class FileIO
         }
         catch (FileNotFoundException e)
         {
-            throw new Exceptions(CODES.FILE_DOES_NOT_EXISTS);
+            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
         }
     }
 }

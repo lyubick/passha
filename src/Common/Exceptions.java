@@ -15,9 +15,9 @@ public final class Exceptions extends Throwable
      *
      */
     private static final long serialVersionUID = 1L;
-    private CODES code;
+    private XC                code;
 
-    public static enum CODES
+    public static enum XC
     {
         INIT_FAILURE,
 
@@ -28,20 +28,22 @@ public final class Exceptions extends Throwable
         READ_ERROR,
         CLOSE_ERROR,
 
+        STAGE_NOT_SET,
+
         BLACK_MAGIC
     }
 
-    public CODES getCode()
+    public XC getCode()
     {
         return code;
     }
 
-    public void setCode(CODES code)
+    public void setCode(XC code)
     {
         this.code = code;
     }
 
-    public Exceptions(CODES code)
+    public Exceptions(XC code)
     {
         StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
         // The last element of the array represents the bottom of the stack,
@@ -49,8 +51,7 @@ public final class Exceptions extends Throwable
         StackTraceElement e = stacktrace[2];// maybe this number needs to be
                                             // corrected
         String methodName = e.getMethodName();
-        Logger.printError("Function " + methodName + " thrown: " + code.toString()
-                + "!");
+        Logger.printError("Function " + methodName + " thrown: " + code.toString() + "!");
         this.code = code;
     }
 }

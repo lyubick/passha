@@ -3,6 +3,8 @@
  */
 package UI;
 
+import Common.Exceptions;
+import Common.RC.RCODES;
 import Logger.Logger;
 import Main.PasswordCollection;
 import Main.SpecialPassword;
@@ -83,7 +85,8 @@ public class SpecialPasswordForm extends AbstractForm
         grid1.add(b_cancel, 1, 0);
         grid.add(grid1, 1, 5);
 
-        b_OK.setOnAction(new EventHandler<ActionEvent>() {
+        b_OK.setOnAction(new EventHandler<ActionEvent>()
+        {
 
             @Override
             public void handle(ActionEvent arg0)
@@ -91,15 +94,21 @@ public class SpecialPasswordForm extends AbstractForm
                 Logger.printDebug("Fields: " + tf_name.getText() + tf_comment.getText()
                         + tf_url.getText() + tf_length.getText() + tf_generatedPassword.getText());
 
-
-                PasswordCollection.addPassword(new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url.getText()));
-                Controller.switchForm(FORMS.MAN_PWD);
+                PasswordCollection.addPassword(new SpecialPassword(tf_name.getText(), tf_comment
+                        .getText(), tf_url.getText()));
+                try
+                {
+                    Controller.getInstance().switchForm(FORMS.MAN_PWD);
+                }
+                catch (Exceptions e)
+                {
+                    System.exit(RCODES.ABEND.ordinal());
+                }
             }
 
         });
 
-
-        //TODO: window size to (global?) constants
+        // TODO: window size to (global?) constants
         Scene scene = new Scene(grid, 440, 300);
         stage.setScene(scene);
 

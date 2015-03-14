@@ -18,13 +18,17 @@ public final class RC
      */
     public static enum RCODES
     {
-        RC_OK,
-        RC_NOK,
+        OK,
+        NOK,
+        ABEND,
 
         RC_SECURITY_FAILURE,
         RC_SECURITY_BREACH,
 
-        FAIL_TO_LAUNCH
+        FAIL_TO_LAUNCH,
+
+        NONEXISTING_FUNCTION_CALL
+
     }
 
     /**
@@ -36,7 +40,7 @@ public final class RC
      */
     public static RCODES check(RCODES c)
     {
-        if (!c.equals(RCODES.RC_OK))
+        if (!c.equals(RCODES.OK))
         {
             StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
             // The last element of the array represents the bottom of the stack,

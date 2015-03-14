@@ -21,29 +21,31 @@ import Logger.Logger;
  */
 public final class CryptoSystem
 {
-    private static final int RSA_NUMBER_HASH_OFFSET = 8;
+    private static final int RSA_NUMBER_HASH_OFFSET     = 8;
 
     private static final int RSA_NUMBER_HASH_MODIFIER_P = 1;
     private static final int RSA_NUMBER_HASH_MODIFIER_Q = 4;
     private static final int RSA_NUMBER_HASH_MODIFIER_E = 7;
 
-    private static final int SHA_ITERATION_MIN_COUNT = 100;
-    private static final int SHA_ITERATION_MAX_COUNT = 1000000 - SHA_ITERATION_MIN_COUNT;
+    private static final int SHA_ITERATION_MIN_COUNT    = 100;
+    private static final int SHA_ITERATION_MAX_COUNT    = 1000000 - SHA_ITERATION_MIN_COUNT;
 
-    private static Random randomizer = new Random(System.currentTimeMillis());
+    private static Random    randomizer                 = new Random(System.currentTimeMillis());
 
-    private static SHA sha = null;
-    private static RSA rsa = null;
+    private static SHA       sha                        = null;
+    private static RSA       rsa                        = null;
 
-    private static byte[] masterHash = null;
-    private static byte[] keyHash    = null;
+    private static byte[]    masterHash                 = null;
+    private static byte[]    keyHash                    = null;
 
-    static Clipboard clipboard = null;
-    static ClipboardContent content = null;
+    static Clipboard         clipboard                  = null;
+    static ClipboardContent  content                    = null;
 
-    private static boolean isInitialized = false;
+    private static boolean   isInitialized              = false;
 
-    private CryptoSystem() {}; // Not used...
+    private CryptoSystem()
+    {
+    }; // Not used...
 
     public static long randSHACycles()
     {
@@ -61,7 +63,7 @@ public final class CryptoSystem
         {
             Logger.printError("CryptoSystem already initialized... potential Security Breach... exiting...");
             System.exit(RCODES.RC_SECURITY_BREACH.ordinal()); // Fatal
-                                                                   // error...
+                                                              // error...
         }
 
         try
@@ -72,40 +74,39 @@ public final class CryptoSystem
         {
             Logger.printError("SHA initialization failed... exiting...");
             System.exit(RCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
-                                                                    // error...
+                                                               // error...
         }
 
-        // wouldn't it be better to name it setMasterHash(); and make assignment inside?
+        // wouldn't it be better to name it setMasterHash(); and make assignment
+        // inside?
         masterHash = sha.getBytesSHA512(masterPassword.getBytes());
-        keyHash    = sha.getBytesSHA512(masterHash);
+        keyHash = sha.getBytesSHA512(masterHash);
 
         try
         {
-            rsa = new RSA(getKey(RSA_NUMBER_HASH_MODIFIER_P),
-                          getKey(RSA_NUMBER_HASH_MODIFIER_Q),
-                          getKey(RSA_NUMBER_HASH_MODIFIER_E));
+            rsa =
+                    new RSA(getKey(RSA_NUMBER_HASH_MODIFIER_P), getKey(RSA_NUMBER_HASH_MODIFIER_Q),
+                            getKey(RSA_NUMBER_HASH_MODIFIER_E));
         }
         catch (Common.Exceptions e)
         {
             Logger.printError("RSA initialization failed... exiting...");
             System.exit(RCODES.RC_SECURITY_FAILURE.ordinal()); // Fatal
-                                                                    // error...
+                                                               // error...
         }
 
-
-
-//        clipboard = Clipboard.getSystemClipboard();
-//        content = new ClipboardContent();
+        // clipboard = Clipboard.getSystemClipboard();
+        // content = new ClipboardContent();
 
         isInitialized = true;
 
-        return RC.check(RCODES.RC_OK);
+        return RC.check(RCODES.OK);
     }
 
-//    private void putTextToClipboard(String pwd)
-//    {
-//        content.clear();
-//        content.putString(pwd);
-//        clipboard.setContent(content);
-//    }
+    // private void putTextToClipboard(String pwd)
+    // {
+    // content.clear();
+    // content.putString(pwd);
+    // clipboard.setContent(content);
+    // }
 }

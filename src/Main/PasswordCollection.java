@@ -41,16 +41,16 @@ public class PasswordCollection
     public static RCODES addPassword(SpecialPassword sp)
     {
         for (SpecialPassword existing : db)
-            if (existing.getName().equals(sp.getName()))
-                return RC.check(RCODES.RC_NOK);
+            if (existing.getName().equals(sp.getName())) return RC.check(RCODES.NOK);
 
         long sc = 0;
-        while (!isUnique(new Long(sc = CryptoSystem.randSHACycles())));
+        while (!isUnique(new Long(sc = CryptoSystem.randSHACycles())))
+            ;
         sp.setShaCycles(sc);
 
         db.addElement(sp);
 
-        return RC.check(RCODES.RC_OK);
+        return RC.check(RCODES.OK);
     }
 
     public static ObservableList<iSpecialPassword> getIface()
@@ -68,7 +68,6 @@ public class PasswordCollection
     public static void dump()
     {
         Logger.printDebug("Dumping PasswordCollection... START");
-
 
         Logger.printDebug("Collection: ");
         for (SpecialPassword sp : db)

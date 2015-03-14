@@ -3,6 +3,9 @@
  */
 package UI;
 
+import Common.Exceptions;
+import Common.Exceptions.XC;
+import Logger.Logger;
 import javafx.stage.Stage;
 
 /**
@@ -11,13 +14,12 @@ import javafx.stage.Stage;
  */
 public final class Controller
 {
-    static Stage mainStage = null;
+    private static Stage      mainStage = null;
+    private static Controller self      = null;
 
-    static AbstractForm[] forms = new AbstractForm[] {
-            new LoginForm(),
-            new ManagePasswordsForm(),
-            new SpecialPasswordForm(),
-    };
+    static AbstractForm[]     forms     = new AbstractForm[]
+                                        { new LoginForm(), new ManagePasswordsForm(),
+            new SpecialPasswordForm(), };
 
     public enum FORMS
     {
@@ -26,14 +28,30 @@ public final class Controller
         NEW_PWD,
     }
 
-    public Controller(Stage primaryStage)
+    public static Controller getInstance(Stage primaryStage)
+    {
+        if (self == null) self = new Controller(primaryStage);
+
+        return self;
+    }
+
+    public static Controller getInstance() throws Exceptions
+    {
+        if (self == null) throw new Exceptions(XC.STAGE_NOT_SET);
+
+        return self;
+    }
+
+    private Controller(Stage primaryStage)
     {
         mainStage = primaryStage;
     }
 
-    public static void switchForm(FORMS form)
+    public void switchForm(FORMS form)
     {
-        // TODO log when switching from one for to another ?
+        Logger.printDebug("Controller performs switch: from " + mainStage.getScene() + " to "
+                + form.ordinal());
+
         forms[form.ordinal()].draw(mainStage);
     }
 }

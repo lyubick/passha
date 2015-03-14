@@ -33,7 +33,8 @@ public abstract class AbstractForm
         public static final int height = 400;
     }
 
-    // TODO see http://docs.oracle.com/javafx/2/layout/builtin_layouts.htm for layouts description and use as
+    // TODO see http://docs.oracle.com/javafx/2/layout/builtin_layouts.htm for
+    // layouts description and use as
     protected GridPane grid  = new GridPane();
     protected Scene    scene = new Scene(grid, WINDOW.width, WINDOW.height);
 
@@ -41,8 +42,7 @@ public abstract class AbstractForm
 
     public AbstractForm()
     {
-        if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG))
-            grid.setGridLinesVisible(true);
+        if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG)) grid.setGridLinesVisible(true);
 
         grid.setHgap(HGAP);
         grid.setVgap(VGAP);

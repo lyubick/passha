@@ -6,6 +6,8 @@ package Main;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
+import Common.RC;
+import Common.RC.RCODES;
 import CryptoSystem.CryptoSystem;
 import Logger.Logger;
 
@@ -19,7 +21,8 @@ public class SpecialPassword implements Serializable
     private String            name;
     private String            comment;
     private String            url;
-    private long              shaCycles;        // generated in PasswordCollection;
+    private long              shaCycles;            // generated in
+                                                     // PasswordCollection;
 
     private static final long serialVersionUID = 1L;
 
@@ -64,7 +67,8 @@ public class SpecialPassword implements Serializable
             try
             {
                 template.append(property.get(this));
-            } catch (IllegalAccessException e)
+            }
+            catch (IllegalAccessException e)
             {
                 Logger.printError(e.toString());
             }
@@ -146,24 +150,26 @@ public class SpecialPassword implements Serializable
     @Override
     public boolean equals(Object other)
     {
-        if (other == null)
-            return false;
-        if (other == this)
-            return true;
-        if (!(other instanceof SpecialPassword))
-            return false;
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof SpecialPassword)) return false;
 
         SpecialPassword otherCasted = (SpecialPassword) other;
 
-        if (otherCasted.name.equals(this.name) == false)
-            return false;
-        if (otherCasted.comment.equals(this.comment) == false)
-            return false;
-        if (otherCasted.url.equals(this.url) == false)
-            return false;
-        if (otherCasted.shaCycles != this.shaCycles)
-            return false;
+        if (otherCasted.name.equals(this.name) == false) return false;
+        if (otherCasted.comment.equals(this.comment) == false) return false;
+        if (otherCasted.url.equals(this.url) == false) return false;
+        if (otherCasted.shaCycles != this.shaCycles) return false;
 
         return true;
     }
+
+    @Override
+    public int hashCode()
+    {
+        Logger.printError("Illegal call of hashCode.");
+        assert false : "Illegal call of hashCode.";
+        return RCODES.NONEXISTING_FUNCTION_CALL.ordinal();
+    }
+
 }

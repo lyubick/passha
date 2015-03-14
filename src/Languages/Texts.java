@@ -59,7 +59,7 @@ public class Texts
         { "Enabled", "" }),
 
         URL(new String[]
-        { "URL", ""}),
+        { "URL", "" }),
 
         ;
 
