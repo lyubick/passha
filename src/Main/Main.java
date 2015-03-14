@@ -4,6 +4,7 @@
 package Main;
 
 import Common.Return.RC;
+import CryptoSystem.CryptoSystem;
 import Logger.Logger;
 import UI.Controller;
 import UI.Controller.FORMS;
@@ -68,6 +69,6 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        Controller.init(primaryStage).switchForm(FORMS.MAN_PWD);
+        Controller.init(primaryStage).switchForm(FORMS.LOGIN);
     }
 }

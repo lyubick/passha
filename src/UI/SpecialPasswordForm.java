@@ -144,6 +144,15 @@ public class SpecialPasswordForm extends AbstractForm
                         l_errorLabel = l_errorNameMissing;
                     }
                 }
+                try
+                {
+                    PasswordCollection.getInstance().save();
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 

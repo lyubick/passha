@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import Common.Exceptions;
 import Common.FileIO;
 import Common.Return;
+import Common.Exceptions.XC;
 import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
 import Logger.Logger;
@@ -33,6 +34,30 @@ public class PasswordCollection
             retV.add(new Long(existing.getShaCycles()));
 
         return retV;
+    }
+
+
+    private static PasswordCollection self = null;
+
+    private PasswordCollection()
+    {
+        self = this;
+    }
+
+    public static PasswordCollection init() throws Exceptions
+    {
+        if (self != null) throw new Exceptions(XC.INSTANCE_ALREADY_EXISTS);
+
+        load();
+
+        self = new PasswordCollection();
+        return self;
+    }
+
+    public static PasswordCollection getInstance() throws Exceptions
+    {
+        if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        return self;
     }
 
     private static boolean isUnique(Long ex)
@@ -88,7 +113,7 @@ public class PasswordCollection
         Logger.printDebug("Dumping PasswordCollection... DONE!");
     }
 
-    public RC save()
+    public static RC save()
     {
         CryptoSystem cs = null;
         Vector<String> cryptSP = new Vector<String>();
@@ -121,7 +146,7 @@ public class PasswordCollection
         return Return.check(RC.OK);
     }
 
-    public RC load()
+    private static RC load()
     {
         CryptoSystem cs = null;
         Vector<String> cryptSP = new Vector<String>();
@@ -147,8 +172,10 @@ public class PasswordCollection
         }
 
         for (int i = 0; i < cryptSP.size(); ++i)
+        {
+            System.out.println(cryptSP.elementAt(i));
             addPassword(cs.decryptPassword(cryptSP.elementAt(i)));
-
+        }
         return Return.check(RC.OK);
     }
 }

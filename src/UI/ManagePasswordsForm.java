@@ -32,8 +32,18 @@ public class ManagePasswordsForm extends AbstractForm
     public void draw(Stage stage)
     {
         // TODO
-        PasswordCollection.addPassword(new SpecialPassword());
-        PasswordCollection.dump();
+        try
+        {
+            PasswordCollection pc = PasswordCollection.getInstance();
+        }
+        catch (Exceptions e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+       // PasswordCollection.addPassword(new SpecialPassword());
+        //PasswordCollection.dump();
 
         TableView<iSpecialPassword> table = new TableView<iSpecialPassword>();
 

@@ -28,7 +28,9 @@ public final class Exceptions extends Throwable
         READ_ERROR,
         CLOSE_ERROR,
 
+        INSTANCE_ALREADY_EXISTS,
         NO_INSTANCE_EXISTS,
+
         MISSING_MANDATORY_DATA,
 
         BLACK_MAGIC
@@ -52,7 +54,9 @@ public final class Exceptions extends Throwable
         StackTraceElement e = stacktrace[2];// maybe this number needs to be
                                             // corrected
         String methodName = e.getMethodName();
-        Logger.printError("Function " + methodName + " thrown: " + code.toString() + "!");
+        String className = e.getClassName();
+        int line = e.getLineNumber();
+        Logger.printError("Function " + methodName + "() from " + className + "@" + line + " thrown: " + code.toString() + "!");
         this.code = code;
     }
 }

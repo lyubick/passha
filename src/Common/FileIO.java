@@ -33,6 +33,8 @@ public final class FileIO
 
     public static FileIO init(String filename) throws Exceptions
     {
+        filename = filename + ".cif";
+
         if (self != null) System.exit(RC.ABEND.ordinal());
         self = new FileIO(filename);
 
@@ -48,7 +50,6 @@ public final class FileIO
             try
             {
                 PrintWriter create = new PrintWriter(filename);
-                create.println("");
                 create.close();
                 Logger.printDebug("File created!");
             }

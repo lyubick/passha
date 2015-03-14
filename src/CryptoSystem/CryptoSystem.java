@@ -17,6 +17,7 @@ import Common.Exceptions.XC;
 import Common.Return.RC;
 import Common.Utilities;
 import Logger.Logger;
+import Main.PasswordCollection;
 import Main.SpecialPassword;
 
 /**
@@ -150,7 +151,7 @@ public final class CryptoSystem
         catch (Common.Exceptions e)
         {
             Logger.printError("RSA initialization failed... exiting...");
-            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // Fatal
+            System.exit(RC.SECURITY_FAILURE.ordinal()); // Fatal
                                                                // error...
         }
         Logger.printDebug("RSA init DONE!");
@@ -167,7 +168,7 @@ public final class CryptoSystem
         catch (Exceptions e)
         {
             Logger.printError("SHA initialization failed... exiting...");
-            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // TODO abend
+            System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO abend
         }
         Logger.printDebug("File I/O init DONE...");
 //==========  FILE I/O initialization END: ========================================================
@@ -176,6 +177,17 @@ public final class CryptoSystem
         randomizer = new Random(System.currentTimeMillis());
 
         self = new CryptoSystem();
+
+//==========  Database activation START: ==========================================================
+        try
+        {
+            PasswordCollection.init();
+        }
+        catch (Exceptions e)
+        {
+            System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO abend
+        }
+//==========  Database activation END: ============================================================
 
         Logger.printDebug("CryptoSystem init DONE!");
         return Return.check(RC.OK);
