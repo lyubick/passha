@@ -29,6 +29,7 @@ public final class Exceptions extends Throwable
         CLOSE_ERROR,
 
         NO_INSTANCE_EXISTS,
+        MISSING_MANDATORY_DATA,
 
         BLACK_MAGIC
     }

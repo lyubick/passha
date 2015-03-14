@@ -62,7 +62,7 @@ public final class CryptoSystem
         if (isInitialized)
         {
             Logger.printError("CryptoSystem already initialized... potential Security Breach... exiting...");
-            System.exit(RC.RC_SECURITY_BREACH.ordinal()); // Fatal
+            System.exit(RC.SECURITY_BREACH.ordinal()); // Fatal
                                                               // error...
         }
 
@@ -73,7 +73,7 @@ public final class CryptoSystem
         catch (Exceptions e1)
         {
             Logger.printError("SHA initialization failed... exiting...");
-            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // Fatal
+            System.exit(RC.SECURITY_FAILURE.ordinal()); // Fatal
                                                                // error...
         }
 
@@ -91,7 +91,7 @@ public final class CryptoSystem
         catch (Common.Exceptions e)
         {
             Logger.printError("RSA initialization failed... exiting...");
-            System.exit(RC.RC_SECURITY_FAILURE.ordinal()); // Fatal
+            System.exit(RC.SECURITY_FAILURE.ordinal()); // Fatal
                                                                // error...
         }
 

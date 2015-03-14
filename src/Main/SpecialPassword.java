@@ -6,6 +6,8 @@ package Main;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
+import Common.Exceptions;
+import Common.Exceptions.XC;
 import Common.Return;
 import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
@@ -39,9 +41,11 @@ public class SpecialPassword implements Serializable
         Logger.printDebug("SpecialPassword DEFAULT constructor... DONE!");
     }
 
-    public SpecialPassword(String name, String comment, String url)
+    public SpecialPassword(String name, String comment, String url) throws Exceptions
     {
         Logger.printDebug("SpecialPassword constructor... START");
+
+        if (name.length() == 0) throw new Exceptions(XC.MISSING_MANDATORY_DATA);
 
         this.name = name;
         this.comment = comment;

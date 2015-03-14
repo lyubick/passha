@@ -41,11 +41,10 @@ public class PasswordCollection
     public static RC addPassword(SpecialPassword sp)
     {
         for (SpecialPassword existing : db)
-            if (existing.getName().equals(sp.getName())) return Return.check(RC.NOK);
+            if (existing.getName().equals(sp.getName())) return Return.check(RC.NAME_ALREADY_TAKEN);
 
         long sc = 0;
-        while (!isUnique(new Long(sc = CryptoSystem.randSHACycles())))
-            ;
+        while (!isUnique(new Long(sc = CryptoSystem.randSHACycles())));
         sp.setShaCycles(sc);
 
         db.addElement(sp);

@@ -15,51 +15,73 @@ public class Texts
         RUSSIAN,
     }
 
-    private static Language language = Language.ENGLISH;
-
     public enum TextID
     {
-        VERSION(new String[]
-        { "Version", "Версия" }),
-
-        GREETING(new String[]
-        { "Welcome to pasSHA!", "Добро пожаловать в pasSHA!" }),
-
-        OK(new String[]
-        { "OK", "Подтвердить" }),
+        ADD_SPECIAL_PASSWORD(new String[]
+        { "Add Special Password", "" }),
 
         CANCEL(new String[]
-        { "CANCEL", "Отменить" }),
-
-        MANAGE(new String[]
-        { "Manage", "Управление" }),
-
-        NEW(new String[]
-        { "NEW", "Добавить" }),
-
-        DELETE(new String[]
-        { "DELETE", "Удалить" }),
-
-        EXPORT(new String[]
-        { "Export", "Экспортировать" }),
-
-        PWD_NAME(new String[]
-        { "Password name", "" }),
-
-        PWD(new String[]
-        { "Password", "" }),
+        { "Cancel", "Отменить" }),
 
         COMMENT(new String[]
         { "Comment", "" }),
 
-        SHORTCUT(new String[]
-        { "Shortcut", "" }),
+        CREATE(new String[]
+        { "Create", "" }),
+
+        DELETE(new String[]
+        { "Delete", "Удалить" }),
 
         ENABLED(new String[]
         { "Enabled", "" }),
 
+        EXPORT(new String[]
+        { "Export", "Экспортировать" }),
+
+        ERR_NAME_ALREADY_TAKEN(new String[]
+        { "Error! Name already taken!", "" }),
+
+        ERR_MISSING_PASSWORD_NAME(new String[]
+        { "Error! Password name must be entered!", "" }),
+
+        GREETING(new String[]
+        { "Welcome to pasSHA!", "Добро пожаловать в pasSHA!" }),
+
+        LENGTH(new String[]
+        { "Length", "" }),
+
+        MANAGE(new String[]
+        { "Manage", "Управление" }),
+
+        MUST_CONTAIN_UPPER_CASE_CHAR(new String[]
+        { "Must have UPPER case character", "" }),
+
+        MUST_CONTAINT_SPECIAL_CHARS(new String[]
+        { "Must contain special characters", "" }),
+
+        NAME(new String[]
+        { "Name", "" }),
+
+        NEW(new String[]
+        { "New", "Добавить" }),
+
+        OK(new String[]
+        { "OK", "Подтвердить" }),
+
+        PWD(new String[]
+        { "Password", "" }),
+
+        PWD_NAME(new String[]
+        { "Password name", "" }),
+
+        SHORTCUT(new String[]
+        { "Shortcut", "" }),
+
         URL(new String[]
         { "URL", "" }),
+
+        VERSION(new String[]
+        { "Version", "Версия" }),
 
         ;
 
@@ -77,4 +99,6 @@ public class Texts
             return text[language.ordinal()];
         }
     }
+
+    private static Language language = Language.ENGLISH;
 }

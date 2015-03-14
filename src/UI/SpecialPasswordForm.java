@@ -5,6 +5,7 @@ package UI;
 
 import Common.Exceptions;
 import Common.Return.RC;
+import Languages.Texts.TextID;
 import Logger.Logger;
 import Main.PasswordCollection;
 import Main.SpecialPassword;
@@ -19,6 +20,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -28,74 +31,127 @@ import javafx.stage.Stage;
  */
 public class SpecialPasswordForm extends AbstractForm
 {
-    // TODO Refactor it hard in da ass!
-    @Override
-    public void draw(Stage stage)
+    private final String    FORM_NAME              = TextID.ADD_SPECIAL_PASSWORD.toString();
+    private final int       LABELS_COLUMN          = 0;
+    private final int       TEXT_FIELDS_COLUMN     = 1;
+    private final int       TEXT_FIELD_LENGTH_SIZE = 40;
+    private final int       ERROR_TEXT_LINE        = 7;
+
+    private final Label     l_errorNameTaken       =
+                                                           new Label(
+                                                                   TextID.ERR_NAME_ALREADY_TAKEN
+                                                                           .toString());
+    private final Label     l_errorNameMissing     = new Label(
+                                                           TextID.ERR_MISSING_PASSWORD_NAME
+                                                                   .toString());
+    private Label           l_errorLabel           = null;
+
+    private final TextField tf_name                = new TextField();
+    private final TextField tf_comment             = new TextField();
+    private final TextField tf_url                 = new TextField();
+    private final TextField tf_generatedPassword   = new TextField();
+    private final TextField tf_length              = new TextField();
+
+    public SpecialPasswordForm()
     {
-        Logger.printDebug("SpecialPasswordForm prepareing");
+        // form must be created here.
+        // all elements that does not change over time are here.
 
-        final String FORM_NAME = "Add Special Password";
-        Button b_OK = new Button("Create");
-        Button b_cancel = new Button("Cancel");
-        Button b_incLength = new Button("+");
-        Button b_decLength = new Button("-");
+        int currentGridLine = 0;
 
-        Label l_name = new Label("Name");
-        Label l_comment = new Label("Comment");
-        Label l_url = new Label("URL");
-        Label l_generatedPwd = new Label("Generated password: ");
-        Label lLength = new Label("Length");
+        Button b_OK = new Button(TextID.CREATE.toString());
+        Button b_cancel = new Button(TextID.CANCEL.toString());
+        //Button b_incLength = new Button("+");
+        //Button b_decLength = new Button("-");
 
-        CheckBox cb_specialChars = new CheckBox("Must contain special characters");
-        CheckBox cb_upperCaseChar = new CheckBox("Must have UPPER case character");
-        TextField tf_name = new TextField();
-        TextField tf_comment = new TextField();
-        TextField tf_url = new TextField();
-        TextField tf_generatedPassword = new TextField();
-        TextField tf_length = new TextField();
-        tf_length.setMaxWidth(40);
+        Label l_name = new Label(TextID.NAME.toString());
+        Label l_comment = new Label(TextID.COMMENT.toString());
+        Label l_url = new Label(TextID.URL.toString());
+        Label lLength = new Label(TextID.LENGTH.toString());
 
-        // TODO : use global constants or create global/local constants
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.TOP_LEFT);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
+        //CheckBox cb_specialChars = new CheckBox(TextID.MUST_CONTAINT_SPECIAL_CHARS.toString());
+        //CheckBox cb_upperCaseChar = new CheckBox(TextID.MUST_CONTAIN_UPPER_CASE_CHAR.toString());
 
-        grid.add(l_name, 0, 0);
-        grid.add(tf_name, 1, 0);
+        tf_length.setMaxWidth(TEXT_FIELD_LENGTH_SIZE);
 
-        grid.add(l_comment, 0, 1);
-        grid.add(tf_comment, 1, 1);
+        grid.add(l_name, LABELS_COLUMN, currentGridLine);
+        grid.add(tf_name, TEXT_FIELDS_COLUMN, currentGridLine);
+        currentGridLine++;
 
-        grid.add(l_url, 0, 2);
-        grid.add(tf_url, 1, 2);
+        grid.add(l_comment, LABELS_COLUMN, currentGridLine);
+        grid.add(tf_comment, TEXT_FIELDS_COLUMN, currentGridLine);
+        currentGridLine++;
 
-        grid.add(lLength, 0, 3);
-        grid.add(tf_length, 1, 3);
+        grid.add(l_url, LABELS_COLUMN, currentGridLine);
+        grid.add(tf_url, TEXT_FIELDS_COLUMN, currentGridLine);
+        currentGridLine++;
 
-        grid.add(l_generatedPwd, 0, 4);
-        grid.add(tf_generatedPassword, 1, 4);
+        grid.add(lLength, LABELS_COLUMN, currentGridLine);
+        grid.add(tf_length, TEXT_FIELDS_COLUMN, currentGridLine);
+        currentGridLine++;
 
-        GridPane grid1 = new GridPane();
-        grid1.setHgap(10);
-        grid1.setVgap(10);
+        HBox buttonsBox = new HBox();
 
-        grid1.add(b_OK, 0, 0);
-        grid1.add(b_cancel, 1, 0);
-        grid.add(grid1, 1, 5);
+        //buttonsBox.setPrefWidth(200);
+        buttonsBox.setSpacing(HGAP);
+        buttonsBox.setAlignment(Pos.BASELINE_CENTER);
+        buttonsBox.getChildren().addAll(b_OK, b_cancel);
+
+        HBox.setHgrow(b_OK, Priority.ALWAYS);
+        HBox.setHgrow(b_cancel, Priority.ALWAYS);
+        b_OK.setMaxWidth(Double.MAX_VALUE);
+        b_cancel.setMaxWidth(Double.MAX_VALUE);
+
+        grid.add(buttonsBox, TEXT_FIELDS_COLUMN, currentGridLine);
+        currentGridLine++;
 
         b_OK.setOnAction(new EventHandler<ActionEvent>()
         {
-
             @Override
             public void handle(ActionEvent arg0)
             {
                 Logger.printDebug("Fields: " + tf_name.getText() + tf_comment.getText()
                         + tf_url.getText() + tf_length.getText() + tf_generatedPassword.getText());
 
-                PasswordCollection.addPassword(new SpecialPassword(tf_name.getText(), tf_comment
-                        .getText(), tf_url.getText()));
+                try
+                {
+                    if (PasswordCollection.addPassword(new SpecialPassword(tf_name.getText(),
+                            tf_comment.getText(), tf_url.getText())) == RC.OK)
+                    {
+                        try
+                        {
+                            Controller.getInstance().switchForm(FORMS.MAN_PWD);
+                        }
+                        catch (Exceptions e)
+                        {
+                            System.exit(RC.ABEND.ordinal());
+                        }
+                    }
+                    else
+                    {
+                        if (l_errorLabel != l_errorNameTaken)
+                        {
+                            grid.add(l_errorNameTaken, TEXT_FIELDS_COLUMN, ERROR_TEXT_LINE);
+                            l_errorLabel = l_errorNameTaken;
+                        }
+                    }
+                }
+                catch (Exceptions e)
+                {
+                    if (l_errorLabel != l_errorNameMissing)
+                    {
+                        grid.add(l_errorNameMissing, TEXT_FIELDS_COLUMN, ERROR_TEXT_LINE);
+                        l_errorLabel = l_errorNameMissing;
+                    }
+                }
+            }
+        });
+
+        b_cancel.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
                 try
                 {
                     Controller.getInstance().switchForm(FORMS.MAN_PWD);
@@ -107,14 +163,23 @@ public class SpecialPasswordForm extends AbstractForm
             }
 
         });
+    }
 
-        // TODO: window size to (global?) constants
-        Scene scene = new Scene(grid, 440, 300);
+
+    @Override
+    public void draw(Stage stage)
+    {
+        // Clear error message, if any
+        if (l_errorLabel != null) grid.getChildren().remove(l_errorLabel);
+        l_errorLabel = null;
+
+        tf_name.clear();
+        tf_comment.clear();
+        tf_url.clear();
+        tf_generatedPassword.clear();
+        tf_length.clear();
+
         stage.setScene(scene);
-
-        Logger.printDebug("SpecialPasswordForm displaying");
-
         stage.show();
-
     }
 }
