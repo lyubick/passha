@@ -176,4 +176,18 @@ public class SpecialPassword implements Serializable
         return RC.NONEXISTING_FUNCTION_CALL.ordinal();
     }
 
+    public String getPassword()
+    {
+        try
+        {
+            return CryptoSystem.getInstance().getPassword(this.shaCycles);
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 }

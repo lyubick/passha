@@ -182,4 +182,14 @@ public final class CryptoSystem
         return Return.check(RC.OK);
     }
 
+    public String getPassword(long cycles)
+    {
+        byte[] tmp = masterHash.clone();
+
+        while (cycles-- > 0)
+            tmp = sha.getBytesSHA512(tmp);
+
+        return sha.bytesToHex(tmp);
+    }
+
 }

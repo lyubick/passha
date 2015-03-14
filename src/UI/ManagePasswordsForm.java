@@ -6,6 +6,7 @@ package UI;
 import Common.Exceptions;
 import Common.Return.RC;
 import Languages.Texts.TextID;
+import Logger.Logger;
 import Main.PasswordCollection;
 import Main.iSpecialPassword;
 import UI.Controller.FORMS;
@@ -14,9 +15,12 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -28,6 +32,7 @@ public class ManagePasswordsForm extends AbstractForm
 {
     private final TableView<iSpecialPassword> table = new TableView<iSpecialPassword>();
     private PasswordCollection                pc    = null;
+    private final iSpecialPassword            lastShown = null;
 
     public ManagePasswordsForm()
     {
@@ -53,7 +58,8 @@ public class ManagePasswordsForm extends AbstractForm
                 new TableColumn[]
                 { new TableColumn(TextID.PWD_NAME.toString()),
                         new TableColumn(TextID.COMMENT.toString()),
-                        new TableColumn(TextID.URL.toString()), };
+                        new TableColumn(TextID.URL.toString()),
+                        new TableColumn(TextID.PWD.toString()), };
         table.getColumns().setAll(columns);
 
         // TODO column numbers to enumerator
@@ -61,6 +67,8 @@ public class ManagePasswordsForm extends AbstractForm
         columns[1]
                 .setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
         columns[2].setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
+        columns[3].setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>(
+                "password"));
 
         // TODO use HBOX where only one row is used
         buttonsGrid.setAlignment(Pos.CENTER);
@@ -86,6 +94,38 @@ public class ManagePasswordsForm extends AbstractForm
                 ctrl.switchForm(FORMS.NEW_PWD);
             }
         });
+
+        b_Delete.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                // TODO Confirmation!
+                iSpecialPassword pwd = table.getSelectionModel().getSelectedItem();
+                if (pwd != null)
+                {
+                    table.getItems().remove(pwd);
+                    pc.removePassword(pwd.getOrigin());
+                }
+            }
+
+        });
+
+//        table.setOnMouseClicked(new EventHandler<MouseEvent>()
+//        {
+//            @Override
+//            public void handle(MouseEvent event)
+//            {
+//                // TODO Auto-generated method stub
+//                if (lastShown != null)
+//                {
+//                    lastShown.showPassword(false);
+//                }
+//
+//                lastShown = table.getSelectionModel().getSelectedItem();
+//                lastShown.showPassword(true);
+//            }
+//        });
     }
 
     @Override

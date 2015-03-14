@@ -3,6 +3,7 @@
  */
 package Main;
 
+import Common.Exceptions;
 import Logger.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -16,8 +17,9 @@ public class iSpecialPassword
     private SimpleStringProperty name;
     private SimpleStringProperty comment;
     private SimpleStringProperty url;
+    private final SimpleStringProperty password;
 
-    private SpecialPassword      base;
+    private final SpecialPassword      origin;
 
     public iSpecialPassword(SpecialPassword example)
     {
@@ -26,10 +28,35 @@ public class iSpecialPassword
         this.name = new SimpleStringProperty(example.getName());
         this.comment = new SimpleStringProperty(example.getComment());
         this.url = new SimpleStringProperty(example.getUrl());
+        this.password = new SimpleStringProperty("SHOW");
 
-        this.base = example;
+        this.origin = example;
 
         Logger.printDebug("iSpecialPassword constructor... DONE!");
+    }
+
+    public SpecialPassword getOrigin()
+    {
+        return origin;
+    }
+
+    public String getPassword()
+    {
+        return password.get();
+    }
+
+    public void showPassword(boolean show)
+    {
+        Logger.printDebug("" + show);
+        if (show)
+        {
+            password.set(origin.getPassword());
+        }
+        else
+        {
+            password.set("SHOW");
+        }
+        Logger.printDebug("" + password.get());
     }
 
     /**
@@ -47,7 +74,7 @@ public class iSpecialPassword
     public void setName(SimpleStringProperty name)
     {
         this.name = name;
-        this.base.setName(name.get());
+        this.origin.setName(name.get());
     }
 
     /**
@@ -65,7 +92,7 @@ public class iSpecialPassword
     public void setComment(SimpleStringProperty comment)
     {
         this.comment = comment;
-        this.base.setComment(comment.get());
+        this.origin.setComment(comment.get());
     }
 
     /**
@@ -83,7 +110,7 @@ public class iSpecialPassword
     public void setUrl(SimpleStringProperty url)
     {
         this.url = url;
-        this.base.setUrl(url.get());
+        this.origin.setUrl(url.get());
     }
 
 }

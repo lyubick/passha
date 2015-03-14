@@ -162,4 +162,10 @@ public class PasswordCollection
         }
         return Return.check(RC.OK);
     }
+
+    public RC removePassword(SpecialPassword sp)
+    {
+        db.remove(sp);
+        return Return.check(RC.OK);
+    }
 }
