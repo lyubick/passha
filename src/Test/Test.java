@@ -136,7 +136,6 @@ public class Test
         final int strCount = 5;
         Vector<String> initialStrings = new Vector<String>();
         Vector<String> resultStrings = new Vector<String>();
-        int i = 0;
 
         initialStrings.add("This");
         initialStrings.add("is");

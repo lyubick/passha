@@ -4,6 +4,7 @@
 package UI;
 
 import Common.Exceptions;
+import Common.Exceptions.XC;
 import Common.Return.RC;
 import Languages.Texts.TextID;
 import Logger.Logger;
@@ -23,6 +24,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -31,48 +33,55 @@ import javafx.stage.Stage;
  */
 public class SpecialPasswordForm extends AbstractForm
 {
-    private final String    FORM_NAME              = TextID.ADD_SPECIAL_PASSWORD.toString();
-    private final int       LABELS_COLUMN          = 0;
-    private final int       TEXT_FIELDS_COLUMN     = 1;
-    private final int       TEXT_FIELD_LENGTH_SIZE = 40;
-    private final int       ERROR_TEXT_LINE        = 7;
+    private final String       FORM_NAME              = TextID.ADD_SPECIAL_PASSWORD.toString();
+    private final int          LABELS_COLUMN          = 0;
+    private final int          TEXT_FIELDS_COLUMN     = 1;
+    private final int          TEXT_FIELD_LENGTH_SIZE = 40;
+    private final int          ERROR_TEXT_LINE        = 7;
+    private final int          TEXT_FIELDS_WIDTH      = 300;
 
-    private final Label     l_errorNameTaken       =
-                                                           new Label(
-                                                                   TextID.ERR_NAME_ALREADY_TAKEN
-                                                                           .toString());
-    private final Label     l_errorNameMissing     = new Label(
-                                                           TextID.ERR_MISSING_PASSWORD_NAME
-                                                                   .toString());
-    private Label           l_errorLabel           = null;
+    private final Label        l_errorLabel           = new Label("");
 
-    private final TextField tf_name                = new TextField();
-    private final TextField tf_comment             = new TextField();
-    private final TextField tf_url                 = new TextField();
-    private final TextField tf_generatedPassword   = new TextField();
-    private final TextField tf_length              = new TextField();
+    private final TextField    tf_name                = new TextField();
+    private final TextField    tf_comment             = new TextField();
+    private final TextField    tf_url                 = new TextField();
+    private final TextField    tf_generatedPassword   = new TextField();
+    private final TextField    tf_length              = new TextField();
+
+    private PasswordCollection pc                     = null;
 
     public SpecialPasswordForm()
     {
-        // form must be created here.
-        // all elements that does not change over time are here.
-
         int currentGridLine = 0;
+
+        try
+        {
+            pc = PasswordCollection.getInstance();
+        }
+        catch (Exceptions e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
         Button b_OK = new Button(TextID.CREATE.toString());
         Button b_cancel = new Button(TextID.CANCEL.toString());
-        //Button b_incLength = new Button("+");
-        //Button b_decLength = new Button("-");
+        // Button b_incLength = new Button("+");
+        // Button b_decLength = new Button("-");
 
-        Label l_name = new Label(TextID.NAME.toString());
+        Text l_name = new Text(TextID.NAME.toString());
         Label l_comment = new Label(TextID.COMMENT.toString());
         Label l_url = new Label(TextID.URL.toString());
         Label lLength = new Label(TextID.LENGTH.toString());
 
-        //CheckBox cb_specialChars = new CheckBox(TextID.MUST_CONTAINT_SPECIAL_CHARS.toString());
-        //CheckBox cb_upperCaseChar = new CheckBox(TextID.MUST_CONTAIN_UPPER_CASE_CHAR.toString());
+        // CheckBox cb_specialChars = new
+        // CheckBox(TextID.MUST_CONTAINT_SPECIAL_CHARS.toString());
+        // CheckBox cb_upperCaseChar = new
+        // CheckBox(TextID.MUST_CONTAIN_UPPER_CASE_CHAR.toString());
 
         tf_length.setMaxWidth(TEXT_FIELD_LENGTH_SIZE);
+        tf_name.setMaxWidth(TEXT_FIELDS_WIDTH);
+        tf_name.setMinWidth(TEXT_FIELDS_WIDTH);
 
         grid.add(l_name, LABELS_COLUMN, currentGridLine);
         grid.add(tf_name, TEXT_FIELDS_COLUMN, currentGridLine);
@@ -90,9 +99,10 @@ public class SpecialPasswordForm extends AbstractForm
         grid.add(tf_length, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
+        grid.add(l_errorLabel, TEXT_FIELDS_COLUMN, ERROR_TEXT_LINE);
+
         HBox buttonsBox = new HBox();
 
-        //buttonsBox.setPrefWidth(200);
         buttonsBox.setSpacing(HGAP);
         buttonsBox.setAlignment(Pos.BASELINE_CENTER);
         buttonsBox.getChildren().addAll(b_OK, b_cancel);
@@ -115,44 +125,26 @@ public class SpecialPasswordForm extends AbstractForm
 
                 try
                 {
-                    if (PasswordCollection.addPassword(new SpecialPassword(tf_name.getText(),
-                            tf_comment.getText(), tf_url.getText())) == RC.OK)
+                    if (pc.addPassword(new SpecialPassword(tf_name.getText(), tf_comment.getText(),
+                            tf_url.getText())) == RC.OK)
                     {
-                        try
-                        {
-                            Controller.getInstance().switchForm(FORMS.MAN_PWD);
-                        }
-                        catch (Exceptions e)
-                        {
-                            System.exit(RC.ABEND.ordinal());
-                        }
+                        ctrl.switchForm(FORMS.MAN_PWD);
                     }
                     else
                     {
-                        if (l_errorLabel != l_errorNameTaken)
-                        {
-                            grid.add(l_errorNameTaken, TEXT_FIELDS_COLUMN, ERROR_TEXT_LINE);
-                            l_errorLabel = l_errorNameTaken;
-                        }
+                        l_errorLabel.setText(TextID.ERR_NAME_ALREADY_TAKEN.toString());
                     }
                 }
                 catch (Exceptions e)
                 {
-                    if (l_errorLabel != l_errorNameMissing)
-                    {
-                        grid.add(l_errorNameMissing, TEXT_FIELDS_COLUMN, ERROR_TEXT_LINE);
-                        l_errorLabel = l_errorNameMissing;
-                    }
+                    if (e.getCode() == XC.MISSING_MANDATORY_DATA)
+                        l_errorLabel.setText(TextID.ERR_MISSING_PASSWORD_NAME.toString());
+                    else
+                        System.exit(RC.ABEND.ordinal()); // TODO
                 }
-                try
-                {
-                    PasswordCollection.getInstance().save();
-                }
-                catch (Exceptions e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+
+                // TODO remove
+                pc.save();
             }
         });
 
@@ -161,26 +153,16 @@ public class SpecialPasswordForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                try
-                {
-                    Controller.getInstance().switchForm(FORMS.MAN_PWD);
-                }
-                catch (Exceptions e)
-                {
-                    System.exit(RC.ABEND.ordinal());
-                }
+                ctrl.switchForm(FORMS.MAN_PWD);
             }
 
         });
     }
 
-
     @Override
     public void draw(Stage stage)
     {
-        // Clear error message, if any
-        if (l_errorLabel != null) grid.getChildren().remove(l_errorLabel);
-        l_errorLabel = null;
+        l_errorLabel.setText("");
 
         tf_name.clear();
         tf_comment.clear();

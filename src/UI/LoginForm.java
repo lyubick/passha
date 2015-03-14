@@ -13,9 +13,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import Common.Exceptions;
+import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
 import Languages.Texts.TextID;
 import Logger.Logger;
+import Main.PasswordCollection;
 import UI.Controller.FORMS;
 
 /**
@@ -57,17 +59,24 @@ public class LoginForm extends AbstractForm
                 Logger.printDebug("Entered Password: " + pf_Password.getText());
 
                 if (pf_Password.getText().length() != 0)
+                {
                     CryptoSystem.init(pf_Password.getText().toString());
+                    // ========== Database activation START:
+                    // ==========================================================
+                    try
+                    {
+                        PasswordCollection.init();
+                    }
+                    catch (Exceptions e)
+                    {
+                        System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO
+                                                                    // abend
+                    }
+                    // ========== Database activation END:
+                    // ============================================================
+                }
 
-                try
-                {
-                    Controller.getInstance().switchForm(FORMS.MAN_PWD);
-                }
-                catch (Exceptions e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                ctrl.switchForm(FORMS.MAN_PWD);
             }
         });
 

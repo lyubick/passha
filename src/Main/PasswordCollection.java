@@ -65,7 +65,7 @@ public class PasswordCollection
         return (shaCycles.lastIndexOf(ex) != -1) ? false : true;
     }
 
-    public static RC addPassword(SpecialPassword sp)
+    public RC addPassword(SpecialPassword sp)
     {
         CryptoSystem cs = null;
 
@@ -90,7 +90,7 @@ public class PasswordCollection
         return Return.check(RC.OK);
     }
 
-    public static ObservableList<iSpecialPassword> getIface()
+    public ObservableList<iSpecialPassword> getIface()
     {
         ObservableList<iSpecialPassword> pSet = FXCollections.observableArrayList();
 
@@ -102,7 +102,7 @@ public class PasswordCollection
         return pSet;
     }
 
-    public static void dump()
+    public void dump()
     {
         Logger.printDebug("Dumping PasswordCollection... START");
 
@@ -113,7 +113,7 @@ public class PasswordCollection
         Logger.printDebug("Dumping PasswordCollection... DONE!");
     }
 
-    public static RC save()
+    public RC save()
     {
         CryptoSystem cs = null;
         Vector<String> cryptSP = new Vector<String>();
@@ -123,19 +123,12 @@ public class PasswordCollection
         {
             cs = CryptoSystem.getInstance();
             writer = FileIO.getInstance();
-        }
-        catch (Exceptions e)
-        {
-            System.exit(500); // TODO abend
-        }
 
-        for (SpecialPassword sp : db)
-        {
-            cryptSP.add(cs.encryptPassword(sp));
-        }
+            for (SpecialPassword sp : db)
+            {
+                cryptSP.add(cs.encryptPassword(sp));
+            }
 
-        try
-        {
             writer.writeToFile(cryptSP);
         }
         catch (Exceptions e)
@@ -156,25 +149,16 @@ public class PasswordCollection
         {
             cs = CryptoSystem.getInstance();
             reader = FileIO.getInstance();
-        }
-        catch (Exceptions e)
-        {
-            System.exit(500); // TODO abend
-        }
-
-        try
-        {
             cryptSP = reader.readFromFile();
         }
         catch (Exceptions e)
         {
-            System.exit(500); // TODO abend
+            System.exit(500); // TODO abend; parse exception
         }
 
         for (int i = 0; i < cryptSP.size(); ++i)
         {
-            System.out.println(cryptSP.elementAt(i));
-            addPassword(cs.decryptPassword(cryptSP.elementAt(i)));
+            db.addElement(cs.decryptPassword(cryptSP.elementAt(i)));
         }
         return Return.check(RC.OK);
     }

@@ -7,10 +7,8 @@ import Common.Exceptions;
 import Common.Return.RC;
 import Languages.Texts.TextID;
 import Main.PasswordCollection;
-import Main.SpecialPassword;
 import Main.iSpecialPassword;
 import UI.Controller.FORMS;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -28,26 +26,20 @@ import javafx.stage.Stage;
  */
 public class ManagePasswordsForm extends AbstractForm
 {
-    @Override
-    public void draw(Stage stage)
+    private final TableView<iSpecialPassword> table = new TableView<iSpecialPassword>();
+    private PasswordCollection                pc    = null;
+
+    public ManagePasswordsForm()
     {
-        // TODO
         try
         {
-            PasswordCollection pc = PasswordCollection.getInstance();
+            pc = PasswordCollection.getInstance();
         }
         catch (Exceptions e1)
         {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-
-       // PasswordCollection.addPassword(new SpecialPassword());
-        //PasswordCollection.dump();
-
-        TableView<iSpecialPassword> table = new TableView<iSpecialPassword>();
-
-        ObservableList<iSpecialPassword> passwordSet = PasswordCollection.getIface();
 
         Button b_New = new Button(TextID.NEW.toString());
         Button b_Delete = new Button(TextID.DELETE.toString());
@@ -70,8 +62,6 @@ public class ManagePasswordsForm extends AbstractForm
                 .setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
         columns[2].setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
 
-        table.setItems(passwordSet);
-
         // TODO use HBOX where only one row is used
         buttonsGrid.setAlignment(Pos.CENTER);
         buttonsGrid.setHgap(HGAP);
@@ -93,16 +83,15 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent ae)
             {
-                try
-                {
-                    Controller.getInstance().switchForm(FORMS.NEW_PWD);
-                }
-                catch (Exceptions e)
-                {
-                    System.exit(RC.ABEND.ordinal());
-                }
+                ctrl.switchForm(FORMS.NEW_PWD);
             }
         });
+    }
+
+    @Override
+    public void draw(Stage stage)
+    {
+        table.setItems(pc.getIface());
 
         stage.setScene(scene);
         stage.show();

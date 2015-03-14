@@ -3,6 +3,9 @@
  */
 package UI;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import Common.Return.RC;
@@ -18,9 +21,7 @@ public final class Controller
     private static Stage      mainStage = null;
     private static Controller self      = null;
 
-    static AbstractForm[]     forms     = new AbstractForm[]
-                                        { new LoginForm(), new ManagePasswordsForm(),
-            new SpecialPasswordForm(), };
+    // static AbstractForm[] forms = null;
 
     public enum FORMS
     {
@@ -28,6 +29,8 @@ public final class Controller
         MAN_PWD,
         NEW_PWD,
     }
+
+    static Map<FORMS, AbstractForm> forms = new HashMap<FORMS, AbstractForm>();
 
     public static Controller getInstance() throws Exceptions
     {
@@ -43,8 +46,10 @@ public final class Controller
 
     public static Controller init(Stage primaryStage)
     {
-        if (self == null) self = new Controller(primaryStage);
-        else System.exit(RC.ABEND.ordinal());
+        if (self == null)
+            self = new Controller(primaryStage);
+        else
+            System.exit(RC.ABEND.ordinal());
 
         return self;
     }
@@ -54,6 +59,35 @@ public final class Controller
         Logger.printDebug("Controller performs switch: from " + mainStage.getScene() + " to "
                 + form.ordinal());
 
-        forms[form.ordinal()].draw(mainStage);
+        AbstractForm existingForm = forms.get(form);
+
+        if (existingForm == null)
+        {
+            AbstractForm newForm = null;
+
+            switch (form)
+            {
+                case LOGIN:
+                    newForm = new LoginForm();
+                    break;
+
+                case MAN_PWD:
+                    newForm = new ManagePasswordsForm();
+                    break;
+
+                case NEW_PWD:
+                    newForm = new SpecialPasswordForm();
+                    break;
+
+                default:
+                    System.exit(500); // TODO
+                    break;
+            }
+
+            forms.put(form, newForm);
+            existingForm = newForm;
+        }
+
+        existingForm.draw(mainStage);
     }
 }

@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import Common.Exceptions;
 import Logger.Logger;
 
 /**
@@ -16,6 +17,8 @@ import Logger.Logger;
  */
 public abstract class AbstractForm
 {
+    protected Controller ctrl = null;
+
     public static final int HGAP = 10;
     public static final int VGAP = 10;
 
@@ -48,6 +51,19 @@ public abstract class AbstractForm
         grid.setVgap(VGAP);
         grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
         grid.setAlignment(Pos.CENTER);
+        grid.setMaxSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top - PADDING.bottom);
+        grid.setMinSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top - PADDING.bottom);
+        grid.setPrefSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top - PADDING.bottom);
+
+        try
+        {
+            ctrl = Controller.getInstance();
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 

@@ -178,17 +178,6 @@ public final class CryptoSystem
 
         self = new CryptoSystem();
 
-//==========  Database activation START: ==========================================================
-        try
-        {
-            PasswordCollection.init();
-        }
-        catch (Exceptions e)
-        {
-            System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO abend
-        }
-//==========  Database activation END: ============================================================
-
         Logger.printDebug("CryptoSystem init DONE!");
         return Return.check(RC.OK);
     }
