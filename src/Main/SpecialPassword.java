@@ -5,6 +5,7 @@ package Main;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.BitSet;
 
 import Common.Exceptions;
 import Common.Exceptions.XC;
@@ -20,11 +21,22 @@ import Logger.Logger;
 public class SpecialPassword implements Serializable
 {
 
+    public enum ParamsMaskBits
+    {
+        HAS_SPECIAL_CHARACTERS,
+        HAS_CAPITALS,
+
+        TOTAL_COUNT,
+    }
+
     private String            name;
     private String            comment;
     private String            url;
-    private long              shaCycles;            // generated in
-                                                     // PasswordCollection;
+    private final byte        length;
+    private final String      specialChars;
+    private BitSet            paramsMask       = null;
+    private long              shaCycles;              // generated in
+                                                       // PasswordCollection;
 
     private static final long serialVersionUID = 1L;
 
@@ -35,13 +47,18 @@ public class SpecialPassword implements Serializable
         this.name = "EMPTY";
         this.comment = "COMMENT";
         this.url = "URL";
+        this.length = 16;
+        this.paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
+        this.paramsMask.xor(this.paramsMask); // set all bits to true
+        this.specialChars = "!@#$%^&*";
 
         this.shaCycles = 1;
 
         Logger.printDebug("SpecialPassword DEFAULT constructor... DONE!");
     }
 
-    public SpecialPassword(String name, String comment, String url) throws Exceptions
+    public SpecialPassword(String name, String comment, String url, byte length, BitSet paramsMask,
+            String specialChars) throws Exceptions
     {
         Logger.printDebug("SpecialPassword constructor... START");
 
@@ -50,8 +67,11 @@ public class SpecialPassword implements Serializable
         this.name = name;
         this.comment = comment;
         this.url = url;
+        this.length = length;
+        this.paramsMask = paramsMask;
+        this.specialChars = specialChars;
 
-        shaCycles = 0;
+        shaCycles = 0; // generated in PasswordCollection;
 
         Logger.printDebug("SpecialPassword constructor... DONE!");
     }
@@ -176,11 +196,55 @@ public class SpecialPassword implements Serializable
         return RC.NONEXISTING_FUNCTION_CALL.ordinal();
     }
 
+    // TODO: speparate method for password generation
+    // TODO: check that password meets rules and do re-hash if not;
+
     public String getPassword()
     {
         try
         {
-            return CryptoSystem.getInstance().getPassword(this.shaCycles);
+            String hash = CryptoSystem.getInstance().getPassword(this.shaCycles);
+
+            // take first @a this.length chars from hash
+            StringBuilder clearPass = new StringBuilder(hash.substring(0, this.length));
+
+            // set CAPITALS.
+            if (paramsMask.get(ParamsMaskBits.HAS_CAPITALS.ordinal()))
+            {
+                Logger.printDebug("use capitals");
+                // determine what chars changes case
+                boolean changeCase = (hash.charAt(hash.length() - 1) & 0x01) != 0;
+                // get string with capitals for easier processing
+                String capsString = (new String(clearPass)).toUpperCase();
+
+                for (int i = 0; i < clearPass.length(); i++)
+                {
+                    // different chars means different case
+                    if (clearPass.charAt(i) != capsString.charAt(i))
+                    {
+                        if (changeCase)
+                        {
+                            clearPass.setCharAt(i, capsString.charAt(i));
+                        }
+
+                        changeCase = !changeCase;
+                    }
+                }
+            }
+
+            if (paramsMask.get(ParamsMaskBits.HAS_CAPITALS.ordinal()) && specialChars.length() != 0)
+            {
+                byte specialCharacterPosition = (byte) hash.charAt(hash.length() - 2);
+                byte insertPosition = (byte) hash.charAt(hash.length() - 3);
+
+                insertPosition = (byte) (insertPosition % clearPass.length());
+                specialCharacterPosition =
+                        (byte) (specialCharacterPosition % specialChars.length());
+
+                clearPass.setCharAt(insertPosition, specialChars.charAt(specialCharacterPosition));
+            }
+
+            return clearPass.toString();
         }
         catch (Exceptions e)
         {

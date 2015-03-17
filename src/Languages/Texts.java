@@ -15,6 +15,8 @@ public class Texts
         RUSSIAN,
     }
 
+
+    // TODO: Use String.split to parse CSV file with texts
     public enum TextID
     {
         ADD_SPECIAL_PASSWORD(new String[]
@@ -76,6 +78,9 @@ public class Texts
 
         SHORTCUT(new String[]
         { "Shortcut", "" }),
+
+        SPECIAL_CHARACTERS(new String[]
+        { "Special characters", "" }),
 
         URL(new String[]
         { "URL", "" }),
