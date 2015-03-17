@@ -23,9 +23,9 @@ import Main.iSpecialPassword;
 public class PasswordCollection
 {
     private static Vector<SpecialPassword> db        = new Vector<SpecialPassword>();
-
+    private static PasswordCollection self           = null;
     private static Vector<Long>            shaCycles = readSHACycles();
-
+    
     private static Vector<Long> readSHACycles()
     {
         Vector<Long> retV = new Vector<Long>();
@@ -35,9 +35,6 @@ public class PasswordCollection
 
         return retV;
     }
-
-
-    private static PasswordCollection self = null;
 
     private PasswordCollection()
     {

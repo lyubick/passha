@@ -66,17 +66,21 @@ public class SHA
 
         /* Test if everything is OK */
 
-        String testStr =
-                "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
-        byte[] testInput = testStr.getBytes();
+//        for (int i = 0; i < 5; i++)
+//        {
+            String testStr =
+                    "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
+            byte[] testInput = testStr.getBytes();
 
-        byte[] result = this.getBytesSHA512(testInput);
-        String actualSha = SHA.bytesToHex(result);
+            byte[] result = this.getBytesSHA512(testInput);
+            String actualSha = SHA.bytesToHex(result);
 
-        String expectedSha =
-                "8e959b75dae313da8cf4f72814fc143f8f7779c6eb9f7fa17299aeadb6889018501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909";
+            String expectedSha =
+                    "8e959b75dae313da8cf4f72814fc143f8f7779c6eb9f7fa17299aeadb6889018501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909";
 
-        if (actualSha.compareTo(expectedSha) != 0) { throw new Common.Exceptions(XC.INIT_FAILURE); }
+            if (actualSha.compareTo(expectedSha) != 0)
+                throw new Common.Exceptions(XC.INIT_FAILURE);
+//        }
     }
 
     /**
@@ -87,7 +91,7 @@ public class SHA
      */
     public static String bytesToHex(byte[] bytes)
     {
-        //TODO move to utilities
+        // TODO move to utilities
 
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++)
