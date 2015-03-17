@@ -66,10 +66,8 @@ public class SHA
 
         /* Test if everything is OK */
 
-        // FIXME: somehow SHA fails to produce same output when launched several times;
-        while (true)
-        {
-
+//        for (int i = 0; i < 5; i++)
+//        {
             String testStr =
                     "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
             byte[] testInput = testStr.getBytes();
@@ -80,9 +78,9 @@ public class SHA
             String expectedSha =
                     "8e959b75dae313da8cf4f72814fc143f8f7779c6eb9f7fa17299aeadb6889018501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909";
 
-            if (actualSha.compareTo(expectedSha) != 0) { throw new Common.Exceptions(
-                    XC.INIT_FAILURE); }
-        }
+            if (actualSha.compareTo(expectedSha) != 0)
+                throw new Common.Exceptions(XC.INIT_FAILURE);
+//        }
     }
 
     /**
