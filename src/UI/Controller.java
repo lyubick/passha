@@ -18,13 +18,17 @@ import javafx.stage.Stage;
  */
 public final class Controller
 {
-    private static Stage      mainStage = null;
-    private static Controller self      = null;
+    private static Stage      mainStage   = null;
+    private static Controller self        = null;
+
+    private static FORMS      currentForm = FORMS.UNKNOWN;
 
     // static AbstractForm[] forms = null;
 
     public enum FORMS
     {
+        UNKNOWN,
+
         LOGIN,
         MAN_PWD,
         NEW_PWD,
@@ -56,8 +60,9 @@ public final class Controller
 
     public void switchForm(FORMS form)
     {
-        Logger.printDebug("Controller performs switch: from " + mainStage.getScene() + " to "
-                + form.ordinal());
+        if (mainStage.getScene() != null)
+            Logger.printDebug("Controller performs switch: from "
+                    + currentForm.name() + " to " + form.name());
 
         AbstractForm existingForm = forms.get(form);
 
@@ -87,7 +92,7 @@ public final class Controller
             forms.put(form, newForm);
             existingForm = newForm;
         }
-
+        currentForm = form; // TODO
         existingForm.draw(mainStage);
     }
 }
