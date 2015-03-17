@@ -45,7 +45,7 @@ public abstract class AbstractForm
 
     public AbstractForm()
     {
-        //if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG)) grid.setGridLinesVisible(true);
+        if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG)) grid.setGridLinesVisible(true);
 
         grid.setHgap(HGAP);
         grid.setVgap(VGAP);

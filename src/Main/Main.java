@@ -42,7 +42,7 @@ public class Main extends Application
 
         String[] parms = new String[ARGS];
 
-        /*
+        /**
          * INIT default argument values, to avoid crash on launching without
          * arguments
          */

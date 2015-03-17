@@ -19,6 +19,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -30,12 +31,16 @@ import javafx.stage.Stage;
  */
 public class ManagePasswordsForm extends AbstractForm
 {
-    private final TableView<iSpecialPassword> table = new TableView<iSpecialPassword>();
-    private PasswordCollection                pc    = null;
-    private final iSpecialPassword            lastShown = null;
+    private final TableView<iSpecialPassword> table   = new TableView<iSpecialPassword>();
+    private PasswordCollection                pc      = null;
+    private TextField                   tf_pass = null;
+
+    // private final iSpecialPassword lastShown = null;
 
     public ManagePasswordsForm()
     {
+        tf_pass = new TextField();
+
         try
         {
             pc = PasswordCollection.getInstance();
@@ -59,7 +64,8 @@ public class ManagePasswordsForm extends AbstractForm
                 { new TableColumn(TextID.PWD_NAME.toString()),
                         new TableColumn(TextID.COMMENT.toString()),
                         new TableColumn(TextID.URL.toString()),
-                        new TableColumn(TextID.PWD.toString()), };
+                // new TableColumn(TextID.PWD.toString()),
+                };
         table.getColumns().setAll(columns);
 
         // TODO column numbers to enumerator
@@ -67,8 +73,9 @@ public class ManagePasswordsForm extends AbstractForm
         columns[1]
                 .setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
         columns[2].setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
-        columns[3].setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>(
-                "password"));
+        // columns[3].setCellValueFactory(new
+        // PropertyValueFactory<iSpecialPassword, String>(
+        // "password"));
 
         // TODO use HBOX where only one row is used
         buttonsGrid.setAlignment(Pos.CENTER);
@@ -85,6 +92,7 @@ public class ManagePasswordsForm extends AbstractForm
         // TODO numbers to local constants
         grid.add(buttonsGrid, 0, 1);
         grid.add(table, 0, 0);
+        grid.add(tf_pass, 0, 2);
 
         b_New.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -111,26 +119,22 @@ public class ManagePasswordsForm extends AbstractForm
 
         });
 
-//        table.setOnMouseClicked(new EventHandler<MouseEvent>()
-//        {
-//            @Override
-//            public void handle(MouseEvent event)
-//            {
-//                // TODO Auto-generated method stub
-//                if (lastShown != null)
-//                {
-//                    lastShown.showPassword(false);
-//                }
-//
-//                lastShown = table.getSelectionModel().getSelectedItem();
-//                lastShown.showPassword(true);
-//            }
-//        });
+        table.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent event)
+            {
+                tf_pass.setText(table.getSelectionModel().getSelectedItem().getPassword());
+            }
+        });
     }
+
+    // TODO implement reload table method// or no?
 
     @Override
     public void draw(Stage stage)
     {
+        tf_pass.clear();
         table.setItems(pc.getIface());
 
         stage.setScene(scene);
