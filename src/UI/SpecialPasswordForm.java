@@ -3,6 +3,7 @@
  */
 package UI;
 
+
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import Common.Return.RC;
@@ -11,6 +12,8 @@ import Logger.Logger;
 import Main.PasswordCollection;
 import Main.SpecialPassword;
 import UI.Controller.FORMS;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -114,6 +117,17 @@ public class SpecialPasswordForm extends AbstractForm
 
         grid.add(buttonsBox, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
+        
+        tf_length.focusedProperty().addListener(new ChangeListener<Boolean>()
+                {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable,
+                            Boolean oldValue, Boolean newValue)
+                    {
+                        tf_length.setText("");
+                        
+                    }
+                });
 
         b_OK.setOnAction(new EventHandler<ActionEvent>()
         {
