@@ -186,10 +186,12 @@ public final class CryptoSystem
     {
         byte[] tmp = masterHash.clone();
 
+        Logger.printDebug("master hash is " + SHA.bytesToHex(tmp));
+
         while (cycles-- > 0)
             tmp = sha.getBytesSHA512(tmp);
 
-        return sha.bytesToHex(tmp);
+        return SHA.bytesToHex(tmp);
     }
 
 }

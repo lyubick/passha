@@ -42,7 +42,7 @@ public class iSpecialPassword
 
     public String getPassword()
     {
-        return password.get();
+        return origin.getPassword();
     }
 
     public void showPassword(boolean show)
