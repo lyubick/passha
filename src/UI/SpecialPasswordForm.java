@@ -150,17 +150,19 @@ public class SpecialPasswordForm extends AbstractForm
 
         grid.add(buttonsBox, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
-        
+
+        // TODO We should split code and move event handlers seperately.
         tf_length.focusedProperty().addListener(new ChangeListener<Boolean>()
-                {
-                    @Override
-                    public void changed(ObservableValue<? extends Boolean> observable,
-                            Boolean oldValue, Boolean newValue)
-                    {
-                        tf_length.setText("");
-                        
-                    }
-                });
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue)
+            {
+                tf_length.setText(""); // Emptying field, to allow enter a
+                                       // password
+
+            }
+        });
 
         b_OK.setOnAction(new EventHandler<ActionEvent>()
         {
