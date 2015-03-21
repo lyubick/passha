@@ -23,9 +23,9 @@ import Main.iSpecialPassword;
 public class PasswordCollection
 {
     private static Vector<SpecialPassword> db        = new Vector<SpecialPassword>();
-    private static PasswordCollection self           = null;
+    private static PasswordCollection      self      = null;
     private static Vector<Long>            shaCycles = readSHACycles();
-    
+
     private static Vector<Long> readSHACycles()
     {
         Vector<Long> retV = new Vector<Long>();
@@ -79,7 +79,8 @@ public class PasswordCollection
             if (existing.getName().equals(sp.getName())) return Return.check(RC.NOK);
 
         long sc = 0;
-        while (!isUnique(new Long(sc = cs.randSHACycles())));
+        while (!isUnique(new Long(sc = cs.randSHACycles())))
+            ;
         sp.setShaCycles(sc);
 
         db.addElement(sp);

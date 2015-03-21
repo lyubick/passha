@@ -8,6 +8,7 @@ import java.util.Map;
 
 import Common.Exceptions;
 import Common.Exceptions.XC;
+import Common.Return;
 import Common.Return.RC;
 import Logger.Logger;
 import javafx.stage.Stage;
@@ -23,18 +24,21 @@ public final class Controller
 
     private static FORMS      currentForm = FORMS.UNKNOWN;
 
-    // static AbstractForm[] forms = null;
-
     public enum FORMS
     {
-        UNKNOWN,
-
         LOGIN,
-        MAN_PWD,
-        NEW_PWD,
+        MANAGE_PWDS,
+        CREATE_PWD,
+
+        END,
+
+        UNKNOWN,
     }
 
-    static Map<FORMS, AbstractForm> forms = new HashMap<FORMS, AbstractForm>();
+    static AbstractForm[] forms = null;
+
+    // static Map<FORMS, AbstractForm> forms = new HashMap<FORMS,
+    // AbstractForm>();
 
     public static Controller getInstance() throws Exceptions
     {
@@ -55,44 +59,20 @@ public final class Controller
         else
             System.exit(RC.ABEND.ordinal());
 
+        forms = new AbstractForm[FORMS.END.ordinal()];
+
+        forms[FORMS.LOGIN.ordinal()] = new LoginForm();
+        forms[FORMS.MANAGE_PWDS.ordinal()] = new ManagePasswordsForm();
+        forms[FORMS.CREATE_PWD.ordinal()] = new SpecialPasswordForm();
+
         return self;
     }
 
-    public void switchForm(FORMS form)
+    public void switchForm(FORMS form) throws Exceptions
     {
-        if (mainStage.getScene() != null)
-            Logger.printDebug("Controller performs switch: from "
-                    + currentForm.name() + " to " + form.name());
+            Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
+                    + form.name());
 
-        AbstractForm existingForm = forms.get(form);
-
-        if (existingForm == null)
-        {
-            AbstractForm newForm = null;
-
-            switch (form)
-            {
-                case LOGIN:
-                    newForm = new LoginForm();
-                    break;
-
-                case MAN_PWD:
-                    newForm = new ManagePasswordsForm();
-                    break;
-
-                case NEW_PWD:
-                    newForm = new SpecialPasswordForm();
-                    break;
-
-                default:
-                    System.exit(500); // TODO
-                    break;
-            }
-
-            forms.put(form, newForm);
-            existingForm = newForm;
-        }
-        currentForm = form; // TODO
-        existingForm.draw(mainStage);
+        if (form != FORMS.END && form != FORMS.UNKNOWN) forms[form.ordinal()].draw(mainStage);
     }
 }

@@ -19,10 +19,10 @@ public abstract class AbstractForm
 {
     protected Controller ctrl = null;
 
-    public static final int HGAP = 10;
-    public static final int VGAP = 10;
+    protected static final int HGAP = 10;
+    protected static final int VGAP = 10;
 
-    public final class PADDING
+    protected final class PADDING
     {
         public static final int bottom = 10;
         public static final int top    = 10;
@@ -30,7 +30,7 @@ public abstract class AbstractForm
         public static final int left   = 10;
     };
 
-    public final class WINDOW
+    protected final class WINDOW
     {
         public static final int width  = 500;
         public static final int height = 400;
@@ -41,11 +41,11 @@ public abstract class AbstractForm
     protected GridPane grid  = new GridPane();
     protected Scene    scene = new Scene(grid, WINDOW.width, WINDOW.height);
 
-    public abstract void draw(Stage stage);
+    public abstract void draw(Stage stage) throws Exceptions;
 
-    public AbstractForm()
+    protected AbstractForm()
     {
-        if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG)) grid.setGridLinesVisible(true);
+        //if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG)) grid.setGridLinesVisible(true);
 
         grid.setHgap(HGAP);
         grid.setVgap(VGAP);

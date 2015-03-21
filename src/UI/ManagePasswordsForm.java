@@ -32,7 +32,6 @@ import javafx.stage.Stage;
 public class ManagePasswordsForm extends AbstractForm
 {
     private final TableView<iSpecialPassword> table   = new TableView<iSpecialPassword>();
-    private PasswordCollection                pc      = null;
     private TextField                   tf_pass = null;
 
     // private final iSpecialPassword lastShown = null;
@@ -40,16 +39,6 @@ public class ManagePasswordsForm extends AbstractForm
     public ManagePasswordsForm()
     {
         tf_pass = new TextField();
-
-        try
-        {
-            pc = PasswordCollection.getInstance();
-        }
-        catch (Exceptions e1)
-        {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
 
         Button b_New = new Button(TextID.NEW.toString());
         Button b_Delete = new Button(TextID.DELETE.toString());
@@ -99,7 +88,15 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent ae)
             {
-                ctrl.switchForm(FORMS.NEW_PWD);
+                try
+                {
+                    ctrl.switchForm(FORMS.CREATE_PWD);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -113,7 +110,15 @@ public class ManagePasswordsForm extends AbstractForm
                 if (pwd != null)
                 {
                     table.getItems().remove(pwd);
-                    pc.removePassword(pwd.getOrigin());
+                    try
+                    {
+                        PasswordCollection.getInstance().removePassword(pwd.getOrigin());
+                    }
+                    catch (Exceptions e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -132,10 +137,10 @@ public class ManagePasswordsForm extends AbstractForm
     // TODO implement reload table method// or no?
 
     @Override
-    public void draw(Stage stage)
+    public void draw(Stage stage) throws Exceptions
     {
         tf_pass.clear();
-        table.setItems(pc.getIface());
+        table.setItems(PasswordCollection.getInstance().getIface());
 
         stage.setScene(scene);
         stage.show();

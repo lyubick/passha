@@ -208,6 +208,19 @@ public class SpecialPassword implements Serializable
             // take first @a this.length chars from hash
             StringBuilder clearPass = new StringBuilder(hash.substring(0, this.length));
 
+            // set special characters
+            if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal()) && specialChars.length() != 0)
+            {
+                byte specialCharacterPosition = (byte) hash.charAt(hash.length() - 2);
+                byte insertPosition = (byte) hash.charAt(hash.length() - 3);
+
+                insertPosition = (byte) (insertPosition % clearPass.length());
+                specialCharacterPosition =
+                        (byte) (specialCharacterPosition % specialChars.length());
+
+                clearPass.setCharAt(insertPosition, specialChars.charAt(specialCharacterPosition));
+            }
+
             // set CAPITALS.
             if (paramsMask.get(ParamsMaskBits.HAS_CAPITALS.ordinal()))
             {
@@ -230,18 +243,6 @@ public class SpecialPassword implements Serializable
                         changeCase = !changeCase;
                     }
                 }
-            }
-
-            if (paramsMask.get(ParamsMaskBits.HAS_CAPITALS.ordinal()) && specialChars.length() != 0)
-            {
-                byte specialCharacterPosition = (byte) hash.charAt(hash.length() - 2);
-                byte insertPosition = (byte) hash.charAt(hash.length() - 3);
-
-                insertPosition = (byte) (insertPosition % clearPass.length());
-                specialCharacterPosition =
-                        (byte) (specialCharacterPosition % specialChars.length());
-
-                clearPass.setCharAt(insertPosition, specialChars.charAt(specialCharacterPosition));
             }
 
             return clearPass.toString();
