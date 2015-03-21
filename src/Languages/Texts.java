@@ -15,6 +15,7 @@ public class Texts
         RUSSIAN,
     }
 
+    static String version = "dev";
 
     // TODO: Use String.split to parse CSV file with texts
     public enum TextID
@@ -37,14 +38,17 @@ public class Texts
         ENABLED(new String[]
         { "Enabled", "" }),
 
-        EXPORT(new String[]
-        { "Export", "Экспортировать" }),
+        ENTER_PASSWORD(new String[]
+        { "Enter Password", "" }),
+
+        ERR_MISSING_PASSWORD_NAME(new String[]
+        { "Error! Password name must be entered!", "" }),
 
         ERR_NAME_ALREADY_TAKEN(new String[]
         { "Error! Name already taken!", "" }),
 
-        ERR_MISSING_PASSWORD_NAME(new String[]
-        { "Error! Password name must be entered!", "" }),
+        EXPORT(new String[]
+        { "Export", "Экспортировать" }),
 
         GREETING(new String[]
         { "Welcome to pasSHA!", "Добро пожаловать в pasSHA!" }),
@@ -86,7 +90,19 @@ public class Texts
         { "URL", "" }),
 
         VERSION(new String[]
-        { "Version", "Версия" }),
+        { "v." + version, "в." + version}),
+
+        LOGIN(new String[]
+        { "Login", "" }),
+
+        REGISTER(new String[]
+        { "Register", "" }),
+
+        PROGRAM_NAME(new String[]
+        { "pasSHA", "" }),
+
+        Z_ETHALON(new String[]
+        { "", "" }),
 
         ;
 

@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import Common.Exceptions;
 import Common.Exceptions.XC;
@@ -32,44 +33,58 @@ public class LoginForm extends AbstractForm
         public static final int height = 200;
     }
 
-    @Override
-    @SuppressWarnings("static-access")
-    public void draw(Stage stage)
+    private Label         l_Header           = null;
+    private Label         l_Warning          = null;
+    private PasswordField pf_Password        = null;
+    private PasswordField pf_PasswordConfirm = null;
+    private Button        b_Login            = null;
+    private Button        b_Register         = null;
+
+    private String        prevPass           = "";
+
+    int                   currPos            = 0;
+
+    LoginForm()
     {
-        Logger.printDebug("LoginForm prepareing");
+        l_Header = new Label(TextID.ENTER_PASSWORD.toString() + ":");
+        l_Warning = new Label("");
 
-        stage.setTitle("pasSHA");
-        stage.setResizable(false);
-        stage.setMaximized(false);
+        pf_Password = new PasswordField();
+        pf_PasswordConfirm = new PasswordField();
 
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
+        b_Login = new Button(TextID.LOGIN.toString());
+        b_Register = new Button(TextID.REGISTER.toString());
 
-        Label l_Welcome = new Label(TextID.GREETING.toString());
+        b_Login.setDefaultButton(true);
 
-        PasswordField pf_Password = new PasswordField();
+        // Add to grid
+        grid.add(l_Header, 0, currPos++);
 
+        grid.add(pf_Password, 0, currPos++);
+        grid.add(pf_PasswordConfirm, 0, currPos++);
+
+        grid.add(b_Register, 0, currPos);
+        grid.add(b_Login, 0, currPos++);
+
+        grid.add(l_Warning, 0, currPos++);
+
+        // Set properties
         pf_Password.setMinWidth(WINDOW.width - 50);
+        pf_Password.setPromptText("Password...");
 
-        Button b_OK = new Button(TextID.OK.toString());
-        Button b_NEW = new Button(TextID.NEW.toString());
-        b_NEW.setVisible(false);
+        pf_PasswordConfirm.setPromptText("Re-type...");
+        pf_PasswordConfirm.setVisible(false);
+
+        b_Register.setVisible(false);
 
         grid.setAlignment(Pos.CENTER);
 
-        // TODO where only one columnt is used - use VBOX instead of grid
-        // TODO move row numbers to constants
-        grid.add(l_Welcome, 0, 0);
-        grid.setHalignment(grid.getChildren().get(grid.getChildren().indexOf(l_Welcome)),
-                HPos.CENTER);
-        grid.add(pf_Password, 0, 2);
-        grid.add(b_NEW, 0, 4);
-        grid.add(b_OK, 0, 4);
-        grid.setHalignment(grid.getChildren().get(grid.getChildren().indexOf(b_OK)), HPos.RIGHT);
+        GridPane.setHalignment(l_Header, HPos.CENTER);
+        GridPane.setHalignment(b_Login, HPos.RIGHT);
+        GridPane.setHalignment(b_Register, HPos.LEFT);
 
-        pf_Password.setPromptText("Password...");
-
-        b_OK.setOnAction(new EventHandler<ActionEvent>()
+        // Listeners
+        b_Login.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
             public void handle(ActionEvent arg0)
@@ -78,21 +93,30 @@ public class LoginForm extends AbstractForm
 
                 if (pf_Password.getText().length() != 0)
                 {
-                    try
+                    if (!pf_PasswordConfirm.isVisible())
+                        try
+                        {
+                            init(pf_Password.getText().toString(), false);
+                        }
+                        catch (Exceptions e)
+                        {
+                            // TODO Auto-generated catch block
+                            b_Register.setVisible(true);
+                            pf_PasswordConfirm.setVisible(true);
+
+                            pf_Password.setDisable(true);
+
+                            l_Warning.setText("Password is incorrect.");
+                        }
+                    else
                     {
-                        init(pf_Password.getText().toString(), false);
-                    }
-                    catch (Exceptions e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                        b_NEW.setVisible(true);
+                        reset();
                     }
                 }
             }
         });
 
-        b_NEW.setOnAction(new EventHandler<ActionEvent>()
+        b_Register.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
             public void handle(ActionEvent arg0)
@@ -101,22 +125,52 @@ public class LoginForm extends AbstractForm
 
                 try
                 {
-                    init(pf_Password.getText().toString(), true);
+                    if (pf_Password.getText().equals(pf_PasswordConfirm.getText()))
+                        init(pf_PasswordConfirm.getText(), true);
+                    else
+                    {
+                        reset();
+                        l_Warning.setText("Passwords doesn't match!");
+                    }
                 }
                 catch (Exceptions e)
                 {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
             }
         });
+
+    }
+
+    private void reset()
+    {
+        pf_Password.clear();
+        pf_Password.setDisable(false);
+        pf_Password.requestFocus();
+        pf_PasswordConfirm.clear();
+        pf_PasswordConfirm.setVisible(false);
+        b_Register.setVisible(false);
+        l_Warning.setText("");
+    }
+
+    @Override
+    @SuppressWarnings("static-access")
+    public void draw(Stage stage)
+    {
+        Logger.printDebug("LoginForm preparing...");
+
+        stage.setTitle("pasSHA");
+        stage.setResizable(false);
+        stage.setMaximized(false);
+
+        stage.setHeight(WINDOW.height);
+        stage.setWidth(WINDOW.width);
 
         stage.setScene(scene);
 
         Logger.printDebug("LoginForm displaying");
         stage.show();
     }
-
 
     private void init(String password, boolean isNewUser) throws Exceptions
     {

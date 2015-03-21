@@ -142,6 +142,12 @@ public class ManagePasswordsForm extends AbstractForm
         tf_pass.clear();
         table.setItems(PasswordCollection.getInstance().getIface());
 
+        stage.setTitle(TextID.PROGRAM_NAME.toString() + " " + TextID.VERSION.toString());
+
+        stage.setResizable(false);
+        stage.setHeight(WINDOW.height);
+        stage.setWidth(WINDOW.width);
+
         stage.setScene(scene);
         stage.show();
     }
