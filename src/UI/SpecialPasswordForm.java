@@ -198,17 +198,6 @@ public class SpecialPasswordForm extends AbstractForm
                     else
                         System.exit(RC.ABEND.ordinal()); // TODO
                 }
-
-                // TODO remove
-                try
-                {
-                    PasswordCollection.getInstance().save();
-                }
-                catch (Exceptions e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
             }
         });
 

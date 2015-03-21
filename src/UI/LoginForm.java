@@ -40,7 +40,7 @@ public class LoginForm extends AbstractForm
     private Button        b_Login            = null;
     private Button        b_Register         = null;
 
-    private String        prevPass           = "";
+    private final String        prevPass           = "";
 
     int                   currPos            = 0;
 
@@ -161,7 +161,6 @@ public class LoginForm extends AbstractForm
 
         stage.setTitle("pasSHA");
         stage.setResizable(false);
-        stage.setMaximized(false);
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);

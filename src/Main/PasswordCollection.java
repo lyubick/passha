@@ -25,6 +25,12 @@ public class PasswordCollection
     private static Vector<SpecialPassword> db        = new Vector<SpecialPassword>();
     private static PasswordCollection      self      = null;
     private static Vector<Long>            shaCycles = readSHACycles();
+    private static boolean                 changed   = false;
+
+    public boolean isChanged()
+    {
+        return changed;
+    }
 
     private static Vector<Long> readSHACycles()
     {
@@ -57,7 +63,7 @@ public class PasswordCollection
         return self;
     }
 
-    private static boolean isUnique(Long ex)
+    private boolean isUnique(Long ex)
     {
         return (shaCycles.lastIndexOf(ex) != -1) ? false : true;
     }
@@ -84,6 +90,8 @@ public class PasswordCollection
         sp.setShaCycles(sc);
 
         db.addElement(sp);
+
+        changed = true;
 
         return Return.check(RC.OK);
     }
@@ -134,6 +142,8 @@ public class PasswordCollection
             System.exit(500); // TODO abend
         }
 
+        changed = false;
+
         return Return.check(RC.OK);
     }
 
@@ -145,6 +155,7 @@ public class PasswordCollection
 
         try
         {
+            db.clear();
             cs = CryptoSystem.getInstance();
             reader = FileIO.getInstance();
             cryptSP = reader.readFromFile();
@@ -158,12 +169,21 @@ public class PasswordCollection
         {
             db.addElement(cs.decryptPassword(cryptSP.elementAt(i)));
         }
+
+        changed = false;
+
         return Return.check(RC.OK);
+    }
+
+    public RC reload()
+    {
+        return load();
     }
 
     public RC removePassword(SpecialPassword sp)
     {
         db.remove(sp);
+        changed = true;
         return Return.check(RC.OK);
     }
 }

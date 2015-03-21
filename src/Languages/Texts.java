@@ -15,8 +15,6 @@ public class Texts
         RUSSIAN,
     }
 
-    static String version = "dev";
-
     // TODO: Use String.split to parse CSV file with texts
     public enum TextID
     {
@@ -56,6 +54,9 @@ public class Texts
         LENGTH(new String[]
         { "Length", "" }),
 
+        LOGIN(new String[]
+        { "Login", "" }),
+
         MANAGE(new String[]
         { "Manage", "Управление" }),
 
@@ -74,11 +75,17 @@ public class Texts
         OK(new String[]
         { "OK", "Подтвердить" }),
 
+        PROGRAM_NAME(new String[]
+        { "pasSHA", "" }),
+
         PWD(new String[]
         { "Password", "" }),
 
         PWD_NAME(new String[]
         { "Password name", "" }),
+
+        REGISTER(new String[]
+        { "Register", "" }),
 
         SHORTCUT(new String[]
         { "Shortcut", "" }),
@@ -91,15 +98,6 @@ public class Texts
 
         VERSION(new String[]
         { "v." + version, "в." + version}),
-
-        LOGIN(new String[]
-        { "Login", "" }),
-
-        REGISTER(new String[]
-        { "Register", "" }),
-
-        PROGRAM_NAME(new String[]
-        { "pasSHA", "" }),
 
         Z_ETHALON(new String[]
         { "", "" }),
@@ -122,4 +120,6 @@ public class Texts
     }
 
     private static Language language = Language.ENGLISH;
+
+    static String version = "dev";
 }
