@@ -109,7 +109,7 @@ public final class CryptoSystem
     }
 
 
-    public static RC init(String masterPassword)
+    public static RC init(String masterPassword, boolean isNewUser) throws Exceptions
     {
         Logger.printDebug("CryptoSystem init STARTS...");
 
@@ -163,12 +163,12 @@ public final class CryptoSystem
         try
         {
             Logger.printDebug(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()));
-            FileIO.init(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()));
+            FileIO.init(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()), isNewUser);
         }
         catch (Exceptions e)
         {
-            Logger.printError("SHA initialization failed... exiting...");
-            System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO abend
+            Logger.printInfo("File does not exists. No passphrase to asscoiate with...");
+            throw new Exceptions(XC.UNKNOWN_USER);
         }
         Logger.printDebug("File I/O init DONE...");
 //==========  FILE I/O initialization END: ========================================================

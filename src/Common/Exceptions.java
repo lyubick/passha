@@ -33,6 +33,8 @@ public final class Exceptions extends Throwable
 
         MISSING_MANDATORY_DATA,
 
+        UNKNOWN_USER,
+
         BLACK_MAGIC
     }
 

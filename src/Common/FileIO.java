@@ -4,6 +4,7 @@
 package Common;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,35 +32,36 @@ public final class FileIO
         backup = filename.toString() + ".bckp";
     }
 
-    public static FileIO init(String filename) throws Exceptions
+    public static FileIO init(String filename, boolean isNewUser) throws Exceptions
     {
-        filename = filename + ".cif";
+        filename += ".cif";
 
-        if (self != null) System.exit(RC.ABEND.ordinal());
+        if (self != null) System.exit(RC.ABEND.ordinal()); // TODO
+
+        File test = new File(filename);
+
+        if(!test.exists())
+        {
+            if (isNewUser)
+            {
+                PrintWriter create;
+                try
+                {
+                    create = new PrintWriter(filename);
+                    create.close();
+                    Logger.printDebug("File created!");
+                }
+                catch (FileNotFoundException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            else
+                throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
+        }
+
         self = new FileIO(filename);
-
-        try
-        {
-            BufferedReader test = new BufferedReader(new FileReader(filename));
-            test.readLine();
-            test.close();
-            Logger.printDebug("File exists!");
-        }
-        catch (IOException e)
-        {
-            try
-            {
-                PrintWriter create = new PrintWriter(filename);
-                create.close();
-                Logger.printDebug("File created!");
-            }
-            catch (FileNotFoundException e1)
-            {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-        }
-
         return self;
     }
 
