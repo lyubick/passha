@@ -3,6 +3,7 @@
  */
 package Main;
 
+import Common.Exceptions;
 import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
 import Logger.Logger;
@@ -67,8 +68,16 @@ public class Main extends Application
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception
+    public void start(Stage primaryStage)
     {
-        Controller.init(primaryStage).switchForm(FORMS.LOGIN);
+        try
+        {
+            Controller.init(primaryStage).switchForm(FORMS.LOGIN);
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

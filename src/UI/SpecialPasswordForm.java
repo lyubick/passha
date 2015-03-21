@@ -52,8 +52,6 @@ public class SpecialPasswordForm extends AbstractForm
     private final TextField    tf_length                      = new TextField();
     private final TextField    tf_specialChars                = new TextField();
 
-    private PasswordCollection pc                             = null;
-
     private EventHandler<KeyEvent> numFilter()
     {
         EventHandler<KeyEvent> aux = new EventHandler<KeyEvent>()
@@ -76,16 +74,6 @@ public class SpecialPasswordForm extends AbstractForm
     public SpecialPasswordForm()
     {
         int currentGridLine = 0;
-
-        try
-        {
-            pc = PasswordCollection.getInstance();
-        }
-        catch (Exceptions e1)
-        {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
 
         Button b_OK = new Button(TextID.CREATE.toString());
         Button b_cancel = new Button(TextID.CANCEL.toString());
@@ -193,10 +181,10 @@ public class SpecialPasswordForm extends AbstractForm
                         paramsMask.set(ParamsMaskBits.HAS_CAPITALS.ordinal());
                     }
 
-                    if (pc.addPassword(new SpecialPassword(tf_name.getText(), tf_comment.getText(),
+                    if (PasswordCollection.getInstance().addPassword(new SpecialPassword(tf_name.getText(), tf_comment.getText(),
                             tf_url.getText(), passLength, paramsMask, tf_specialChars.getText())) == RC.OK)
                     {
-                        ctrl.switchForm(FORMS.MAN_PWD);
+                        ctrl.switchForm(FORMS.MANAGE_PWDS);
                     }
                     else
                     {
@@ -212,7 +200,15 @@ public class SpecialPasswordForm extends AbstractForm
                 }
 
                 // TODO remove
-                pc.save();
+                try
+                {
+                    PasswordCollection.getInstance().save();
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -221,7 +217,15 @@ public class SpecialPasswordForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                ctrl.switchForm(FORMS.MAN_PWD);
+                try
+                {
+                    ctrl.switchForm(FORMS.MANAGE_PWDS);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
 
         });

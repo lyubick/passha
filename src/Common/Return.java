@@ -29,7 +29,8 @@ public final class Return
 
         FAIL_TO_LAUNCH,
 
-        NONEXISTING_FUNCTION_CALL
+        NONEXISTING_FUNCTION_CALL,
+        FORM_DOES_NOT_EXIST,
 
     }
 
