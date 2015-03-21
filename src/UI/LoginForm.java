@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
 import Common.Exceptions;
+import Common.Exceptions.XC;
 import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
 import Languages.Texts.TextID;
@@ -77,34 +78,19 @@ public class LoginForm extends AbstractForm
 
                 if (pf_Password.getText().length() != 0)
                 {
-                    CryptoSystem.init(pf_Password.getText().toString());
-                    // ========== Database activation START:
-                    // ==========================================================
                     try
                     {
-                        PasswordCollection.init();
-                    }
-                    catch (Exceptions e)
-                    {
-                        System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO
-                                                                    // abend
-                    }
-                    // ========== Database activation END:
-                    // ============================================================
-
-                    try
-                    {
-                        ctrl.switchForm(FORMS.MANAGE_PWDS);
+                        init(pf_Password.getText().toString(), false);
                     }
                     catch (Exceptions e)
                     {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
+                        b_NEW.setVisible(true);
                     }
                 }
             }
         });
-
 
         b_NEW.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -112,6 +98,16 @@ public class LoginForm extends AbstractForm
             public void handle(ActionEvent arg0)
             {
                 Logger.printDebug("b_NEW button pressed");
+
+                try
+                {
+                    init(pf_Password.getText().toString(), true);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -120,5 +116,34 @@ public class LoginForm extends AbstractForm
         Logger.printDebug("LoginForm displaying");
         stage.show();
     }
-}
 
+
+    private void init(String password, boolean isNewUser) throws Exceptions
+    {
+
+        CryptoSystem.init(password, isNewUser);
+
+        // ========== Database activation START:
+        try
+        {
+            PasswordCollection.init();
+        }
+        catch (Exceptions e)
+        {
+            System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO
+                                                        // abend
+        }
+        // ========== Database activation END:
+
+        try
+        {
+            ctrl.switchForm(FORMS.MANAGE_PWDS);
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+}

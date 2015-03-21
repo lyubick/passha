@@ -182,7 +182,15 @@ public class Test
 
         Logger.loggerON(parms[0].toString());
 
-        /* 1. */launchTest(CryptoSystem.init("qwerty123"));
+        /* 1. */try
+        {
+            launchTest(CryptoSystem.init("qwerty123", true));
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         /* 2. */launchTest(TestRSA());
         /* 3. */launchTest(TestSHA());
