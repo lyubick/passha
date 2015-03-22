@@ -28,7 +28,7 @@ public class Texts
         { "Comment", "" }),
 
         COPY_CLIPBOARD(new String[]
-        { "To Clipboard", "" }),
+        { "Copy To Clipboard", "" }),
 
         CREATE(new String[]
         { "Create", "" }),

@@ -93,12 +93,12 @@ public class ManagePasswordsForm extends AbstractForm
         int currentGridLine = 0;
         tf_pass = new TextField();
 
-        b_New = getButton(TextID.NEW.toString());
-        b_Delete = getButton(TextID.DELETE.toString());
-        b_Copy = getButton(TextID.COPY_CLIPBOARD.toString());
-        b_Export = getButton(TextID.EXPORT.toString());
-        b_Save = getButton(TextID.SAVE.toString());
-        b_Discard = getButton(TextID.DISCARD.toString());
+        b_New = getButton("_" + TextID.NEW.toString());
+        b_Delete = getButton("_" + TextID.DELETE.toString());
+        b_Copy = getButton("_" + TextID.COPY_CLIPBOARD.toString());
+        b_Export = getButton("_" + TextID.EXPORT.toString());
+        b_Save = getButton("_" + TextID.SAVE.toString());
+        b_Discard = getButton("_" + TextID.DISCARD.toString());
 
         table.setMinHeight(WINDOW.height - 300);
         table.setMinWidth(WINDOW.width - 200);
@@ -110,7 +110,7 @@ public class ManagePasswordsForm extends AbstractForm
         b_Save.setDisable(true);
         b_Discard.setDisable(true);
 
-        // TODO make columns/column namse same way as TextID (to ensure column
+        // TODO make columns/column names same way as TextID (to ensure column
         // has correct text)
         TableColumn[] columns =
                 new TableColumn[]
@@ -269,8 +269,6 @@ public class ManagePasswordsForm extends AbstractForm
             }
         });
     }
-
-    // TODO implement reload table method// or no?
 
     @Override
     public void draw(Stage stage) throws Exceptions
