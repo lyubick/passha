@@ -4,11 +4,12 @@
 package UI;
 
 import java.util.BitSet;
+
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Common.Return.RC;
 import Languages.Texts.TextID;
 import Logger.Logger;
+import Main.ABEND;
 import Main.PasswordCollection;
 import Main.SpecialPassword;
 import Main.SpecialPassword.ParamsMaskBits;
@@ -34,23 +35,23 @@ import javafx.stage.Stage;
  */
 public class SpecialPasswordForm extends AbstractForm
 {
-    private final String       FORM_NAME                      = TextID.ADD_SPECIAL_PASSWORD
-                                                                      .toString();
-    private final int          LABELS_COLUMN                  = 0;
-    private final int          TEXT_FIELDS_COLUMN             = 1;
-    private final int          TEXT_FIELD_LENGTH_SIZE         = 40;
-    private final int          ERROR_TEXT_LINE                = 7;
-    private final int          TEXT_FIELDS_WIDTH              = 300;
-    private final String       DEFAULT_LENGTH                 = "16";
-    private final String       SPECIAL_CHARACTERS_DEFAULT_SET = "!@#$%^&*";
+    private final int       LABELS_COLUMN                  = 0;
+    private final int       TEXT_FIELDS_COLUMN             = 1;
+    private final int       TEXT_FIELD_LENGTH_SIZE         = 40;
+    private final int       ERROR_TEXT_LINE                = 7;
+    private final int       TEXT_FIELDS_WIDTH              = 300;
+    private final String    DEFAULT_LENGTH                 = "16";
+    private final String    MIN_PASSWORD_LENGTH            = "8";
+    private final String    MAX_PASSWORD_LENGTH            = "64";
+    private final String    SPECIAL_CHARACTERS_DEFAULT_SET = "`~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
 
-    private final Label        l_errorLabel                   = new Label("");
+    private final Label     l_errorLabel                   = new Label("");
 
-    private final TextField    tf_name                        = new TextField();
-    private final TextField    tf_comment                     = new TextField();
-    private final TextField    tf_url                         = new TextField();
-    private final TextField    tf_length                      = new TextField();
-    private final TextField    tf_specialChars                = new TextField();
+    private final TextField tf_name                        = new TextField();
+    private final TextField tf_comment                     = new TextField();
+    private final TextField tf_url                         = new TextField();
+    private final TextField tf_length                      = new TextField();
+    private final TextField tf_specialChars                = new TextField();
 
     private EventHandler<KeyEvent> numFilter()
     {
@@ -146,8 +147,16 @@ public class SpecialPasswordForm extends AbstractForm
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
                     Boolean newValue)
             {
-                tf_length.setText(""); // Emptying field, to allow enter a
-                                       // password
+                if (newValue)
+                    tf_length.setText("");
+                else
+                {
+                    if (Integer.parseInt(tf_length.getText()) > 64)
+                        tf_length.setText(MAX_PASSWORD_LENGTH);
+
+                    if (Integer.parseInt(tf_length.getText()) < 8)
+                        tf_length.setText(MIN_PASSWORD_LENGTH);
+                }
 
             }
         });
@@ -161,42 +170,34 @@ public class SpecialPasswordForm extends AbstractForm
                         + tf_comment.getText() + "; url " + tf_url.getText() + "; length"
                         + tf_length.getText());
 
+                BitSet paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
+                int passLength = Integer.parseInt(tf_length.getText());
+
+                // TODO make it nice
+                if (passLength < 8)
+                    passLength = 8;
+                else if (passLength > 16) passLength = 16;
+
+                if (cb_specialChars.isSelected())
+                {
+                    paramsMask.set(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
+                }
+
+                if (cb_upperCaseChar.isSelected())
+                {
+                    paramsMask.set(ParamsMaskBits.HAS_CAPITALS.ordinal());
+                }
+
                 try
                 {
-                    BitSet paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
-                    byte passLength = Byte.parseByte(tf_length.getText());
-
-                    // TODO make it nice
-                    if (passLength < 8)
-                        passLength = 8;
-                    else if (passLength > 16) passLength = 16;
-
-                    if (cb_specialChars.isSelected())
-                    {
-                        paramsMask.set(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
-                    }
-
-                    if (cb_upperCaseChar.isSelected())
-                    {
-                        paramsMask.set(ParamsMaskBits.HAS_CAPITALS.ordinal());
-                    }
-
-                    if (PasswordCollection.getInstance().addPassword(new SpecialPassword(tf_name.getText(), tf_comment.getText(),
-                            tf_url.getText(), passLength, paramsMask, tf_specialChars.getText())) == RC.OK)
-                    {
-                        ctrl.switchForm(FORMS.MANAGE_PWDS);
-                    }
-                    else
-                    {
-                        l_errorLabel.setText(TextID.ERR_NAME_ALREADY_TAKEN.toString());
-                    }
+                    PasswordCollection.getInstance().addPassword(
+                            new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url
+                                    .getText(), passLength, paramsMask, tf_specialChars.getText()));
+                    ctrl.switchForm(FORMS.MANAGE_PWDS);
                 }
                 catch (Exceptions e)
                 {
-                    if (e.getCode() == XC.MISSING_MANDATORY_DATA)
-                        l_errorLabel.setText(TextID.ERR_MISSING_PASSWORD_NAME.toString());
-                    else
-                        System.exit(RC.ABEND.ordinal()); // TODO
+                    l_errorLabel.setText(TextID.ERR_NAME_ALREADY_TAKEN.toString());
                 }
             }
         });
@@ -212,8 +213,7 @@ public class SpecialPasswordForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ABEND.terminate(e);
                 }
             }
 

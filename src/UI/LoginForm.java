@@ -14,10 +14,10 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
 import Languages.Texts.TextID;
 import Logger.Logger;
+import Main.ABEND;
 import Main.PasswordCollection;
 import UI.Controller.FORMS;
 
@@ -40,41 +40,49 @@ public class LoginForm extends AbstractForm
     private Button        b_Login            = null;
     private Button        b_Register         = null;
 
-    private final String        prevPass           = "";
-
-    int                   currPos            = 0;
-
     LoginForm()
     {
+        int gridRowCounter = 0;
+
+        // ========== LABELS ========== //
+
         l_Header = new Label(TextID.ENTER_PASSWORD.toString() + ":");
         l_Warning = new Label("");
+
+        // ========== TEXTS ========== //
 
         pf_Password = new PasswordField();
         pf_PasswordConfirm = new PasswordField();
 
-        b_Login = new Button(TextID.LOGIN.toString());
-        b_Register = new Button(TextID.REGISTER.toString());
+        // ========== BUTTONS ========== //
+
+        b_Login = getButton(TextID.LOGIN.toString());
+        b_Register = getButton(TextID.REGISTER.toString());
 
         b_Login.setDefaultButton(true);
 
-        // Add to grid
-        grid.add(l_Header, 0, currPos++);
+        // ========== GRID ========== //
 
-        grid.add(pf_Password, 0, currPos++);
-        grid.add(pf_PasswordConfirm, 0, currPos++);
+        grid.add(l_Header, 0, gridRowCounter++);
 
-        grid.add(b_Register, 0, currPos);
-        grid.add(b_Login, 0, currPos++);
+        grid.add(pf_Password, 0, gridRowCounter++);
+        grid.add(pf_PasswordConfirm, 0, gridRowCounter++);
 
-        grid.add(l_Warning, 0, currPos++);
+        grid.add(b_Register, 0, gridRowCounter);
+        grid.add(b_Login, 0, gridRowCounter++);
 
-        // Set properties
+        grid.add(l_Warning, 0, gridRowCounter++);
+
+        // ========== PROPERTIES ========== //
+
         pf_Password.setMinWidth(WINDOW.width - 50);
         pf_Password.setPromptText("Password...");
 
         pf_PasswordConfirm.setPromptText("Re-type...");
         pf_PasswordConfirm.setVisible(false);
 
+        b_Login.setMinWidth(buttonWidth);
+        b_Register.setMinWidth(buttonWidth);
         b_Register.setVisible(false);
 
         grid.setAlignment(Pos.CENTER);
@@ -83,7 +91,7 @@ public class LoginForm extends AbstractForm
         GridPane.setHalignment(b_Login, HPos.RIGHT);
         GridPane.setHalignment(b_Register, HPos.LEFT);
 
-        // Listeners
+        // ========== LISTENERS ========== //
         b_Login.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
@@ -100,13 +108,19 @@ public class LoginForm extends AbstractForm
                         }
                         catch (Exceptions e)
                         {
-                            // TODO Auto-generated catch block
-                            b_Register.setVisible(true);
-                            pf_PasswordConfirm.setVisible(true);
+                            if (e.getCode() == XC.FILE_DOES_NOT_EXISTS)
+                            {
+                                b_Register.setVisible(true);
 
-                            pf_Password.setDisable(true);
+                                pf_PasswordConfirm.setVisible(true);
+                                pf_Password.setDisable(true);
 
-                            l_Warning.setText("Password is incorrect.");
+                                l_Warning.setText(TextID.PASSWORD_INCORRECT.toString());
+                            }
+                            else
+                            {
+                                ABEND.terminate(e);
+                            }
                         }
                     else
                     {
@@ -130,12 +144,12 @@ public class LoginForm extends AbstractForm
                     else
                     {
                         reset();
-                        l_Warning.setText("Passwords doesn't match!");
+                        l_Warning.setText(TextID.PASSWORDS_DONT_MATCH.toString());
                     }
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
+                    ABEND.terminate(e);
                 }
             }
         });
@@ -154,7 +168,6 @@ public class LoginForm extends AbstractForm
     }
 
     @Override
-    @SuppressWarnings("static-access")
     public void draw(Stage stage)
     {
         Logger.printDebug("LoginForm preparing...");
@@ -183,8 +196,7 @@ public class LoginForm extends AbstractForm
         }
         catch (Exceptions e)
         {
-            System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO
-                                                        // abend
+            ABEND.terminate(e);
         }
         // ========== Database activation END:
 
@@ -194,8 +206,7 @@ public class LoginForm extends AbstractForm
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ABEND.terminate(e);
         }
     }
 

@@ -27,11 +27,17 @@ public class Texts
         COMMENT(new String[]
         { "Comment", "" }),
 
+        COPY_CLIPBOARD(new String[]
+        { "To Clipboard", "" }),
+
         CREATE(new String[]
         { "Create", "" }),
 
         DELETE(new String[]
         { "Delete", "”далить" }),
+
+        DISCARD(new String[]
+        { "Discard", "" }),
 
         ENABLED(new String[]
         { "Enabled", "" }),
@@ -87,6 +93,9 @@ public class Texts
         REGISTER(new String[]
         { "Register", "" }),
 
+        SAVE(new String[]
+        { "Save", "" }),
+
         SHORTCUT(new String[]
         { "Shortcut", "" }),
 
@@ -97,10 +106,16 @@ public class Texts
         { "URL", "" }),
 
         VERSION(new String[]
-        { "v." + version, "в." + version}),
+        { "v." + version, "в." + version }),
 
         Z_ETHALON(new String[]
         { "", "" }),
+
+        PASSWORD_INCORRECT(new String[]
+        { "Password incorrect!", "" }),
+
+        PASSWORDS_DONT_MATCH(new String[]
+        { "Passwords don't match!", "" }),
 
         ;
 
@@ -121,5 +136,5 @@ public class Texts
 
     private static Language language = Language.ENGLISH;
 
-    static String version = "dev";
+    static String           version  = "dev";
 }

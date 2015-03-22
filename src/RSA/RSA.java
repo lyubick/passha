@@ -10,11 +10,10 @@ package RSA;
 /* Common */
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Common.Return;
-import Common.Return.RC;
 import Common.Utilities;
 /* Logging */
 import Logger.Logger;
+import Main.ABEND;
 
 import java.math.BigInteger;
 
@@ -123,7 +122,7 @@ public final class RSA
      *
      * @return OK/NOK
      */
-    private RC test()
+    private void test() throws Exceptions
     {
         String alphabet = "qwertyuiopasdfghjklzxcvbnm1234567890";
         String cipher = "";
@@ -134,17 +133,15 @@ public final class RSA
         cipher = decrypt(cipher);
         Logger.printDebug(cipher);
 
-        if (cipher.equals(alphabet))
-            return Return.check(RC.OK);
-        else
-            return Return.check(RC.NOK);
+        if (!cipher.equals(alphabet))
+            throw new Exceptions(XC.INIT_FAILURE);
     }
 
     /**
      *
      * @return
      */
-    private RC init()
+    private void init() throws Exceptions
     {
 
         while (!p.isProbablePrime(RSA_PRIME_CERTAINCY))
@@ -178,7 +175,7 @@ public final class RSA
 
         Logger.printDebug("d: " + d.toString());
 
-        return Return.check(test());
+        test();
     }
 
     /**
@@ -206,6 +203,6 @@ public final class RSA
         Logger.printDebug("Initial q: " + q.toString());
         Logger.printDebug("Initial e: " + e.toString());
 
-        if (RC.OK != init()) throw new Common.Exceptions(XC.INIT_FAILURE);
+        init();
     }
 }

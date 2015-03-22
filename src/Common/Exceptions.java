@@ -35,6 +35,10 @@ public final class Exceptions extends Throwable
 
         UNKNOWN_USER,
 
+        SECURITY_BREACH, // FIXME use this for all unknown errors like sudden file missing etc.
+
+        PASSWORD_ALREADY_EXISTS,
+
         BLACK_MAGIC
     }
 

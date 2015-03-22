@@ -6,10 +6,11 @@ package UI;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import Common.Exceptions;
-import Logger.Logger;
+import Main.ABEND;
 
 /**
  * @author curious-odd-man
@@ -17,7 +18,7 @@ import Logger.Logger;
  */
 public abstract class AbstractForm
 {
-    protected Controller ctrl = null;
+    protected Controller       ctrl = null;
 
     protected static final int HGAP = 10;
     protected static final int VGAP = 10;
@@ -36,24 +37,30 @@ public abstract class AbstractForm
         public static final int height = 400;
     }
 
-    // TODO see http://docs.oracle.com/javafx/2/layout/builtin_layouts.htm for
-    // layouts description and use as
-    protected GridPane grid  = new GridPane();
-    protected Scene    scene = new Scene(grid, WINDOW.width, WINDOW.height);
+    protected GridPane  grid         = new GridPane();
+    protected Scene     scene        = new Scene(grid, WINDOW.width, WINDOW.height);
+
+    protected final int buttonHeight = 30;
+    protected final int buttonWidth  = 80;
+    protected final int buttonXWidth = 100;
 
     public abstract void draw(Stage stage) throws Exceptions;
 
     protected AbstractForm()
     {
-        //if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG)) grid.setGridLinesVisible(true);
+        // if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG))
+        // grid.setGridLinesVisible(true);
 
         grid.setHgap(HGAP);
         grid.setVgap(VGAP);
         grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
         grid.setAlignment(Pos.CENTER);
-        grid.setMaxSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top - PADDING.bottom);
-        grid.setMinSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top - PADDING.bottom);
-        grid.setPrefSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top - PADDING.bottom);
+        grid.setMaxSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top
+                - PADDING.bottom);
+        grid.setMinSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top
+                - PADDING.bottom);
+        grid.setPrefSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top
+                - PADDING.bottom);
 
         try
         {
@@ -61,10 +68,21 @@ public abstract class AbstractForm
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ABEND.terminate(e);
         }
 
+    }
+
+    protected Button getButton(String name)
+    {
+        Button tmp = new Button(name);
+        tmp.setMinWidth(buttonWidth);
+        tmp.setMinHeight(buttonHeight);
+
+        if (tmp.getWidth() != buttonWidth)
+            tmp.setMinWidth(buttonXWidth);
+
+        return tmp;
     }
 
 }

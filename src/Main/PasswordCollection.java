@@ -9,9 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import Common.Exceptions;
 import Common.FileIO;
-import Common.Return;
 import Common.Exceptions.XC;
-import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
 import Logger.Logger;
 import Main.iSpecialPassword;
@@ -25,7 +23,7 @@ public class PasswordCollection
     private static Vector<SpecialPassword> db        = new Vector<SpecialPassword>();
     private static PasswordCollection      self      = null;
     private static Vector<Long>            shaCycles = readSHACycles();
-    private static boolean                 changed   = false;
+    private boolean                        changed   = false;
 
     public boolean isChanged()
     {
@@ -68,7 +66,7 @@ public class PasswordCollection
         return (shaCycles.lastIndexOf(ex) != -1) ? false : true;
     }
 
-    public RC addPassword(SpecialPassword sp)
+    public void addPassword(SpecialPassword sp) throws Exceptions
     {
         CryptoSystem cs = null;
 
@@ -78,11 +76,12 @@ public class PasswordCollection
         }
         catch (Exceptions e)
         {
-            System.exit(500); // TODO abend
+            ABEND.terminate(e);
         }
 
         for (SpecialPassword existing : db)
-            if (existing.getName().equals(sp.getName())) return Return.check(RC.NOK);
+            if (existing.getName().equals(sp.getName()))
+                throw new Exceptions(XC.PASSWORD_ALREADY_EXISTS);
 
         long sc = 0;
         while (!isUnique(new Long(sc = cs.randSHACycles())))
@@ -92,8 +91,6 @@ public class PasswordCollection
         db.addElement(sp);
 
         changed = true;
-
-        return Return.check(RC.OK);
     }
 
     public ObservableList<iSpecialPassword> getIface()
@@ -119,7 +116,7 @@ public class PasswordCollection
         Logger.printDebug("Dumping PasswordCollection... DONE!");
     }
 
-    public RC save()
+    public void save()
     {
         CryptoSystem cs = null;
         Vector<String> cryptSP = new Vector<String>();
@@ -139,15 +136,13 @@ public class PasswordCollection
         }
         catch (Exceptions e)
         {
-            System.exit(500); // TODO abend
+            ABEND.terminate(e);
         }
 
         changed = false;
-
-        return Return.check(RC.OK);
     }
 
-    private static RC load()
+    private static void load()
     {
         CryptoSystem cs = null;
         Vector<String> cryptSP = new Vector<String>();
@@ -162,28 +157,24 @@ public class PasswordCollection
         }
         catch (Exceptions e)
         {
-            System.exit(500); // TODO abend; parse exception
+            ABEND.terminate(e);
         }
 
         for (int i = 0; i < cryptSP.size(); ++i)
         {
             db.addElement(cs.decryptPassword(cryptSP.elementAt(i)));
         }
-
-        changed = false;
-
-        return Return.check(RC.OK);
     }
 
-    public RC reload()
+    public void reload()
     {
-        return load();
+        load();
+        changed = false;
     }
 
-    public RC removePassword(SpecialPassword sp)
+    public void removePassword(SpecialPassword sp)
     {
         db.remove(sp);
         changed = true;
-        return Return.check(RC.OK);
     }
 }

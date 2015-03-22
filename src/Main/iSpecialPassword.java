@@ -3,10 +3,8 @@
  */
 package Main;
 
-import Common.Exceptions;
 import Logger.Logger;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 /**
  * @author lyubick

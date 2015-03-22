@@ -4,13 +4,10 @@
 package Main;
 
 import Common.Exceptions;
-import Common.Return.RC;
-import CryptoSystem.CryptoSystem;
+import Common.Exceptions.XC;
 import Logger.Logger;
 import UI.Controller;
 import UI.Controller.FORMS;
-import UI.LoginForm;
-import UI.ManagePasswordsForm;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -54,7 +51,8 @@ public class Main extends Application
         {
             System.out.println("Welcome!\n" + "Program should be launched with:\n"
                     + "-l=[level] where [level]=DEBUG,ERROR,WARNING,INFO,SILENT");
-            System.exit(RC.FAIL_TO_LAUNCH.ordinal());
+
+            ABEND.terminate(new Exceptions(XC.INIT_FAILURE));
         }
 
         for (String arg : args)
@@ -76,8 +74,7 @@ public class Main extends Application
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ABEND.terminate(e);
         }
     }
 }

@@ -3,14 +3,10 @@
  */
 package UI;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Common.Return;
-import Common.Return.RC;
 import Logger.Logger;
+import Main.ABEND;
 import javafx.stage.Stage;
 
 /**
@@ -57,7 +53,7 @@ public final class Controller
         if (self == null)
             self = new Controller(primaryStage);
         else
-            System.exit(RC.ABEND.ordinal());
+            ABEND.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
 
         forms = new AbstractForm[FORMS.END.ordinal()];
 

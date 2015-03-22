@@ -10,13 +10,12 @@ package Test;
 import java.util.Vector;
 
 import Logger.Logger;
+import Main.ABEND;
 import Main.SpecialPassword;
 import RSA.RSA;
 import SHA.SHA;
 import Common.Exceptions;
 import Common.FileIO;
-import Common.Return;
-import Common.Return.RC;
 import Common.Utilities;
 import CryptoSystem.CryptoSystem;
 
@@ -26,15 +25,15 @@ import CryptoSystem.CryptoSystem;
  */
 public class Test
 {
-    private static int            TestNr     = 0;
-    private static Vector<RC> TestStatus = new Vector<RC>();
-    private static int            TestOK     = 0;
+    private static int             TestNr     = 0;
+    private static Vector<Boolean> TestStatus = new Vector<Boolean>();
+    private static int             TestOK     = 0;
 
-    public static void launchTest(RC result)
+    public static void launchTest(boolean result)
     {
         ++TestNr;
 
-        if (result.equals(RC.OK))
+        if (result)
         {
             System.out.println(TestNr + ": PASSED!");
             ++TestOK;
@@ -48,46 +47,38 @@ public class Test
     }
 
     /* Test set */
-    public static RC TestRSA()
+    public static boolean TestRSA()
     {
         try
         {
-            RSA rsa = new RSA("12345", "54321", "6789");
-            rsa = new RSA("97531", "13579", "5463");
-            rsa = new RSA("15156", "6855", "232232");
+            new RSA("12345", "54321", "6789");
+            new RSA("97531", "13579", "5463");
+            new RSA("15156", "6855", "232232");
         }
         catch (Exceptions e)
         {
-            return RC.NOK;
+            return false;
         }
 
-        return RC.OK;
+        return true;
     }
 
-    public static RC TestSHA()
+    public static boolean TestSHA()
     {
         // SHA() now throws if self-test fails
         try
         {
-            SHA test = new SHA();
+            new SHA();
         }
         catch (Exceptions e)
         {
-            return RC.NOK;
+            return false;
         }
 
-        return RC.OK;
+        return true;
     }
 
-    public static RC TestRC()
-    {
-        Return.check(RC.SECURITY_BREACH);
-        Return.check(RC.NOK);
-
-        return Return.check(RC.OK);
-    }
-
-    public static RC TestSerialization()
+    public static boolean TestSerialization()
     {
         SpecialPassword sp = new SpecialPassword();
         SpecialPassword sp1 = null;
@@ -98,9 +89,9 @@ public class Test
         {
             rsa = new RSA("12345", "54321", "6789");
         }
-        catch (Exceptions e1)
+        catch (Exceptions e)
         {
-            return RC.NOK;
+            return false;
         }
 
         try
@@ -109,10 +100,10 @@ public class Test
         }
         catch (Exceptions e)
         {
-            return RC.NOK;
+            return true;
         }
 
-        if (sp.equals(sp1) != true) { return RC.NOK; }
+        if (sp.equals(sp1) != true) { return false; }
 
         try
         {
@@ -123,15 +114,13 @@ public class Test
         }
         catch (Exceptions e)
         {
-            return RC.NOK;
+            return false;
         }
 
-        if (sp.equals(sp2) != true) { return RC.NOK; }
-
-        return RC.OK;
+        return sp.equals(sp2);
     }
 
-    public static RC testFileIO()
+    public static boolean testFileIO()
     {
         final int strCount = 5;
         Vector<String> initialStrings = new Vector<String>();
@@ -157,24 +146,22 @@ public class Test
                     if (!resultStrings.elementAt(j).equals(initialStrings.elementAt(j)))
                     {
                         Logger.printError("strings does not match");
-                        return Return.check(RC.NOK);
+                        return false;
                     }
                 }
             }
             else
             {
-                return Return.check(RC.NOK);
+                return false;
             }
         }
         catch (Exceptions e)
         {
-            return Return.check(RC.NOK);
+            return false;
         }
 
-        return RC.OK;
+        return true;
     }
-
-     static void launchTestSuite(){} // TODO
 
     public static void main(String[] args)
     {
@@ -182,32 +169,27 @@ public class Test
 
         Logger.loggerON(parms[0].toString());
 
-        /* 1. */try
+        try
         {
-            launchTest(CryptoSystem.init("qwerty123", true));
+            CryptoSystem.init("qwerty123", true);
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ABEND.terminate(e);
         }
 
-        /* 2. */launchTest(TestRSA());
-        /* 3. */launchTest(TestSHA());
-        /* 4. */launchTest(TestRC());
-        /* 5. */launchTest(TestSerialization());
-        /* 6. */launchTest(testFileIO());
+        /* 1. */launchTest(TestRSA());
+        /* 2. */launchTest(TestSHA());
+        /* 3. */launchTest(TestSerialization());
+        /* 4. */launchTest(testFileIO());
 
         /* Summary */
         System.out.println("\n-= SUMMARY =-");
         for (int i = 0; i < TestStatus.size(); ++i)
-            System.out.println(""
-                    + (i + 1)
-                    + ": "
-                    + (TestStatus.elementAt(i).ordinal() == RC.OK.ordinal() ? "PASSED"
-                            : "FAILED"));
+            System.out.println("" + (i + 1) + ": "
+                    + (TestStatus.elementAt(i) ? "PASSED" : "FAILED"));
 
-        System.out.println("OVERALL: " + ((float)TestOK / TestNr * 100) + "%");
+        System.out.println("OVERALL: " + ((float) TestOK / TestNr * 100) + "%");
         System.out.println("STATUS: " + (TestOK == TestNr ? "OK" : "NOK"));
 
         Logger.loggerOFF();

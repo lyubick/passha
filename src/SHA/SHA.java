@@ -66,7 +66,6 @@ public class SHA
 
         /* Test if everything is OK */
 
-        // FIXME: somehow SHA fails to produce same output when launched several times;
         for (int i = 0; i < 5; ++i)
         {
             String testStr =

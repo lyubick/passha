@@ -5,6 +5,7 @@ package UI;
 
 import Common.Exceptions;
 import Languages.Texts.TextID;
+import Main.ABEND;
 import Main.PasswordCollection;
 import Main.iSpecialPassword;
 import UI.Controller.FORMS;
@@ -34,13 +35,14 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 600;
     }
 
-    private final TableView<iSpecialPassword> table       = new TableView<iSpecialPassword>();
-    private TextField                         tf_pass     = null;
-    private final int                         buttonWidth = 70;
-    private Button                            b_Save      = null;
-    private Button                            b_Discard   = null;
-
-    // private final iSpecialPassword lastShown = null;
+    private final TableView<iSpecialPassword> table     = new TableView<iSpecialPassword>();
+    private TextField                         tf_pass   = null;
+    private Button                            b_Save    = null;
+    private Button                            b_Discard = null;
+    private Button                            b_New     = null;
+    private Button                            b_Delete  = null;
+    private Button                            b_Copy    = null;
+    private Button                            b_Export  = null;
 
     private void handleButtons()
     {
@@ -51,8 +53,7 @@ public class ManagePasswordsForm extends AbstractForm
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ABEND.terminate(e);
         }
     }
 
@@ -61,27 +62,20 @@ public class ManagePasswordsForm extends AbstractForm
         int currentGridLine = 0;
         tf_pass = new TextField();
 
-        Button b_New = new Button(TextID.NEW.toString());
-        Button b_Delete = new Button(TextID.DELETE.toString());
-
-        Button b_Copy = new Button("Copy to clipboard");
-
-        Button b_Export = new Button(TextID.EXPORT.toString());
-        b_Save = new Button("Save");
-        b_Discard = new Button("Discard");
-
-        b_New.setMinWidth(buttonWidth);
-        b_Delete.setMinWidth(buttonWidth);
-        b_Export.setMinWidth(buttonWidth);
-        b_Save.setMinWidth(buttonWidth);
-        b_Discard.setMinWidth(buttonWidth);
+        b_New = getButton(TextID.NEW.toString());
+        b_Delete = getButton(TextID.DELETE.toString());
+        b_Copy = getButton(TextID.COPY_CLIPBOARD.toString());
+        b_Export = getButton(TextID.EXPORT.toString());
+        b_Save = getButton(TextID.SAVE.toString());
+        b_Discard = getButton(TextID.DISCARD.toString());
 
         table.setMinHeight(WINDOW.height - 300);
         table.setMinWidth(WINDOW.width - 200);
+
         tf_pass.setMaxWidth(200);
         tf_pass.setEditable(false);
 
-        b_Export.setDisable(true); // TODO: implement
+        b_Export.setDisable(true);
         b_Save.setDisable(true);
         b_Discard.setDisable(true);
 
@@ -139,8 +133,7 @@ public class ManagePasswordsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ABEND.terminate(e);
                 }
 
                 handleButtons();
@@ -163,8 +156,7 @@ public class ManagePasswordsForm extends AbstractForm
                     }
                     catch (Exceptions e)
                     {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        ABEND.terminate(e);
                     }
                 }
 
@@ -184,8 +176,7 @@ public class ManagePasswordsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ABEND.terminate(e);
                 }
                 handleButtons();
             }
@@ -202,8 +193,7 @@ public class ManagePasswordsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ABEND.terminate(e);
                 }
                 handleButtons();
                 try
@@ -212,8 +202,7 @@ public class ManagePasswordsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ABEND.terminate(e);
                 }
             }
         });

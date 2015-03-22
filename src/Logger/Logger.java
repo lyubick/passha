@@ -7,9 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-
-import Common.Return.RC;
-import Common.Return;
+import Common.Exceptions.XC;
+import Common.Exceptions;
+import Main.ABEND;
 
 /**
  * @author lyubick
@@ -22,7 +22,7 @@ public final class Logger // Static class
         SILENT,
         ERROR,
         WARNING,
-        INFO,
+        VERBOSE,
         DEBUG
     }
 
@@ -38,7 +38,7 @@ public final class Logger // Static class
 
         retMap.put("DEBUG", LOGLEVELS.DEBUG);
         retMap.put("ERROR", LOGLEVELS.ERROR);
-        retMap.put("INFO", LOGLEVELS.INFO);
+        retMap.put("INFO", LOGLEVELS.VERBOSE);
         retMap.put("SILENT", LOGLEVELS.SILENT);
         retMap.put("WARNING", LOGLEVELS.WARNING);
 
@@ -70,7 +70,7 @@ public final class Logger // Static class
 
     public static void printInfo(String msg)
     {
-        prepareAndLog(LOGLEVELS.INFO, msg);
+        prepareAndLog(LOGLEVELS.VERBOSE, msg);
     }
 
     public static void printDebug(String msg)
@@ -82,7 +82,7 @@ public final class Logger // Static class
     {
         if (!initialized) return;
 
-        if (lvl.ordinal() > logLevel.ordinal()) return;
+        //if (lvl.ordinal() < logLevel.ordinal()) return;
 
         switch (lvl)
         {
@@ -97,7 +97,7 @@ public final class Logger // Static class
                 LOG_ADDS = "WARN  : ";
                 break;
 
-            case INFO:
+            case VERBOSE:
                 LOG_ADDS = "INFO  : ";
                 break;
 
@@ -130,7 +130,7 @@ public final class Logger // Static class
         writer.println(log);
     }
 
-    public static RC loggerON(String log)
+    public static void loggerON(String log)
     {
         logLevel = (argsMap.get(log) != null) ? argsMap.get(log) : LOGLEVELS.SILENT;
 
@@ -142,22 +142,17 @@ public final class Logger // Static class
             }
             catch (FileNotFoundException e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                ABEND.terminate(new Exceptions(XC.INIT_FAILURE));
             }
             initialized = true;
         }
         else
-            return Return.check(RC.NOK);
-
-        return RC.OK;
+            ABEND.terminate(new Exceptions(XC.SECURITY_BREACH));
     }
 
-    public static RC loggerOFF()
+    public static void loggerOFF()
     {
         if (initialized) writer.close();
-
-        return RC.OK;
     }
 
     private Logger(LOGLEVELS lvl)

@@ -9,8 +9,6 @@ import java.util.BitSet;
 
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Common.Return;
-import Common.Return.RC;
 import CryptoSystem.CryptoSystem;
 import Logger.Logger;
 
@@ -32,8 +30,8 @@ public class SpecialPassword implements Serializable
     private String            name;
     private String            comment;
     private String            url;
-    private final byte        length;
-    private final String      specialChars;
+    private int               length;
+    private String            specialChars;
     private BitSet            paramsMask       = null;
     private long              shaCycles;              // generated in
                                                        // PasswordCollection;
@@ -57,7 +55,7 @@ public class SpecialPassword implements Serializable
         Logger.printDebug("SpecialPassword DEFAULT constructor... DONE!");
     }
 
-    public SpecialPassword(String name, String comment, String url, byte length, BitSet paramsMask,
+    public SpecialPassword(String name, String comment, String url, int length, BitSet paramsMask,
             String specialChars) throws Exceptions
     {
         Logger.printDebug("SpecialPassword constructor... START");
@@ -193,7 +191,8 @@ public class SpecialPassword implements Serializable
     {
         Logger.printError("Illegal call of hashCode.");
         assert false : "Illegal call of hashCode.";
-        return RC.NONEXISTING_FUNCTION_CALL.ordinal();
+        ABEND.terminate(new Exceptions(XC.INIT_FAILURE));
+        return 0;
     }
 
     // TODO: speparate method for password generation
@@ -209,7 +208,8 @@ public class SpecialPassword implements Serializable
             StringBuilder clearPass = new StringBuilder(hash.substring(0, this.length));
 
             // set special characters
-            if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal()) && specialChars.length() != 0)
+            if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal())
+                    && specialChars.length() != 0)
             {
                 byte specialCharacterPosition = (byte) hash.charAt(hash.length() - 2);
                 byte insertPosition = (byte) hash.charAt(hash.length() - 3);
@@ -249,8 +249,7 @@ public class SpecialPassword implements Serializable
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ABEND.terminate(e);
         }
         return "";
     }

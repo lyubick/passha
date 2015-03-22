@@ -10,10 +10,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Vector;
-
 import Common.Exceptions.XC;
-import Common.Return.RC;
 import Logger.Logger;
+import Main.ABEND;
 
 /**
  * @author curious-odd-man
@@ -21,10 +20,10 @@ import Logger.Logger;
  */
 public final class FileIO
 {
-    private String file = "";
-    private String backup = "";
+    private String        file   = "";
+    private String        backup = "";
 
-    private static FileIO self = null;
+    private static FileIO self   = null;
 
     private FileIO(String filename)
     {
@@ -36,7 +35,7 @@ public final class FileIO
     {
         filename += ".cif";
 
-        if (self != null) System.exit(RC.ABEND.ordinal()); // TODO
+        if (self != null) ABEND.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
 
         File test = new File(filename);
 
@@ -53,8 +52,7 @@ public final class FileIO
                 }
                 catch (FileNotFoundException e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ABEND.terminate(new Exceptions(XC.SECURITY_BREACH));
                 }
             }
             else
@@ -111,13 +109,13 @@ public final class FileIO
             }
             catch (IOException e)
             {
-                throw new Exceptions(XC.CLOSE_ERROR);
+                ABEND.terminate(new Exceptions(XC.READ_ERROR));
             }
 
         }
         catch (FileNotFoundException e)
         {
-            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS); // TODO abend
+            ABEND.terminate(new Exceptions(XC.READ_ERROR));
         }
 
         return inLines;
@@ -130,7 +128,7 @@ public final class FileIO
      *
      * @throws Exceptions
      */
-    public RC writeToFile(Vector<String> outStrings) throws Exceptions
+    public void writeToFile(Vector<String> outStrings) throws Exceptions
     {
         try
         {
@@ -149,9 +147,7 @@ public final class FileIO
         }
         catch (FileNotFoundException e)
         {
-            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS); // TODO abend
+            ABEND.terminate(new Exceptions(XC.WRITE_ERROR));
         }
-
-        return Return.check(RC.OK);
     }
 }

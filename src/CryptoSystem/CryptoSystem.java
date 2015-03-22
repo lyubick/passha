@@ -12,12 +12,10 @@ import SHA.SHA;
 import RSA.RSA;
 import Common.Exceptions;
 import Common.FileIO;
-import Common.Return;
 import Common.Exceptions.XC;
-import Common.Return.RC;
 import Common.Utilities;
 import Logger.Logger;
-import Main.PasswordCollection;
+import Main.ABEND;
 import Main.SpecialPassword;
 
 /**
@@ -87,8 +85,7 @@ public final class CryptoSystem
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace(); // TODO black magic
+            ABEND.terminate(e);
         }
 
         return "Error";
@@ -102,21 +99,21 @@ public final class CryptoSystem
         }
         catch (Exceptions e)
         {
-            System.exit(500); // TODO abend
+            ABEND.terminate(e);
         }
 
         return null;
     }
 
 
-    public static RC init(String masterPassword, boolean isNewUser) throws Exceptions
+    public static void init(String masterPassword, boolean isNewUser) throws Exceptions
     {
         Logger.printDebug("CryptoSystem init STARTS...");
 
         if (self != null)
         {
             Logger.printError("CryptoSystem already initialized... exiting...");
-            System.exit(RC.SECURITY_BREACH.ordinal()); // TODO abend
+            ABEND.terminate(new Exceptions(XC.SECURITY_BREACH));
         }
 
 //==========  SHA initialization START: ==========================================================
@@ -129,7 +126,7 @@ public final class CryptoSystem
         catch (Exceptions e)
         {
             Logger.printError("SHA initialization failed... exiting...");
-            System.exit(RC.SECURITY_FAILURE.ordinal()); // TODO abend
+            ABEND.terminate(e);
         }
 
         Logger.printDebug("SHA init DONE!");
@@ -151,8 +148,7 @@ public final class CryptoSystem
         catch (Common.Exceptions e)
         {
             Logger.printError("RSA initialization failed... exiting...");
-            System.exit(RC.SECURITY_FAILURE.ordinal()); // Fatal
-                                                               // error...
+            ABEND.terminate(e);
         }
         Logger.printDebug("RSA init DONE!");
 //==========  RSA initialization END: =============================================================
@@ -167,8 +163,14 @@ public final class CryptoSystem
         }
         catch (Exceptions e)
         {
-            Logger.printInfo("File does not exists. No passphrase to asscoiate with...");
-            throw new Exceptions(XC.UNKNOWN_USER);
+            if (e.getCode() == XC.FILE_DOES_NOT_EXISTS)
+            {
+                Logger.printInfo("No User file found. New user?");
+                throw new Exceptions(XC.UNKNOWN_USER);
+            }
+            else {
+                ABEND.terminate(e);
+            }
         }
         Logger.printDebug("File I/O init DONE...");
 //==========  FILE I/O initialization END: ========================================================
@@ -179,7 +181,6 @@ public final class CryptoSystem
         self = new CryptoSystem();
 
         Logger.printDebug("CryptoSystem init DONE!");
-        return Return.check(RC.OK);
     }
 
     public String getPassword(long cycles)
