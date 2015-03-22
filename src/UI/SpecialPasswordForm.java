@@ -35,23 +35,33 @@ import javafx.stage.Stage;
  */
 public class SpecialPasswordForm extends AbstractForm
 {
-    private final int       LABELS_COLUMN                  = 0;
-    private final int       TEXT_FIELDS_COLUMN             = 1;
-    private final int       TEXT_FIELD_LENGTH_SIZE         = 40;
-    private final int       ERROR_TEXT_LINE                = 7;
-    private final int       TEXT_FIELDS_WIDTH              = 300;
-    private final String    DEFAULT_LENGTH                 = "16";
-    private final String    MIN_PASSWORD_LENGTH            = "8";
-    private final String    MAX_PASSWORD_LENGTH            = "64";
-    private final String    SPECIAL_CHARACTERS_DEFAULT_SET = "`~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
+    private final int    LABELS_COLUMN                  = 0;
+    private final int    TEXT_FIELDS_COLUMN             = 1;
+    private final int    TEXT_FIELD_LENGTH_SIZE         = 40;
+    private final int    ERROR_TEXT_LINE                = 7;
+    private final int    TEXT_FIELDS_WIDTH              = 300;
+    private final String DEFAULT_LENGTH                 = "16";
+    private final String MIN_PASSWORD_LENGTH            = "8";
+    private final String MAX_PASSWORD_LENGTH            = "64";
+    private final String SPECIAL_CHARACTERS_DEFAULT_SET = "`~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
 
-    private final Label     l_errorLabel                   = new Label("");
+    private final Label  l_errorLabel                   = new Label("");
 
-    private final TextField tf_name                        = new TextField();
-    private final TextField tf_comment                     = new TextField();
-    private final TextField tf_url                         = new TextField();
-    private final TextField tf_length                      = new TextField();
-    private final TextField tf_specialChars                = new TextField();
+    private TextField    tf_name                        = null;
+    private TextField    tf_comment                     = null;
+    private TextField    tf_url                         = null;
+    private TextField    tf_length                      = null;
+    private TextField    tf_specialChars                = null;
+    private Button       b_OK                           = null;
+    private Button       b_cancel                       = null;
+    private Label        l_name                         = null;
+    private Label        l_comment                      = null;
+    private Label        l_url                          = null;
+    private Label        lLength                        = null;
+    private Label        lSpecialChars                  = null;
+    private CheckBox     cb_specialChars                = null;
+    private CheckBox     cb_upperCaseChar               = null;
+    private HBox         buttonsBox                     = null;
 
     private EventHandler<KeyEvent> numFilter()
     {
@@ -71,32 +81,75 @@ public class SpecialPasswordForm extends AbstractForm
         return aux;
     }
 
+    private EventHandler<KeyEvent> specialCharactersFieldFilter()
+    {
+        EventHandler<KeyEvent> aux = new EventHandler<KeyEvent>()
+        {
+            @Override
+            public void handle(KeyEvent keyEvent)
+            {
+                if (!SPECIAL_CHARACTERS_DEFAULT_SET.contains(keyEvent.getCharacter())
+                        || tf_specialChars.getText().contains(keyEvent.getCharacter()))
+                {
+                    keyEvent.consume();
+                }
+            }
+        };
+        return aux;
+    }
+
     // TODO add text field for special characters and show check box too
     public SpecialPasswordForm()
     {
         int currentGridLine = 0;
 
-        Button b_OK = new Button(TextID.CREATE.toString());
-        Button b_cancel = new Button(TextID.CANCEL.toString());
-        // Button b_incLength = new Button("+");
-        // Button b_decLength = new Button("-");
+        // ========== BUTTONS ========== //
 
-        Text l_name = new Text(TextID.NAME.toString());
-        Label l_comment = new Label(TextID.COMMENT.toString());
-        Label l_url = new Label(TextID.URL.toString());
-        Label lLength = new Label(TextID.LENGTH.toString());
-        Label lSpecialChars = new Label(TextID.SPECIAL_CHARACTERS.toString());
+        b_OK = getButton(TextID.CREATE.toString());
+        b_cancel = getButton(TextID.CANCEL.toString());
 
-        CheckBox cb_specialChars = new CheckBox(TextID.MUST_CONTAINT_SPECIAL_CHARS.toString());
-        CheckBox cb_upperCaseChar = new CheckBox(TextID.MUST_CONTAIN_UPPER_CASE_CHAR.toString());
+        buttonsBox = new HBox();
+
+        buttonsBox.setSpacing(HGAP);
+        buttonsBox.setAlignment(Pos.BASELINE_CENTER);
+        buttonsBox.getChildren().addAll(b_OK, b_cancel);
+
+        HBox.setHgrow(b_OK, Priority.ALWAYS);
+        HBox.setHgrow(b_cancel, Priority.ALWAYS);
+        b_OK.setMaxWidth(Double.MAX_VALUE);
+        b_cancel.setMaxWidth(Double.MAX_VALUE);
+
+        // ========== LABELS ========== //
+
+        l_name = new Label(TextID.NAME.toString());
+        l_comment = new Label(TextID.COMMENT.toString());
+        l_url = new Label(TextID.URL.toString());
+        lLength = new Label(TextID.LENGTH.toString());
+        lSpecialChars = new Label(TextID.SPECIAL_CHARACTERS.toString());
+
+        // ========== CHECK BOXES ========== //
+
+        cb_specialChars = new CheckBox(TextID.MUST_CONTAINT_SPECIAL_CHARS.toString());
+        cb_upperCaseChar = new CheckBox(TextID.MUST_CONTAIN_UPPER_CASE_CHAR.toString());
         cb_specialChars.setSelected(true);
         cb_upperCaseChar.setSelected(true);
+
+        // ========== TEXTS ========== //
+
+        tf_name = new TextField();
+        tf_comment = new TextField();
+        tf_url = new TextField();
+        tf_length = new TextField();
+        tf_specialChars = new TextField();
 
         tf_length.setMaxWidth(TEXT_FIELD_LENGTH_SIZE);
         tf_name.setMaxWidth(TEXT_FIELDS_WIDTH);
         tf_name.setMinWidth(TEXT_FIELDS_WIDTH);
         tf_specialChars.setText(SPECIAL_CHARACTERS_DEFAULT_SET);
+        tf_specialChars.addEventFilter(KeyEvent.KEY_TYPED, specialCharactersFieldFilter());
         tf_length.addEventFilter(KeyEvent.KEY_TYPED, numFilter());
+
+        // ========== GRID ========== //
 
         grid.add(l_name, LABELS_COLUMN, currentGridLine);
         grid.add(tf_name, TEXT_FIELDS_COLUMN, currentGridLine);
@@ -126,21 +179,11 @@ public class SpecialPasswordForm extends AbstractForm
 
         grid.add(l_errorLabel, TEXT_FIELDS_COLUMN, ERROR_TEXT_LINE);
 
-        HBox buttonsBox = new HBox();
-
-        buttonsBox.setSpacing(HGAP);
-        buttonsBox.setAlignment(Pos.BASELINE_CENTER);
-        buttonsBox.getChildren().addAll(b_OK, b_cancel);
-
-        HBox.setHgrow(b_OK, Priority.ALWAYS);
-        HBox.setHgrow(b_cancel, Priority.ALWAYS);
-        b_OK.setMaxWidth(Double.MAX_VALUE);
-        b_cancel.setMaxWidth(Double.MAX_VALUE);
-
         grid.add(buttonsBox, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
-        // TODO We should split code and move event handlers seperately.
+        // ========== LISTENERS ========== //
+
         tf_length.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
@@ -151,6 +194,7 @@ public class SpecialPasswordForm extends AbstractForm
                     tf_length.setText("");
                 else
                 {
+                    if (tf_length.getText().length() == 0) tf_length.setText(DEFAULT_LENGTH);
                     if (Integer.parseInt(tf_length.getText()) > 64)
                         tf_length.setText(MAX_PASSWORD_LENGTH);
 

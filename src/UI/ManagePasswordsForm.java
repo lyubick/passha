@@ -4,11 +4,13 @@
 package UI;
 
 import Common.Exceptions;
+import Common.Exceptions.XC;
 import Languages.Texts.TextID;
 import Main.ABEND;
 import Main.PasswordCollection;
 import Main.iSpecialPassword;
 import UI.Controller.FORMS;
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -19,9 +21,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * @author curious-odd-man
@@ -55,6 +61,31 @@ public class ManagePasswordsForm extends AbstractForm
         {
             ABEND.terminate(e);
         }
+    }
+
+    private void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
+    {
+        if (btn.getScene() == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        btn.getScene().getAccelerators().put(cmb, new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                // Do it with stile - show animation
+                btn.arm();
+                PauseTransition pt = new PauseTransition(Duration.millis(300));
+                pt.setOnFinished(new EventHandler<ActionEvent>()
+                {
+                    @Override
+                    public void handle(ActionEvent event)
+                    {
+                        btn.fire();
+                        btn.disarm();
+                    }
+                });
+                pt.play();
+            }
+        });
     }
 
     public ManagePasswordsForm()
@@ -121,6 +152,27 @@ public class ManagePasswordsForm extends AbstractForm
         GridPane.setMargin(b_Save, new Insets(0, 0, 40, 0));
         GridPane.setMargin(b_Discard, new Insets(0, 0, 80, 0));
         GridPane.setMargin(b_Copy, new Insets(0, buttonWidth, 0, 210));
+
+        try
+        {
+            setButtonShortcut(b_New,
+                    new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D,
+                    KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C,
+                    KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E,
+                    KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Save, new KeyCodeCombination(KeyCode.S,
+                    KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Discard, new KeyCodeCombination(KeyCode.Z,
+                    KeyCombination.SHORTCUT_DOWN));
+
+        }
+        catch (Exceptions e)
+        {
+            ABEND.terminate(e);
+        }
 
         b_New.setOnAction(new EventHandler<ActionEvent>()
         {
