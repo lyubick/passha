@@ -108,7 +108,7 @@ public class LoginForm extends AbstractForm
                         }
                         catch (Exceptions e)
                         {
-                            if (e.getCode() == XC.FILE_DOES_NOT_EXISTS)
+                            if (e.getCode() == XC.UNKNOWN_USER)
                             {
                                 b_Register.setVisible(true);
 

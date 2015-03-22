@@ -173,11 +173,6 @@ public class SpecialPasswordForm extends AbstractForm
                 BitSet paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
                 int passLength = Integer.parseInt(tf_length.getText());
 
-                // TODO make it nice
-                if (passLength < 8)
-                    passLength = 8;
-                else if (passLength > 16) passLength = 16;
-
                 if (cb_specialChars.isSelected())
                 {
                     paramsMask.set(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
