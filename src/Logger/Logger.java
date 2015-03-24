@@ -82,7 +82,7 @@ public final class Logger // Static class
     {
         if (!initialized) return;
 
-        //if (lvl.ordinal() < logLevel.ordinal()) return;
+        // if (lvl.ordinal() < logLevel.ordinal()) return;
 
         switch (lvl)
         {

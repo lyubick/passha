@@ -6,7 +6,6 @@ package UI;
 import java.util.BitSet;
 
 import Common.Exceptions;
-import Common.Exceptions.XC;
 import Languages.Texts.TextID;
 import Logger.Logger;
 import Main.ABEND;
@@ -26,7 +25,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -43,7 +41,7 @@ public class SpecialPasswordForm extends AbstractForm
     private final String DEFAULT_LENGTH                 = "16";
     private final String MIN_PASSWORD_LENGTH            = "8";
     private final String MAX_PASSWORD_LENGTH            = "64";
-    private final String SPECIAL_CHARACTERS_DEFAULT_SET = "`~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
+    private final String SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
 
     private final Label  l_errorLabel                   = new Label("");
 
@@ -260,7 +258,6 @@ public class SpecialPasswordForm extends AbstractForm
 
         cb_specialChars.setOnAction(new EventHandler<ActionEvent>()
         {
-
             @Override
             public void handle(ActionEvent arg0)
             {

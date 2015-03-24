@@ -7,6 +7,10 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.BitSet;
 
+import javafx.concurrent.Task;
+
+import com.sun.javafx.collections.SetListenerHelper;
+
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import CryptoSystem.CryptoSystem;
@@ -18,7 +22,6 @@ import Logger.Logger;
  */
 public class SpecialPassword implements Serializable
 {
-
     public enum ParamsMaskBits
     {
         HAS_SPECIAL_CHARACTERS,
@@ -27,16 +30,18 @@ public class SpecialPassword implements Serializable
         TOTAL_COUNT,
     }
 
+    String                    asyncronouslyGeneratedPassword = "";
     private String            name;
     private String            comment;
     private String            url;
     private int               length;
     private String            specialChars;
-    private BitSet            paramsMask       = null;
-    private long              shaCycles;              // generated in
-                                                       // PasswordCollection;
+    private BitSet            paramsMask                     = null;
+    private long              shaCycles;                            // generated
+                                                                     // in
+                                                                     // PasswordCollection;
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID               = 1L;
 
     public SpecialPassword()
     {
@@ -198,11 +203,12 @@ public class SpecialPassword implements Serializable
     // TODO: speparate method for password generation
     // TODO: check that password meets rules and do re-hash if not;
 
-    public String getPassword()
+    public String getPassword(Task<Void> passwordCalculation)
     {
         try
         {
-            String hash = CryptoSystem.getInstance().getPassword(this.shaCycles);
+            String hash =
+                    CryptoSystem.getInstance().getPassword(this.shaCycles, passwordCalculation);
 
             // take first @a this.length chars from hash
             StringBuilder clearPass = new StringBuilder(hash.substring(0, this.length));
@@ -211,6 +217,7 @@ public class SpecialPassword implements Serializable
             if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal())
                     && specialChars.length() != 0)
             {
+                Logger.printDebug("use special characters");
                 byte specialCharacterPosition = (byte) hash.charAt(hash.length() - 2);
                 byte insertPosition = (byte) hash.charAt(hash.length() - 3);
 
@@ -252,6 +259,11 @@ public class SpecialPassword implements Serializable
             ABEND.terminate(e);
         }
         return "";
+    }
+
+    public String getPassword()
+    {
+        return getPassword(null);
     }
 
 }

@@ -5,6 +5,7 @@ package Main;
 
 import Logger.Logger;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.concurrent.Task;
 
 /**
  * @author lyubick
@@ -12,9 +13,9 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class iSpecialPassword
 {
-    private SimpleStringProperty name;
-    private SimpleStringProperty comment;
-    private SimpleStringProperty url;
+    private SimpleStringProperty       name;
+    private SimpleStringProperty       comment;
+    private SimpleStringProperty       url;
     private final SimpleStringProperty password;
 
     private final SpecialPassword      origin;
@@ -41,6 +42,11 @@ public class iSpecialPassword
     public String getPassword()
     {
         return origin.getPassword();
+    }
+
+    public String getPassword(Task<Void> passwordCalculation)
+    {
+        return origin.getPassword(passwordCalculation);
     }
 
     public void showPassword(boolean show)

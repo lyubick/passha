@@ -6,11 +6,13 @@ package UI;
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import Languages.Texts.TextID;
+import Logger.Logger;
 import Main.ABEND;
 import Main.PasswordCollection;
 import Main.iSpecialPassword;
 import UI.Controller.FORMS;
 import javafx.animation.PauseTransition;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -41,14 +43,16 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 600;
     }
 
-    private final TableView<iSpecialPassword> table     = new TableView<iSpecialPassword>();
-    private TextField                         tf_pass   = null;
-    private Button                            b_Save    = null;
-    private Button                            b_Discard = null;
-    private Button                            b_New     = null;
-    private Button                            b_Delete  = null;
-    private Button                            b_Copy    = null;
-    private Button                            b_Export  = null;
+    private final TableView<iSpecialPassword> table               =
+                                                                          new TableView<iSpecialPassword>();
+    private TextField                         tf_pass             = null;
+    private Button                            b_Save              = null;
+    private Button                            b_Discard           = null;
+    private Button                            b_New               = null;
+    private Button                            b_Delete            = null;
+    private Button                            b_Copy              = null;
+    private Button                            b_Export            = null;
+    Task<Void>                                passwordCalculation = null;
 
     private void handleButtons()
     {
@@ -264,8 +268,38 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(MouseEvent event)
             {
-                if (table.getSelectionModel().getSelectedItem() != null)
-                    tf_pass.setText(table.getSelectionModel().getSelectedItem().getPassword());
+                if (passwordCalculation != null)
+                {
+                    passwordCalculation.cancel();
+                }
+
+                passwordCalculation = new Task<Void>()
+                {
+                    @Override
+                    protected Void call() throws Exception
+                    {
+                        updateMessage("Calculating...");
+                        updateMessage(table.getSelectionModel().getSelectedItem().getPassword(this));
+                        return null;
+                    }
+                };
+
+                tf_pass.textProperty().bind(passwordCalculation.messageProperty());
+                passwordCalculation.setOnSucceeded(EventHandler -> {
+                    tf_pass.textProperty().unbind();
+                    Logger.printDebug("successfully finished");
+                    passwordCalculation = null;
+                });
+
+                passwordCalculation.setOnCancelled(EventHandler -> {
+                    tf_pass.textProperty().unbind();
+                    Logger.printDebug("cancelled finished");
+                    passwordCalculation = null;
+                });
+
+                Thread calculatePasswordThread = new Thread(passwordCalculation);
+                calculatePasswordThread.setDaemon(true);
+                calculatePasswordThread.start();
             }
         });
     }

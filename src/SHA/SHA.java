@@ -246,7 +246,7 @@ public class SHA
         return output;
     }
 
-    public byte[] getBytesSHA512(final byte[] input)
+    public synchronized byte[] getBytesSHA512(final byte[] input)
     {
         initializeSHA512();
         padMessage(input);
@@ -263,7 +263,7 @@ public class SHA
         return getResult();
     }
 
-    public String getStringSHA512(final byte[] input)
+    public synchronized String getStringSHA512(final byte[] input)
     {
         return bytesToHex(getBytesSHA512(input));
     }
