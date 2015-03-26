@@ -5,7 +5,10 @@ package UI;
 
 import java.util.BitSet;
 
+import javax.swing.DebugGraphics;
+
 import Common.Exceptions;
+import Common.Exceptions.XC;
 import Languages.Texts.TextID;
 import Logger.Logger;
 import Main.ABEND;
@@ -36,12 +39,13 @@ public class SpecialPasswordForm extends AbstractForm
     private final int    LABELS_COLUMN                  = 0;
     private final int    TEXT_FIELDS_COLUMN             = 1;
     private final int    TEXT_FIELD_LENGTH_SIZE         = 40;
-    private final int    ERROR_TEXT_LINE                = 7;
     private final int    TEXT_FIELDS_WIDTH              = 300;
     private final String DEFAULT_LENGTH                 = "16";
     private final String MIN_PASSWORD_LENGTH            = "8";
     private final String MAX_PASSWORD_LENGTH            = "64";
     private final String SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
+    private final int    maxPasswordLength              = 64;
+    private final int    minPasswordLength              = 8;
 
     private final Label  l_errorLabel                   = new Label("");
 
@@ -175,9 +179,10 @@ public class SpecialPasswordForm extends AbstractForm
         grid.add(tf_specialChars, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
-        grid.add(l_errorLabel, TEXT_FIELDS_COLUMN, ERROR_TEXT_LINE);
-
         grid.add(buttonsBox, TEXT_FIELDS_COLUMN, currentGridLine);
+        currentGridLine++;
+
+        grid.add(l_errorLabel, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
         // ========== LISTENERS ========== //
@@ -193,10 +198,10 @@ public class SpecialPasswordForm extends AbstractForm
                 else
                 {
                     if (tf_length.getText().length() == 0) tf_length.setText(DEFAULT_LENGTH);
-                    if (Integer.parseInt(tf_length.getText()) > 64)
+                    if (Integer.parseInt(tf_length.getText()) > maxPasswordLength)
                         tf_length.setText(MAX_PASSWORD_LENGTH);
 
-                    if (Integer.parseInt(tf_length.getText()) < 8)
+                    if (Integer.parseInt(tf_length.getText()) < minPasswordLength)
                         tf_length.setText(MIN_PASSWORD_LENGTH);
                 }
 
@@ -234,7 +239,10 @@ public class SpecialPasswordForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    l_errorLabel.setText(TextID.ERR_NAME_ALREADY_TAKEN.toString());
+                    if (e.getCode() == XC.MISSING_MANDATORY_DATA)
+                        l_errorLabel.setText(TextID.ERR_MISSING_PASSWORD_NAME.toString());
+                    else if (e.getCode() == XC.PASSWORD_ALREADY_EXISTS)
+                        l_errorLabel.setText(TextID.ERR_NAME_ALREADY_TAKEN.toString());
                 }
             }
         });

@@ -13,8 +13,6 @@ import Common.Exceptions.XC;
 import Common.Utilities;
 /* Logging */
 import Logger.Logger;
-import Main.ABEND;
-
 import java.math.BigInteger;
 
 public final class RSA
@@ -133,8 +131,7 @@ public final class RSA
         cipher = decrypt(cipher);
         Logger.printDebug(cipher);
 
-        if (!cipher.equals(alphabet))
-            throw new Exceptions(XC.INIT_FAILURE);
+        if (!cipher.equals(alphabet)) throw new Exceptions(XC.INIT_FAILURE);
     }
 
     /**

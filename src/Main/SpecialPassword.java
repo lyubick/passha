@@ -9,8 +9,6 @@ import java.util.BitSet;
 
 import javafx.concurrent.Task;
 
-import com.sun.javafx.collections.SetListenerHelper;
-
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import CryptoSystem.CryptoSystem;
@@ -214,6 +212,7 @@ public class SpecialPassword implements Serializable
             StringBuilder clearPass = new StringBuilder(hash.substring(0, this.length));
 
             // set special characters
+            // todo more special characters
             if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal())
                     && specialChars.length() != 0)
             {

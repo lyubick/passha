@@ -3,13 +3,19 @@
  */
 package UI;
 
+import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import Common.Exceptions;
+import Common.Exceptions.XC;
 import Main.ABEND;
 
 /**
@@ -37,12 +43,14 @@ public abstract class AbstractForm
         public static final int height = 400;
     }
 
-    protected GridPane  grid         = new GridPane();
-    protected Scene     scene        = new Scene(grid, WINDOW.width, WINDOW.height);
+    protected GridPane  grid           = new GridPane();
+    protected Scene     scene          = new Scene(grid, WINDOW.width, WINDOW.height);
 
-    protected final int buttonHeight = 30;
-    protected final int buttonWidth  = 80;
-    protected final int buttonXWidth = 100;
+    protected final int buttonHeight   = 30;
+    protected final int buttonWidth    = 80;
+    protected final int buttonXWidth   = 100;
+
+    protected final int buttonHoldTime = 300;
 
     public abstract void draw(Stage stage) throws Exceptions;
 
@@ -79,10 +87,35 @@ public abstract class AbstractForm
         tmp.setMinWidth(buttonWidth);
         tmp.setMinHeight(buttonHeight);
 
-        if (tmp.getWidth() != buttonWidth)
-            tmp.setMinWidth(buttonXWidth);
+        if (tmp.getWidth() != buttonWidth) tmp.setMinWidth(buttonXWidth);
 
         return tmp;
     }
 
+    // note: this should be done AFTER buttons is added to scene, else will
+    // throw
+    protected void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
+    {
+        if (btn.getScene() == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        btn.getScene().getAccelerators().put(cmb, new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                // Do it with stile - show animation
+                btn.arm();
+                PauseTransition pt = new PauseTransition(Duration.millis(buttonHoldTime));
+                pt.setOnFinished(new EventHandler<ActionEvent>()
+                {
+                    @Override
+                    public void handle(ActionEvent event)
+                    {
+                        btn.fire();
+                        btn.disarm();
+                    }
+                });
+                pt.play();
+            }
+        });
+    }
 }

@@ -97,8 +97,10 @@ public class LoginForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
+                // We definetely must comment such logs in production version :D
                 Logger.printDebug("Entered Password: " + pf_Password.getText());
 
+                // maybe just disable buttons when password length is 0
                 if (pf_Password.getText().length() != 0)
                 {
                     if (!pf_PasswordConfirm.isVisible())
@@ -130,12 +132,13 @@ public class LoginForm extends AbstractForm
             }
         });
 
+        // disable button when length == 0; (maybe even disable unless length is same as pf_Password )
         b_Register.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
             public void handle(ActionEvent arg0)
             {
-                Logger.printDebug("b_NEW button pressed");
+                Logger.printDebug("b_Register button pressed");
 
                 try
                 {
@@ -172,7 +175,7 @@ public class LoginForm extends AbstractForm
     {
         Logger.printDebug("LoginForm preparing...");
 
-        stage.setTitle("pasSHA");
+        stage.setTitle(TextID.PROGRAM_NAME.toString());
         stage.setResizable(false);
 
         stage.setHeight(WINDOW.height);
@@ -186,22 +189,14 @@ public class LoginForm extends AbstractForm
 
     private void init(String password, boolean isNewUser) throws Exceptions
     {
-
         CryptoSystem.init(password, isNewUser);
-
-        // ========== Database activation START:
+        
         try
         {
+            // ========== Database activation START:
             PasswordCollection.init();
-        }
-        catch (Exceptions e)
-        {
-            ABEND.terminate(e);
-        }
-        // ========== Database activation END:
-
-        try
-        {
+            // ========== Database activation END:
+            
             ctrl.switchForm(FORMS.MANAGE_PWDS);
         }
         catch (Exceptions e)

@@ -4,8 +4,6 @@ package SHA;
 // check for explicit variable initialization
 // create public constructor and run self-test (throw on error)
 
-import java.util.Arrays;
-
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import Common.Utilities;

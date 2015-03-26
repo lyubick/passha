@@ -33,9 +33,6 @@ public final class Controller
 
     static AbstractForm[] forms = null;
 
-    // static Map<FORMS, AbstractForm> forms = new HashMap<FORMS,
-    // AbstractForm>();
-
     public static Controller getInstance() throws Exceptions
     {
         if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
@@ -66,9 +63,11 @@ public final class Controller
 
     public void switchForm(FORMS form) throws Exceptions
     {
-            Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
-                    + form.name());
+        Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
+                + form.name());
 
         if (form != FORMS.END && form != FORMS.UNKNOWN) forms[form.ordinal()].draw(mainStage);
+
+        currentForm = form;
     }
 }

@@ -4,14 +4,12 @@
 package UI;
 
 import Common.Exceptions;
-import Common.Exceptions.XC;
 import Languages.Texts.TextID;
 import Logger.Logger;
 import Main.ABEND;
 import Main.PasswordCollection;
 import Main.iSpecialPassword;
 import UI.Controller.FORMS;
-import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -29,7 +27,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 /**
  * @author curious-odd-man
@@ -43,16 +40,19 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 600;
     }
 
-    private final TableView<iSpecialPassword> table               =
-                                                                          new TableView<iSpecialPassword>();
-    private TextField                         tf_pass             = null;
-    private Button                            b_Save              = null;
-    private Button                            b_Discard           = null;
-    private Button                            b_New               = null;
-    private Button                            b_Delete            = null;
-    private Button                            b_Copy              = null;
-    private Button                            b_Export            = null;
-    Task<Void>                                passwordCalculation = null;
+    private final int                   passwordFieldWidth  = 200;
+    private final int                   tableMinHeight      = WINDOW.height - 300;
+    private final int                   tableMinWidth       = WINDOW.width - 200;
+
+    private TableView<iSpecialPassword> table               = null;
+    private TextField                   tf_pass             = null;
+    private Button                      b_Save              = null;
+    private Button                      b_Discard           = null;
+    private Button                      b_New               = null;
+    private Button                      b_Delete            = null;
+    private Button                      b_Copy              = null;
+    private Button                      b_Export            = null;
+    Task<Void>                          passwordCalculation = null;
 
     private void handleButtons()
     {
@@ -67,36 +67,14 @@ public class ManagePasswordsForm extends AbstractForm
         }
     }
 
-    private void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
-    {
-        if (btn.getScene() == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
-        btn.getScene().getAccelerators().put(cmb, new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                // Do it with stile - show animation
-                btn.arm();
-                PauseTransition pt = new PauseTransition(Duration.millis(300));
-                pt.setOnFinished(new EventHandler<ActionEvent>()
-                {
-                    @Override
-                    public void handle(ActionEvent event)
-                    {
-                        btn.fire();
-                        btn.disarm();
-                    }
-                });
-                pt.play();
-            }
-        });
-    }
-
     public ManagePasswordsForm()
     {
         int currentGridLine = 0;
+        table = new TableView<iSpecialPassword>();
         tf_pass = new TextField();
 
+        // probably this will need to be changed for other languages
+        // set up shortcut highlight
         b_New = getButton("_" + TextID.NEW.toString());
         b_Delete = getButton("_" + TextID.DELETE.toString());
         b_Copy = getButton("_" + TextID.COPY_CLIPBOARD.toString());
@@ -104,10 +82,10 @@ public class ManagePasswordsForm extends AbstractForm
         b_Save = getButton("_" + TextID.SAVE.toString());
         b_Discard = getButton("_" + TextID.DISCARD.toString());
 
-        table.setMinHeight(WINDOW.height - 300);
-        table.setMinWidth(WINDOW.width - 200);
+        table.setMinHeight(tableMinHeight);
+        table.setMinWidth(tableMinWidth);
 
-        tf_pass.setMaxWidth(200);
+        tf_pass.setMaxWidth(passwordFieldWidth);
         tf_pass.setEditable(false);
 
         b_Export.setDisable(true);
@@ -246,14 +224,7 @@ public class ManagePasswordsForm extends AbstractForm
                 try
                 {
                     PasswordCollection.getInstance().reload();
-                }
-                catch (Exceptions e)
-                {
-                    ABEND.terminate(e);
-                }
-                handleButtons();
-                try
-                {
+                    handleButtons();
                     table.setItems(PasswordCollection.getInstance().getIface());
                 }
                 catch (Exceptions e)

@@ -16,7 +16,6 @@ public class iSpecialPassword
     private SimpleStringProperty       name;
     private SimpleStringProperty       comment;
     private SimpleStringProperty       url;
-    private final SimpleStringProperty password;
 
     private final SpecialPassword      origin;
 
@@ -27,7 +26,6 @@ public class iSpecialPassword
         this.name = new SimpleStringProperty(example.getName());
         this.comment = new SimpleStringProperty(example.getComment());
         this.url = new SimpleStringProperty(example.getUrl());
-        this.password = new SimpleStringProperty("SHOW");
 
         this.origin = example;
 
@@ -47,20 +45,6 @@ public class iSpecialPassword
     public String getPassword(Task<Void> passwordCalculation)
     {
         return origin.getPassword(passwordCalculation);
-    }
-
-    public void showPassword(boolean show)
-    {
-        Logger.printDebug("" + show);
-        if (show)
-        {
-            password.set(origin.getPassword());
-        }
-        else
-        {
-            password.set("SHOW");
-        }
-        Logger.printDebug("" + password.get());
     }
 
     /**

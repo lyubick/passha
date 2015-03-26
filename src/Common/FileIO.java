@@ -20,15 +20,15 @@ import Main.ABEND;
  */
 public final class FileIO
 {
-    private String        file   = "";
-    private String        backup = "";
+    private String        file = "";
+    // private String backup = "";
 
-    private static FileIO self   = null;
+    private static FileIO self = null;
 
     private FileIO(String filename)
     {
         file = filename.toString();
-        backup = filename.toString() + ".bckp";
+        // backup = filename.toString() + ".bckp";
     }
 
     public static FileIO init(String filename, boolean isNewUser) throws Exceptions
@@ -39,7 +39,7 @@ public final class FileIO
 
         File test = new File(filename);
 
-        if(!test.exists())
+        if (!test.exists())
         {
             if (isNewUser)
             {
