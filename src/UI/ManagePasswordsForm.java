@@ -3,6 +3,10 @@
  */
 package UI;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+
 import Common.Exceptions;
 import Languages.Texts.TextID;
 import Logger.Logger;
@@ -10,6 +14,9 @@ import Main.ABEND;
 import Main.PasswordCollection;
 import Main.iSpecialPassword;
 import UI.Controller.FORMS;
+import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +24,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -26,7 +34,9 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * @author curious-odd-man
@@ -40,6 +50,14 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 600;
     }
 
+    protected static final double       clipboardLiveTime   = 5 * 1000;                  // TODO
+                                                                                          // in
+                                                                                          // milliseconds,
+                                                                                          // maybe
+                                                                                          // do
+                                                                                          // it
+                                                                                          // configurable
+
     private final int                   passwordFieldWidth  = 200;
     private final int                   tableMinHeight      = WINDOW.height - 300;
     private final int                   tableMinWidth       = WINDOW.width - 200;
@@ -52,7 +70,10 @@ public class ManagePasswordsForm extends AbstractForm
     private Button                      b_Delete            = null;
     private Button                      b_Copy              = null;
     private Button                      b_Export            = null;
+
     Task<Void>                          passwordCalculation = null;
+
+    private ProgressIndicator           pi_PWDLifeTime = null;
 
     private void handleButtons()
     {
@@ -69,6 +90,17 @@ public class ManagePasswordsForm extends AbstractForm
 
     public ManagePasswordsForm()
     {
+        scene.getStylesheets().add("file:///C:/progress.css");
+
+        pi_PWDLifeTime = new ProgressIndicator();
+
+        pi_PWDLifeTime.setProgress(0);
+        pi_PWDLifeTime.setVisible(false);
+
+        pi_PWDLifeTime.setId("myprogress");
+
+        pi_PWDLifeTime.applyCss();
+
         int currentGridLine = 0;
         table = new TableView<iSpecialPassword>();
         tf_pass = new TextField();
@@ -91,6 +123,7 @@ public class ManagePasswordsForm extends AbstractForm
         b_Export.setDisable(true);
         b_Save.setDisable(true);
         b_Discard.setDisable(true);
+        b_Copy.setDisable(true);
 
         // TODO make columns/column names same way as TextID (to ensure column
         // has correct text)
@@ -122,6 +155,7 @@ public class ManagePasswordsForm extends AbstractForm
 
         // TODO numbers to local constants
         grid.add(table, 0, currentGridLine++);
+        grid.add(pi_PWDLifeTime, 0, currentGridLine);
         grid.add(tf_pass, 0, currentGridLine);
         grid.add(b_Copy, 0, currentGridLine++);
         grid.add(b_Export, 1, 0);
@@ -133,7 +167,9 @@ public class ManagePasswordsForm extends AbstractForm
         GridPane.setMargin(b_Delete, new Insets(40, 0, 0, 0));
         GridPane.setMargin(b_Save, new Insets(0, 0, 40, 0));
         GridPane.setMargin(b_Discard, new Insets(0, 0, 80, 0));
-        GridPane.setMargin(b_Copy, new Insets(0, buttonWidth, 0, 210));
+
+        GridPane.setMargin(pi_PWDLifeTime, new Insets(0, buttonWidth, 0, 210));
+        GridPane.setMargin(b_Copy, new Insets(0, buttonWidth, 0, 250));
 
         try
         {
@@ -234,10 +270,11 @@ public class ManagePasswordsForm extends AbstractForm
             }
         });
 
-        table.setOnMouseClicked(new EventHandler<MouseEvent>()
+        table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>()
         {
             @Override
-            public void handle(MouseEvent event)
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
+                    Object newValue)
             {
                 if (passwordCalculation != null)
                 {
@@ -249,6 +286,7 @@ public class ManagePasswordsForm extends AbstractForm
                     @Override
                     protected Void call() throws Exception
                     {
+                        b_Copy.setDisable(true);
                         updateMessage("Calculating...");
                         updateMessage(table.getSelectionModel().getSelectedItem().getPassword(this));
                         return null;
@@ -260,6 +298,7 @@ public class ManagePasswordsForm extends AbstractForm
                     tf_pass.textProperty().unbind();
                     Logger.printDebug("successfully finished");
                     passwordCalculation = null;
+                    b_Copy.setDisable(false);
                 });
 
                 passwordCalculation.setOnCancelled(EventHandler -> {
@@ -269,7 +308,49 @@ public class ManagePasswordsForm extends AbstractForm
                 });
 
                 Thread calculatePasswordThread = new Thread(passwordCalculation);
-                calculatePasswordThread.setDaemon(true);
+                calculatePasswordThread.setDaemon(false);
+                calculatePasswordThread.start();
+            }
+        });
+
+        b_Copy.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(new StringSelection(tf_pass.getText()), null);
+
+                pi_PWDLifeTime.setVisible(true);
+
+                Task<Void> tsk_PWDLifeTime = new Task<Void>()
+                {
+                    @Override
+                    protected Void call() throws Exception
+                    {
+
+                        for (int i = 0; i <= clipboardLiveTime; i += 100)
+                        {
+                            updateProgress(clipboardLiveTime - i, clipboardLiveTime);
+                            Thread.sleep(100);
+                        }
+
+                        clipboard.setContents(new StringSelection(""), null);
+
+                        return null;
+                    }
+                };
+
+                pi_PWDLifeTime.progressProperty().bind(tsk_PWDLifeTime.progressProperty());
+
+                tsk_PWDLifeTime.setOnSucceeded(EventHandler -> {
+                    pi_PWDLifeTime.progressProperty().unbind();
+                    Logger.printDebug("PI: Successfully finished.");
+                    pi_PWDLifeTime.setVisible(false);
+                });
+
+                Thread calculatePasswordThread = new Thread(tsk_PWDLifeTime);
+                calculatePasswordThread.setDaemon(false);
                 calculatePasswordThread.start();
             }
         });

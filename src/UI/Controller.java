@@ -18,7 +18,7 @@ public final class Controller
     private static Stage      mainStage   = null;
     private static Controller self        = null;
 
-    private static FORMS      currentForm = FORMS.UNKNOWN;
+    private FORMS      currentForm = FORMS.UNKNOWN;
 
     public enum FORMS
     {
