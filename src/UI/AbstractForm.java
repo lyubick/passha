@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import Common.Exceptions;
 import Common.Exceptions.XC;
+import Logger.Logger;
 import Main.ABEND;
 
 /**
@@ -56,8 +57,8 @@ public abstract class AbstractForm
 
     protected AbstractForm()
     {
-        // if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG))
-        // grid.setGridLinesVisible(true);
+        if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG))
+            grid.setGridLinesVisible(true);
 
         grid.setHgap(HGAP);
         grid.setVgap(VGAP);

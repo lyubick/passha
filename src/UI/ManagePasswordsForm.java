@@ -6,6 +6,7 @@ package UI;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 
 import Common.Exceptions;
 import Languages.Texts.TextID;
@@ -90,16 +91,12 @@ public class ManagePasswordsForm extends AbstractForm
 
     public ManagePasswordsForm()
     {
-        scene.getStylesheets().add("file:///C:/progress.css");
+        scene.getStylesheets().add("file:///" + new File("resources/progress.css").getAbsolutePath().replace("\\", "/")); // TODO
 
-        pi_PWDLifeTime = new ProgressIndicator();
-
-        pi_PWDLifeTime.setProgress(0);
+        pi_PWDLifeTime = new ProgressIndicator(0);
+        pi_PWDLifeTime.setId("pi_css");
+        pi_PWDLifeTime.setMaxSize(50, 50);
         pi_PWDLifeTime.setVisible(false);
-
-        pi_PWDLifeTime.setId("myprogress");
-
-        pi_PWDLifeTime.applyCss();
 
         int currentGridLine = 0;
         table = new TableView<iSpecialPassword>();
@@ -154,22 +151,24 @@ public class ManagePasswordsForm extends AbstractForm
         GridPane.setValignment(b_Export, VPos.BOTTOM);
 
         // TODO numbers to local constants
-        grid.add(table, 0, currentGridLine++);
-        grid.add(pi_PWDLifeTime, 0, currentGridLine);
-        grid.add(tf_pass, 0, currentGridLine);
-        grid.add(b_Copy, 0, currentGridLine++);
-        grid.add(b_Export, 1, 0);
-        grid.add(b_New, 1, 0);
-        grid.add(b_Delete, 1, 0);
-        grid.add(b_Save, 1, 0);
+        grid.add(table, 0, 0);
+
+        grid.add(pi_PWDLifeTime, 0, 1);
+        grid.add(tf_pass,        0, 1);
+        grid.add(b_Copy,         0, 1);
+
+        grid.add(b_Export,  1, 0);
+        grid.add(b_New,     1, 0);
+        grid.add(b_Delete,  1, 0);
+        grid.add(b_Save,    1, 0);
         grid.add(b_Discard, 1, 0);
 
         GridPane.setMargin(b_Delete, new Insets(40, 0, 0, 0));
         GridPane.setMargin(b_Save, new Insets(0, 0, 40, 0));
         GridPane.setMargin(b_Discard, new Insets(0, 0, 80, 0));
 
-        GridPane.setMargin(pi_PWDLifeTime, new Insets(0, buttonWidth, 0, 210));
-        GridPane.setMargin(b_Copy, new Insets(0, buttonWidth, 0, 250));
+        GridPane.setMargin(pi_PWDLifeTime, new Insets(15, 0, 0, 210));
+        GridPane.setMargin(b_Copy, new Insets(0, 0, 0, 270));
 
         try
         {
