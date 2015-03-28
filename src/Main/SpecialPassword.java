@@ -25,6 +25,9 @@ public class SpecialPassword implements Serializable
         HAS_SPECIAL_CHARACTERS,
         HAS_CAPITALS,
 
+        HAS_SMALL_LETTERS,
+        HAS_NUMBERS,
+
         TOTAL_COUNT,
     }
 
@@ -50,7 +53,7 @@ public class SpecialPassword implements Serializable
         this.url = "URL";
         this.length = 16;
         this.paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
-        this.paramsMask.xor(this.paramsMask); // set all bits to true
+        this.paramsMask.set(0, ParamsMaskBits.TOTAL_COUNT.ordinal());
         this.specialChars = "!@#$%^&*";
 
         this.shaCycles = 1;
@@ -167,9 +170,10 @@ public class SpecialPassword implements Serializable
      * @param shaCycles
      *            the shaCycles to set
      */
-    public void setShaCycles(long shaCycles)
+    public boolean setShaCycles(long shaCycles)
     {
         this.shaCycles = shaCycles;
+        return isPasswordValid();
     }
 
     @Override
@@ -265,4 +269,29 @@ public class SpecialPassword implements Serializable
         return getPassword(null);
     }
 
+    public boolean isPasswordValid()
+    {
+        BitSet currentMaskBitSet = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
+        String pwd = getPassword();
+
+        for (int i = 0; i < pwd.length(); i++)
+        {
+            if (Character.isDigit(pwd.charAt(i)))
+                currentMaskBitSet.set(ParamsMaskBits.HAS_NUMBERS.ordinal());
+            else if (Character.isLowerCase(pwd.charAt(i)))
+                currentMaskBitSet.set(ParamsMaskBits.HAS_SMALL_LETTERS.ordinal());
+            else if (Character.isUpperCase(pwd.charAt(i)))
+                currentMaskBitSet.set(ParamsMaskBits.HAS_CAPITALS.ordinal());
+            else if (specialChars.indexOf(pwd.charAt(i)) != -1)
+                currentMaskBitSet.set(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
+            else
+                Logger.printError("How can it really happen???");
+
+            if (currentMaskBitSet.equals(paramsMask)) return true;
+            Logger.printDebug("currentMaskBitSet " + currentMaskBitSet.toString() + "; paramsMask"
+                    + paramsMask.toString());
+        }
+
+        return false;
+    }
 }

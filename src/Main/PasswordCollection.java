@@ -79,14 +79,14 @@ public class PasswordCollection
             ABEND.terminate(e);
         }
 
+        long sc = 0;
+
         for (SpecialPassword existing : db)
             if (existing.getName().equals(sp.getName()))
                 throw new Exceptions(XC.PASSWORD_ALREADY_EXISTS);
 
-        long sc = 0;
-        while (!isUnique(new Long(sc = cs.randSHACycles())))
+        while (!isUnique(new Long(sc = cs.randSHACycles())) || !sp.setShaCycles(sc))
             ;
-        sp.setShaCycles(sc);
 
         shaCycles.add(sc);
 

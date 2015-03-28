@@ -213,21 +213,23 @@ public class SpecialPasswordForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
+                b_OK.setDisable(true);
                 Logger.printDebug("Fields: name " + tf_name.getText() + "; comment "
                         + tf_comment.getText() + "; url " + tf_url.getText() + "; length"
                         + tf_length.getText());
 
                 BitSet paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
+                paramsMask.set(0, ParamsMaskBits.TOTAL_COUNT.ordinal());
                 int passLength = Integer.parseInt(tf_length.getText());
 
-                if (cb_specialChars.isSelected())
+                if (!cb_specialChars.isSelected())
                 {
-                    paramsMask.set(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
+                    paramsMask.clear(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
                 }
 
-                if (cb_upperCaseChar.isSelected())
+                if (!cb_upperCaseChar.isSelected())
                 {
-                    paramsMask.set(ParamsMaskBits.HAS_CAPITALS.ordinal());
+                    paramsMask.clear(ParamsMaskBits.HAS_CAPITALS.ordinal());
                 }
 
                 try
@@ -235,10 +237,12 @@ public class SpecialPasswordForm extends AbstractForm
                     PasswordCollection.getInstance().addPassword(
                             new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url
                                     .getText(), passLength, paramsMask, tf_specialChars.getText()));
+
                     ctrl.switchForm(FORMS.MANAGE_PWDS);
                 }
                 catch (Exceptions e)
                 {
+                    b_OK.setDisable(false);
                     if (e.getCode() == XC.MISSING_MANDATORY_DATA)
                         l_errorLabel.setText(TextID.ERR_MISSING_PASSWORD_NAME.toString());
                     else if (e.getCode() == XC.PASSWORD_ALREADY_EXISTS)
@@ -278,6 +282,7 @@ public class SpecialPasswordForm extends AbstractForm
     public void draw(Stage stage)
     {
         l_errorLabel.setText("");
+        b_OK.setDisable(false);
 
         // maybe we can somehow clean all field in a loop??
         tf_name.clear();
