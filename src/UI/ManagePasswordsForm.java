@@ -51,13 +51,13 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 600;
     }
 
-    protected static final double       clipboardLiveTime   = 5 * 1000;                  // TODO
-                                                                                          // in
-                                                                                          // milliseconds,
-                                                                                          // maybe
-                                                                                          // do
-                                                                                          // it
-                                                                                          // configurable
+    protected static final double       clipboardLiveTime   = 5 * 1000;           // TODO
+                                                                                   // in
+                                                                                   // milliseconds,
+                                                                                   // maybe
+                                                                                   // do
+                                                                                   // it
+                                                                                   // configurable
 
     private final int                   passwordFieldWidth  = 200;
     private final int                   tableMinHeight      = WINDOW.height - 300;
@@ -73,8 +73,9 @@ public class ManagePasswordsForm extends AbstractForm
     private Button                      b_Export            = null;
 
     Task<Void>                          passwordCalculation = null;
+    Task<Void>                          tsk_PWDLifeTime     = null;
 
-    private ProgressIndicator           pi_PWDLifeTime = null;
+    private ProgressIndicator           pi_PWDLifeTime      = null;
 
     private void handleButtons()
     {
@@ -91,7 +92,9 @@ public class ManagePasswordsForm extends AbstractForm
 
     public ManagePasswordsForm()
     {
-        scene.getStylesheets().add("file:///" + new File("resources/progress.css").getAbsolutePath().replace("\\", "/")); // TODO
+        scene.getStylesheets().add(
+                "file:///"
+                        + new File("resources/progress.css").getAbsolutePath().replace("\\", "/")); // TODO
 
         pi_PWDLifeTime = new ProgressIndicator(0);
         pi_PWDLifeTime.setId("pi_css");
@@ -154,13 +157,13 @@ public class ManagePasswordsForm extends AbstractForm
         grid.add(table, 0, 0);
 
         grid.add(pi_PWDLifeTime, 0, 1);
-        grid.add(tf_pass,        0, 1);
-        grid.add(b_Copy,         0, 1);
+        grid.add(tf_pass, 0, 1);
+        grid.add(b_Copy, 0, 1);
 
-        grid.add(b_Export,  1, 0);
-        grid.add(b_New,     1, 0);
-        grid.add(b_Delete,  1, 0);
-        grid.add(b_Save,    1, 0);
+        grid.add(b_Export, 1, 0);
+        grid.add(b_New, 1, 0);
+        grid.add(b_Delete, 1, 0);
+        grid.add(b_Save, 1, 0);
         grid.add(b_Discard, 1, 0);
 
         GridPane.setMargin(b_Delete, new Insets(40, 0, 0, 0));
@@ -295,14 +298,14 @@ public class ManagePasswordsForm extends AbstractForm
                 tf_pass.textProperty().bind(passwordCalculation.messageProperty());
                 passwordCalculation.setOnSucceeded(EventHandler -> {
                     tf_pass.textProperty().unbind();
-                    Logger.printDebug("successfully finished");
+                    Logger.printDebug("PWDCALC -> successfully finished");
                     passwordCalculation = null;
                     b_Copy.setDisable(false);
                 });
 
                 passwordCalculation.setOnCancelled(EventHandler -> {
                     tf_pass.textProperty().unbind();
-                    Logger.printDebug("cancelled finished");
+                    Logger.printDebug("PWDCALC -> cancelled finished");
                     passwordCalculation = null;
                 });
 
@@ -320,15 +323,17 @@ public class ManagePasswordsForm extends AbstractForm
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(new StringSelection(tf_pass.getText()), null);
 
+                if (tsk_PWDLifeTime != null) tsk_PWDLifeTime.cancel();
+
                 pi_PWDLifeTime.setVisible(true);
 
-                Task<Void> tsk_PWDLifeTime = new Task<Void>()
+                tsk_PWDLifeTime = new Task<Void>()
                 {
                     @Override
                     protected Void call() throws Exception
                     {
 
-                        for (int i = 0; i <= clipboardLiveTime; i += 100)
+                        for (int i = 0; i <= clipboardLiveTime && !isCancelled(); i += 100)
                         {
                             updateProgress(clipboardLiveTime - i, clipboardLiveTime);
                             Thread.sleep(100);
@@ -344,7 +349,13 @@ public class ManagePasswordsForm extends AbstractForm
 
                 tsk_PWDLifeTime.setOnSucceeded(EventHandler -> {
                     pi_PWDLifeTime.progressProperty().unbind();
-                    Logger.printDebug("PI: Successfully finished.");
+                    Logger.printDebug("PWDCLIP -> Successfully finished.");
+                    pi_PWDLifeTime.setVisible(false);
+                });
+
+                tsk_PWDLifeTime.setOnCancelled(EventHandler -> {
+                    tf_pass.textProperty().unbind();
+                    Logger.printDebug("PWDCLIP -> Cancelled finished");
                     pi_PWDLifeTime.setVisible(false);
                 });
 
