@@ -7,6 +7,7 @@ import Common.Exceptions;
 import Common.Exceptions.XC;
 import Logger.Logger;
 import UI.Controller;
+import UI.TrayAgent;
 import UI.Controller.FORMS;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -70,6 +71,7 @@ public class Main extends Application
     {
         try
         {
+            TrayAgent.addTray(primaryStage);
             Controller.init(primaryStage).switchForm(FORMS.LOGIN);
         }
         catch (Exceptions e)

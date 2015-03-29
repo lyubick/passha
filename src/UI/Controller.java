@@ -7,7 +7,11 @@ import Common.Exceptions;
 import Common.Exceptions.XC;
 import Logger.Logger;
 import Main.ABEND;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * @author curious-odd-man
@@ -18,7 +22,7 @@ public final class Controller
     private static Stage      mainStage   = null;
     private static Controller self        = null;
 
-    private FORMS      currentForm = FORMS.UNKNOWN;
+    private FORMS             currentForm = FORMS.UNKNOWN;
 
     public enum FORMS
     {
@@ -43,6 +47,16 @@ public final class Controller
     private Controller(Stage primaryStage)
     {
         mainStage = primaryStage;
+
+        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>()
+        {
+            @Override
+            public void handle(WindowEvent event)
+            {
+                System.exit(0); // todo
+            }
+        });
+
     }
 
     public static Controller init(Stage primaryStage)
@@ -67,7 +81,6 @@ public final class Controller
                 + form.name());
 
         if (form != FORMS.END && form != FORMS.UNKNOWN) forms[form.ordinal()].draw(mainStage);
-
         currentForm = form;
     }
 }

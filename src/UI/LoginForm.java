@@ -132,7 +132,8 @@ public class LoginForm extends AbstractForm
             }
         });
 
-        // disable button when length == 0; (maybe even disable unless length is same as pf_Password )
+        // disable button when length == 0; (maybe even disable unless length is
+        // same as pf_Password )
         b_Register.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
@@ -190,13 +191,13 @@ public class LoginForm extends AbstractForm
     private void init(String password, boolean isNewUser) throws Exceptions
     {
         CryptoSystem.init(password, isNewUser);
-        
+
         try
         {
             // ========== Database activation START:
             PasswordCollection.init();
             // ========== Database activation END:
-            
+
             ctrl.switchForm(FORMS.MANAGE_PWDS);
         }
         catch (Exceptions e)
