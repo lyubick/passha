@@ -53,6 +53,7 @@ public final class Controller
             @Override
             public void handle(WindowEvent event)
             {
+                HotKeyAgent.getInstance().unregister();
                 System.exit(0); // todo
             }
         });
