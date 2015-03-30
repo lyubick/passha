@@ -3,14 +3,15 @@
  */
 package Main;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import Logger.Logger;
 import UI.Controller;
-import UI.TrayAgent;
 import UI.Controller.FORMS;
-import javafx.application.Application;
-import javafx.stage.Stage;
+import UI.TrayAgent;
 
 /**
  * @author lyubick
@@ -69,6 +70,8 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage)
     {
+        Platform.setImplicitExit(false);
+
         try
         {
             TrayAgent.addTray(primaryStage);

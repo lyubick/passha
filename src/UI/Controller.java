@@ -3,15 +3,15 @@
  */
 package UI;
 
-import Common.Exceptions;
-import Common.Exceptions.XC;
-import Logger.Logger;
-import Main.ABEND;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import Common.Exceptions;
+import Common.Exceptions.XC;
+import Logger.Logger;
+import Main.ABEND;
 
 /**
  * @author curious-odd-man
@@ -31,7 +31,7 @@ public final class Controller
         CREATE_PWD,
 
         END,
-
+        CURRENT,
         UNKNOWN,
     }
 
@@ -57,6 +57,17 @@ public final class Controller
             }
         });
 
+        mainStage.iconifiedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void
+                    changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
+            {
+                // TODO Auto-generated method stub
+                mainStage.hide();
+                mainStage.setIconified(false);
+            }
+        });
     }
 
     public static Controller init(Stage primaryStage)
@@ -79,7 +90,11 @@ public final class Controller
     {
         Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
                 + form.name());
-
+        if (form == FORMS.CURRENT)
+        {
+            form = currentForm;
+            mainStage.setIconified(false);
+        }
         if (form != FORMS.END && form != FORMS.UNKNOWN) forms[form.ordinal()].draw(mainStage);
         currentForm = form;
     }

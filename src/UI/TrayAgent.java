@@ -11,13 +11,10 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionListener;
 
-import Common.Exceptions;
-import Logger.Logger;
-import Main.ABEND;
-import Main.Main;
-import UI.Controller.FORMS;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import Common.Exceptions;
+import UI.Controller.FORMS;
 
 /**
  * @author curious-odd-man
@@ -59,7 +56,15 @@ public class TrayAgent
                         @Override
                         public void run()
                         {
-
+                            try
+                            {
+                                Controller.getInstance().switchForm(FORMS.LOGIN);
+                            }
+                            catch (Exceptions e)
+                            {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
