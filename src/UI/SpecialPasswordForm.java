@@ -5,8 +5,6 @@ package UI;
 
 import java.util.BitSet;
 
-import javax.swing.DebugGraphics;
-
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import Languages.Texts.TextID;
@@ -47,7 +45,7 @@ public class SpecialPasswordForm extends AbstractForm
     private final int    maxPasswordLength              = 64;
     private final int    minPasswordLength              = 8;
 
-    private final Label  l_errorLabel                   = new Label("");
+    private final Label  l_errorLabel                   = getWarningLabel("");
 
     private TextField    tf_name                        = null;
     private TextField    tf_comment                     = null;
@@ -123,11 +121,11 @@ public class SpecialPasswordForm extends AbstractForm
 
         // ========== LABELS ========== //
 
-        l_name = new Label(TextID.NAME.toString());
-        l_comment = new Label(TextID.COMMENT.toString());
-        l_url = new Label(TextID.URL.toString());
-        lLength = new Label(TextID.LENGTH.toString());
-        lSpecialChars = new Label(TextID.SPECIAL_CHARACTERS.toString());
+        l_name = getLabel(TextID.NAME.toString());
+        l_comment = getLabel(TextID.COMMENT.toString());
+        l_url = getLabel(TextID.URL.toString());
+        lLength = getLabel(TextID.LENGTH.toString());
+        lSpecialChars = getLabel(TextID.SPECIAL_CHARACTERS.toString());
 
         // ========== CHECK BOXES ========== //
 

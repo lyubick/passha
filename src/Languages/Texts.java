@@ -24,6 +24,15 @@ public class Texts
         CANCEL(new String[]
         { "Cancel", "Отменить" }),
 
+        CHANGE_PWD_HEADER(new String[]
+        { "Password reset", "" }),
+
+        CHANGE_PWD_WARNING(
+                new String[]
+                {
+                        "By pressing OK you will substitute old password with new one. Thus old password will be permanently lost",
+                        "" }),
+
         COMMENT(new String[]
         { "Comment", "" }),
 
@@ -78,8 +87,20 @@ public class Texts
         NEW(new String[]
         { "New", "Добавить" }),
 
+        NEW_PWD(new String[]
+        { "New", "" }),
+
         OK(new String[]
         { "OK", "Подтвердить" }),
+
+        OLD_PWD(new String[]
+        { "Old", "" }),
+
+        PASSWORD_INCORRECT(new String[]
+        { "Password incorrect!", "" }),
+
+        PASSWORDS_DONT_MATCH(new String[]
+        { "Passwords don't match!", "" }),
 
         PROGRAM_NAME(new String[]
         { "pasSHA", "" }),
@@ -92,6 +113,9 @@ public class Texts
 
         REGISTER(new String[]
         { "Register", "" }),
+
+        RESET_PASSWORD(new String[]
+        { "Reset password", "" }),
 
         SAVE(new String[]
         { "Save", "" }),
@@ -110,12 +134,6 @@ public class Texts
 
         Z_ETHALON(new String[]
         { "", "" }),
-
-        PASSWORD_INCORRECT(new String[]
-        { "Password incorrect!", "" }),
-
-        PASSWORDS_DONT_MATCH(new String[]
-        { "Passwords don't match!", "" }),
 
         ;
 

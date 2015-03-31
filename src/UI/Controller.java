@@ -30,6 +30,8 @@ public final class Controller
         MANAGE_PWDS,
         CREATE_PWD,
 
+        CHANGE_PWD,
+
         END,
         CURRENT,
         UNKNOWN,
@@ -83,6 +85,7 @@ public final class Controller
         forms[FORMS.LOGIN.ordinal()] = new LoginForm();
         forms[FORMS.MANAGE_PWDS.ordinal()] = new ManagePasswordsForm();
         forms[FORMS.CREATE_PWD.ordinal()] = new SpecialPasswordForm();
+        forms[FORMS.CHANGE_PWD.ordinal()] = new ChangePasswordConfirmDlg();
 
         return self;
     }

@@ -15,7 +15,6 @@ import Main.ABEND;
 import Main.PasswordCollection;
 import Main.iSpecialPassword;
 import UI.Controller.FORMS;
-import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -33,11 +32,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 /**
  * @author curious-odd-man
@@ -69,6 +65,7 @@ public class ManagePasswordsForm extends AbstractForm
     private Button                      b_Discard           = null;
     private Button                      b_New               = null;
     private Button                      b_Delete            = null;
+    private Button                      b_Reset             = null;
     private Button                      b_Copy              = null;
     private Button                      b_Export            = null;
 
@@ -101,7 +98,6 @@ public class ManagePasswordsForm extends AbstractForm
         pi_PWDLifeTime.setMaxSize(50, 50);
         pi_PWDLifeTime.setVisible(false);
 
-        int currentGridLine = 0;
         table = new TableView<iSpecialPassword>();
         tf_pass = new TextField();
 
@@ -113,6 +109,7 @@ public class ManagePasswordsForm extends AbstractForm
         b_Export = getButton("_" + TextID.EXPORT.toString());
         b_Save = getButton("_" + TextID.SAVE.toString());
         b_Discard = getButton("_" + TextID.DISCARD.toString());
+        b_Reset = getButton("_" + TextID.RESET_PASSWORD.toString());
 
         table.setMinHeight(tableMinHeight);
         table.setMinWidth(tableMinWidth);
@@ -124,6 +121,7 @@ public class ManagePasswordsForm extends AbstractForm
         b_Save.setDisable(true);
         b_Discard.setDisable(true);
         b_Copy.setDisable(true);
+        b_Reset.setDisable(false);
 
         // TODO make columns/column names same way as TextID (to ensure column
         // has correct text)
@@ -165,6 +163,7 @@ public class ManagePasswordsForm extends AbstractForm
         grid.add(b_Delete, 1, 0);
         grid.add(b_Save, 1, 0);
         grid.add(b_Discard, 1, 0);
+        grid.add(b_Reset, 1, 0);
 
         GridPane.setMargin(b_Delete, new Insets(40, 0, 0, 0));
         GridPane.setMargin(b_Save, new Insets(0, 0, 40, 0));
@@ -187,7 +186,8 @@ public class ManagePasswordsForm extends AbstractForm
                     KeyCombination.SHORTCUT_DOWN));
             setButtonShortcut(b_Discard, new KeyCodeCombination(KeyCode.Z,
                     KeyCombination.SHORTCUT_DOWN));
-
+            setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R,
+                    KeyCombination.SHORTCUT_DOWN));
         }
         catch (Exceptions e)
         {
@@ -312,6 +312,23 @@ public class ManagePasswordsForm extends AbstractForm
                 Thread calculatePasswordThread = new Thread(passwordCalculation);
                 calculatePasswordThread.setDaemon(false);
                 calculatePasswordThread.start();
+            }
+        });
+
+        b_Reset.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                try
+                {
+                    Controller.getInstance().switchForm(FORMS.CHANGE_PWD);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 

@@ -46,8 +46,8 @@ public class LoginForm extends AbstractForm
 
         // ========== LABELS ========== //
 
-        l_Header = new Label(TextID.ENTER_PASSWORD.toString() + ":");
-        l_Warning = new Label("");
+        l_Header = getLabel(TextID.ENTER_PASSWORD.toString() + ":");
+        l_Warning = getWarningLabel("");
 
         // ========== TEXTS ========== //
 

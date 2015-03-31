@@ -6,10 +6,12 @@ package UI;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -50,6 +52,7 @@ public abstract class AbstractForm
     protected final int buttonHeight   = 30;
     protected final int buttonWidth    = 80;
     protected final int buttonXWidth   = 100;
+    protected final int labelWidth     = 100;
 
     protected final int buttonHoldTime = 300;
 
@@ -88,6 +91,27 @@ public abstract class AbstractForm
         tmp.setMinHeight(buttonHeight);
 
         if (tmp.getWidth() != buttonWidth) tmp.setMinWidth(buttonXWidth);
+
+        return tmp;
+    }
+
+    protected Label getLabel(String text)
+    {
+        Label tmp = new Label(text);
+
+        // todo
+        GridPane.setHalignment(tmp, HPos.RIGHT);
+
+        tmp.setMinWidth(labelWidth);
+        tmp.setMaxWidth(labelWidth);
+        return tmp;
+    }
+
+    protected Label getWarningLabel(String text)
+    {
+        Label tmp = new Label(text);
+
+        // todo GridPane.setHalignment(tmp, HPos.RIGHT);
 
         return tmp;
     }
