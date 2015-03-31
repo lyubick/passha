@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package UI;
 
@@ -58,7 +58,7 @@ public class TrayAgent
                         {
                             try
                             {
-                                Controller.getInstance().switchForm(FORMS.LOGIN);
+                                Controller.getInstance().switchForm(FORMS.CURRENT);
                             }
                             catch (Exceptions e)
                             {
