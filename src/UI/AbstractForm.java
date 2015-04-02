@@ -12,8 +12,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import Common.Exceptions;
@@ -82,6 +84,33 @@ public abstract class AbstractForm
             ABEND.terminate(e);
         }
 
+    }
+
+    public class HBox extends javafx.scene.layout.HBox
+    {
+        public TextField getEntryTextField()
+        {
+            return (TextField) this.getChildren().get(1);
+        }
+
+        public Label getEntryLabel()
+        {
+            return (Label) this.getChildren().get(0);
+        }
+    }
+
+    protected HBox getTextEntry(String name)
+    {
+        Label l_EntryName = new Label(name);
+        l_EntryName.setMinWidth(labelWidth);
+
+        TextField tf_EntryField = new TextField();
+
+        HBox tmp = new HBox();
+
+        tmp.getChildren().addAll(l_EntryName, tf_EntryField);
+
+        return tmp;
     }
 
     protected Button getButton(String name)

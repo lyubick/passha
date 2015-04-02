@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package UI;
 
@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import Common.Exceptions;
 import Languages.Texts.TextID;
@@ -56,14 +57,28 @@ public class ChangePasswordConfirmDlg extends AbstractForm
 
         GridPane.setMargin(b_OK, new Insets(0, buttonXWidth + HGAP, 0, 0));
 
-        grid.add(l_Header, 1, 0);
-        grid.add(l_Old, 0, 1);
-        grid.add(tf_OldPassword, 1, 1);
-        grid.add(l_New, 0, 2);
-        grid.add(tf_NewPassword, 1, 2);
-        grid.add(l_Warning, 1, 3);
-        grid.add(b_OK, 1, 4);
-        grid.add(b_Cancel, 1, 4);
+        grid.add(l_Header, 0, 0);
+
+        //grid.add(l_Old, 0, 1);
+        //grid.add(tf_OldPassword, 1, 1);
+
+        HBox CurrentPassword = getTextEntry("Current");
+        HBox NewPassword = getTextEntry("New");
+
+        grid.add(CurrentPassword, 0, 1);
+        grid.add(NewPassword, 0, 2);
+
+        TextField test = CurrentPassword.getEntryTextField();
+        test.setText("Hello");
+
+
+
+        //grid.add(l_New, 0, 2);
+        //grid.add(tf_NewPassword, 1, 2);
+
+        grid.add(l_Warning, 0, 3);
+        grid.add(b_OK, 0, 4);
+        grid.add(b_Cancel, 0, 4);
 
         b_OK.setOnAction(new EventHandler<ActionEvent>()
         {
