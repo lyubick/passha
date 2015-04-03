@@ -56,7 +56,7 @@ public final class Controller
             public void handle(WindowEvent event)
             {
                 HotKeyAgent.getInstance().unregister();
-                System.exit(0); // todo
+                System.exit(0); // TODO
             }
         });
 
@@ -92,6 +92,9 @@ public final class Controller
 
     public void switchForm(FORMS form) throws Exceptions
     {
+        // TODO
+        mainStage.close();
+        mainStage = new Stage();
         Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
                 + form.name());
         if (form == FORMS.CURRENT)
@@ -99,6 +102,7 @@ public final class Controller
             form = currentForm;
             mainStage.setIconified(false);
         }
+
         if (form != FORMS.END && form != FORMS.UNKNOWN) forms[form.ordinal()].draw(mainStage);
         currentForm = form;
     }

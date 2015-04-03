@@ -29,8 +29,8 @@ public class LoginForm extends AbstractForm
 {
     private final class WINDOW
     {
-        public static final int width  = 300;
-        public static final int height = 200;
+        public static final int width  = 350;
+        public static final int height = 250;
     }
 
     private Label         l_Header           = null;
@@ -81,8 +81,8 @@ public class LoginForm extends AbstractForm
         pf_PasswordConfirm.setPromptText("Re-type...");
         pf_PasswordConfirm.setVisible(false);
 
-        b_Login.setMinWidth(buttonWidth);
-        b_Register.setMinWidth(buttonWidth);
+        b_Login.setMinWidth(BUTTON_WIDTH);
+        b_Register.setMinWidth(BUTTON_WIDTH);
         b_Register.setVisible(false);
 
         grid.setAlignment(Pos.CENTER);

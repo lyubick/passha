@@ -6,7 +6,6 @@ package UI;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -43,19 +42,20 @@ public abstract class AbstractForm
 
     protected final class WINDOW
     {
-        public static final int width  = 500;
-        public static final int height = 400;
+        public static final int width  = 1050;
+        public static final int height = 650;
     }
 
-    protected GridPane  grid           = new GridPane();
-    protected Scene     scene          = new Scene(grid, WINDOW.width, WINDOW.height);
+    protected GridPane  grid                 = new GridPane();
+    protected Scene     scene                = new Scene(grid, WINDOW.width, WINDOW.height);
 
-    protected final int buttonHeight   = 30;
-    protected final int buttonWidth    = 80;
-    protected final int buttonXWidth   = 100;
-    protected final int labelWidth     = 100;
+    protected final int BUTTON_HEIGHT        = 30;
+    protected final int BUTTON_WIDTH         = 80;
+    protected final int BUTTON_X_WIDTH       = 100;
+    protected final int LABEL_WIDTH          = 100;
+    protected final int PASSWORD_FIELD_WIDTH = 200;
 
-    protected final int buttonHoldTime = 300;
+    protected final int buttonHoldTime       = 300;
 
     public abstract void draw(Stage stage) throws Exceptions;
 
@@ -98,12 +98,14 @@ public abstract class AbstractForm
         }
     }
 
-    protected HBox getTextEntry(String name)
+    protected HBox getTextEntry(String name, int maxLength)
     {
         Label l_EntryName = new Label(name);
-        l_EntryName.setMinWidth(labelWidth);
+        l_EntryName.setMinWidth(LABEL_WIDTH);
 
         TextField tf_EntryField = new TextField();
+        tf_EntryField.setMaxWidth(maxLength);
+        tf_EntryField.setMinWidth(maxLength);
 
         HBox tmp = new HBox();
 
@@ -115,10 +117,10 @@ public abstract class AbstractForm
     protected Button getButton(String name)
     {
         Button tmp = new Button(name);
-        tmp.setMinWidth(buttonWidth);
-        tmp.setMinHeight(buttonHeight);
+        tmp.setMinWidth(BUTTON_WIDTH);
+        tmp.setMinHeight(BUTTON_HEIGHT);
 
-        if (tmp.getWidth() != buttonWidth) tmp.setMinWidth(buttonXWidth);
+        if (tmp.getWidth() != BUTTON_WIDTH) tmp.setMinWidth(BUTTON_X_WIDTH);
 
         return tmp;
     }
@@ -126,12 +128,8 @@ public abstract class AbstractForm
     protected Label getLabel(String text)
     {
         Label tmp = new Label(text);
-
-        // todo
-        GridPane.setHalignment(tmp, HPos.RIGHT);
-
-        tmp.setMinWidth(labelWidth);
-        tmp.setMaxWidth(labelWidth);
+        tmp.setMinWidth(LABEL_WIDTH);
+        tmp.setMaxWidth(LABEL_WIDTH);
         return tmp;
     }
 

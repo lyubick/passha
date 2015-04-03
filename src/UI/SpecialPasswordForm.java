@@ -33,6 +33,12 @@ import javafx.stage.Stage;
  */
 public class SpecialPasswordForm extends AbstractForm
 {
+    private final class WINDOW
+    {
+        public static final int width  = 500;
+        public static final int height = 350;
+    }
+
     private final int    LABELS_COLUMN                  = 0;
     private final int    TEXT_FIELDS_COLUMN             = 1;
     private final int    TEXT_FIELD_LENGTH_SIZE         = 40;
@@ -286,6 +292,9 @@ public class SpecialPasswordForm extends AbstractForm
         tf_comment.clear();
         tf_url.clear();
         tf_length.setText(DEFAULT_LENGTH);
+
+        stage.setHeight(WINDOW.height);
+        stage.setWidth(WINDOW.width);
 
         stage.setScene(scene);
         stage.show();

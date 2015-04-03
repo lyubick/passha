@@ -30,7 +30,7 @@ public class Texts
         CHANGE_PWD_WARNING(
                 new String[]
                 {
-                        "By pressing OK you will substitute Current Password with New one. Thus Current Password will be permanently lost!",
+                        "By pressing OK you will substitute Current Password with New one.\n Thus Current Password will be permanently lost!",
                         "" }),
 
         COMMENT(new String[]

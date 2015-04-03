@@ -34,6 +34,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * @author curious-odd-man
@@ -55,7 +56,6 @@ public class ManagePasswordsForm extends AbstractForm
                                                                                    // it
                                                                                    // configurable
 
-    private final int                   passwordFieldWidth  = 200;
     private final int                   tableMinHeight      = WINDOW.height - 300;
     private final int                   tableMinWidth       = WINDOW.width - 200;
 
@@ -114,7 +114,7 @@ public class ManagePasswordsForm extends AbstractForm
         table.setMinHeight(tableMinHeight);
         table.setMinWidth(tableMinWidth);
 
-        tf_pass.setMaxWidth(passwordFieldWidth);
+        tf_pass.setMaxWidth(PASSWORD_FIELD_WIDTH);
         tf_pass.setEditable(false);
 
         b_Export.setDisable(true);
@@ -278,10 +278,14 @@ public class ManagePasswordsForm extends AbstractForm
             public void changed(ObservableValue<? extends Object> observable, Object oldValue,
                     Object newValue)
             {
-                if (newValue == null) return;
-
                 try
                 {
+                    if (newValue == null)
+                    {
+                        PasswordCollection.getInstance().setSelected(null);
+                        return;
+                    }
+
                     PasswordCollection.getInstance().setSelected(
                             table.getSelectionModel().getSelectedItem().getOrigin());
                 }
@@ -335,7 +339,7 @@ public class ManagePasswordsForm extends AbstractForm
             {
                 try
                 {
-
+                    if (PasswordCollection.getInstance().getSelected() == null) return;
                     Controller.getInstance().switchForm(FORMS.CHANGE_PWD);
                 }
                 catch (Exceptions e)
@@ -417,6 +421,15 @@ public class ManagePasswordsForm extends AbstractForm
         stage.setScene(scene);
 
         scene.getWindow().centerOnScreen();
+
+        stage.setOnShowing(new EventHandler<WindowEvent>()
+        {
+            @Override
+            public void handle(WindowEvent event)
+            {
+                table.getSelectionModel().clearSelection();
+            }
+        });
 
         stage.show();
     }
