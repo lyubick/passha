@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import Common.Exceptions;
+import Languages.Texts.TextID;
 import UI.Controller.FORMS;
 
 /**
@@ -34,7 +35,9 @@ public class TrayAgent
 
             popup.add(item);
 
-            TrayIcon trayIcon = new TrayIcon(image, "Amr_Trial", popup);
+            TrayIcon trayIcon =
+                    new TrayIcon(image, TextID.PROGRAM_NAME.toString() + " "
+                            + TextID.VERSION.toString(), popup);
 
             ActionListener listener = new ActionListener()
             {
