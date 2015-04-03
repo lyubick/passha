@@ -5,10 +5,10 @@ package Main;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.security.cert.X509CertSelector;
 import java.util.BitSet;
 
 import javafx.concurrent.Task;
-
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import CryptoSystem.CryptoSystem;
@@ -75,9 +75,33 @@ public class SpecialPassword implements Serializable
         this.paramsMask = paramsMask;
         this.specialChars = specialChars;
 
-        shaCycles = 0; // generated in PasswordCollection;
+        do
+        {
+            shaCycles = CryptoSystem.getInstance().randSHACycles();
+        } while (!isPasswordValid());
 
         Logger.printDebug("SpecialPassword constructor... DONE!");
+    }
+
+    public SpecialPassword(SpecialPassword other) throws Exceptions
+    {
+        Logger.printDebug("SpecialPassword copy-constructor... START");
+
+        if (other == null) throw new Exceptions(XC.MISSING_MANDATORY_DATA);
+
+        this.name = other.name.toString();
+        this.comment = other.comment.toString();
+        this.url = other.url.toString();
+        this.length = other.length;
+        this.paramsMask = (BitSet) other.paramsMask.clone();
+        this.specialChars = other.specialChars.toString();
+
+        do
+        {
+            shaCycles = CryptoSystem.getInstance().randSHACycles();
+        } while (!isPasswordValid());
+
+        Logger.printDebug("SpecialPassword copy-constructor... DONE!");
     }
 
     public void dump()
@@ -166,14 +190,9 @@ public class SpecialPassword implements Serializable
         return shaCycles;
     }
 
-    /**
-     * @param shaCycles
-     *            the shaCycles to set
-     */
-    public boolean setShaCycles(long shaCycles)
+    public void setShaCycles(long sc)
     {
-        this.shaCycles = shaCycles;
-        return isPasswordValid();
+        shaCycles = sc;
     }
 
     @Override
@@ -210,7 +229,8 @@ public class SpecialPassword implements Serializable
         try
         {
             String hash =
-                    CryptoSystem.getInstance().getPassword(this.shaCycles, passwordCalculation);
+                    CryptoSystem.getInstance().getPassword(this.shaCycles, this.getName(),
+                            passwordCalculation);
 
             // take first @a this.length chars from hash
             StringBuilder clearPass = new StringBuilder(hash.substring(0, this.length));

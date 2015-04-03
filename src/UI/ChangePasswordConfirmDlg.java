@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import Common.Exceptions;
 import Languages.Texts.TextID;
 import Main.ABEND;
+import Main.PasswordCollection;
+import Main.SpecialPassword;
 import UI.Controller.FORMS;
 
 /**
@@ -24,29 +26,20 @@ import UI.Controller.FORMS;
  */
 public class ChangePasswordConfirmDlg extends AbstractForm
 {
-    private TextField tf_OldPassword = null;
-    private TextField tf_NewPassword = null;
-    private Button    b_OK           = null;
-    private Button    b_Cancel       = null;
-    private Label     l_Old          = null;
-    private Label     l_New          = null;
-    private Label     l_Warning      = null;
-    private Label     l_Header       = null;
+    private Button          b_OK            = null;
+    private Button          b_Cancel        = null;
+    private Label           l_Warning       = null;
+    private Label           l_Header        = null;
+    private HBox            CurrentPassword = null;
+    private HBox            NewPassword     = null;
+
+    private SpecialPassword newSp           = null;
 
     ChangePasswordConfirmDlg()
     {
         // ========== LABELS ========== //
-        l_Old = getLabel(TextID.OLD_PWD.toString());
-        l_New = getLabel(TextID.NEW_PWD.toString());
         l_Warning = new Label(TextID.CHANGE_PWD_WARNING.toString());
         l_Header = getLabel(TextID.CHANGE_PWD_HEADER.toString());
-
-        // ========== TEXTS ========== //
-        tf_NewPassword = new TextField();
-        tf_OldPassword = new TextField();
-
-        tf_NewPassword.setEditable(false);
-        tf_OldPassword.setEditable(false);
 
         // ========== BUTTONS ========== //
 
@@ -59,22 +52,14 @@ public class ChangePasswordConfirmDlg extends AbstractForm
 
         grid.add(l_Header, 0, 0);
 
-        //grid.add(l_Old, 0, 1);
-        //grid.add(tf_OldPassword, 1, 1);
+        CurrentPassword = getTextEntry("Current");
+        NewPassword = getTextEntry("New");
 
-        HBox CurrentPassword = getTextEntry("Current");
-        HBox NewPassword = getTextEntry("New");
+        CurrentPassword.getEntryTextField().setEditable(false);
+        NewPassword.getEntryTextField().setEditable(false);
 
         grid.add(CurrentPassword, 0, 1);
         grid.add(NewPassword, 0, 2);
-
-        TextField test = CurrentPassword.getEntryTextField();
-        test.setText("Hello");
-
-
-
-        //grid.add(l_New, 0, 2);
-        //grid.add(tf_NewPassword, 1, 2);
 
         grid.add(l_Warning, 0, 3);
         grid.add(b_OK, 0, 4);
@@ -85,7 +70,15 @@ public class ChangePasswordConfirmDlg extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-
+                try
+                {
+                    PasswordCollection.getInstance().replacePasword(newSp);
+                    ctrl.switchForm(FORMS.MANAGE_PWDS);
+                }
+                catch (Exceptions e)
+                {
+                    ABEND.terminate(e);
+                }
             }
         });
 
@@ -96,6 +89,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
             {
                 try
                 {
+                    newSp = null;
                     ctrl.switchForm(FORMS.MANAGE_PWDS);
                 }
                 catch (Exceptions e)
@@ -111,10 +105,16 @@ public class ChangePasswordConfirmDlg extends AbstractForm
     {
         stage.setTitle(TextID.PROGRAM_NAME.toString() + " " + TextID.VERSION.toString());
 
+        CurrentPassword.getEntryTextField().setText(
+                PasswordCollection.getInstance().getSelected().getPassword());
+
+        newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
+
+        NewPassword.getEntryTextField().setText(newSp.getPassword(null));
+
         stage.setResizable(false);
         stage.setScene(scene);
 
         stage.show();
     }
-
 }

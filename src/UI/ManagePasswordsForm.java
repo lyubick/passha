@@ -278,6 +278,19 @@ public class ManagePasswordsForm extends AbstractForm
             public void changed(ObservableValue<? extends Object> observable, Object oldValue,
                     Object newValue)
             {
+                if (newValue == null) return;
+
+                try
+                {
+                    PasswordCollection.getInstance().setSelected(
+                            table.getSelectionModel().getSelectedItem().getOrigin());
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
                 if (passwordCalculation != null)
                 {
                     passwordCalculation.cancel();
@@ -322,6 +335,7 @@ public class ManagePasswordsForm extends AbstractForm
             {
                 try
                 {
+
                     Controller.getInstance().switchForm(FORMS.CHANGE_PWD);
                 }
                 catch (Exceptions e)
@@ -337,6 +351,8 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
+                if (tf_pass.getText().length() == 0) return;
+
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(new StringSelection(tf_pass.getText()), null);
 

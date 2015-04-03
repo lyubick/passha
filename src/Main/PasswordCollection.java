@@ -20,36 +20,35 @@ import Main.iSpecialPassword;
  */
 public class PasswordCollection
 {
-    private static Vector<SpecialPassword> db        = new Vector<SpecialPassword>();
-    private static PasswordCollection      self      = null;
-    private static Vector<Long>            shaCycles = readSHACycles();
-    private boolean                        changed   = false;
+    private Vector<SpecialPassword>   db               = new Vector<SpecialPassword>();
+    private static PasswordCollection self             = null;
+    private boolean                   changed          = false;
+    private SpecialPassword           selectedPassword = null;
+
+    public SpecialPassword getSelected()
+    {
+        return selectedPassword;
+    }
+
+    public void setSelected(SpecialPassword pwd)
+    {
+        selectedPassword = pwd;
+    }
 
     public boolean isChanged()
     {
         return changed;
     }
 
-    private static Vector<Long> readSHACycles()
-    {
-        Vector<Long> shaCycles = new Vector<Long>();
-
-        for (SpecialPassword existing : db)
-            shaCycles.add(new Long(existing.getShaCycles()));
-
-        return shaCycles;
-    }
-
     private PasswordCollection()
     {
         self = this;
+        load();
     }
 
     public static PasswordCollection init() throws Exceptions
     {
         if (self != null) throw new Exceptions(XC.INSTANCE_ALREADY_EXISTS);
-
-        load();
 
         self = new PasswordCollection();
         return self;
@@ -61,34 +60,17 @@ public class PasswordCollection
         return self;
     }
 
-    private boolean isUnique(Long ex)
+    public void replacePasword(SpecialPassword newSp)
     {
-        return (shaCycles.lastIndexOf(ex) != -1) ? false : true;
+        selectedPassword.setShaCycles(newSp.getShaCycles());
+        changed = true;
     }
 
     public void addPassword(SpecialPassword sp) throws Exceptions
     {
-        CryptoSystem cs = null;
-
-        try
-        {
-            cs = CryptoSystem.getInstance();
-        }
-        catch (Exceptions e)
-        {
-            ABEND.terminate(e);
-        }
-
-        long sc = 0;
-
         for (SpecialPassword existing : db)
             if (existing.getName().equals(sp.getName()))
                 throw new Exceptions(XC.PASSWORD_ALREADY_EXISTS);
-
-        while (!isUnique(new Long(sc = cs.randSHACycles())) || !sp.setShaCycles(sc))
-            ;
-
-        shaCycles.add(sc);
 
         db.addElement(sp);
 
@@ -144,7 +126,7 @@ public class PasswordCollection
         changed = false;
     }
 
-    private static void load()
+    private void load()
     {
         CryptoSystem cs = null;
         Vector<String> cryptSP = new Vector<String>();
@@ -152,7 +134,6 @@ public class PasswordCollection
 
         try
         {
-            shaCycles.clear();
             db.clear();
             cs = CryptoSystem.getInstance();
             reader = FileIO.getInstance();
@@ -167,8 +148,6 @@ public class PasswordCollection
         {
             SpecialPassword tmp = cs.decryptPassword(cryptSP.elementAt(i));
             db.addElement(tmp);
-
-            shaCycles.add(tmp.getShaCycles());
         }
     }
 
@@ -180,7 +159,6 @@ public class PasswordCollection
 
     public void removePassword(SpecialPassword sp)
     {
-        shaCycles.remove(sp.getShaCycles());
         db.remove(sp);
         changed = true;
     }

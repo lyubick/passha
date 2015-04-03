@@ -3,6 +3,8 @@
  */
 package CryptoSystem;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -188,14 +190,26 @@ public final class CryptoSystem
         Logger.printDebug("CryptoSystem init DONE!");
     }
 
-    public String getPassword(long cycles)
+    public String getPassword(long cycles, String pwdName)
     {
-        return getPassword(cycles, null);
+        return getPassword(cycles, pwdName, null);
     }
 
-    public String getPassword(long cycles, Task<Void> passwordCalculation)
+    public String getPassword(long cycles, String pwdName, Task<Void> passwordCalculation)
     {
-        byte[] tmp = masterHash.clone();
+        byte[] tmp = null;
+        try
+        {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(masterHash.clone());
+            outputStream.write((pwdName + cycles).getBytes());
+            tmp = outputStream.toByteArray();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         Logger.printDebug("master hash is " + SHA.bytesToHex(tmp) + "cycles " + cycles);
 
@@ -211,5 +225,4 @@ public final class CryptoSystem
 
         return SHA.bytesToHex(tmp);
     }
-
 }
