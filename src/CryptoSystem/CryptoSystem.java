@@ -204,14 +204,13 @@ public final class CryptoSystem
             outputStream.write(masterHash.clone());
             outputStream.write((pwdName + cycles).getBytes());
             tmp = outputStream.toByteArray();
+            Logger.printDebug("master hash is " + SHA.bytesToHex(tmp) + "cycles " + cycles);
         }
         catch (IOException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        Logger.printDebug("master hash is " + SHA.bytesToHex(tmp) + "cycles " + cycles);
 
         while (cycles-- > 0)
         {

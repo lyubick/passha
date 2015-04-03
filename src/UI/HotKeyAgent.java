@@ -19,7 +19,11 @@ import com.melloware.jintellitype.JIntellitype;
 
 public class HotKeyAgent extends JFrame implements HotkeyListener, IntellitypeListener
 {
-    private static HotKeyAgent self = null;
+    /**
+     * 
+     */
+    private static final long  serialVersionUID = 1L;
+    private static HotKeyAgent self             = null;
 
     private HotKeyAgent()
     {

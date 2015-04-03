@@ -5,7 +5,6 @@ package Main;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.security.cert.X509CertSelector;
 import java.util.BitSet;
 
 import javafx.concurrent.Task;
