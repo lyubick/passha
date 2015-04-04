@@ -21,14 +21,12 @@ import Main.Terminator;
 public final class FileIO
 {
     private String        file = "";
-    // private String backup = "";
 
     private static FileIO self = null;
 
     private FileIO(String filename)
     {
         file = filename.toString();
-        // backup = filename.toString() + ".bckp";
     }
 
     public static FileIO initUserFile(String filename, boolean isNewUser) throws Exceptions
@@ -77,53 +75,45 @@ public final class FileIO
      * @throws Exceptions
      *
      * @return String[] - one element, one line read from file
+     * @throws FileNotFoundException
      */
     public static Vector<String> readFile(String fileName) throws Exceptions
     {
         Vector<String> inLines = new Vector<String>();
 
+        Logger.printDebug("Reading: '" + fileName + "'");
+
         try
         {
-            Logger.printDebug("Reading: '" + fileName + "'");
-
             BufferedReader inFile = new BufferedReader(new FileReader(fileName));
+            String tmpString = null;
 
-            try
+            while ((tmpString = inFile.readLine()) != null)
             {
-                String tmpString = null;
-
-                while ((tmpString = inFile.readLine()) != null)
-                {
-                    inLines.add(tmpString);
-                }
-
+                inLines.add(tmpString);
             }
-            catch (IOException e)
-            {
-                throw new Exceptions(XC.READ_ERROR);
-            }
-
-            try
-            {
-                inFile.close();
-            }
-            catch (IOException e)
-            {
-                Terminator.terminate(new Exceptions(XC.READ_ERROR));
-            }
+            inFile.close();
 
         }
-        catch (FileNotFoundException e)
+        catch (IOException e)
         {
-            Terminator.terminate(new Exceptions(XC.READ_ERROR));
+            throw new Exceptions(XC.READ_ERROR);
         }
 
         return inLines;
     }
 
-    public Vector<String> readUserFile() throws Exceptions
+    public Vector<String> readUserFile()
     {
-        return readFile(file);
+        try
+        {
+            return readFile(file);
+        }
+        catch (Exceptions e)
+        {
+            Terminator.terminate(new Exceptions(XC.READ_ERROR));
+        }
+        return null;
     }
 
     /**
