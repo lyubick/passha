@@ -11,7 +11,7 @@ import javafx.stage.WindowEvent;
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import Logger.Logger;
-import Main.ABEND;
+import Main.Terminator;
 
 /**
  * @author curious-odd-man
@@ -47,7 +47,7 @@ public final class Controller
 
     public static Controller getInstance() throws Exceptions
     {
-        if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
 
         return self;
     }
@@ -62,7 +62,7 @@ public final class Controller
             public void handle(WindowEvent event)
             {
                 HotKeyAgent.getInstance().unregister();
-                System.exit(0); // TODO
+                Terminator.terminate(new Exceptions(XC.THE_END));
             }
         });
 
@@ -84,7 +84,7 @@ public final class Controller
         if (self == null)
             self = new Controller(primaryStage);
         else
-            ABEND.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
+            Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
 
         forms = new AbstractForm[FORMS.END.ordinal()];
 

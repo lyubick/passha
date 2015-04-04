@@ -65,7 +65,7 @@ public class SpecialPassword implements Serializable
     {
         Logger.printDebug("SpecialPassword constructor... START");
 
-        if (name.length() == 0) throw new Exceptions(XC.MISSING_MANDATORY_DATA);
+        if (name.length() == 0) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
 
         this.name = name;
         this.comment = comment;
@@ -86,7 +86,7 @@ public class SpecialPassword implements Serializable
     {
         Logger.printDebug("SpecialPassword copy-constructor... START");
 
-        if (other == null) throw new Exceptions(XC.MISSING_MANDATORY_DATA);
+        if (other == null) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
 
         this.name = other.name.toString();
         this.comment = other.comment.toString();
@@ -216,7 +216,7 @@ public class SpecialPassword implements Serializable
     {
         Logger.printError("Illegal call of hashCode.");
         assert false : "Illegal call of hashCode.";
-        ABEND.terminate(new Exceptions(XC.INIT_FAILURE));
+        Terminator.terminate(new Exceptions(XC.INIT_FAILURE));
         return 0;
     }
 
@@ -278,7 +278,7 @@ public class SpecialPassword implements Serializable
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
         return "";
     }

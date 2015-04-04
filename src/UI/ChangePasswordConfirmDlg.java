@@ -14,7 +14,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import Common.Exceptions;
 import Languages.Texts.TextID;
-import Main.ABEND;
+import Main.Terminator;
 import Main.PasswordCollection;
 import Main.SpecialPassword;
 import UI.Controller.FORMS;
@@ -90,7 +90,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    ABEND.terminate(e);
+                    Terminator.terminate(e);
                 }
             }
         });
@@ -107,7 +107,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    ABEND.terminate(e);
+                    Terminator.terminate(e);
                 }
             }
         });

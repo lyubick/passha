@@ -19,27 +19,33 @@ public final class Exceptions extends Throwable
 
     public static enum XC
     {
+        // ONLY Class initialization failure
         INIT_FAILURE,
 
-        FILE_NAME_ABSENT,
+        // ONLY Singleton class Exceptions
+        INSTANCE_ALREADY_EXISTS,
+        INSTANCE_DOES_NOT_EXISTS,
+
+        // ONLY FileIO class Exceptions
         FILE_DOES_NOT_EXISTS,
 
         WRITE_ERROR,
         READ_ERROR,
         CLOSE_ERROR,
 
-        INSTANCE_ALREADY_EXISTS,
-        NO_INSTANCE_EXISTS,
+        // ONLY New Password dialog exceptions
+        MANDATORY_DATA_MISSING,
+        PASSWORD_NAME_ALREADY_EXISTS,
 
-        MISSING_MANDATORY_DATA,
+        // Exception thrown ONLY on Login stage, indicating, that it could be
+        // new user or Password is incorrect.
+        USER_UNKNOWN,
 
-        UNKNOWN_USER,
+        // ONLY for methods, that convert Object to Bytes and Bytes to Object
+        OBJECT_SERIALIZATION_FAILED,
+        OBJECT_DESERIALIZATION_FAILED,
 
-        SECURITY_BREACH, // FIXME use this for all unknown errors like sudden file missing etc.
-
-        PASSWORD_ALREADY_EXISTS,
-
-        BLACK_MAGIC
+        THE_END,
     }
 
     public XC getCode()
@@ -62,7 +68,8 @@ public final class Exceptions extends Throwable
         String methodName = e.getMethodName();
         String className = e.getClassName();
         int line = e.getLineNumber();
-        Logger.printError("Function " + methodName + "() from " + className + "@" + line + " thrown: " + code.toString() + "!");
+        Logger.printError("Function " + methodName + "() from " + className + "@" + line
+                + " thrown: " + code.toString() + "!");
         this.code = code;
     }
 }

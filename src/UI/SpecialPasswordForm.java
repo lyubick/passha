@@ -9,7 +9,7 @@ import Common.Exceptions;
 import Common.Exceptions.XC;
 import Languages.Texts.TextID;
 import Logger.Logger;
-import Main.ABEND;
+import Main.Terminator;
 import Main.PasswordCollection;
 import Main.SpecialPassword;
 import Main.SpecialPassword.ParamsMaskBits;
@@ -246,9 +246,9 @@ public class SpecialPasswordForm extends AbstractForm
                 catch (Exceptions e)
                 {
                     b_OK.setDisable(false);
-                    if (e.getCode() == XC.MISSING_MANDATORY_DATA)
+                    if (e.getCode() == XC.MANDATORY_DATA_MISSING)
                         l_errorLabel.setText(TextID.ERR_MISSING_PASSWORD_NAME.toString());
-                    else if (e.getCode() == XC.PASSWORD_ALREADY_EXISTS)
+                    else if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS)
                         l_errorLabel.setText(TextID.ERR_NAME_ALREADY_TAKEN.toString());
                 }
             }
@@ -265,7 +265,7 @@ public class SpecialPasswordForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    ABEND.terminate(e);
+                    Terminator.terminate(e);
                 }
             }
 
