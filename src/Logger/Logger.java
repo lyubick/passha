@@ -66,7 +66,7 @@ public final class Logger // Static class
         writeToFileAndToScreen(
                 String.format("[%1$s] %2$" + fileNameWidth + "s @ %3$-" + lineWidth + "d %4$-"
                         + methodNameWidth + "s ", getTime(), fileName, line, methodName)
-                        + lvl.name() + msg, lvl);
+                        + lvl.name() + ": " + msg, lvl);
     }
 
     private static void writeToFileAndToScreen(String log, LOGLEVELS lvl)

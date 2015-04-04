@@ -52,9 +52,37 @@ public final class Controller
         return self;
     }
 
-    private Controller(Stage primaryStage)
+    private Controller()
     {
-        mainStage = primaryStage;
+    }
+
+    public static Controller init(Stage primaryStage)
+    {
+        if (self == null)
+        {
+            self = new Controller();
+            mainStage = primaryStage;
+        }
+        else
+            Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
+
+        forms = new AbstractForm[FORMS.END.ordinal()];
+
+        forms[FORMS.LOGIN.ordinal()] = new LoginForm();
+        forms[FORMS.MANAGE_PWDS.ordinal()] = new ManagePasswordsForm();
+        forms[FORMS.CREATE_PWD.ordinal()] = new SpecialPasswordForm();
+        forms[FORMS.CHANGE_PWD.ordinal()] = new ChangePasswordConfirmDlg();
+        forms[FORMS.SETTINGS.ordinal()] = new SettingsForm();
+        forms[FORMS.EXPORT.ordinal()] = new ExportForm();
+
+        return self;
+    }
+
+    public void switchForm(FORMS form) throws Exceptions
+    {
+        // TODO
+        mainStage.close();
+        mainStage = new Stage();
 
         mainStage.setOnCloseRequest(new EventHandler<WindowEvent>()
         {
@@ -77,32 +105,6 @@ public final class Controller
                 mainStage.setIconified(false);
             }
         });
-    }
-
-    public static Controller init(Stage primaryStage)
-    {
-        if (self == null)
-            self = new Controller(primaryStage);
-        else
-            Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
-
-        forms = new AbstractForm[FORMS.END.ordinal()];
-
-        forms[FORMS.LOGIN.ordinal()] = new LoginForm();
-        forms[FORMS.MANAGE_PWDS.ordinal()] = new ManagePasswordsForm();
-        forms[FORMS.CREATE_PWD.ordinal()] = new SpecialPasswordForm();
-        forms[FORMS.CHANGE_PWD.ordinal()] = new ChangePasswordConfirmDlg();
-        forms[FORMS.SETTINGS.ordinal()] = new SettingsForm();
-        forms[FORMS.EXPORT.ordinal()] = new ExportForm();
-
-        return self;
-    }
-
-    public void switchForm(FORMS form) throws Exceptions
-    {
-        // TODO
-        mainStage.close();
-        // mainStage = new Stage();
 
         Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
                 + form.name());
