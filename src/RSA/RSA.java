@@ -21,7 +21,7 @@ public final class RSA
 
     /* Constants */
     /* One byte of information will be coded into 40 bytes of information */
-    private static final int RSA_BYTE_ENCRYPTION_LENGTH = 40;
+    private static final int RSA_BYTE_ENCRYPTION_LENGTH = 310;
     /* Certainty that generated Number is PRIME. (1 - (1/2) ^ Certainty) */
     private static final int RSA_PRIME_CERTAINCY        = 100;
 
@@ -189,11 +189,11 @@ public final class RSA
     public RSA(String p, String q, String e) throws Exceptions
     {
         /* Initial values */
-        this.p = new BigInteger(p);
-        this.q = new BigInteger(q);
+        this.p = new BigInteger(p, 16);
+        this.q = new BigInteger(q, 16);
         this.n = new BigInteger("0");
         this.f = new BigInteger("0");
-        this.e = new BigInteger(e);
+        this.e = new BigInteger(e, 16);
         this.d = new BigInteger("0");
 
         Logger.printDebug("Initial p: " + p.toString());

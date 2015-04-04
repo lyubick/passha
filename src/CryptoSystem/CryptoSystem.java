@@ -42,7 +42,10 @@ public final class CryptoSystem
     private static RSA          rsa                        = null;
 
     private static byte[]       masterHash                 = null;
-    private static byte[]       keyHash                    = null;
+
+    private static byte[]       keyHashP                   = null;
+    private static byte[]       keyHashQ                   = null;
+    private static byte[]       keyHashE                   = null;
 
     static Clipboard            clipboard                  = null;
     static ClipboardContent     content                    = null;
@@ -59,7 +62,7 @@ public final class CryptoSystem
         self = this;
     };
 
-    private static String getKey(int mod)
+    private static String getKey(byte[] keyHash, int mod)
     {
         return Long.toString(Math.abs(Utilities.load64(keyHash, RSA_NUMBER_HASH_OFFSET * mod)));
     }
@@ -137,16 +140,20 @@ public final class CryptoSystem
         // =============================================================
 
         masterHash = sha.getBytesSHA512(masterPassword.getBytes());
-        keyHash = sha.getBytesSHA512(masterHash);
+
+        keyHashP = sha.getBytesSHA512((masterPassword + "P").getBytes());
+        keyHashQ = sha.getBytesSHA512((masterPassword + "Q").getBytes());
+        keyHashE = sha.getBytesSHA512((masterPassword + "E").getBytes());
 
         // ========== RSA initialization START:
         // ===========================================================
         Logger.printDebug("RSA init STARTS...");
         try
         {
+
             rsa =
-                    new RSA(getKey(RSA_NUMBER_HASH_MODIFIER_P), getKey(RSA_NUMBER_HASH_MODIFIER_Q),
-                            getKey(RSA_NUMBER_HASH_MODIFIER_E));
+                    new RSA(Utilities.bytesToHex(keyHashP), Utilities.bytesToHex(keyHashQ),
+                            Utilities.bytesToHex(keyHashE));
         }
         catch (Common.Exceptions e)
         {
@@ -205,7 +212,7 @@ public final class CryptoSystem
             outputStream.write(masterHash.clone());
             outputStream.write((pwdName + cycles).getBytes());
             tmp = outputStream.toByteArray();
-            Logger.printDebug("master hash is " + SHA.bytesToHex(tmp) + "cycles " + cycles);
+            Logger.printDebug("master hash is " + Utilities.bytesToHex(tmp) + "cycles " + cycles);
         }
         catch (IOException e)
         {
@@ -223,6 +230,6 @@ public final class CryptoSystem
             tmp = sha.getBytesSHA512(tmp);
         }
 
-        return SHA.bytesToHex(tmp);
+        return Utilities.bytesToHex(tmp);
     }
 }
