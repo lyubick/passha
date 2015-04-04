@@ -19,7 +19,7 @@ import Main.Terminator;
  */
 public final class Controller
 {
-    private static Stage      mainStage   = null;
+    private Stage             mainStage   = null;
     private static Controller self        = null;
 
     private FORMS             currentForm = FORMS.UNKNOWN;
@@ -52,17 +52,15 @@ public final class Controller
         return self;
     }
 
-    private Controller()
+    private Controller(Stage primaryStage)
     {
+        mainStage = primaryStage;
     }
 
     public static Controller init(Stage primaryStage)
     {
         if (self == null)
-        {
-            self = new Controller();
-            mainStage = primaryStage;
-        }
+            self = new Controller(primaryStage);
         else
             Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
 
