@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import Common.Exceptions;
 import Common.FileIO;
 import Common.Exceptions.XC;
@@ -44,13 +45,11 @@ public class PasswordCollection
     private PasswordCollection()
     {
         self = this;
-        load();
     }
 
     public static PasswordCollection init() throws Exceptions
     {
         if (self != null) throw new Exceptions(XC.INSTANCE_ALREADY_EXISTS);
-
         self = new PasswordCollection();
         return self;
     }
@@ -127,35 +126,49 @@ public class PasswordCollection
         changed = false;
     }
 
-    private void load()
+    private Task<Void> load()
     {
-        CryptoSystem cs = null;
-        Vector<String> cryptSP = new Vector<String>();
-        FileIO reader = null;
 
-        try
+        Task<Void> loadTask = new Task<Void>()
         {
-            db.clear();
-            cs = CryptoSystem.getInstance();
-            reader = FileIO.getInstance();
-            cryptSP = reader.readUserFile();
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
+            @Override
+            protected Void call() throws Exception
+            {
+                updateProgress(1, 100);
+                CryptoSystem cs = null;
+                Vector<String> cryptSP = new Vector<String>();
+                FileIO reader = null;
 
-        for (int i = 0; i < cryptSP.size(); ++i)
-        {
-            SpecialPassword tmp = cs.decryptPassword(cryptSP.elementAt(i));
-            db.addElement(tmp);
-        }
+                try
+                {
+                    db.clear();
+                    cs = CryptoSystem.getInstance();
+                    reader = FileIO.getInstance();
+                    cryptSP = reader.readUserFile();
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+
+                for (int i = 0; i < cryptSP.size(); ++i)
+                {
+                    SpecialPassword tmp = cs.decryptPassword(cryptSP.elementAt(i));
+                    db.addElement(tmp);
+                    updateProgress(i + 1, cryptSP.size());
+                }
+
+                return null;
+            }
+        };
+
+        return loadTask;
     }
 
-    public void reload()
+    public Task<Void> reload()
     {
-        load();
         changed = false;
+        return load();
     }
 
     public void removePassword(SpecialPassword sp)

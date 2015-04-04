@@ -17,8 +17,8 @@ import Common.Exceptions.XC;
 import CryptoSystem.CryptoSystem;
 import Languages.Texts.TextID;
 import Logger.Logger;
-import Main.Terminator;
 import Main.PasswordCollection;
+import Main.Terminator;
 import UI.Controller.FORMS;
 
 /**
@@ -69,7 +69,7 @@ public class LoginForm extends AbstractForm
         grid.add(pf_PasswordConfirm, 0, gridRowCounter++);
 
         grid.add(b_Register, 0, gridRowCounter);
-        grid.add(b_Login, 0, gridRowCounter++);
+        grid.add(b_Login, 0, gridRowCounter);
 
         grid.add(l_Warning, 0, gridRowCounter++);
 
@@ -191,19 +191,8 @@ public class LoginForm extends AbstractForm
     private void init(String password, boolean isNewUser) throws Exceptions
     {
         CryptoSystem.init(password, isNewUser);
+        PasswordCollection.init();
 
-        try
-        {
-            // ========== Database activation START:
-            PasswordCollection.init();
-            // ========== Database activation END:
-
-            ctrl.switchForm(FORMS.MANAGE_PWDS);
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
+        Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
     }
-
 }

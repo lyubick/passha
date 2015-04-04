@@ -241,7 +241,7 @@ public class SpecialPasswordForm extends AbstractForm
                             new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url
                                     .getText(), passLength, paramsMask, tf_specialChars.getText()));
 
-                    ctrl.switchForm(FORMS.MANAGE_PWDS);
+                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
                 }
                 catch (Exceptions e)
                 {
@@ -261,7 +261,7 @@ public class SpecialPasswordForm extends AbstractForm
             {
                 try
                 {
-                    ctrl.switchForm(FORMS.MANAGE_PWDS);
+                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
                 }
                 catch (Exceptions e)
                 {

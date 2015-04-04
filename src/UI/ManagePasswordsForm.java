@@ -28,6 +28,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -46,6 +47,7 @@ import javafx.stage.WindowEvent;
  */
 public class ManagePasswordsForm extends AbstractForm
 {
+
     private final class WINDOW
     {
         public static final int width  = 1000;
@@ -73,6 +75,8 @@ public class ManagePasswordsForm extends AbstractForm
     private MenuBar                     mb_Main             = null;
     private Menu                        m_File              = null;
     private MenuItem                    mi_Settings         = null;
+    private ProgressBar                 pb_progress         = null;
+    private boolean                     firstTime           = true;
 
     private void handleButtons()
     {
@@ -87,8 +91,44 @@ public class ManagePasswordsForm extends AbstractForm
         }
     }
 
+    public void reloadAllItems()
+    {
+        try
+        {
+            Task<Void> reloadTask = PasswordCollection.getInstance().reload();
+
+            pb_progress.progressProperty().bind(reloadTask.progressProperty());
+
+            reloadTask.setOnSucceeded(EventHandler -> {
+                pb_progress.progressProperty().unbind();
+                Logger.printDebug("reloadTask -> successfully finished");
+                try
+                {
+                    table.setItems(PasswordCollection.getInstance().getIface());
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            });
+
+            Thread reloadTaskThread = new Thread(reloadTask);
+            reloadTaskThread.start();
+
+            handleButtons();
+
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public ManagePasswordsForm()
     {
+        pb_progress = new ProgressBar();
 
         // ========== CSS ========== //
         scene.getStylesheets().add(
@@ -200,6 +240,7 @@ public class ManagePasswordsForm extends AbstractForm
         grid.add(b_Save, 1, 0);
         grid.add(b_Discard, 1, 0);
         grid.add(b_Reset, 1, 0);
+        grid.add(pb_progress, 1, 1);
 
         try
         {
@@ -230,7 +271,7 @@ public class ManagePasswordsForm extends AbstractForm
             {
                 try
                 {
-                    ctrl.switchForm(FORMS.CREATE_PWD);
+                    Controller.getInstance().switchForm(FORMS.CREATE_PWD);
                 }
                 catch (Exceptions e)
                 {
@@ -288,16 +329,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                try
-                {
-                    PasswordCollection.getInstance().reload();
-                    handleButtons();
-                    table.setItems(PasswordCollection.getInstance().getIface());
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                reloadAllItems();
             }
         });
 
@@ -482,6 +514,11 @@ public class ManagePasswordsForm extends AbstractForm
         });
 
         stage.show();
-    }
 
+        if (firstTime)
+        {
+            firstTime = false;
+            reloadAllItems();
+        }
+    }
 }

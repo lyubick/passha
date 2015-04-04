@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Main.Terminator;
 
 /**
  * @author curious-odd-man
@@ -28,8 +27,6 @@ import Main.Terminator;
  */
 public abstract class AbstractForm
 {
-    protected Controller       ctrl = null;
-
     protected static final int HGAP = 10;
     protected static final int VGAP = 10;
 
@@ -78,15 +75,6 @@ public abstract class AbstractForm
         grid.setVgap(VGAP);
         grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
         grid.setAlignment(Pos.CENTER);
-
-        try
-        {
-            ctrl = Controller.getInstance();
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
 
     }
 

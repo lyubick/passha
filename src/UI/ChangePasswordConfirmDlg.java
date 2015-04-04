@@ -86,7 +86,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
                 try
                 {
                     PasswordCollection.getInstance().replacePasword(newSp);
-                    ctrl.switchForm(FORMS.MANAGE_PWDS);
+                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
                 }
                 catch (Exceptions e)
                 {
@@ -103,7 +103,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
                 try
                 {
                     newSp = null;
-                    ctrl.switchForm(FORMS.MANAGE_PWDS);
+                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
                 }
                 catch (Exceptions e)
                 {
