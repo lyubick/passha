@@ -5,11 +5,9 @@ package Logger;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 import Common.Exceptions.XC;
 import Common.Exceptions;
-import Main.ABEND;
+import Main.Terminator;
 
 /**
  * @author lyubick
@@ -20,38 +18,17 @@ public final class Logger // Static class
     public enum LOGLEVELS
     {
         SILENT,
-        ERROR,
-        WARNING,
-        VERBOSE,
-        DEBUG
+        DEBUG,
+        ERROR
     }
 
-    private static int                    fileNameWidth   = 20;
-    private static int                    lineWidth       = 4;
-    private static int                    methodNameWidth = 20;
+    private static int         fileNameWidth   = 20;
+    private static int         lineWidth       = 4;
+    private static int         methodNameWidth = 20;
 
-    private static Map<String, LOGLEVELS> argsMap         = initArgsMap();
+    private static boolean     initialized     = false;
 
-    private static Map<String, LOGLEVELS> initArgsMap()
-    {
-        Map<String, LOGLEVELS> retMap = new HashMap<String, LOGLEVELS>();
-
-        retMap.put("DEBUG", LOGLEVELS.DEBUG);
-        retMap.put("ERROR", LOGLEVELS.ERROR);
-        retMap.put("INFO", LOGLEVELS.VERBOSE);
-        retMap.put("SILENT", LOGLEVELS.SILENT);
-        retMap.put("WARNING", LOGLEVELS.WARNING);
-
-        return retMap;
-    }
-
-    private static LOGLEVELS   logLevel;
-
-    private static String      LOG_ADDS    = "";
-
-    private static boolean     initialized = false;
-
-    private static PrintWriter writer      = null;
+    private static PrintWriter writer          = null;
 
     private static String getTime()
     {
@@ -60,21 +37,13 @@ public final class Logger // Static class
 
     public static void printError(String msg)
     {
+        if (!initialized) return;
         prepareAndLog(LOGLEVELS.ERROR, msg);
-    }
-
-    public static void printWarning(String msg)
-    {
-        prepareAndLog(LOGLEVELS.WARNING, msg);
-    }
-
-    public static void printInfo(String msg)
-    {
-        prepareAndLog(LOGLEVELS.VERBOSE, msg);
     }
 
     public static void printDebug(String msg)
     {
+        if (!initialized) return;
         prepareAndLog(LOGLEVELS.DEBUG, msg);
     }
 
@@ -82,58 +51,43 @@ public final class Logger // Static class
     {
         if (!initialized) return;
 
-        // if (lvl.ordinal() < logLevel.ordinal()) return;
-
-        switch (lvl)
-        {
-            case SILENT:
-                return;
-
-            case ERROR:
-                LOG_ADDS = "ERROR : ";
-                break;
-
-            case WARNING:
-                LOG_ADDS = "WARN  : ";
-                break;
-
-            case VERBOSE:
-                LOG_ADDS = "INFO  : ";
-                break;
-
-            case DEBUG:
-                LOG_ADDS = "DEBUG : ";
-                break;
-        }
-
         StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
-        // The last element of the array represents the bottom of the stack,
-        // which is the least recent method invocation in the sequence.
-        StackTraceElement e = stacktrace[3];// maybe this number needs to be
-                                            // corrected
+        StackTraceElement e = stacktrace[3];
+
         String methodName = e.getMethodName();
         String fileName = e.getFileName();
+
         int line = e.getLineNumber();
 
         fileNameWidth = Math.max(fileNameWidth, fileName.length());
         lineWidth = Math.max(lineWidth, Integer.toString(line).length());
         methodNameWidth = Math.max(methodNameWidth, methodName.length());
 
-        writeToFileAndToScreen(String.format("[%1$s] %2$" + fileNameWidth + "s @ %3$-" + lineWidth
-                + "d %4$-" + methodNameWidth + "s ", getTime(), fileName, line, methodName)
-                + LOG_ADDS + msg);
+        writeToFileAndToScreen(
+                String.format("[%1$s] %2$" + fileNameWidth + "s @ %3$-" + lineWidth + "d %4$-"
+                        + methodNameWidth + "s ", getTime(), fileName, line, methodName)
+                        + lvl.name() + ": " + msg, lvl);
     }
 
-    private static void writeToFileAndToScreen(String log)
+    private static void writeToFileAndToScreen(String log, LOGLEVELS lvl)
     {
-        System.out.println(log);
+        switch (lvl)
+        {
+            case ERROR:
+                System.err.println(log);
+                break;
+            case DEBUG:
+                System.out.println(log);
+                break;
+            default:
+                break;
+        }
+
         writer.println(log);
     }
 
-    public static void loggerON(String log)
+    public static void loggerON()
     {
-        logLevel = (argsMap.get(log) != null) ? argsMap.get(log) : LOGLEVELS.SILENT;
-
         if (!initialized)
         {
             try
@@ -142,26 +96,18 @@ public final class Logger // Static class
             }
             catch (FileNotFoundException e)
             {
-                ABEND.terminate(new Exceptions(XC.INIT_FAILURE));
+                Terminator.terminate(new Exceptions(XC.INIT_FAILURE));
             }
             initialized = true;
         }
         else
-            ABEND.terminate(new Exceptions(XC.SECURITY_BREACH));
+        {
+            Terminator.terminate(new Exceptions(XC.INIT_FAILURE));
+        }
     }
 
     public static void loggerOFF()
     {
         if (initialized) writer.close();
-    }
-
-    private Logger(LOGLEVELS lvl)
-    {
-        logLevel = lvl;
-    }
-
-    public static LOGLEVELS getLogLevel()
-    {
-        return logLevel;
     }
 }

@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.util.Vector;
 import Common.Exceptions.XC;
 import Logger.Logger;
-import Main.ABEND;
+import Main.Terminator;
 
 /**
  * @author curious-odd-man
@@ -35,7 +35,7 @@ public final class FileIO
     {
         filename += ".cif";
 
-        if (self != null) ABEND.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
+        if (self != null) Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
 
         File test = new File(filename);
 
@@ -52,7 +52,7 @@ public final class FileIO
                 }
                 catch (FileNotFoundException e)
                 {
-                    ABEND.terminate(new Exceptions(XC.SECURITY_BREACH));
+                    Terminator.terminate(new Exceptions(XC.WRITE_ERROR));
                 }
             }
             else
@@ -65,7 +65,7 @@ public final class FileIO
 
     public static FileIO getInstance() throws Exceptions
     {
-        if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
         return self;
     }
 
@@ -109,13 +109,13 @@ public final class FileIO
             }
             catch (IOException e)
             {
-                ABEND.terminate(new Exceptions(XC.READ_ERROR));
+                Terminator.terminate(new Exceptions(XC.READ_ERROR));
             }
 
         }
         catch (FileNotFoundException e)
         {
-            ABEND.terminate(new Exceptions(XC.READ_ERROR));
+            Terminator.terminate(new Exceptions(XC.READ_ERROR));
         }
 
         return inLines;
@@ -141,7 +141,7 @@ public final class FileIO
         }
         catch (FileNotFoundException e)
         {
-            ABEND.terminate(new Exceptions(XC.WRITE_ERROR));
+            Terminator.terminate(new Exceptions(XC.WRITE_ERROR));
         }
     }
 

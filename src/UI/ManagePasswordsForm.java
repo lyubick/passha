@@ -11,7 +11,7 @@ import java.io.File;
 import Common.Exceptions;
 import Languages.Texts.TextID;
 import Logger.Logger;
-import Main.ABEND;
+import Main.Terminator;
 import Main.PasswordCollection;
 import Main.Settings;
 import Main.iSpecialPassword;
@@ -83,7 +83,7 @@ public class ManagePasswordsForm extends AbstractForm
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
     }
 
@@ -220,7 +220,7 @@ public class ManagePasswordsForm extends AbstractForm
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
 
         b_New.setOnAction(new EventHandler<ActionEvent>()
@@ -234,7 +234,7 @@ public class ManagePasswordsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    ABEND.terminate(e);
+                    Terminator.terminate(e);
                 }
 
                 handleButtons();
@@ -257,7 +257,7 @@ public class ManagePasswordsForm extends AbstractForm
                     }
                     catch (Exceptions e)
                     {
-                        ABEND.terminate(e);
+                        Terminator.terminate(e);
                     }
                 }
 
@@ -277,7 +277,7 @@ public class ManagePasswordsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    ABEND.terminate(e);
+                    Terminator.terminate(e);
                 }
                 handleButtons();
             }
@@ -296,7 +296,7 @@ public class ManagePasswordsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    ABEND.terminate(e);
+                    Terminator.terminate(e);
                 }
             }
         });

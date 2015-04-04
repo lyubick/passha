@@ -17,7 +17,7 @@ import Common.Exceptions.XC;
 import CryptoSystem.CryptoSystem;
 import Languages.Texts.TextID;
 import Logger.Logger;
-import Main.ABEND;
+import Main.Terminator;
 import Main.PasswordCollection;
 import UI.Controller.FORMS;
 
@@ -110,7 +110,7 @@ public class LoginForm extends AbstractForm
                         }
                         catch (Exceptions e)
                         {
-                            if (e.getCode() == XC.UNKNOWN_USER)
+                            if (e.getCode() == XC.USER_UNKNOWN)
                             {
                                 b_Register.setVisible(true);
 
@@ -121,7 +121,7 @@ public class LoginForm extends AbstractForm
                             }
                             else
                             {
-                                ABEND.terminate(e);
+                                Terminator.terminate(e);
                             }
                         }
                     else
@@ -153,7 +153,7 @@ public class LoginForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    ABEND.terminate(e);
+                    Terminator.terminate(e);
                 }
             }
         });
@@ -202,7 +202,7 @@ public class LoginForm extends AbstractForm
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
     }
 

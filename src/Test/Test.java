@@ -10,7 +10,7 @@ package Test;
 import java.util.Vector;
 
 import Logger.Logger;
-import Main.ABEND;
+import Main.Terminator;
 import Main.SpecialPassword;
 import RSA.RSA;
 import SHA.SHA;
@@ -165,9 +165,7 @@ public class Test
 
     public static void main(String[] args)
     {
-        String[] parms = Main.Main.readArgs(args);
-
-        Logger.loggerON(parms[0].toString());
+        Logger.loggerON();
 
         try
         {
@@ -175,9 +173,8 @@ public class Test
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
-
         /* 1. */launchTest(TestRSA());
         /* 2. */launchTest(TestSHA());
         /* 3. */launchTest(TestSerialization());

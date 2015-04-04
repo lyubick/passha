@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Main.ABEND;
+import Main.Terminator;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.IntellitypeListener;
@@ -32,13 +32,13 @@ public class HotKeyAgent extends JFrame implements HotkeyListener, IntellitypeLi
 
     public static void init()
     {
-        if (self != null) ABEND.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
+        if (self != null) Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
         self = new HotKeyAgent();
     }
 
     public static HotKeyAgent getInstance()
     {
-        if (self == null) ABEND.terminate(new Exceptions(XC.INIT_FAILURE));
+        if (self == null) Terminator.terminate(new Exceptions(XC.INIT_FAILURE));
         return self;
     }
 

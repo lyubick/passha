@@ -57,7 +57,7 @@ public class PasswordCollection
 
     public static PasswordCollection getInstance() throws Exceptions
     {
-        if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
         return self;
     }
 
@@ -71,7 +71,7 @@ public class PasswordCollection
     {
         for (SpecialPassword existing : db)
             if (existing.getName().equals(sp.getName()))
-                throw new Exceptions(XC.PASSWORD_ALREADY_EXISTS);
+                throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
 
         db.addElement(sp);
 
@@ -121,7 +121,7 @@ public class PasswordCollection
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
 
         changed = false;
@@ -142,7 +142,7 @@ public class PasswordCollection
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
 
         for (int i = 0; i < cryptSP.size(); ++i)

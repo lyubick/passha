@@ -11,7 +11,7 @@ import javafx.stage.WindowEvent;
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import Logger.Logger;
-import Main.ABEND;
+import Main.Terminator;
 
 /**
  * @author curious-odd-man
@@ -47,44 +47,24 @@ public final class Controller
 
     public static Controller getInstance() throws Exceptions
     {
-        if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
 
         return self;
     }
 
-    private Controller(Stage primaryStage)
+    private Controller()
     {
-        mainStage = primaryStage;
-
-        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>()
-        {
-            @Override
-            public void handle(WindowEvent event)
-            {
-                HotKeyAgent.getInstance().unregister();
-                System.exit(0); // TODO
-            }
-        });
-
-        mainStage.iconifiedProperty().addListener(new ChangeListener<Boolean>()
-        {
-            @Override
-            public void
-                    changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
-            {
-                // TODO Auto-generated method stub
-                mainStage.hide();
-                mainStage.setIconified(false);
-            }
-        });
     }
 
     public static Controller init(Stage primaryStage)
     {
         if (self == null)
-            self = new Controller(primaryStage);
+        {
+            self = new Controller();
+            mainStage = primaryStage;
+        }
         else
-            ABEND.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
+            Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
 
         forms = new AbstractForm[FORMS.END.ordinal()];
 
@@ -102,7 +82,29 @@ public final class Controller
     {
         // TODO
         mainStage.close();
-        // mainStage = new Stage();
+        mainStage = new Stage();
+
+        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>()
+        {
+            @Override
+            public void handle(WindowEvent event)
+            {
+                HotKeyAgent.getInstance().unregister();
+                Terminator.terminate(new Exceptions(XC.THE_END));
+            }
+        });
+
+        mainStage.iconifiedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void
+                    changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
+            {
+                // TODO Auto-generated method stub
+                mainStage.hide();
+                mainStage.setIconified(false);
+            }
+        });
 
         Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
                 + form.name());

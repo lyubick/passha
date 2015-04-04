@@ -20,8 +20,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import Common.Exceptions;
 import Common.Exceptions.XC;
-import Logger.Logger;
-import Main.ABEND;
+import Main.Terminator;
 
 /**
  * @author curious-odd-man
@@ -71,7 +70,7 @@ public abstract class AbstractForm
 
     protected AbstractForm()
     {
-        if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG)) grid.setGridLinesVisible(true);
+        grid.setGridLinesVisible(true); // FIXME
 
         group.getChildren().addAll(grid);
 
@@ -86,7 +85,7 @@ public abstract class AbstractForm
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
 
     }
@@ -152,7 +151,7 @@ public abstract class AbstractForm
     // throw
     protected void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
     {
-        if (btn.getScene() == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        if (btn.getScene() == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
         btn.getScene().getAccelerators().put(cmb, new Runnable()
         {
             @Override

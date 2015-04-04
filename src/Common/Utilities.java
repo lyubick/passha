@@ -80,7 +80,7 @@ public final class Utilities
         }
         catch (IOException e)
         {
-            throw new Common.Exceptions(XC.BLACK_MAGIC);
+            throw new Common.Exceptions(XC.OBJECT_SERIALIZATION_FAILED);
         }
 
         return bytes;
@@ -104,7 +104,7 @@ public final class Utilities
         }
         catch (IOException | ClassNotFoundException e)
         {
-            throw new Common.Exceptions(XC.BLACK_MAGIC);
+            throw new Common.Exceptions(XC.OBJECT_DESERIALIZATION_FAILED);
         }
 
         return object;

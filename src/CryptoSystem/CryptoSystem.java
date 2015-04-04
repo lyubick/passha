@@ -18,7 +18,7 @@ import Common.FileIO;
 import Common.Exceptions.XC;
 import Common.Utilities;
 import Logger.Logger;
-import Main.ABEND;
+import Main.Terminator;
 import Main.SpecialPassword;
 
 /**
@@ -76,7 +76,7 @@ public final class CryptoSystem
 
     public static CryptoSystem getInstance() throws Exceptions
     {
-        if (self == null) throw new Exceptions(XC.NO_INSTANCE_EXISTS);
+        if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
         return self;
     }
 
@@ -88,7 +88,7 @@ public final class CryptoSystem
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
 
         return "Error";
@@ -102,7 +102,7 @@ public final class CryptoSystem
         }
         catch (Exceptions e)
         {
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
 
         return null;
@@ -115,7 +115,7 @@ public final class CryptoSystem
         if (self != null)
         {
             Logger.printError("CryptoSystem already initialized... exiting...");
-            ABEND.terminate(new Exceptions(XC.SECURITY_BREACH));
+            Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
         }
 
         // ========== SHA initialization START:
@@ -129,7 +129,7 @@ public final class CryptoSystem
         catch (Exceptions e)
         {
             Logger.printError("SHA initialization failed... exiting...");
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
 
         Logger.printDebug("SHA init DONE!");
@@ -151,7 +151,7 @@ public final class CryptoSystem
         catch (Common.Exceptions e)
         {
             Logger.printError("RSA initialization failed... exiting...");
-            ABEND.terminate(e);
+            Terminator.terminate(e);
         }
         Logger.printDebug("RSA init DONE!");
         // ========== RSA initialization END:
@@ -172,12 +172,12 @@ public final class CryptoSystem
         {
             if (e.getCode() == XC.FILE_DOES_NOT_EXISTS)
             {
-                Logger.printInfo("No User file found. New user?");
-                throw new Exceptions(XC.UNKNOWN_USER);
+                Logger.printError("No User file found. New user?");
+                throw new Exceptions(XC.USER_UNKNOWN);
             }
             else
             {
-                ABEND.terminate(e);
+                Terminator.terminate(e);
             }
         }
         Logger.printDebug("File I/O init DONE...");
