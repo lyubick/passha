@@ -26,8 +26,8 @@ public class Main extends Application
     public static void main(String[] args)
     {
         Logger.loggerON(); // Switch logs ON
+        Settings.loadSettings();
         launch(); // launches GUI.
-
     }
 
     @Override

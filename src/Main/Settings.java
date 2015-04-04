@@ -78,11 +78,11 @@ public class Settings
             {
                 if (param.startsWith(OUT_LANG_PREFIX))
                 {
-                    language = LANG.valueOf(param.substring(param.indexOf("=")));
+                    language = LANG.valueOf(param.substring(param.indexOf("=") + 1));
                 }
                 else if (param.startsWith(OUT_CLIPBOARD_TIME_PREFIX))
                 {
-                    clipboardLiveTime = Integer.parseInt(param.substring(param.indexOf("=")));
+                    clipboardLiveTime = Integer.parseInt(param.substring(param.indexOf("=") + 1));
                 }
             }
         }
