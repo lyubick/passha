@@ -173,5 +173,5 @@ public class Texts
         }
     }
 
-    static String version = "dev";
+    static String version = "1.0.000";
 }
