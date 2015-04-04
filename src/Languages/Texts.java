@@ -143,6 +143,10 @@ public class Texts
         VERSION(new String[]
         { "v." + version, "в." + version }),
 
+        SAVE_CONFIRMATION(new String[]
+        { "There are unsaved changes. Save before exit?",
+                "Есть несохранённые изменения. Сохранить?" }),
+
         Z_ETHALON(new String[]
         { "", "" }),
 

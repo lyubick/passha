@@ -10,7 +10,6 @@ import Common.Exceptions;
 import Logger.Logger;
 import UI.Controller;
 import UI.Controller.FORMS;
-import UI.HotKeyAgent;
 import UI.TrayAgent;
 
 /**
@@ -34,10 +33,6 @@ public class Main extends Application
     public void start(Stage primaryStage)
     {
         Platform.setImplicitExit(false);
-
-        HotKeyAgent.init();
-
-        HotKeyAgent.getInstance().register();
 
         try
         {

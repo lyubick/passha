@@ -11,6 +11,7 @@ import javafx.stage.WindowEvent;
 import Common.Exceptions;
 import Common.Exceptions.XC;
 import Logger.Logger;
+import Main.PasswordCollection;
 import Main.Terminator;
 
 /**
@@ -19,10 +20,11 @@ import Main.Terminator;
  */
 public final class Controller
 {
-    private Stage             mainStage   = null;
-    private static Controller self        = null;
+    private Stage             mainStage    = null;
+    private static Controller self         = null;
 
-    private FORMS             currentForm = FORMS.UNKNOWN;
+    private FORMS             currentForm  = FORMS.UNKNOWN;
+    private FORMS             previousForm = FORMS.UNKNOWN;
 
     public enum FORMS
     {
@@ -34,11 +36,13 @@ public final class Controller
         // Dialogues
         CHANGE_PWD,
         EXPORT,
+        SAVE_DB,
 
         SETTINGS,
 
         // other TODO PREV should be usefull
         END,
+        PREVIOUS,
         CURRENT,
         UNKNOWN,
     }
@@ -72,6 +76,7 @@ public final class Controller
         forms[FORMS.CHANGE_PWD.ordinal()] = new ChangePasswordConfirmDlg();
         forms[FORMS.SETTINGS.ordinal()] = new SettingsForm();
         forms[FORMS.EXPORT.ordinal()] = new ExportForm();
+        forms[FORMS.SAVE_DB.ordinal()] = new SaveDlg();
 
         return self;
     }
@@ -87,8 +92,23 @@ public final class Controller
             @Override
             public void handle(WindowEvent event)
             {
-                HotKeyAgent.getInstance().unregister();
-                Terminator.terminate(new Exceptions(XC.THE_END));
+                event.consume();
+
+                try
+                {
+                    if (PasswordCollection.getInstance().isChanged())
+                    {
+                        Controller.getInstance().switchForm(FORMS.SAVE_DB);
+                    }
+                    else
+                    {
+                        Terminator.terminate(new Exceptions(XC.THE_END));
+                    }
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
             }
         });
 
@@ -112,7 +132,13 @@ public final class Controller
             mainStage.setIconified(false);
         }
 
+        if (form == FORMS.PREVIOUS)
+        {
+            form = previousForm;
+        }
+
         if (form != FORMS.END && form != FORMS.UNKNOWN) forms[form.ordinal()].draw(mainStage);
+        previousForm = currentForm;
         currentForm = form;
     }
 }

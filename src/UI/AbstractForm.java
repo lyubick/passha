@@ -54,7 +54,7 @@ public abstract class AbstractForm
     protected MenuBar   mb_Main         = null;
 
     protected final int BUTTON_HEIGHT   = 30;
-    protected final int BUTTON_WIDTH    = 80;
+    protected final int BUTTON_WIDTH    = 75;
     protected final int BUTTON_X_WIDTH  = 100;
 
     protected final int LABEL_WIDTH     = 100;
@@ -70,7 +70,7 @@ public abstract class AbstractForm
 
     protected AbstractForm()
     {
-        grid.setGridLinesVisible(true); // FIXME
+        grid.setGridLinesVisible(false); // FIXME Debug
 
         group.getChildren().addAll(grid);
 
@@ -141,13 +141,10 @@ public abstract class AbstractForm
     protected Label getWarningLabel(String text)
     {
         Label tmp = new Label(text);
-
-        // todo GridPane.setHalignment(tmp, HPos.RIGHT);
-
         return tmp;
     }
 
-    // note: this should be done AFTER buttons is added to scene, else will
+    // note: this should be done AFTER buttons is added to scene, else will TODO
     // throw
     protected void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
     {
