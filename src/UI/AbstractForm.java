@@ -51,8 +51,8 @@ public abstract class AbstractForm
     protected MenuBar   mb_Main         = null;
 
     protected final int BUTTON_HEIGHT   = 30;
-    protected final int BUTTON_WIDTH    = 75;
-    protected final int BUTTON_X_WIDTH  = 100;
+    protected final int BUTTON_WIDTH    = 80;
+    protected final int BUTTON_X_WIDTH  = 125;
 
     protected final int LABEL_WIDTH     = 100;
 

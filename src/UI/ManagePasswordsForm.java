@@ -23,8 +23,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -50,8 +52,8 @@ public class ManagePasswordsForm extends AbstractForm
 
     private final class WINDOW
     {
-        public static final int width  = 1000;
-        public static final int height = 600;
+        public static final int width  = 900;
+        public static final int height = 500;
     }
 
     private final int                   tableMinHeight      = WINDOW.height - 300;
@@ -76,6 +78,8 @@ public class ManagePasswordsForm extends AbstractForm
     private Menu                        m_File              = null;
     private MenuItem                    mi_Settings         = null;
     private ProgressBar                 pb_progress         = null;
+    private Label                       l_progress          = null;
+
     private boolean                     firstTime           = true;
 
     private void handleButtons()
@@ -128,8 +132,6 @@ public class ManagePasswordsForm extends AbstractForm
 
     public ManagePasswordsForm()
     {
-        pb_progress = new ProgressBar();
-
         // ========== CSS ========== //
         scene.getStylesheets().add(
                 "file:///"
@@ -161,9 +163,19 @@ public class ManagePasswordsForm extends AbstractForm
             }
         });
 
+        // ========== STATUS ========== //
+        pb_progress = new ProgressBar();
+        l_progress = new Label(TextID.LOADING.toString() + ": ");
+
+        HBox statusBar = new HBox();
+
+        statusBar.setAlignment(Pos.BOTTOM_RIGHT);
+
+        statusBar.getChildren().addAll(l_progress, pb_progress);
+
         // ========== REFRESH ========== //
         group.getChildren().remove(grid); // TODO
-        group.getChildren().addAll(mb_Main, grid);
+        group.getChildren().addAll(mb_Main, grid, statusBar);
 
         // ========== HRENJ ========== //
         pi_PWDLifeTime = new ProgressIndicator(0);
@@ -240,7 +252,6 @@ public class ManagePasswordsForm extends AbstractForm
         grid.add(b_Save, 1, 0);
         grid.add(b_Discard, 1, 0);
         grid.add(b_Reset, 1, 0);
-        grid.add(pb_progress, 1, 1);
 
         try
         {

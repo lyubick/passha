@@ -147,6 +147,9 @@ public class Texts
         { "There are unsaved changes. Save before exit?",
                 "Есть несохранённые изменения. Сохранить?" }),
 
+        LOADING(new String[]
+        { "Loading", "Загрузка" }),
+
         Z_ETHALON(new String[]
         { "", "" }),
 
