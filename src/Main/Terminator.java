@@ -15,6 +15,7 @@ public class Terminator
 {
     static void exit(Exceptions e)
     {
+        Logger.printDebug("Bye!");
         Logger.loggerOFF();
         System.exit(e.getCode().ordinal());
     }
