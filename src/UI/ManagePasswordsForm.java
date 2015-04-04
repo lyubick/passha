@@ -33,6 +33,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -117,7 +118,7 @@ public class ManagePasswordsForm extends AbstractForm
         tf_pass.setMaxWidth(PASSWORD_FIELD_WIDTH);
         tf_pass.setEditable(false);
 
-        b_Export.setDisable(true);
+        b_Export.setDisable(false);
         b_Save.setDisable(true);
         b_Discard.setDisable(true);
         b_Copy.setDisable(true);
@@ -341,6 +342,25 @@ public class ManagePasswordsForm extends AbstractForm
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
                     Controller.getInstance().switchForm(FORMS.CHANGE_PWD);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        b_Export.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                try
+                {
+                    // TODO if any changes in db - ask user to save or discard
+                    // first
+                    Controller.getInstance().switchForm(FORMS.EXPORT);
                 }
                 catch (Exceptions e)
                 {

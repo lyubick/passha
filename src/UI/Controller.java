@@ -26,12 +26,16 @@ public final class Controller
 
     public enum FORMS
     {
+        // Forms
         LOGIN,
         MANAGE_PWDS,
         CREATE_PWD,
 
+        // Dialogues
         CHANGE_PWD,
+        EXPORT,
 
+        // other
         END,
         CURRENT,
         UNKNOWN,
@@ -86,6 +90,7 @@ public final class Controller
         forms[FORMS.MANAGE_PWDS.ordinal()] = new ManagePasswordsForm();
         forms[FORMS.CREATE_PWD.ordinal()] = new SpecialPasswordForm();
         forms[FORMS.CHANGE_PWD.ordinal()] = new ChangePasswordConfirmDlg();
+        forms[FORMS.EXPORT.ordinal()] = new ExportForm();
 
         return self;
     }

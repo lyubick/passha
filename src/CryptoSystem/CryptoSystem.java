@@ -164,7 +164,8 @@ public final class CryptoSystem
         {
             Logger.printDebug(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME")
                     .getBytes()));
-            FileIO.init(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()),
+            FileIO.initUserFile(
+                    sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()),
                     isNewUser);
         }
         catch (Exceptions e)

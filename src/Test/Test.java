@@ -136,8 +136,8 @@ public class Test
         {
             FileIO ftest = FileIO.getInstance();
 
-            ftest.writeToFile(initialStrings);
-            resultStrings = ftest.readFromFile();
+            ftest.writeToUserFile(initialStrings);
+            resultStrings = ftest.readUserFile();
 
             if (strCount == resultStrings.size())
             {
