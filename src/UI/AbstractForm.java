@@ -11,9 +11,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import Common.Exceptions;
@@ -46,16 +48,24 @@ public abstract class AbstractForm
         public static final int height = 650;
     }
 
-    protected GridPane  grid                 = new GridPane();
-    protected Scene     scene                = new Scene(grid, WINDOW.width, WINDOW.height);
+    protected GridPane  grid            = new GridPane();
+    protected VBox      group           = new VBox();
+    protected Scene     scene           = new Scene(group, WINDOW.width, WINDOW.height);
 
-    protected final int BUTTON_HEIGHT        = 30;
-    protected final int BUTTON_WIDTH         = 80;
-    protected final int BUTTON_X_WIDTH       = 100;
-    protected final int LABEL_WIDTH          = 100;
-    protected final int PASSWORD_FIELD_WIDTH = 200;
+    protected MenuBar   mb_Main         = null;
 
-    protected final int buttonHoldTime       = 300;
+    protected final int BUTTON_HEIGHT   = 30;
+    protected final int BUTTON_WIDTH    = 80;
+    protected final int BUTTON_X_WIDTH  = 100;
+
+    protected final int LABEL_WIDTH     = 100;
+
+    protected final int FIELD_WIDTH_S   = 50;
+    protected final int FIELD_WIDTH_N   = 100;
+    protected final int FIELD_WIDTH_L   = 300;
+    protected final int FIELD_WIDTH_PWD = 200;
+
+    protected final int buttonHoldTime  = 300;
 
     public abstract void draw(Stage stage) throws Exceptions;
 
@@ -63,16 +73,12 @@ public abstract class AbstractForm
     {
         if (Logger.getLogLevel().equals(Logger.LOGLEVELS.DEBUG)) grid.setGridLinesVisible(true);
 
+        group.getChildren().addAll(grid);
+
         grid.setHgap(HGAP);
         grid.setVgap(VGAP);
         grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
         grid.setAlignment(Pos.CENTER);
-        grid.setMaxSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top
-                - PADDING.bottom);
-        grid.setMinSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top
-                - PADDING.bottom);
-        grid.setPrefSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height - PADDING.top
-                - PADDING.bottom);
 
         try
         {

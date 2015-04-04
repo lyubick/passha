@@ -13,6 +13,7 @@ import Languages.Texts.TextID;
 import Logger.Logger;
 import Main.ABEND;
 import Main.PasswordCollection;
+import Main.Settings;
 import Main.iSpecialPassword;
 import UI.Controller.FORMS;
 import javafx.beans.value.ChangeListener;
@@ -24,6 +25,9 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -48,14 +52,6 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 600;
     }
 
-    protected static final double       clipboardLiveTime   = 5 * 1000;           // TODO
-                                                                                   // in
-                                                                                   // milliseconds,
-                                                                                   // maybe
-                                                                                   // do
-                                                                                   // it
-                                                                                   // configurable
-
     private final int                   tableMinHeight      = WINDOW.height - 300;
     private final int                   tableMinWidth       = WINDOW.width - 200;
 
@@ -74,6 +70,10 @@ public class ManagePasswordsForm extends AbstractForm
 
     private ProgressIndicator           pi_PWDLifeTime      = null;
 
+    private MenuBar                     mb_Main             = null;
+    private Menu                        m_File              = null;
+    private MenuItem                    mi_Settings         = null;
+
     private void handleButtons()
     {
         try
@@ -89,20 +89,52 @@ public class ManagePasswordsForm extends AbstractForm
 
     public ManagePasswordsForm()
     {
+
+        // ========== CSS ========== //
         scene.getStylesheets().add(
                 "file:///"
                         + new File("resources/progress.css").getAbsolutePath().replace("\\", "/")); // TODO
 
+        // ========== MENU ========== //
+        mb_Main = new MenuBar();
+        m_File = new Menu(TextID.FILE.toString());
+        mi_Settings = new MenuItem(TextID.SETTINGS.toString());
+
+        m_File.getItems().addAll(mi_Settings);
+        mb_Main.getMenus().add(m_File);
+
+        mi_Settings.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                // TODO Auto-generated method stub
+                try
+                {
+                    Controller.getInstance().switchForm(FORMS.SETTINGS);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // ========== REFRESH ========== //
+        group.getChildren().remove(grid); // TODO
+        group.getChildren().addAll(mb_Main, grid);
+
+        // ========== HRENJ ========== //
         pi_PWDLifeTime = new ProgressIndicator(0);
         pi_PWDLifeTime.setId("pi_css");
         pi_PWDLifeTime.setMaxSize(50, 50);
         pi_PWDLifeTime.setVisible(false);
 
-        table = new TableView<iSpecialPassword>();
-        tf_pass = new TextField();
+        GridPane.setMargin(pi_PWDLifeTime, new Insets(15, 0, 0, 210));
 
-        // probably this will need to be changed for other languages
-        // set up shortcut highlight
+        // ========== BUTTONS ========== //
+        // TODO LANG shortcuts
         b_New = getButton("_" + TextID.NEW.toString());
         b_Delete = getButton("_" + TextID.DELETE.toString());
         b_Copy = getButton("_" + TextID.COPY_CLIPBOARD.toString());
@@ -111,38 +143,11 @@ public class ManagePasswordsForm extends AbstractForm
         b_Discard = getButton("_" + TextID.DISCARD.toString());
         b_Reset = getButton("_" + TextID.RESET_PASSWORD.toString());
 
-        table.setMinHeight(tableMinHeight);
-        table.setMinWidth(tableMinWidth);
-
-        tf_pass.setMaxWidth(PASSWORD_FIELD_WIDTH);
-        tf_pass.setEditable(false);
-
         b_Export.setDisable(true);
         b_Save.setDisable(true);
         b_Discard.setDisable(true);
         b_Copy.setDisable(true);
         b_Reset.setDisable(false);
-
-        // TODO make columns/column names same way as TextID (to ensure column
-        // has correct text)
-        TableColumn[] columns =
-                new TableColumn[]
-                { new TableColumn(TextID.PWD_NAME.toString()),
-                        new TableColumn(TextID.COMMENT.toString()),
-                        new TableColumn(TextID.URL.toString()), };
-        table.getColumns().setAll(columns);
-
-        // columns[0].prefWidthProperty().bind(table.widthProperty().divide(4));
-        // columns[1].prefWidthProperty().bind(table.widthProperty().divide((float)
-        // 8 / 3));
-        // columns[2].prefWidthProperty().bind(table.widthProperty().divide((float)
-        // 8 / 3));
-
-        // TODO column numbers to enumerator
-        columns[0].setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
-        columns[1]
-                .setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
-        columns[2].setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
 
         GridPane.setValignment(b_New, VPos.TOP);
         GridPane.setValignment(b_Delete, VPos.TOP);
@@ -151,7 +156,38 @@ public class ManagePasswordsForm extends AbstractForm
         GridPane.setValignment(b_Discard, VPos.BOTTOM);
         GridPane.setValignment(b_Export, VPos.BOTTOM);
 
-        // TODO numbers to local constants
+        GridPane.setMargin(b_Delete, new Insets(40, 0, 0, 0));
+        GridPane.setMargin(b_Save, new Insets(0, 0, 40, 0));
+        GridPane.setMargin(b_Discard, new Insets(0, 0, 80, 0));
+        GridPane.setMargin(b_Copy, new Insets(0, 0, 0, 270));
+
+        // ========== TEXT FIELD ========== //
+        tf_pass = new TextField();
+        tf_pass.setMaxWidth(FIELD_WIDTH_PWD);
+        tf_pass.setEditable(false);
+
+        // ========== TABLE ========== //
+        table = new TableView<iSpecialPassword>();
+
+        table.setMinHeight(tableMinHeight);
+        table.setMinWidth(tableMinWidth);
+
+        TableColumn<iSpecialPassword, String> cName =
+                new TableColumn<iSpecialPassword, String>(TextID.PWD_NAME.toString());
+        TableColumn<iSpecialPassword, String> cComment =
+                new TableColumn<iSpecialPassword, String>(TextID.COMMENT.toString());
+        TableColumn<iSpecialPassword, String> cUrl =
+                new TableColumn<iSpecialPassword, String>(TextID.URL.toString());
+
+        table.getColumns().add(cName);
+        table.getColumns().add(cComment);
+        table.getColumns().add(cUrl);
+
+        cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
+        cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
+        cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
+
+        // ========== GRID ========== //
         grid.add(table, 0, 0);
 
         grid.add(pi_PWDLifeTime, 0, 1);
@@ -164,13 +200,6 @@ public class ManagePasswordsForm extends AbstractForm
         grid.add(b_Save, 1, 0);
         grid.add(b_Discard, 1, 0);
         grid.add(b_Reset, 1, 0);
-
-        GridPane.setMargin(b_Delete, new Insets(40, 0, 0, 0));
-        GridPane.setMargin(b_Save, new Insets(0, 0, 40, 0));
-        GridPane.setMargin(b_Discard, new Insets(0, 0, 80, 0));
-
-        GridPane.setMargin(pi_PWDLifeTime, new Insets(15, 0, 0, 210));
-        GridPane.setMargin(b_Copy, new Insets(0, 0, 0, 270));
 
         try
         {
@@ -370,9 +399,11 @@ public class ManagePasswordsForm extends AbstractForm
                     protected Void call() throws Exception
                     {
 
-                        for (int i = 0; i <= clipboardLiveTime && !isCancelled(); i += 100)
+                        for (int i = 0; i <= Settings.getclipboardLiveTime() && !isCancelled(); i +=
+                                100)
                         {
-                            updateProgress(clipboardLiveTime - i, clipboardLiveTime);
+                            updateProgress(Settings.getclipboardLiveTime() - i,
+                                    Settings.getclipboardLiveTime());
                             Thread.sleep(100);
                         }
 

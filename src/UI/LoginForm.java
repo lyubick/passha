@@ -30,7 +30,7 @@ public class LoginForm extends AbstractForm
     private final class WINDOW
     {
         public static final int width  = 350;
-        public static final int height = 250;
+        public static final int height = 200;
     }
 
     private Label         l_Header           = null;

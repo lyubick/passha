@@ -3,18 +3,14 @@
  */
 package Languages;
 
+import Main.Settings;
+
 /**
  * @author curious-odd-man
  *
  */
 public class Texts
 {
-    public enum Language
-    {
-        ENGLISH,
-        RUSSIAN,
-    }
-
     // TODO: Use String.split to parse CSV file with texts
     public enum TextID
     {
@@ -132,6 +128,18 @@ public class Texts
         VERSION(new String[]
         { "v." + version, "в." + version }),
 
+        LANGUAGE(new String[]
+        { "Language", "Язык" }),
+
+        DELAY(new String[]
+        { "Delay", "Задержка" }),
+
+        SETTINGS(new String[]
+        { "Settings", "Настройки" }),
+
+        FILE(new String[]
+        { "File", "Файл" }),
+
         Z_ETHALON(new String[]
         { "", "" }),
 
@@ -148,11 +156,9 @@ public class Texts
         public String toString()
         {
             // mb add log to see language and received text??
-            return text[language.ordinal()];
+            return text[Settings.getLanguage()];
         }
     }
-
-    private static Language language = Language.ENGLISH;
 
     static String           version  = "dev";
 }

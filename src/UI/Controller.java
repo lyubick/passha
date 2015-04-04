@@ -32,6 +32,8 @@ public final class Controller
 
         CHANGE_PWD,
 
+        SETTINGS,
+
         END,
         CURRENT,
         UNKNOWN,
@@ -86,6 +88,7 @@ public final class Controller
         forms[FORMS.MANAGE_PWDS.ordinal()] = new ManagePasswordsForm();
         forms[FORMS.CREATE_PWD.ordinal()] = new SpecialPasswordForm();
         forms[FORMS.CHANGE_PWD.ordinal()] = new ChangePasswordConfirmDlg();
+        forms[FORMS.SETTINGS.ordinal()] = new SettingsForm();
 
         return self;
     }
@@ -94,7 +97,8 @@ public final class Controller
     {
         // TODO
         mainStage.close();
-        mainStage = new Stage();
+        //mainStage = new Stage();
+
         Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
                 + form.name());
         if (form == FORMS.CURRENT)

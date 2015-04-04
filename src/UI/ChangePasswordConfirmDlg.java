@@ -31,7 +31,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
         public static final int height = 250;
     }
 
-    private final int       MAX_WARNING_WIDTH = LABEL_WIDTH + PASSWORD_FIELD_WIDTH;
+    private final int       MAX_WARNING_WIDTH = LABEL_WIDTH + FIELD_WIDTH_PWD;
 
     private Button          b_OK              = null;
     private Button          b_Cancel          = null;
@@ -65,8 +65,8 @@ public class ChangePasswordConfirmDlg extends AbstractForm
 
         grid.add(l_Header, 0, 0);
 
-        CurrentPassword = getTextEntry("Current", PASSWORD_FIELD_WIDTH);
-        NewPassword = getTextEntry("New", PASSWORD_FIELD_WIDTH);
+        CurrentPassword = getTextEntry("Current", FIELD_WIDTH_PWD);
+        NewPassword = getTextEntry("New", FIELD_WIDTH_PWD);
 
         CurrentPassword.getEntryTextField().setEditable(false);
         NewPassword.getEntryTextField().setEditable(false);
