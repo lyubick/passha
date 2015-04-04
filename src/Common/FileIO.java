@@ -78,15 +78,15 @@ public final class FileIO
      *
      * @return String[] - one element, one line read from file
      */
-    public Vector<String> readUserFile() throws Exceptions
+    public static Vector<String> readFile(String fileName) throws Exceptions
     {
         Vector<String> inLines = new Vector<String>();
 
         try
         {
-            Logger.printDebug("Reading: '" + file + "'");
+            Logger.printDebug("Reading: '" + fileName + "'");
 
-            BufferedReader inFile = new BufferedReader(new FileReader(file));
+            BufferedReader inFile = new BufferedReader(new FileReader(fileName));
 
             try
             {
@@ -119,6 +119,11 @@ public final class FileIO
         }
 
         return inLines;
+    }
+
+    public Vector<String> readUserFile() throws Exceptions
+    {
+        return readFile(file);
     }
 
     /**
