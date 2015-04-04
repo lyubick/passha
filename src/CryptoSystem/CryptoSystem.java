@@ -27,30 +27,24 @@ import Main.SpecialPassword;
  */
 public final class CryptoSystem
 {
-    private static final int    RSA_NUMBER_HASH_OFFSET     = 8;
+    private static final int    SHA_ITERATION_MIN_COUNT = 10;
+    private static final int    SHA_ITERATION_MAX_COUNT = 255 - SHA_ITERATION_MIN_COUNT;
 
-    private static final int    RSA_NUMBER_HASH_MODIFIER_P = 1;
-    private static final int    RSA_NUMBER_HASH_MODIFIER_Q = 4;
-    private static final int    RSA_NUMBER_HASH_MODIFIER_E = 7;
+    private static Random       randomizer              = null;
 
-    private static final int    SHA_ITERATION_MIN_COUNT    = 100;
-    private static final int    SHA_ITERATION_MAX_COUNT    = 1000000 - SHA_ITERATION_MIN_COUNT;
+    private static SHA          sha                     = null;
+    private static RSA          rsa                     = null;
 
-    private static Random       randomizer                 = null;
+    private static byte[]       masterHash              = null;
 
-    private static SHA          sha                        = null;
-    private static RSA          rsa                        = null;
+    private static byte[]       keyHashP                = null;
+    private static byte[]       keyHashQ                = null;
+    private static byte[]       keyHashE                = null;
 
-    private static byte[]       masterHash                 = null;
+    static Clipboard            clipboard               = null;
+    static ClipboardContent     content                 = null;
 
-    private static byte[]       keyHashP                   = null;
-    private static byte[]       keyHashQ                   = null;
-    private static byte[]       keyHashE                   = null;
-
-    static Clipboard            clipboard                  = null;
-    static ClipboardContent     content                    = null;
-
-    private static CryptoSystem self                       = null;
+    private static CryptoSystem self                    = null;
 
     // ================================================================================================
     // ========== PRIVATE:
@@ -61,11 +55,6 @@ public final class CryptoSystem
     {
         self = this;
     };
-
-    private static String getKey(byte[] keyHash, int mod)
-    {
-        return Long.toString(Math.abs(Utilities.load64(keyHash, RSA_NUMBER_HASH_OFFSET * mod)));
-    }
 
     // ================================================================================================
     // ========== PUBLIC:
