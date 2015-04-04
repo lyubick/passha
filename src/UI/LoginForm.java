@@ -69,7 +69,7 @@ public class LoginForm extends AbstractForm
         grid.add(pf_PasswordConfirm, 0, gridRowCounter++);
 
         grid.add(b_Register, 0, gridRowCounter);
-        grid.add(b_Login, 0, gridRowCounter);
+        grid.add(b_Login, 0, gridRowCounter++);
 
         grid.add(l_Warning, 0, gridRowCounter++);
 
