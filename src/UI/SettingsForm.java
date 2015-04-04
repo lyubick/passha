@@ -87,6 +87,7 @@ public class SettingsForm extends AbstractForm
                 try
                 {
                     Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
+                    Settings.saveSettings();
                 }
                 catch (Exceptions e)
                 {

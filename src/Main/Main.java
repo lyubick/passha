@@ -42,6 +42,7 @@ public class Main extends Application
         final String argLog = "-l=";
 
         String[] parms = new String[ARGS];
+        Settings.loadSettings();
 
         /**
          * INIT default argument values, to avoid crash on launching without
