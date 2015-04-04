@@ -3,10 +3,13 @@
  */
 package UI;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import Common.Exceptions;
@@ -25,17 +28,21 @@ public class SaveDlg extends AbstractForm
 {
     private final class WINDOW
     {
-        public static final int width  = 350;
+        public static final int width  = 500;
         public static final int height = 200;
     }
 
-    private Label  l_Message  = null;
+    private Label       l_Message   = null;
 
-    private Button b_Yes      = null;
-    private Button b_No       = null;
-    private Button b_Cancel   = null;
+    private Button      b_Yes       = null;
+    private Button      b_No        = null;
+    private Button      b_Cancel    = null;
 
-    private HBox   hb_Answers = null;
+    private HBox        hb_Answers  = null;
+
+    private HBox        statusBar   = null;
+    private ProgressBar pb_Progress = null;
+    private Label       l_Progress  = null;
 
     public SaveDlg()
     {
@@ -53,6 +60,18 @@ public class SaveDlg extends AbstractForm
         grid.add(l_Message, 0, 0);
         grid.add(hb_Answers, 0, 1);
 
+        // ========== STATUS ========== //
+        pb_Progress = new ProgressBar();
+        l_Progress = new Label(TextID.SAVING.toString() + ": ");
+
+        statusBar = new HBox();
+        statusBar.setAlignment(Pos.BOTTOM_RIGHT);
+        statusBar.getChildren().addAll(l_Progress, pb_Progress);
+
+        group.getChildren().add(statusBar);
+
+        statusBar.setVisible(false);
+
         b_Yes.setOnAction(new EventHandler<ActionEvent>()
         {
 
@@ -61,7 +80,24 @@ public class SaveDlg extends AbstractForm
             {
                 try
                 {
-                    PasswordCollection.getInstance().save();
+                    statusBar.setVisible(true);
+                    b_Yes.setDisable(true);
+                    b_No.setDisable(true);
+                    b_Cancel.setDisable(true);
+
+                    Task<Void> saveTask = PasswordCollection.getInstance().save();
+
+                    pb_Progress.progressProperty().bind(saveTask.progressProperty());
+
+                    saveTask.setOnSucceeded(EventHandler -> {
+                        pb_Progress.progressProperty().unbind();
+                        Logger.printDebug("saveTask -> successfully finished");
+                        Terminator.terminate(new Exceptions(XC.THE_END));
+                    });
+
+                    Thread reloadTaskThread = new Thread(saveTask);
+                    reloadTaskThread.start();
+
                 }
                 catch (Exceptions e)
                 {

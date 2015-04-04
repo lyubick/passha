@@ -100,35 +100,49 @@ public class PasswordCollection
         Logger.printDebug("Dumping PasswordCollection... DONE!");
     }
 
-    public void save()
+    public Task<Void> save()
     {
-        CryptoSystem cs = null;
-        Vector<String> cryptSP = new Vector<String>();
-        FileIO writer = null;
-
-        try
+        Task<Void> saveTask = new Task<Void>()
         {
-            cs = CryptoSystem.getInstance();
-            writer = FileIO.getInstance();
 
-            for (SpecialPassword sp : db)
+            @Override
+            protected Void call() throws Exception
             {
-                cryptSP.add(cs.encryptPassword(sp));
+                updateProgress(0, 1);
+
+                CryptoSystem cs = null;
+                Vector<String> cryptSP = new Vector<String>();
+                FileIO writer = null;
+
+                try
+                {
+                    cs = CryptoSystem.getInstance();
+                    writer = FileIO.getInstance();
+
+                    int i = 0;
+                    for (SpecialPassword sp : db)
+                    {
+                        cryptSP.add(cs.encryptPassword(sp));
+                        updateProgress(++i, db.size());
+                    }
+
+                    writer.writeToUserFile(cryptSP);
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+
+                changed = false;
+                return null;
             }
+        };
 
-            writer.writeToUserFile(cryptSP);
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
-
-        changed = false;
+        return saveTask;
     }
 
     private Task<Void> load()
     {
-
         Task<Void> loadTask = new Task<Void>()
         {
             @Override

@@ -77,10 +77,37 @@ public class ManagePasswordsForm extends AbstractForm
     private MenuBar                     mb_Main             = null;
     private Menu                        m_File              = null;
     private MenuItem                    mi_Settings         = null;
-    private ProgressBar                 pb_progress         = null;
-    private Label                       l_progress          = null;
+    private ProgressBar                 pb_Progress         = null;
+    private Label                       l_Progress          = null;
 
     private boolean                     firstTime           = true;
+
+    private void setStatusBarShow(boolean v)
+    {
+        pb_Progress.setVisible(v);
+        l_Progress.setVisible(v);
+    }
+
+    private void setButtonsEnabled()
+    {
+        handleButtons();
+        b_New.setDisable(false);
+        b_Delete.setDisable(false);
+        b_Reset.setDisable(false);
+        b_Copy.setDisable(false);
+        b_Export.setDisable(false);
+    }
+
+    private void setButtonsDisabled()
+    {
+        b_Save.setDisable(true);
+        b_Discard.setDisable(true);
+        b_New.setDisable(true);
+        b_Delete.setDisable(true);
+        b_Reset.setDisable(true);
+        b_Copy.setDisable(true);
+        b_Export.setDisable(true);
+    }
 
     private void handleButtons()
     {
@@ -97,15 +124,21 @@ public class ManagePasswordsForm extends AbstractForm
 
     public void reloadAllItems()
     {
+        l_Progress.setText(TextID.LOADING.toString() + ": ");
+        setStatusBarShow(true);
+        setButtonsDisabled();
+
         try
         {
             Task<Void> reloadTask = PasswordCollection.getInstance().reload();
 
-            pb_progress.progressProperty().bind(reloadTask.progressProperty());
+            pb_Progress.progressProperty().bind(reloadTask.progressProperty());
 
             reloadTask.setOnSucceeded(EventHandler -> {
-                pb_progress.progressProperty().unbind();
+                pb_Progress.progressProperty().unbind();
                 Logger.printDebug("reloadTask -> successfully finished");
+                setStatusBarShow(false);
+                setButtonsEnabled();
                 try
                 {
                     table.setItems(PasswordCollection.getInstance().getIface());
@@ -164,14 +197,14 @@ public class ManagePasswordsForm extends AbstractForm
         });
 
         // ========== STATUS ========== //
-        pb_progress = new ProgressBar();
-        l_progress = new Label(TextID.LOADING.toString() + ": ");
+        pb_Progress = new ProgressBar();
+        l_Progress = new Label(TextID.LOADING.toString() + ": ");
 
         HBox statusBar = new HBox();
 
         statusBar.setAlignment(Pos.BOTTOM_RIGHT);
 
-        statusBar.getChildren().addAll(l_progress, pb_progress);
+        statusBar.getChildren().addAll(l_Progress, pb_Progress);
 
         // ========== REFRESH ========== //
         group.getChildren().remove(grid); // TODO
@@ -180,10 +213,11 @@ public class ManagePasswordsForm extends AbstractForm
         // ========== HRENJ ========== //
         pi_PWDLifeTime = new ProgressIndicator(0);
         pi_PWDLifeTime.setId("pi_css");
+        pi_PWDLifeTime.setMinSize(50, 50);
         pi_PWDLifeTime.setMaxSize(50, 50);
         pi_PWDLifeTime.setVisible(false);
 
-        GridPane.setMargin(pi_PWDLifeTime, new Insets(15, 0, 0, 210));
+        GridPane.setMargin(pi_PWDLifeTime, new Insets(20, 0, 0, 210));
 
         // ========== BUTTONS ========== //
         // TODO LANG shortcuts
@@ -323,9 +357,28 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
+                l_Progress.setText(TextID.SAVING.toString() + ": ");
+                setStatusBarShow(true);
+                setButtonsDisabled();
+
                 try
                 {
-                    PasswordCollection.getInstance().save();
+                    Task<Void> saveTask = PasswordCollection.getInstance().save();
+
+                    pb_Progress.progressProperty().bind(saveTask.progressProperty());
+
+                    saveTask.setOnSucceeded(EventHandler -> {
+                        pb_Progress.progressProperty().unbind();
+                        setStatusBarShow(false);
+                        setButtonsEnabled();
+                        Logger.printDebug("saveTask -> successfully finished");
+                    });
+
+                    Thread reloadTaskThread = new Thread(saveTask);
+                    reloadTaskThread.start();
+
+                    handleButtons();
+
                 }
                 catch (Exceptions e)
                 {
@@ -337,6 +390,7 @@ public class ManagePasswordsForm extends AbstractForm
 
         b_Discard.setOnAction(new EventHandler<ActionEvent>()
         {
+
             @Override
             public void handle(ActionEvent arg0)
             {
@@ -453,13 +507,13 @@ public class ManagePasswordsForm extends AbstractForm
 
                 if (tsk_PWDLifeTime != null) tsk_PWDLifeTime.cancel();
 
-                pi_PWDLifeTime.setVisible(true);
-
                 tsk_PWDLifeTime = new Task<Void>()
                 {
                     @Override
                     protected Void call() throws Exception
                     {
+
+                        updateProgress(9, 10);
 
                         for (int i = 0; i <= Settings.getclipboardLiveTime() && !isCancelled(); i +=
                                 100)
@@ -492,6 +546,8 @@ public class ManagePasswordsForm extends AbstractForm
                 Thread calculatePasswordThread = new Thread(tsk_PWDLifeTime);
                 calculatePasswordThread.setDaemon(false);
                 calculatePasswordThread.start();
+
+                pi_PWDLifeTime.setVisible(true);
             }
         });
     }

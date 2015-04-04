@@ -150,6 +150,9 @@ public class Texts
         LOADING(new String[]
         { "Loading", "Загрузка" }),
 
+        SAVING(new String[]
+        { "Saving", "Сохранение" }),
+
         Z_ETHALON(new String[]
         { "", "" }),
 
