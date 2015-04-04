@@ -143,11 +143,26 @@ public class ManagePasswordsForm extends AbstractForm
         b_Discard = getButton("_" + TextID.DISCARD.toString());
         b_Reset = getButton("_" + TextID.RESET_PASSWORD.toString());
 
+        // ========== TABLE ========== //
+        table = new TableView<iSpecialPassword>();
+
+        TableColumn<iSpecialPassword, String> cName =
+                new TableColumn<iSpecialPassword, String>(TextID.PWD_NAME.toString());
+        TableColumn<iSpecialPassword, String> cComment =
+                new TableColumn<iSpecialPassword, String>(TextID.COMMENT.toString());
+        TableColumn<iSpecialPassword, String> cUrl =
+                new TableColumn<iSpecialPassword, String>(TextID.URL.toString());
+
+        table.getColumns().add(cName);
+        table.getColumns().add(cComment);
+        table.getColumns().add(cUrl);
+
+        cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
+        cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
+        cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
+
         table.setMinHeight(tableMinHeight);
         table.setMinWidth(tableMinWidth);
-
-        tf_pass.setMaxWidth(FIELD_WIDTH_PWD);
-        tf_pass.setEditable(false);
 
         b_Export.setDisable(false);
         b_Save.setDisable(true);
@@ -171,27 +186,6 @@ public class ManagePasswordsForm extends AbstractForm
         tf_pass = new TextField();
         tf_pass.setMaxWidth(FIELD_WIDTH_PWD);
         tf_pass.setEditable(false);
-
-        // ========== TABLE ========== //
-        table = new TableView<iSpecialPassword>();
-
-        table.setMinHeight(tableMinHeight);
-        table.setMinWidth(tableMinWidth);
-
-        TableColumn<iSpecialPassword, String> cName =
-                new TableColumn<iSpecialPassword, String>(TextID.PWD_NAME.toString());
-        TableColumn<iSpecialPassword, String> cComment =
-                new TableColumn<iSpecialPassword, String>(TextID.COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl =
-                new TableColumn<iSpecialPassword, String>(TextID.URL.toString());
-
-        table.getColumns().add(cName);
-        table.getColumns().add(cComment);
-        table.getColumns().add(cUrl);
-
-        cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
-        cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
-        cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
 
         // ========== GRID ========== //
         grid.add(table, 0, 0);
