@@ -40,8 +40,8 @@ public class SettingsForm extends AbstractForm
 
     private final class WINDOW
     {
-        public static final int width  = 200;
-        public static final int height = 100;
+        public static final int width  = 300;
+        public static final int height = 200;
     }
 
     public SettingsForm()
