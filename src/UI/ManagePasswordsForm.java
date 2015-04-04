@@ -307,7 +307,7 @@ public class ManagePasswordsForm extends AbstractForm
                     protected Void call() throws Exception
                     {
                         b_Copy.setDisable(true);
-                        updateMessage("Calculating...");
+                        updateMessage(TextID.CALCULATING.toString());
                         updateMessage(table.getSelectionModel().getSelectedItem().getPassword(this));
                         return null;
                     }
