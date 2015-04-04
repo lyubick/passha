@@ -76,9 +76,9 @@ public class LoginForm extends AbstractForm
         // ========== PROPERTIES ========== //
 
         pf_Password.setMinWidth(WINDOW.width - 50);
-        pf_Password.setPromptText("Password...");
+        pf_Password.setPromptText(TextID.PWD.toString());
 
-        pf_PasswordConfirm.setPromptText("Re-type...");
+        pf_PasswordConfirm.setPromptText(TextID.RETYPE.toString());
         pf_PasswordConfirm.setVisible(false);
 
         b_Login.setMinWidth(BUTTON_WIDTH);

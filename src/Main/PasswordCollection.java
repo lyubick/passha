@@ -3,6 +3,7 @@
  */
 package Main;
 
+import java.io.FileNotFoundException;
 import java.util.Vector;
 
 import javafx.collections.FXCollections;
@@ -116,7 +117,7 @@ public class PasswordCollection
                 cryptSP.add(cs.encryptPassword(sp));
             }
 
-            writer.writeToFile(cryptSP);
+            writer.writeToUserFile(cryptSP);
         }
         catch (Exceptions e)
         {
@@ -137,7 +138,7 @@ public class PasswordCollection
             db.clear();
             cs = CryptoSystem.getInstance();
             reader = FileIO.getInstance();
-            cryptSP = reader.readFromFile();
+            cryptSP = reader.readUserFile();
         }
         catch (Exceptions e)
         {
@@ -161,5 +162,48 @@ public class PasswordCollection
     {
         db.remove(sp);
         changed = true;
+    }
+
+    public void export(String fileName)
+    {
+        final String TAB = "\t";
+        final String FILE_START_TAG = "<file_start>";
+        final String FILE_END_TAG = "</file_end>";
+        final String RECORD_START_TAG = TAB + "<record_start>";
+        final String RECORD_END_TAG = TAB + "</record_end>";
+        final String HASH_CODE_START_TAG = "<hash>";
+        final String HASH_CODE_END_TAG = "</hash>";
+
+        Vector<String> exportStrings = new Vector<String>();
+
+        exportStrings.add(FILE_START_TAG);
+        for (SpecialPassword sp : db)
+        {
+            exportStrings.add(RECORD_START_TAG);
+            exportStrings.add(TAB + TAB + "name=" + sp.getName());
+            exportStrings.add(TAB + TAB + "URL=" + sp.getUrl());
+            exportStrings.add(TAB + TAB + "comment=" + sp.getComment());
+            exportStrings.add(TAB + TAB + "SHA cycles=" + sp.getShaCycles());
+            exportStrings.add(TAB + TAB + "password=" + sp.getPassword());
+            exportStrings.add(RECORD_END_TAG);
+        }
+        exportStrings.add(FILE_END_TAG);
+
+        int hash = exportStrings.hashCode();
+
+        exportStrings.add(HASH_CODE_START_TAG);
+        exportStrings.add(TAB + hash);
+        exportStrings.add(HASH_CODE_END_TAG);
+
+        try
+        {
+            FileIO.writeToFile(fileName, exportStrings);
+        }
+        catch (FileNotFoundException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 }

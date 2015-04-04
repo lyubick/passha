@@ -31,7 +31,7 @@ public final class FileIO
         // backup = filename.toString() + ".bckp";
     }
 
-    public static FileIO init(String filename, boolean isNewUser) throws Exceptions
+    public static FileIO initUserFile(String filename, boolean isNewUser) throws Exceptions
     {
         filename += ".cif";
 
@@ -78,7 +78,7 @@ public final class FileIO
      *
      * @return String[] - one element, one line read from file
      */
-    public Vector<String> readFromFile() throws Exceptions
+    public Vector<String> readUserFile() throws Exceptions
     {
         Vector<String> inLines = new Vector<String>();
 
@@ -128,26 +128,31 @@ public final class FileIO
      *
      * @throws Exceptions
      */
-    public void writeToFile(Vector<String> outStrings) throws Exceptions
+    public void writeToUserFile(Vector<String> outStrings) throws Exceptions
     {
         try
         {
-            Logger.printDebug("Writing: '" + file + "'; " + outStrings.size() + " lines.");
-
-            PrintWriter writer = new PrintWriter(file);
-
-            for (int i = 0; i < outStrings.size(); ++i)
-            {
-                writer.println(outStrings.elementAt(i));
-            }
-
-            writer.flush();
-            writer.close();
-
+            writeToFile(file, outStrings);
         }
         catch (FileNotFoundException e)
         {
             ABEND.terminate(new Exceptions(XC.WRITE_ERROR));
         }
+    }
+
+    public static void writeToFile(String fileName, Vector<String> outStrings)
+            throws FileNotFoundException
+    {
+        Logger.printDebug("Writing: '" + fileName + "'; " + outStrings.size() + " lines.");
+
+        PrintWriter writer = new PrintWriter(fileName);
+
+        for (int i = 0; i < outStrings.size(); ++i)
+        {
+            writer.println(outStrings.elementAt(i));
+        }
+
+        writer.flush();
+        writer.close();
     }
 }

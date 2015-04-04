@@ -65,8 +65,8 @@ public class ChangePasswordConfirmDlg extends AbstractForm
 
         grid.add(l_Header, 0, 0);
 
-        CurrentPassword = getTextEntry("Current", FIELD_WIDTH_PWD);
-        NewPassword = getTextEntry("New", FIELD_WIDTH_PWD);
+        CurrentPassword = getTextEntry(TextID.CURRENT_PWD.toString(), FIELD_WIDTH_PWD);
+        NewPassword = getTextEntry(TextID.NEW.toString(), FIELD_WIDTH_PWD);
 
         CurrentPassword.getEntryTextField().setEditable(false);
         NewPassword.getEntryTextField().setEditable(false);

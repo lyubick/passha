@@ -26,14 +26,18 @@ public final class Controller
 
     public enum FORMS
     {
+        // Forms
         LOGIN,
         MANAGE_PWDS,
         CREATE_PWD,
 
+        // Dialogues
         CHANGE_PWD,
+        EXPORT,
 
         SETTINGS,
 
+        // other TODO PREV should be usefull
         END,
         CURRENT,
         UNKNOWN,
@@ -89,6 +93,7 @@ public final class Controller
         forms[FORMS.CREATE_PWD.ordinal()] = new SpecialPasswordForm();
         forms[FORMS.CHANGE_PWD.ordinal()] = new ChangePasswordConfirmDlg();
         forms[FORMS.SETTINGS.ordinal()] = new SettingsForm();
+        forms[FORMS.EXPORT.ordinal()] = new ExportForm();
 
         return self;
     }
@@ -97,7 +102,7 @@ public final class Controller
     {
         // TODO
         mainStage.close();
-        //mainStage = new Stage();
+        // mainStage = new Stage();
 
         Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
                 + form.name());

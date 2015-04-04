@@ -15,130 +15,133 @@ public class Texts
     public enum TextID
     {
         ADD_SPECIAL_PASSWORD(new String[]
-        { "Add Special Password", "" }),
+        { "Add Special Password", "Добавить новый пароль" }),
+
+        CALCULATING(new String[]
+        { "Calculating...", "Вычисдяем..." }),
 
         CANCEL(new String[]
         { "Cancel", "Отменить" }),
 
         CHANGE_PWD_HEADER(new String[]
-        { "Password reset", "" }),
+        { "Password reset", "Обновление пароля" }),
 
         CHANGE_PWD_WARNING(
                 new String[]
                 {
                         "By pressing OK you will substitute Current Password with New one.\n Thus Current Password will be permanently lost!",
-                        "" }),
+                        "Нажав \"Подтвердить\" Вы замените Настоящий Пароль Новым.\n В результатье Настоящий Пароль будет безвозвратно утерян!" }),
 
         COMMENT(new String[]
-        { "Comment", "" }),
+        { "Comment", "Комментарий" }),
 
         COPY_CLIPBOARD(new String[]
-        { "Copy To Clipboard", "" }),
+        { "Copy To Clipboard", "Скопировать в буфер обмена" }),
 
         CREATE(new String[]
-        { "Create", "" }),
+        { "Create", "Создать" }),
+
+        CURRENT_PWD(new String[]
+        { "Current", "Настоящий" }),
+
+        DELAY(new String[]
+        { "Delay", "Задержка" }),
 
         DELETE(new String[]
         { "Delete", "Удалить" }),
 
         DISCARD(new String[]
-        { "Discard", "" }),
-
-        ENABLED(new String[]
-        { "Enabled", "" }),
+        { "Discard", "Отменить" }),
 
         ENTER_PASSWORD(new String[]
-        { "Enter Password", "" }),
+        { "Enter Password", "Введите пароль" }),
 
         ERR_MISSING_PASSWORD_NAME(new String[]
-        { "Error! Password name must be entered!", "" }),
+        { "Error! Password name must be entered!", "Ошибка! Необходимо ввести имя Пароля!" }),
 
         ERR_NAME_ALREADY_TAKEN(new String[]
-        { "Error! Name already taken!", "" }),
+        { "Error! Name already taken!", "Ошибка! Имя уже занято!" }),
 
         EXPORT(new String[]
         { "Export", "Экспортировать" }),
 
+        FILE(new String[]
+        { "File", "Файл" }),
+
         GREETING(new String[]
         { "Welcome to pasSHA!", "Добро пожаловать в pasSHA!" }),
-
-        LENGTH(new String[]
-        { "Length", "" }),
-
-        LOGIN(new String[]
-        { "Login", "" }),
-
-        MANAGE(new String[]
-        { "Manage", "Управление" }),
-
-        MUST_CONTAIN_UPPER_CASE_CHAR(new String[]
-        { "Must have UPPER case character", "" }),
-
-        MUST_CONTAINT_SPECIAL_CHARS(new String[]
-        { "Must contain special characters", "" }),
-
-        NAME(new String[]
-        { "Name", "" }),
-
-        NEW(new String[]
-        { "New", "Добавить" }),
-
-        NEW_PWD(new String[]
-        { "New", "" }),
-
-        OK(new String[]
-        { "OK", "Подтвердить" }),
-
-        OLD_PWD(new String[]
-        { "Old", "" }),
-
-        PASSWORD_INCORRECT(new String[]
-        { "Password incorrect!", "" }),
-
-        PASSWORDS_DONT_MATCH(new String[]
-        { "Passwords don't match!", "" }),
-
-        PROGRAM_NAME(new String[]
-        { "pasSHA", "" }),
-
-        PWD(new String[]
-        { "Password", "" }),
-
-        PWD_NAME(new String[]
-        { "Password name", "" }),
-
-        REGISTER(new String[]
-        { "Register", "" }),
-
-        RESET_PASSWORD(new String[]
-        { "Reset password", "" }),
-
-        SAVE(new String[]
-        { "Save", "" }),
-
-        SHORTCUT(new String[]
-        { "Shortcut", "" }),
-
-        SPECIAL_CHARACTERS(new String[]
-        { "Special characters", "" }),
-
-        URL(new String[]
-        { "URL", "" }),
-
-        VERSION(new String[]
-        { "v." + version, "в." + version }),
 
         LANGUAGE(new String[]
         { "Language", "Язык" }),
 
-        DELAY(new String[]
-        { "Delay", "Задержка" }),
+        LENGTH(new String[]
+        { "Length", "Длинна" }),
+
+        LOGIN(new String[]
+        { "Login", "Регистрация" }),
+
+        MANAGE(new String[]
+        { "Manage", "Управление" }),
+
+        MS(new String[]
+        { "milliseconds", "миллисекунды" }),
+
+        MUST_CONTAIN_UPPER_CASE_CHAR(new String[]
+        { "Must have UPPER case character", "Обязан иметь ПРОПИСНЫЕ буквы" }),
+
+        MUST_CONTAINT_SPECIAL_CHARS(new String[]
+        { "Must contain special characters", "Обящан иметь специальные символы" }),
+
+        NAME(new String[]
+        { "Name", "Имя" }),
+
+        NEW(new String[]
+        { "New", "Добавить" }),
+
+        OK(new String[]
+        { "OK", "Подтвердить" }),
+
+        PASSWORD_INCORRECT(new String[]
+        { "Password incorrect!", "Не верный пароль!" }),
+
+        PASSWORDS_DONT_MATCH(new String[]
+        { "Passwords don't match!", "Пароли не идентичны" }),
+
+        PROGRAM_NAME(new String[]
+        { "pasSHA", "pasSHA" }),
+
+        PWD(new String[]
+        { "Password", "Пароль" }),
+
+        PWD_NAME(new String[]
+        { "Password name", "Имя пароля" }),
+
+        REGISTER(new String[]
+        { "Register", "Регистрироваться" }),
+
+        RESET_PASSWORD(new String[]
+        { "Reset password", "Обновить пароль" }),
+
+        RETYPE(new String[]
+        { "Re-type", "Повторите" }),
+
+        SAVE(new String[]
+        { "Save", "Сохранить" }),
 
         SETTINGS(new String[]
         { "Settings", "Настройки" }),
 
-        FILE(new String[]
-        { "File", "Файл" }),
+        SHORTCUT(new String[]
+        { "Shortcut", "Горячая клавиша" }),
+
+        SPECIAL_CHARACTERS(new String[]
+        { "Special characters", "Специальные символы" }),
+
+        URL(new String[]
+        { "URL", "URL" }),
+
+        VERSION(new String[]
+        { "v." + version, "в." + version }),
 
         Z_ETHALON(new String[]
         { "", "" }),
@@ -160,5 +163,5 @@ public class Texts
         }
     }
 
-    static String           version  = "dev";
+    static String version = "dev";
 }

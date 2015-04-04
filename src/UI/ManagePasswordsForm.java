@@ -143,7 +143,13 @@ public class ManagePasswordsForm extends AbstractForm
         b_Discard = getButton("_" + TextID.DISCARD.toString());
         b_Reset = getButton("_" + TextID.RESET_PASSWORD.toString());
 
-        b_Export.setDisable(true);
+        table.setMinHeight(tableMinHeight);
+        table.setMinWidth(tableMinWidth);
+
+        tf_pass.setMaxWidth(FIELD_WIDTH_PWD);
+        tf_pass.setEditable(false);
+
+        b_Export.setDisable(false);
         b_Save.setDisable(true);
         b_Discard.setDisable(true);
         b_Copy.setDisable(true);
@@ -335,7 +341,7 @@ public class ManagePasswordsForm extends AbstractForm
                     protected Void call() throws Exception
                     {
                         b_Copy.setDisable(true);
-                        updateMessage("Calculating...");
+                        updateMessage(TextID.CALCULATING.toString());
                         updateMessage(table.getSelectionModel().getSelectedItem().getPassword(this));
                         return null;
                     }
@@ -370,6 +376,25 @@ public class ManagePasswordsForm extends AbstractForm
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
                     Controller.getInstance().switchForm(FORMS.CHANGE_PWD);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        b_Export.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                try
+                {
+                    // TODO if any changes in db - ask user to save or discard
+                    // first
+                    Controller.getInstance().switchForm(FORMS.EXPORT);
                 }
                 catch (Exceptions e)
                 {
