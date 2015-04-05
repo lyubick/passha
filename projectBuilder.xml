@@ -1,0 +1,24 @@
+<!-- Expect definition of JavaFX ant tasks is already imported -->
+
+<project name="pasSHA" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
+	<fx:jar destfile="dist/pasSHA.jar">
+
+		<!-- Details about application -->
+		<fx:application name="pasSHA" mainClass="Main.Main" />
+
+		<!-- Define what auxilary resources are needed -->
+		<fx:resources>
+			<fx:fileset dir="dist" includes="resources/*.jar" />
+		</fx:resources>
+
+		<!-- What to include into result jar file?
+         Everything in the build tree -->
+		<fileset dir="bin" />
+
+		<!-- Customize jar manifest (optional) -->
+		<manifest>
+			<attribute name="Implementation-Vendor" value="KGBT" />
+			<attribute name="Implementation-Version" value="1.0.000" />
+		</manifest>
+	</fx:jar>
+</project>
