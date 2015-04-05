@@ -5,8 +5,8 @@
 
 	<path id="fxant">
 		<filelist>
-			<file name="C:\Program Files\Java\jdk1.8.0_20\lib\ant-javafx.jar" />
-			<file name="C:\Program Files\Java\jre1.8.0_20\lib\ext\jfxrt.jar" />
+			<file name="C:\Program Files\Java\jdk1.8.0_31\lib\ant-javafx.jar" />
+			<file name="C:\Program Files\Java\jre1.8.0_40\lib\ext\jfxrt.jar" />
 		</filelist>
 	</path>
 
@@ -15,7 +15,7 @@
 	<fx:jar destfile="dist/pasSHA.jar">
 
 		<!-- Details about application -->
-		<fx:application name="pasSHA" mainClass="Start.Main" />
+		<fx:application name="pasSHA" mainClass="Main.Main" />
 
 		<!-- Define what auxilary resources are needed -->
 		<fx:resources>
