@@ -92,7 +92,7 @@ public final class Logger // Static class
         {
             try
             {
-                writer = new PrintWriter("bin/" + getTime());
+                writer = new PrintWriter(getTime());
             }
             catch (FileNotFoundException e)
             {

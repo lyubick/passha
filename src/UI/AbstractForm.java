@@ -67,7 +67,7 @@ public abstract class AbstractForm
 
     protected AbstractForm()
     {
-        grid.setGridLinesVisible(true); // FIXME Debug
+        grid.setGridLinesVisible(false); // FIXME Debug
 
         group.getChildren().addAll(grid);
 
