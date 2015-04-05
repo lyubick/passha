@@ -1,10 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Expect definition of JavaFX ant tasks is already imported -->
 
 <project name="pasSHA" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
+
+	<path id="fxant">
+		<filelist>
+			<file name="C:\Program Files\Java\jdk1.8.0_20\lib\ant-javafx.jar" />
+			<file name="C:\Program Files\Java\jre1.8.0_20\lib\ext\jfxrt.jar" />
+		</filelist>
+	</path>
+
+	<taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpathref="fxant" />
+
 	<fx:jar destfile="dist/pasSHA.jar">
 
 		<!-- Details about application -->
-		<fx:application name="pasSHA" mainClass="Main.Main" />
+		<fx:application name="pasSHA" mainClass="Start.Main" />
 
 		<!-- Define what auxilary resources are needed -->
 		<fx:resources>
