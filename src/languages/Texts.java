@@ -86,6 +86,9 @@ public class Texts
         MS(new String[]
         { "milliseconds", "миллисекунды" }),
 
+        S(new String[]
+        { "second(s)", "секунд(ы)" }),
+
         MUST_CONTAIN_UPPER_CASE_CHAR(new String[]
         { "Must have UPPER case character", "Обязан иметь ПРОПИСНЫЕ буквы" }),
 
@@ -155,6 +158,15 @@ public class Texts
 
         EXIT(new String[]
         { "Exit", "Выход" }),
+
+        PASSWORD_COPIED(new String[]
+        { "Password copied to Clipboard", "Пароль помещён в буфер обмена" }),
+
+        TIME_LEFT(new String[]
+        { "Time left", "Времени осталось" }),
+
+        PASSWORD_REMOVED(new String[]
+        { "Password removed from Clipboard", "Пароль убран из буфера обмена" }),
 
         Z_ETHALON(new String[]
         { "", "" }),

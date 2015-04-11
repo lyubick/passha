@@ -9,6 +9,7 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionListener;
 
 import languages.Texts.TextID;
@@ -26,7 +27,8 @@ import javafx.stage.Stage;
  */
 public class TrayAgent
 {
-    static TrayAgent self = null;
+    static TrayAgent self     = null;
+    private TrayIcon trayIcon = null;
 
     public static TrayAgent getInstance() throws Exceptions
     {
@@ -47,7 +49,7 @@ public class TrayAgent
 
         popup.add(item);
 
-        TrayIcon trayIcon =
+        trayIcon =
                 new TrayIcon(image, TextID.PROGRAM_NAME.toString() + " "
                         + TextID.VERSION.toString(), popup);
 
@@ -111,5 +113,10 @@ public class TrayAgent
             self = new TrayAgent(primaryStage);
         else
             Logger.printError("Tray unavailable");
+    }
+
+    public void showNotification(String title, String msg, MessageType type)
+    {
+        trayIcon.displayMessage(title, msg, type);
     }
 }
