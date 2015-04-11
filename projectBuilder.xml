@@ -15,7 +15,7 @@
 	<fx:jar destfile="dist/pasSHA.jar">
 
 		<!-- Details about application -->
-		<fx:application name="pasSHA" mainClass="Main.Main" />
+		<fx:application name="pasSHA" mainClass="main.Main" />
 
 		<!-- Define what auxilary resources are needed -->
 		<fx:resources>
