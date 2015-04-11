@@ -1,5 +1,5 @@
 /bin/
 .classpath
-/dist/logs/*
-/dist/user/*
+/dist/logs/*.log
+/dist/user/*.cif
 .classpath
