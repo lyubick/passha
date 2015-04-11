@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 
 import languages.Texts.TextID;
 import main.Exceptions;
+import main.Terminator;
+import main.Exceptions.XC;
 import ui.Controller.FORMS;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -44,8 +46,14 @@ public class TrayAgent
                 @Override
                 public void actionPerformed(java.awt.event.ActionEvent arg0)
                 {
-                    // TODO Auto-generated method stub
-                    System.exit(0);
+                    Platform.runLater(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            Terminator.terminate(new Exceptions(XC.END));
+                        }
+                    });
                 }
             };
 
@@ -65,8 +73,7 @@ public class TrayAgent
                             }
                             catch (Exceptions e)
                             {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
+                                Terminator.terminate(e);
                             }
                         }
                     });

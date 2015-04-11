@@ -92,7 +92,7 @@ public class SaveDlg extends AbstractForm
                     saveTask.setOnSucceeded(EventHandler -> {
                         pb_Progress.progressProperty().unbind();
                         Logger.printDebug("saveTask -> successfully finished");
-                        Terminator.terminate(new Exceptions(XC.THE_END));
+                        Terminator.terminate(new Exceptions(XC.END));
                     });
 
                     Thread reloadTaskThread = new Thread(saveTask);
@@ -112,7 +112,7 @@ public class SaveDlg extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                Terminator.terminate(new Exceptions(XC.THE_END));
+                Terminator.terminate(new Exceptions(XC.END_DISCARD));
             }
         });
 

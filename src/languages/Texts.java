@@ -153,6 +153,9 @@ public class Texts
         SAVING(new String[]
         { "Saving", "Сохранение" }),
 
+        EXIT(new String[]
+        { "Exit", "Выход" }),
+
         Z_ETHALON(new String[]
         { "", "" }),
 
