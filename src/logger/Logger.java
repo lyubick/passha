@@ -70,16 +70,16 @@ public final class Logger // Static class
         StackTraceElement e = stacktrace[3];
 
         String methodName = e.getMethodName();
-        String fileName = e.getFileName();
+        String fileName = "(" + e.getFileName();
 
-        int line = e.getLineNumber();
+        String line = "" + e.getLineNumber() + ")";
 
         fileNameWidth = Math.max(fileNameWidth, fileName.length());
-        lineWidth = Math.max(lineWidth, Integer.toString(line).length());
+        lineWidth = Math.max(lineWidth, line.length());
         methodNameWidth = Math.max(methodNameWidth, methodName.length());
 
         writeToFileAndToScreen(
-                String.format("[%1$s] %2$" + fileNameWidth + "s @ %3$-" + lineWidth + "d %4$-"
+                String.format("[%1$s] %2$" + fileNameWidth + "s:%3$-" + lineWidth + "s %4$-"
                         + methodNameWidth + "s ", getTime(), fileName, line, methodName)
                         + lvl.name() + ": " + msg, lvl);
     }
