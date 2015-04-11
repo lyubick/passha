@@ -6,6 +6,9 @@ package main;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import ui.Controller;
+import ui.Controller.FORMS;
+import db.PasswordCollection;
 import logger.Logger;
 import main.Exceptions.XC;
 
@@ -15,7 +18,7 @@ import main.Exceptions.XC;
  */
 public class Terminator
 {
-    static void exit(Exceptions e)
+    private static void exit(Exceptions e)
     {
         Logger.printDebug("Bye!");
 
@@ -33,7 +36,25 @@ public class Terminator
 
     public static void terminate(Exceptions e)
     {
-        if (e.getCode().equals(XC.THE_END)) exit(e); // Normal exit
+        if (e.getCode().equals(XC.END))
+        {
+            try
+            {
+                if (PasswordCollection.getInstance().isChanged())
+                {
+                    Controller.getInstance().switchForm(FORMS.SAVE_DB);
+                    return;
+                }
+            }
+            catch (Exceptions e1)
+            {
+                Terminator.terminate(e1);
+            }
+
+            exit(e); // Normal exit
+        }
+
+        if (e.getCode().equals(XC.END_DISCARD)) exit(e);
 
         Logger.printError("TERMINATOR: FATAL ERROR OCCURED: " + e.getCode().name());
 

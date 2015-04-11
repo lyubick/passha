@@ -43,7 +43,9 @@ public final class Exceptions extends Throwable
         OBJECT_SERIALIZATION_FAILED,
         OBJECT_DESERIALIZATION_FAILED,
 
-        THE_END,
+        // TODO
+        END,
+        END_DISCARD
     }
 
     public XC getCode()

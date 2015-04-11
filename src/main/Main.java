@@ -28,7 +28,7 @@ public class Main extends Application
         Settings.loadSettings();
         launch(); // launches GUI.
 
-        Terminator.terminate(new Exceptions(XC.THE_END));
+        Terminator.terminate(new Exceptions(XC.END));
     }
 
     @Override

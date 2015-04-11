@@ -12,6 +12,7 @@ import logger.Logger;
 import main.Exceptions;
 import main.Settings;
 import main.Terminator;
+import main.Exceptions.XC;
 import ui.Controller.FORMS;
 import db.PasswordCollection;
 import db.iSpecialPassword;
@@ -75,6 +76,7 @@ public class ManagePasswordsForm extends AbstractForm
 
     private MenuBar                     mb_Main             = null;
     private Menu                        m_File              = null;
+    private MenuItem                    mi_Exit             = null;
     private MenuItem                    mi_Settings         = null;
     private ProgressBar                 pb_Progress         = null;
     private Label                       l_Progress          = null;
@@ -170,9 +172,11 @@ public class ManagePasswordsForm extends AbstractForm
         // ========== MENU ========== //
         mb_Main = new MenuBar();
         m_File = new Menu(TextID.FILE.toString());
-        mi_Settings = new MenuItem(TextID.SETTINGS.toString());
 
-        m_File.getItems().addAll(mi_Settings);
+        mi_Settings = new MenuItem(TextID.SETTINGS.toString());
+        mi_Exit = new MenuItem(TextID.EXIT.toString());
+
+        m_File.getItems().addAll(mi_Settings, mi_Exit);
         mb_Main.getMenus().add(m_File);
 
         mi_Settings.setOnAction(new EventHandler<ActionEvent>()
@@ -180,16 +184,24 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                // TODO Auto-generated method stub
                 try
                 {
                     Controller.getInstance().switchForm(FORMS.SETTINGS);
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Terminator.terminate(e);
                 }
+            }
+        });
+
+        mi_Exit.setOnAction(new EventHandler<ActionEvent>()
+        {
+
+            @Override
+            public void handle(ActionEvent event)
+            {
+                Terminator.terminate(new Exceptions(XC.END));
             }
         });
 
