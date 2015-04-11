@@ -165,7 +165,7 @@ public class ManagePasswordsForm extends AbstractForm
     public ManagePasswordsForm()
     {
         // ========== CSS ========== //
-        scene.getStylesheets().add("progress.css"); // TODO
+        scene.getStylesheets().add("resources/progress.css"); // TODO
 
         // ========== MENU ========== //
         mb_Main = new MenuBar();

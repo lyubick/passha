@@ -12,6 +12,10 @@
 
 	<taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpathref="fxant" />
 
+	<copy todir="./bin/resources">
+		<fileset dir="./resources" />
+	</copy>
+
 	<fx:jar destfile="dist/pasSHA.jar">
 
 		<!-- Details about application -->
@@ -24,7 +28,6 @@
 
 		<!-- What to include into result jar file? Everything in the build tree -->
 		<fileset dir="bin" />
-		<fileset dir="resources/" />
 
 		<!-- Customize jar manifest (optional) -->
 		<manifest>
