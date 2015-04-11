@@ -10,7 +10,6 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionListener;
-
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
@@ -31,7 +30,9 @@ public class TrayAgent
         {
             SystemTray tray = SystemTray.getSystemTray();
 
-            Image image = Toolkit.getDefaultToolkit().getImage("resources/tray_icon.png");
+            Image image =
+                    Toolkit.getDefaultToolkit().getImage(
+                            ClassLoader.getSystemResource("resources/tray_icon.png"));
             PopupMenu popup = new PopupMenu();
             MenuItem item = new MenuItem("Exit");
 
