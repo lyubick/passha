@@ -1,6 +1,3 @@
-/**
- *
- */
 package db;
 
 import java.io.Serializable;
@@ -14,10 +11,6 @@ import main.Terminator;
 import main.Exceptions.XC;
 import javafx.concurrent.Task;
 
-/**
- * @author curious-odd-man
- *
- */
 public class SpecialPassword implements Serializable
 {
     public enum ParamsMaskBits
@@ -133,60 +126,36 @@ public class SpecialPassword implements Serializable
         Logger.printDebug(template.toString());
     }
 
-    /**
-     * @return the name
-     */
     public String getName()
     {
         return name;
     }
 
-    /**
-     * @param name
-     *            the name to set
-     */
     public void setName(String name)
     {
         this.name = name;
     }
 
-    /**
-     * @return the comment
-     */
     public String getComment()
     {
         return comment;
     }
 
-    /**
-     * @param comment
-     *            the comment to set
-     */
     public void setComment(String comment)
     {
         this.comment = comment;
     }
 
-    /**
-     * @return the url
-     */
     public String getUrl()
     {
         return url;
     }
 
-    /**
-     * @param url
-     *            the url to set
-     */
     public void setUrl(String url)
     {
         this.url = url;
     }
 
-    /**
-     * @return the shaCycles
-     */
     public long getShaCycles()
     {
         return shaCycles;
@@ -249,17 +218,36 @@ public class SpecialPassword implements Serializable
                 byte insertPosition = (byte) hash.charAt(idx--);
                 int loopGuard = clearPass.length(); // to avoid infinite loop
 
-                while (count > 0 && loopGuard > 0)
+                // while still need more special characters and not in infinite
+                // loop
+                while (count > 0 && loopGuard-- > 0)
                 {
                     insertPosition = (byte) (insertPosition % clearPass.length());
                     specialCharacterPosition =
                             (byte) (specialCharacterPosition % specialChars.length());
+
+                    // if can ensure different special characters
+                    if (specialChars.length() >= getSpecialCharactersCount())
+                    {
+                        // find special character not used
+                        do
+                        {
+                            if (clearPass.toString().indexOf(
+                                    specialChars.charAt(specialCharacterPosition)) == -1) break;
+
+                            // get next special character position
+                            specialCharacterPosition =
+                                    (byte) (++specialCharacterPosition % specialChars.length());
+                        }
+                        while (true);
+                    }
 
                     Logger.printDebug("use special characters count = " + count
                             + "; insertPosition = " + insertPosition);
 
                     if (Character.isDigit(clearPass.charAt(insertPosition)))
                     {
+
                         clearPass.setCharAt(insertPosition,
                                 specialChars.charAt(specialCharacterPosition));
                         count--;
@@ -269,10 +257,7 @@ public class SpecialPassword implements Serializable
                         loopGuard = clearPass.length();
                     }
                     else
-                    {
                         insertPosition++;
-                    }
-                    loopGuard--;
                 }
             }
 
