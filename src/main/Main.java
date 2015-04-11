@@ -38,7 +38,7 @@ public class Main extends Application
 
         try
         {
-            TrayAgent.addTray(primaryStage);
+            TrayAgent.initTrayAgent(primaryStage);
             Controller.init(primaryStage).switchForm(FORMS.LOGIN);
         }
         catch (Exceptions e)
