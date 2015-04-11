@@ -22,9 +22,9 @@
 			<fx:fileset dir="dist" includes="resources/*.jar" />
 		</fx:resources>
 
-		<!-- What to include into result jar file?
-         Everything in the build tree -->
+		<!-- What to include into result jar file? Everything in the build tree -->
 		<fileset dir="bin" />
+		<fileset dir="resources/" />
 
 		<!-- Customize jar manifest (optional) -->
 		<manifest>
