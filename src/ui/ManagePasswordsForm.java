@@ -6,6 +6,7 @@ package ui;
 import java.awt.Toolkit;
 import java.awt.TrayIcon.MessageType;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 
 import languages.Texts.TextID;
@@ -555,8 +556,6 @@ public class ManagePasswordsForm extends AbstractForm
                             }
                         }
 
-                        clipboard.setContents(new StringSelection(""), null);
-
                         return null;
                     }
                 };
@@ -575,6 +574,16 @@ public class ManagePasswordsForm extends AbstractForm
                     catch (Exceptions e)
                     {
                         Terminator.terminate(e);
+                    }
+                    try
+                    {
+                        if (tf_pass.getText().equals(clipboard.getData(DataFlavor.stringFlavor)))
+                            clipboard.setContents(new StringSelection(""), null);
+                    }
+                    catch (Exception e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 });
 
