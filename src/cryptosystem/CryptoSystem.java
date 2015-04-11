@@ -158,8 +158,6 @@ public final class CryptoSystem
         Logger.printDebug("File I/O init STARTS...");
         try
         {
-            Logger.printDebug(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME")
-                    .getBytes()));
             UserFileIO.init(
                     sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()),
                     isNewUser);
