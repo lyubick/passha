@@ -223,8 +223,10 @@ public class SpecialPassword implements Serializable
         return 0;
     }
 
-    // TODO: speparate method for password generation
-    // TODO: check that password meets rules and do re-hash if not;
+    private byte getSpecialCharactersCount()
+    {
+        return (byte) ((this.length) >>> 2);
+    }
 
     public String getPassword(Task<Void> passwordCalculation)
     {
@@ -238,19 +240,40 @@ public class SpecialPassword implements Serializable
             StringBuilder clearPass = new StringBuilder(hash.substring(0, this.length));
 
             // set special characters
-            // todo more special characters
             if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal())
                     && specialChars.length() != 0)
             {
-                Logger.printDebug("use special characters");
-                byte specialCharacterPosition = (byte) hash.charAt(hash.length() - 2);
-                byte insertPosition = (byte) hash.charAt(hash.length() - 3);
+                byte count = getSpecialCharactersCount();
+                int idx = hash.length() - 2;
+                byte specialCharacterPosition = (byte) hash.charAt(idx--);
+                byte insertPosition = (byte) hash.charAt(idx--);
+                int loopGuard = clearPass.length(); // to avoid infinite loop
 
-                insertPosition = (byte) (insertPosition % clearPass.length());
-                specialCharacterPosition =
-                        (byte) (specialCharacterPosition % specialChars.length());
+                while (count > 0 && loopGuard > 0)
+                {
+                    insertPosition = (byte) (insertPosition % clearPass.length());
+                    specialCharacterPosition =
+                            (byte) (specialCharacterPosition % specialChars.length());
 
-                clearPass.setCharAt(insertPosition, specialChars.charAt(specialCharacterPosition));
+                    Logger.printDebug("use special characters count = " + count
+                            + "; insertPosition = " + insertPosition);
+
+                    if (Character.isDigit(clearPass.charAt(insertPosition)))
+                    {
+                        clearPass.setCharAt(insertPosition,
+                                specialChars.charAt(specialCharacterPosition));
+                        count--;
+
+                        specialCharacterPosition = (byte) hash.charAt(idx--);
+                        insertPosition = (byte) hash.charAt(idx--);
+                        loopGuard = clearPass.length();
+                    }
+                    else
+                    {
+                        insertPosition++;
+                    }
+                    loopGuard--;
+                }
             }
 
             // set CAPITALS.
@@ -295,6 +318,7 @@ public class SpecialPassword implements Serializable
     {
         BitSet currentMaskBitSet = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
         String pwd = getPassword();
+        byte count = getSpecialCharactersCount();
 
         for (int i = 0; i < pwd.length(); i++)
         {
@@ -305,7 +329,11 @@ public class SpecialPassword implements Serializable
             else if (Character.isUpperCase(pwd.charAt(i)))
                 currentMaskBitSet.set(ParamsMaskBits.HAS_CAPITALS.ordinal());
             else if (specialChars.indexOf(pwd.charAt(i)) != -1)
-                currentMaskBitSet.set(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
+            {
+                count--;
+                if (count == 0)
+                    currentMaskBitSet.set(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
+            }
             else
                 Logger.printError("How can it really happen???");
 
