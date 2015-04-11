@@ -51,11 +51,6 @@ public class SHA
 
     private final long   TEN_LESS_SIGNIFICANT_BITS_MASK = 0x3FFFF;
 
-    /**
-     * @brief constructor
-     * @note self-test is performed and if error occurs, constructor will throw
-     * @throws Exceptions
-     */
     public SHA() throws Exceptions
     {
         initializeSHA512();
@@ -72,17 +67,10 @@ public class SHA
             String expectedSha =
                     "8e959b75dae313da8cf4f72814fc143f8f7779c6eb9f7fa17299aeadb6889018501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909";
 
-            if (actualSha.compareTo(expectedSha) != 0)
-                throw new main.Exceptions(XC.INIT_FAILURE);
+            if (actualSha.compareTo(expectedSha) != 0) throw new main.Exceptions(XC.INIT_FAILURE);
         }
     }
 
-    /**
-     * @brief converts byte[] to hex represented string
-     *
-     * @param [in] bytes - array to convert
-     * @return string of hex represented bytes array
-     */
     private long ch(long x, long y, long z)
     {
         return ((x & y) ^ ((~x) & z));
@@ -154,7 +142,6 @@ public class SHA
         /* WRITE W[0.. 15] FROM MSG */
         for (int i = 0; i < SHA_INIT_WORDS; i++)
         {
-            // no harcode '8'
             W[i] = Utilities.load64(hashBlock, 8 * i);
         }
 
@@ -197,7 +184,7 @@ public class SHA
         int length = input.length;
         long bitLength = length * 8 + 1 + 128; // no hardcode
 
-        // calculate count of blocks (of 1024 bytes) needed to store whole @a
+        // calculate count of blocks (of 1024 bytes) needed to store whole at
         // input
         hashBlocksCount =
                 (int) ((bitLength >>> 10) + Math.min(bitLength & TEN_LESS_SIGNIFICANT_BITS_MASK, 1));
