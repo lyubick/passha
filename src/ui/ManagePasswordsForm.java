@@ -4,6 +4,7 @@
 package ui;
 
 import java.awt.Toolkit;
+import java.awt.TrayIcon.MessageType;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
@@ -82,6 +83,8 @@ public class ManagePasswordsForm extends AbstractForm
     private Label                       l_Progress          = null;
 
     private boolean                     firstTime           = true;
+
+    private Stage                       parrent             = null;
 
     private void setStatusBarShow(boolean v)
     {
@@ -530,6 +533,26 @@ public class ManagePasswordsForm extends AbstractForm
                             updateProgress(Settings.getclipboardLiveTime() - i,
                                     Settings.getclipboardLiveTime());
                             Thread.sleep(100);
+
+                            if (i % 1000 == 0)
+                            {
+                                try
+                                {
+                                    TrayAgent
+                                            .getInstance()
+                                            .showNotification(
+                                                    TextID.PASSWORD_COPIED.toString(),
+                                                    TextID.TIME_LEFT.toString()
+                                                            + ": "
+                                                            + ((Settings.getclipboardLiveTime() - i) / 1000)
+                                                            + " " + TextID.S.toString(),
+                                                    MessageType.INFO);
+                                }
+                                catch (Exceptions e)
+                                {
+                                    Terminator.terminate(e);
+                                }
+                            }
                         }
 
                         clipboard.setContents(new StringSelection(""), null);
@@ -544,6 +567,15 @@ public class ManagePasswordsForm extends AbstractForm
                     pi_PWDLifeTime.progressProperty().unbind();
                     Logger.printDebug("PWDCLIP -> Successfully finished.");
                     pi_PWDLifeTime.setVisible(false);
+                    try
+                    {
+                        TrayAgent.getInstance().showNotification(
+                                TextID.PASSWORD_REMOVED.toString(), "", MessageType.INFO);
+                    }
+                    catch (Exceptions e)
+                    {
+                        Terminator.terminate(e);
+                    }
                 });
 
                 tsk_PWDLifeTime.setOnCancelled(EventHandler -> {
@@ -557,6 +589,7 @@ public class ManagePasswordsForm extends AbstractForm
                 calculatePasswordThread.start();
 
                 pi_PWDLifeTime.setVisible(true);
+                parrent.setIconified(true);
             }
         });
     }
@@ -564,6 +597,8 @@ public class ManagePasswordsForm extends AbstractForm
     @Override
     public void draw(Stage stage) throws Exceptions
     {
+        parrent = stage;
+
         tf_pass.clear();
         handleButtons();
         table.setItems(PasswordCollection.getInstance().getIface());
