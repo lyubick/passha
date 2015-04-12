@@ -219,4 +219,9 @@ public final class CryptoSystem
 
         return Utilities.bytesToHex(tmp);
     }
+
+    public String getHash(String toHash, String salt)
+    {
+        return sha.getStringSHA512((toHash + salt).getBytes());
+    }
 }

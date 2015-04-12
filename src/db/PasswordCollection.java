@@ -7,7 +7,6 @@ import java.util.Vector;
 
 import utilities.Utilities;
 import cryptosystem.CryptoSystem;
-import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
@@ -86,17 +85,6 @@ public class PasswordCollection
         }
 
         return pSet;
-    }
-
-    public void dump()
-    {
-        Logger.printDebug("Dumping PasswordCollection... START");
-
-        Logger.printDebug("Collection: ");
-        for (SpecialPassword sp : db)
-            sp.dump();
-
-        Logger.printDebug("Dumping PasswordCollection... DONE!");
     }
 
     public Task<Void> save()

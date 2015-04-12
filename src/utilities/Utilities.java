@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.Vector;
 
 import logger.Logger;
@@ -166,4 +167,30 @@ public final class Utilities
         return inLines;
     }
 
+    public static BigInteger hexToInt(String hexValue)
+    {
+        BigInteger out = new BigInteger("0");
+        BigInteger curr = null;
+        BigInteger power = new BigInteger("16");
+
+        int i = hexValue.length() - 1;
+        int pwr = 0;
+
+        for (; i >= 0; --i)
+        {
+            Logger.printDebug("HEX STRING: " + hexValue.substring(i, i + 1));
+
+            curr = new BigInteger(hexValue.substring(i, i + 1), 16);
+
+            Logger.printDebug("BI CURR: " + curr.toString());
+
+            Logger.printDebug("BI POWER: " + power.toString() + ", " + pwr);
+
+            out = out.add(curr.multiply(power.pow(pwr++)));
+
+            Logger.printDebug("BI OUT: " + out.toString());
+        }
+
+        return out;
+    }
 }

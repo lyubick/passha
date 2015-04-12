@@ -1,9 +1,11 @@
 package db;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.util.BitSet;
 
+import sha.SHA;
+import utilities.Utilities;
 import cryptosystem.CryptoSystem;
 import logger.Logger;
 import main.Exceptions;
@@ -24,35 +26,15 @@ public class SpecialPassword implements Serializable
         TOTAL_COUNT,
     }
 
-    String                    asyncronouslyGeneratedPassword = "";
-    private String            name;
-    private String            comment;
-    private String            url;
-    private int               length;
-    private String            specialChars;
-    private BitSet            paramsMask                     = null;
-    private long              shaCycles;                            // generated
-                                                                     // in
-                                                                     // PasswordCollection;
+    private long              shaCycles        = 0;
+    private String            name             = null;
+    private String            comment          = null;
+    private String            url              = null;
+    private int               length           = 0;
+    private String            specialChars     = null;
+    private BitSet            paramsMask       = null;
 
-    private static final long serialVersionUID               = 2L;
-
-    public SpecialPassword()
-    {
-        Logger.printDebug("SpecialPassword DEFAULT constructor... START");
-
-        this.name = "EMPTY";
-        this.comment = "COMMENT";
-        this.url = "URL";
-        this.length = 16;
-        this.paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
-        this.paramsMask.set(0, ParamsMaskBits.TOTAL_COUNT.ordinal());
-        this.specialChars = "!@#$%^&*";
-
-        this.shaCycles = 1;
-
-        Logger.printDebug("SpecialPassword DEFAULT constructor... DONE!");
-    }
+    private static final long serialVersionUID = 1L;
 
     public SpecialPassword(String name, String comment, String url, int length, BitSet paramsMask,
             String specialChars) throws Exceptions
@@ -97,33 +79,6 @@ public class SpecialPassword implements Serializable
         while (!isPasswordValid());
 
         Logger.printDebug("SpecialPassword copy-constructor... DONE!");
-    }
-
-    public void dump()
-    {
-        Field[] properties = this.getClass().getDeclaredFields();
-        StringBuilder template = new StringBuilder();
-
-        template.append("SpecialPassword: ");
-
-        for (Field property : properties)
-        {
-            template.append(property.getName());
-            template.append(": ");
-
-            try
-            {
-                template.append(property.get(this));
-            }
-            catch (IllegalAccessException e)
-            {
-                Logger.printError(e.toString());
-            }
-
-            template.append("; ");
-        }
-
-        Logger.printDebug(template.toString());
     }
 
     public String getName()
@@ -186,10 +141,7 @@ public class SpecialPassword implements Serializable
     @Override
     public int hashCode()
     {
-        Logger.printError("Illegal call of hashCode.");
-        assert false : "Illegal call of hashCode.";
-        Terminator.terminate(new Exceptions(XC.INIT_FAILURE));
-        return 0;
+        return name.hashCode();
     }
 
     private byte getSpecialCharactersCount()
@@ -199,99 +151,113 @@ public class SpecialPassword implements Serializable
 
     public String getPassword(Task<Void> passwordCalculation)
     {
+        int idx = 0;
+        String alphabeta = "0123456789abcdefghijklmnopqrstuvwxyz";
+        String specialSalt = "SPECIAL";
+
+        String passwordHash = null;
+        String specialHash = null;
+
+        StringBuilder password = new StringBuilder("");
+
+        /*
+         * 1. Stage - 64-byte long hash will be converted to character/number
+         * set of appropriate length
+         */
+        Logger.printDebug("Password generation. STAGE 1. START");
+
         try
         {
-            String hash =
-                    CryptoSystem.getInstance().getPassword(this.shaCycles, this.getName(),
-                            passwordCalculation);
-
-            // take first @a this.length chars from hash
-            StringBuilder clearPass = new StringBuilder(hash.substring(0, this.length));
-
-            // set special characters
-            if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal())
-                    && specialChars.length() != 0)
-            {
-                byte count = getSpecialCharactersCount();
-                int idx = hash.length() - 2;
-                byte specialCharacterPosition = (byte) hash.charAt(idx--);
-                byte insertPosition = (byte) hash.charAt(idx--);
-                int loopGuard = clearPass.length(); // to avoid infinite loop
-
-                // while still need more special characters and not in infinite
-                // loop
-                while (count > 0 && loopGuard-- > 0)
-                {
-                    insertPosition = (byte) (insertPosition % clearPass.length());
-                    specialCharacterPosition =
-                            (byte) (specialCharacterPosition % specialChars.length());
-
-                    // if can ensure different special characters
-                    if (specialChars.length() >= getSpecialCharactersCount())
-                    {
-                        // find special character not used
-                        do
-                        {
-                            if (clearPass.toString().indexOf(
-                                    specialChars.charAt(specialCharacterPosition)) == -1) break;
-
-                            // get next special character position
-                            specialCharacterPosition =
-                                    (byte) (++specialCharacterPosition % specialChars.length());
-                        }
-                        while (true);
-                    }
-
-                    Logger.printDebug("use special characters count = " + count
-                            + "; insertPosition = " + insertPosition);
-
-                    if (Character.isDigit(clearPass.charAt(insertPosition)))
-                    {
-
-                        clearPass.setCharAt(insertPosition,
-                                specialChars.charAt(specialCharacterPosition));
-                        count--;
-
-                        specialCharacterPosition = (byte) hash.charAt(idx--);
-                        insertPosition = (byte) hash.charAt(idx--);
-                        loopGuard = clearPass.length();
-                    }
-                    else
-                        insertPosition++;
-                }
-            }
-
-            // set CAPITALS.
-            if (paramsMask.get(ParamsMaskBits.HAS_CAPITALS.ordinal()))
-            {
-                Logger.printDebug("use capitals");
-                // determine what chars changes case
-                boolean changeCase = (hash.charAt(hash.length() - 1) & 0x01) != 0;
-                // get string with capitals for easier processing
-                String capsString = (new String(clearPass)).toUpperCase();
-
-                for (int i = 0; i < clearPass.length(); i++)
-                {
-                    // different chars means different case
-                    if (clearPass.charAt(i) != capsString.charAt(i))
-                    {
-                        if (changeCase)
-                        {
-                            clearPass.setCharAt(i, capsString.charAt(i));
-                        }
-
-                        changeCase = !changeCase;
-                    }
-                }
-            }
-
-            return clearPass.toString();
+            passwordHash =
+                    CryptoSystem.getInstance().getPassword(shaCycles, name, passwordCalculation);
+            specialHash = CryptoSystem.getInstance().getHash(passwordHash, specialSalt);
         }
         catch (Exceptions e)
         {
             Terminator.terminate(e);
         }
-        return "";
+
+        int mapChunkLength = SHA.SHA_BYTES_RESULT / length;
+
+        for (int i = 0; i < length; ++i)
+        {
+            int currIdx = i * mapChunkLength;
+            password.append(alphabeta.charAt(Utilities
+                    .hexToInt(passwordHash.substring(currIdx, currIdx + mapChunkLength))
+                    .mod(new BigInteger(Integer.toString(alphabeta.length()))).intValue()));
+        }
+
+        Logger.printDebug("Password generation. STAGE 1. DONE");
+
+        Logger.printDebug(password.toString());
+
+        /*
+         * 2. Stage - Result of Stage 1 (appropriate length password) will be
+         * modified with special characters.
+         */
+        if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal())
+                && specialChars.length() != 0)
+        {
+            Logger.printDebug("Password generation. STAGE 2. START");
+
+            int count = getSpecialCharactersCount();
+            int specialCharacterPosition = specialHash.charAt(idx++);
+            int insertPosition = specialHash.charAt(idx++);
+
+            while (count > 0)
+            {
+                insertPosition = (insertPosition % password.length());
+                specialCharacterPosition = (specialCharacterPosition % specialChars.length());
+
+                if (specialChars.length() >= getSpecialCharactersCount())
+                {
+                    while (password.toString().indexOf(
+                            specialChars.charAt(specialCharacterPosition)) != -1)
+                    {
+                        specialCharacterPosition =
+                                (++specialCharacterPosition % specialChars.length());
+                    }
+                }
+
+                Logger.printDebug("Special characters count left = " + count
+                        + "; insertPosition = " + insertPosition);
+
+                password.setCharAt(insertPosition, specialChars.charAt(specialCharacterPosition));
+                count--;
+
+                specialCharacterPosition = specialHash.charAt(idx++);
+                insertPosition = specialHash.charAt(idx++);
+            }
+
+            Logger.printDebug("Password generation. STAGE 2. DONE");
+        }
+
+        /*
+         * 3. Stage - Final stage where random characters will be capitalized.
+         */
+        if (paramsMask.get(ParamsMaskBits.HAS_CAPITALS.ordinal()))
+        {
+            Logger.printDebug("Password generation. STAGE 3. START");
+
+            Logger.printDebug("use capitals");
+            boolean changeCase = (specialHash.charAt(idx++) & 0x01) != 0;
+            String capsString = (new String(password)).toUpperCase();
+
+            for (int i = 0; i < password.length(); i++)
+            {
+                if (password.charAt(i) != capsString.charAt(i))
+                {
+                    if (changeCase)
+                    {
+                        password.setCharAt(i, capsString.charAt(i));
+                    }
+                    changeCase = !changeCase;
+                }
+            }
+        }
+        Logger.printDebug("Password generation. STAGE 3. DONE");
+
+        return password.toString();
     }
 
     public String getPassword()

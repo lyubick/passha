@@ -7,6 +7,7 @@ package test;
 // explicit variable initialization missing
 // functions and file missing headers
 
+import java.util.BitSet;
 import java.util.Vector;
 
 import cryptosystem.CryptoSystem;
@@ -18,6 +19,7 @@ import sha.SHA;
 import utilities.Utilities;
 import db.SpecialPassword;
 import db.UserFileIO;
+import db.SpecialPassword.ParamsMaskBits;
 
 /**
  * @author lyubick
@@ -80,7 +82,19 @@ public class Test
 
     public static boolean TestSerialization()
     {
-        SpecialPassword sp = new SpecialPassword();
+        SpecialPassword sp = null;
+        try
+        {
+            BitSet paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
+            paramsMask.set(0, ParamsMaskBits.TOTAL_COUNT.ordinal());
+
+            sp = new SpecialPassword("name", "comment", "url", 16, paramsMask, "@!=-%#");
+        }
+        catch (Exceptions e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
         SpecialPassword sp1 = null;
         SpecialPassword sp2 = null;
 
