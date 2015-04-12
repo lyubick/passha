@@ -2,7 +2,8 @@
 <!-- Expect definition of JavaFX ant tasks is already imported -->
 
 <project name="pasSHA" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
-
+	<buildnumber file="resources\build.version"/>
+	
 	<path id="fxant">
 		<filelist>
 			<file name="C:\Program Files\Java\jdk1.8.0_40\lib\ant-javafx.jar" />
@@ -32,7 +33,7 @@
 		<!-- Customize jar manifest (optional) -->
 		<manifest>
 			<attribute name="Implementation-Vendor" value="KGBT" />
-			<attribute name="Implementation-Version" value="1.0.000" />
+			<attribute name="Implementation-Version" value="2.0.000" />
 		</manifest>
 	</fx:jar>
 </project>

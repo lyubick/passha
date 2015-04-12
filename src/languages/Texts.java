@@ -62,6 +62,9 @@ public class Texts
         ERR_NAME_ALREADY_TAKEN(new String[]
         { "Error! Name already taken!", "Ошибка! Имя уже занято!" }),
 
+        EXIT(new String[]
+        { "Exit", "Выход" }),
+
         EXPORT(new String[]
         { "Export", "Экспортировать" }),
 
@@ -77,6 +80,9 @@ public class Texts
         LENGTH(new String[]
         { "Length", "Длинна" }),
 
+        LOADING(new String[]
+        { "Loading", "Загрузка" }),
+
         LOGIN(new String[]
         { "Login", "Регистрация" }),
 
@@ -85,9 +91,6 @@ public class Texts
 
         MS(new String[]
         { "milliseconds", "миллисекунды" }),
-
-        S(new String[]
-        { "second(s)", "секунд(ы)" }),
 
         MUST_CONTAIN_UPPER_CASE_CHAR(new String[]
         { "Must have UPPER case character", "Обязан иметь ПРОПИСНЫЕ буквы" }),
@@ -104,8 +107,14 @@ public class Texts
         OK(new String[]
         { "OK", "Подтвердить" }),
 
+        PASSWORD_COPIED(new String[]
+        { "Password copied to Clipboard", "Пароль помещён в буфер обмена" }),
+
         PASSWORD_INCORRECT(new String[]
         { "Password incorrect!", "Не верный пароль!" }),
+
+        PASSWORD_REMOVED(new String[]
+        { "Password removed from Clipboard", "Пароль убран из буфера обмена" }),
 
         PASSWORDS_DONT_MATCH(new String[]
         { "Passwords don't match!", "Пароли не идентичны" }),
@@ -128,8 +137,18 @@ public class Texts
         RETYPE(new String[]
         { "Re-type", "Повторите" }),
 
+        S(new String[]
+        { "second(s)", "секунд(ы)" }),
+
         SAVE(new String[]
         { "Save", "Сохранить" }),
+
+        SAVE_CONFIRMATION(new String[]
+        { "There are unsaved changes. Save before exit?",
+                "Есть несохранённые изменения. Сохранить?" }),
+
+        SAVING(new String[]
+        { "Saving", "Сохранение" }),
 
         SETTINGS(new String[]
         { "Settings", "Настройки" }),
@@ -140,33 +159,14 @@ public class Texts
         SPECIAL_CHARACTERS(new String[]
         { "Special characters", "Специальные символы" }),
 
+        TIME_LEFT(new String[]
+        { "Time left", "Времени осталось" }),
+
         URL(new String[]
         { "URL", "URL" }),
 
         VERSION(new String[]
         { "v." + version, "в." + version }),
-
-        SAVE_CONFIRMATION(new String[]
-        { "There are unsaved changes. Save before exit?",
-                "Есть несохранённые изменения. Сохранить?" }),
-
-        LOADING(new String[]
-        { "Loading", "Загрузка" }),
-
-        SAVING(new String[]
-        { "Saving", "Сохранение" }),
-
-        EXIT(new String[]
-        { "Exit", "Выход" }),
-
-        PASSWORD_COPIED(new String[]
-        { "Password copied to Clipboard", "Пароль помещён в буфер обмена" }),
-
-        TIME_LEFT(new String[]
-        { "Time left", "Времени осталось" }),
-
-        PASSWORD_REMOVED(new String[]
-        { "Password removed from Clipboard", "Пароль убран из буфера обмена" }),
 
         Z_ETHALON(new String[]
         { "", "" }),
@@ -183,10 +183,9 @@ public class Texts
         @Override
         public String toString()
         {
-            // mb add log to see language and received text??
             return text[Settings.getLanguage()];
         }
     }
 
-    static String version = "1.0.000";
+    static String version = "2.0.000";
 }
