@@ -149,6 +149,18 @@ public class SpecialPassword implements Serializable
         return (byte) ((this.length) >>> 2);
     }
 
+    private int getRandomNumberFromHex(String hash, int idx)
+    {
+        final String hexArray = "0123456789abcdef";
+        if (idx >= hash.length() - 1)
+        {
+            idx %= hash.length() - 1;
+        }
+
+        return Math
+                .abs(hexArray.indexOf(hash.charAt(idx)) * hexArray.indexOf(hash.charAt(idx + 1)));
+    }
+
     public String getPassword(Task<Void> passwordCalculation)
     {
         int idx = 0;
@@ -189,8 +201,6 @@ public class SpecialPassword implements Serializable
 
         Logger.printDebug("Password generation. STAGE 1. DONE");
 
-        Logger.printDebug(password.toString());
-
         /*
          * 2. Stage - Result of Stage 1 (appropriate length password) will be
          * modified with special characters.
@@ -198,16 +208,24 @@ public class SpecialPassword implements Serializable
         if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal())
                 && specialChars.length() != 0)
         {
+
             Logger.printDebug("Password generation. STAGE 2. START");
 
             int count = getSpecialCharactersCount();
-            int specialCharacterPosition = specialHash.charAt(idx++);
-            int insertPosition = specialHash.charAt(idx++);
+            int specialCharacterPosition = 0;
+            int insertPosition = 0;
 
             while (count > 0)
             {
-                insertPosition = (insertPosition % password.length());
-                specialCharacterPosition = (specialCharacterPosition % specialChars.length());
+                do
+                {
+                    insertPosition =
+                            (getRandomNumberFromHex(specialHash, idx++) % password.length());
+                }
+                while (specialChars.indexOf(password.charAt(insertPosition)) != -1);
+
+                specialCharacterPosition =
+                        (getRandomNumberFromHex(specialHash, idx++) % specialChars.length());
 
                 if (specialChars.length() >= getSpecialCharactersCount())
                 {
@@ -224,9 +242,6 @@ public class SpecialPassword implements Serializable
 
                 password.setCharAt(insertPosition, specialChars.charAt(specialCharacterPosition));
                 count--;
-
-                specialCharacterPosition = specialHash.charAt(idx++);
-                insertPosition = specialHash.charAt(idx++);
             }
 
             Logger.printDebug("Password generation. STAGE 2. DONE");

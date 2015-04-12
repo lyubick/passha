@@ -178,18 +178,20 @@ public final class Utilities
 
         for (; i >= 0; --i)
         {
-            Logger.printDebug("HEX STRING: " + hexValue.substring(i, i + 1));
+            // Logger.printDebug("HEX STRING: " + hexValue.substring(i, i + 1));
 
             curr = new BigInteger(hexValue.substring(i, i + 1), 16);
 
-            Logger.printDebug("BI CURR: " + curr.toString());
+            // Logger.printDebug("BI CURR: " + curr.toString());
 
-            Logger.printDebug("BI POWER: " + power.toString() + ", " + pwr);
+            // Logger.printDebug("BI POWER: " + power.toString() + ", " + pwr);
 
             out = out.add(curr.multiply(power.pow(pwr++)));
 
-            Logger.printDebug("BI OUT: " + out.toString());
+            // Logger.printDebug("BI OUT: " + out.toString());
         }
+
+        Logger.printDebug("BI OUT: " + out.toString());
 
         return out;
     }
