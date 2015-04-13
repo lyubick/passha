@@ -3,15 +3,21 @@
  */
 package ui;
 
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import main.Watcher;
 
 /**
  * @author curious-odd-man
@@ -58,6 +64,35 @@ public final class Controller
     private Controller(Stage primaryStage)
     {
         mainStage = primaryStage;
+
+        TimerTask watcher = new Watcher()
+        {
+
+            @Override
+            protected void onChange()
+            {
+                Platform.runLater(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        try
+                        {
+                            switchForm(FORMS.CURRENT);
+                        }
+                        catch (Exceptions e)
+                        {
+                            Terminator.terminate(e);
+                        }
+                    }
+                });
+
+            }
+
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(watcher, new Date(), 2000);
     }
 
     public static Controller init(Stage primaryStage)

@@ -117,6 +117,13 @@ public final class Utilities
         return new String(hexChars);
     }
 
+    public static void writeToFile(String fileName, String what) throws Exceptions
+    {
+        Vector<String> tmp = new Vector<String>();
+        tmp.add(what);
+        writeToFile(fileName, tmp);
+    }
+
     public static void writeToFile(String fileName, Vector<String> outStrings) throws Exceptions
     {
         Logger.printDebug("Writing to '" + fileName + "'; " + outStrings.size() + " lines.");

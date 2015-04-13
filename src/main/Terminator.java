@@ -11,6 +11,7 @@ import ui.Controller.FORMS;
 import db.PasswordCollection;
 import logger.Logger;
 import main.Exceptions.XC;
+import main.Watcher;
 
 /**
  * @author lyubick
@@ -25,6 +26,7 @@ public class Terminator
         try
         {
             Logger.getInstance().loggerOFF();
+            Watcher.getInstance().die();
         }
         catch (Exceptions e1)
         {
