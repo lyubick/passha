@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Random;
 
-import utilities.Utilities;
+import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
 
@@ -16,9 +16,9 @@ public final class RSA
 
     // Length of encrypted message chunk, used in decipher
     private static final int RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH = 310;
-    // RSA chunk length must be equal to Key size in bytes
-    // we use SHA-512 results as p, q, e
-    private static final int RSA_BYTE_CHUNK_LENGTH             = 32;
+    // Message representative, an integer between 0 and n – 1 (p and q are 64
+    // byte long Hex)
+    private static final int RSA_BYTE_CHUNK_LENGTH             = 64 - 1;
     // Minimum recommended padding size according to Standard
     private static final int RSA_BYTE_PADDING_LENGTH           = 11;
     private static final int RSA_BYTE_MESSAGE_BLOCK_LENGTH     = RSA_BYTE_CHUNK_LENGTH - RSA_BYTE_PADDING_LENGTH;
@@ -41,33 +41,32 @@ public final class RSA
         for (int i = 0; i < messageBlockCount; i++)
         {
             int messagegBlockStart = i * RSA_BYTE_MESSAGE_BLOCK_LENGTH;
-            byte[] chunk = new byte[RSA_BYTE_CHUNK_LENGTH];
+
+            int blockLength = Math.min(RSA_BYTE_MESSAGE_BLOCK_LENGTH, message.length - messagegBlockStart);
+            int chunkLength = RSA_BYTE_PADDING_LENGTH + blockLength;
+
+            byte[] chunk = new byte[chunkLength];
             byte[] padding = new byte[RSA_BYTE_PADDING_LENGTH];
 
             r.nextBytes(padding);
 
-            int chunkLength = 0;
+            for (int j = 0; j < blockLength; j++)
+                chunk[j] = message[messagegBlockStart + j];
 
-            for (; chunkLength < RSA_BYTE_MESSAGE_BLOCK_LENGTH && messagegBlockStart + chunkLength < message.length; chunkLength++)
-                chunk[chunkLength] = message[messagegBlockStart + chunkLength];
+            for (int j = 0; j < RSA_BYTE_PADDING_LENGTH; j++)
+                chunk[chunkLength - 1 - j] = padding[j];
 
-            for (int k = 0; k < RSA_BYTE_PADDING_LENGTH; chunkLength++, k++)
-                chunk[chunkLength] = padding[k];
+            Logger.printDebug("BIGINTEGER cipher: " + new BigInteger(chunk).toString());
 
-            StringBuilder ASCII = new StringBuilder("");
-            for (int k = 0; k < chunkLength; k++)
-            {
-                String tmp = Long.toString(Utilities.toLong(chunk[k]));
-                ASCII.append("000".substring(tmp.length()) + tmp);
-            }
-
-            StringBuilder fCipher = new StringBuilder(new BigInteger(ASCII.toString()).modPow(e, n).toString());
+            StringBuilder fCipher = new StringBuilder(new BigInteger(chunk).modPow(e, n).toString());
 
             while (fCipher.length() < RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)
                 fCipher.insert(0, "0");
 
             cipher.append(fCipher);
         }
+
+        Logger.printDebug("Cipher: " + cipher);
 
         return cipher.toString();
     }
@@ -78,21 +77,17 @@ public final class RSA
 
         for (int i = 0; i < message.length(); i += RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)
         {
-            StringBuilder ASCII =
-                    new StringBuilder(new BigInteger(message.substring(i, i + RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH))
-                            .modPow(d, n).toString());
+            BigInteger fDecipher =
+                    new BigInteger(message.substring(i, i + RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)).modPow(d, n);
 
-            while (ASCII.length() % 3 != 0)
-                ASCII.insert(0, "0");
+            Logger.printDebug("BIGINTEGER decipher: " + fDecipher.toString());
 
-            byte[] chunk = new byte[RSA_BYTE_CHUNK_LENGTH];
+            byte[] chunk = fDecipher.toByteArray();
 
-            int chunkLength = 0;
-            for (int j = 0; j < ASCII.length(); j += 3, chunkLength++)
-                chunk[chunkLength] = Utilities.toByte(Integer.parseInt(ASCII.substring(j, j + 3)));
-
-            decipher.write(chunk, 0, chunkLength - RSA_BYTE_PADDING_LENGTH);
+            decipher.write(chunk, 0, chunk.length - RSA_BYTE_PADDING_LENGTH);
         }
+
+        Logger.printDebug("Decipher: " + decipher);
 
         return decipher.toByteArray();
     }
@@ -104,8 +99,7 @@ public final class RSA
     private void test() throws Exceptions
     {
         // SHA-512 from "Test hash for RSA" x2
-        String alphabet =
-                "eb6c50e4eff5eed6ed6dd13d76daad743a409da8e65ec22947afd2b0402ed5a7ff75b9dca4760fc5e045f251099ee9b883038e6da0e72d64db3bcb79fd46e39deb6c50e4eff5eed6ed6dd13d76daad743a409da8e65ec22947afd2b0402ed5a7ff75b9dca4760fc5e045f251099ee9b883038e6da0e72d64db3bcb79fd46e39d";
+        String alphabet = "qwerty";
         String cipher = "";
 
         cipher = encrypt(alphabet);

@@ -213,8 +213,6 @@ public final class Utilities
             out = out.add(curr.multiply(power.pow(pwr++)));
         }
 
-        Logger.printDebug("BI OUT: " + out.toString());
-
         return out;
     }
 }
