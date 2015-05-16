@@ -154,8 +154,15 @@ public class PasswordCollection
 
                 for (int i = 0; i < cryptSP.size(); ++i)
                 {
-                    SpecialPassword tmp = cs.decryptPassword(cryptSP.elementAt(i));
-                    db.addElement(tmp);
+                    try
+                    {
+                        db.addElement(new SpecialPassword(cs.decryptPassword(cryptSP.elementAt(i))));
+                    }
+                    catch (Exceptions e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     updateProgress(i + 1, cryptSP.size());
                 }
 
