@@ -77,14 +77,7 @@ public class Test
     public static boolean TestSHA()
     {
         // SHA() now throws if self-test fails
-        try
-        {
-            new SHA();
-        }
-        catch (Exceptions e)
-        {
-            return false;
-        }
+        new SHA(); // FIXME
 
         return true;
     }
@@ -135,9 +128,7 @@ public class Test
         try
         {
             Logger.printDebug(rsa.encrypt(Utilities.objectToBytes(sp)));
-            sp2 =
-                    (SpecialPassword) Utilities.bytesToObject(rsa.decrypt(rsa.encrypt(Utilities
-                            .objectToBytes(sp))));
+            sp2 = (SpecialPassword) Utilities.bytesToObject(rsa.decrypt(rsa.encrypt(Utilities.objectToBytes(sp))));
         }
         catch (Exceptions e)
         {
@@ -210,8 +201,7 @@ public class Test
         /* Summary */
         System.out.println("\n-= SUMMARY =-");
         for (int i = 0; i < TestStatus.size(); ++i)
-            System.out.println("" + (i + 1) + ": "
-                    + (TestStatus.elementAt(i) ? "PASSED" : "FAILED"));
+            System.out.println("" + (i + 1) + ": " + (TestStatus.elementAt(i) ? "PASSED" : "FAILED"));
 
         System.out.println("OVERALL: " + ((float) TestOK / TestNr * 100) + "%");
         System.out.println("STATUS: " + (TestOK == TestNr ? "OK" : "NOK"));

@@ -1,6 +1,3 @@
-/**
- *
- */
 package utilities;
 
 import java.io.BufferedReader;
@@ -21,10 +18,6 @@ import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
 
-/**
- * @author lyubick
- *
- */
 public final class Utilities
 {
     public static long load64(byte[] input, int indexFrom)
@@ -97,10 +90,8 @@ public final class Utilities
 
         if (s.length() > 0 && s.charAt(0) == '{' && s.charAt(s.length() - 1) == '}')
         {
-            // todo: check if we can avoid using .map method (maybe we do
-            // redundand work here)
-            Arrays.stream(s.substring(1, s.length() - 1).split(",")).map(String::trim)
-                    .mapToInt(Integer::parseInt).forEach((int e) -> b.set(e));
+            Arrays.stream(s.substring(1, s.length() - 1).split(",")).map(String::trim).mapToInt(Integer::parseInt)
+                    .forEach((int e) -> b.set(e));
         }
 
         return b;
@@ -218,17 +209,8 @@ public final class Utilities
 
         for (; i >= 0; --i)
         {
-            // Logger.printDebug("HEX STRING: " + hexValue.substring(i, i + 1));
-
             curr = new BigInteger(hexValue.substring(i, i + 1), 16);
-
-            // Logger.printDebug("BI CURR: " + curr.toString());
-
-            // Logger.printDebug("BI POWER: " + power.toString() + ", " + pwr);
-
             out = out.add(curr.multiply(power.pow(pwr++)));
-
-            // Logger.printDebug("BI OUT: " + out.toString());
         }
 
         Logger.printDebug("BI OUT: " + out.toString());

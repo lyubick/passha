@@ -114,22 +114,12 @@ public final class CryptoSystem
         }
 
         // ========== SHA initialization START:
-        // ==========================================================
         Logger.printDebug("SHA init STARTS...");
 
-        try
-        {
-            sha = new SHA();
-        }
-        catch (Exceptions e)
-        {
-            Logger.printError("SHA initialization failed... exiting...");
-            Terminator.terminate(e);
-        }
+        sha = new SHA();
 
         Logger.printDebug("SHA init DONE!");
         // ========== SHA initialization END:
-        // =============================================================
 
         masterHash = sha.getBytesSHA512(masterPassword.getBytes());
 
@@ -138,7 +128,6 @@ public final class CryptoSystem
         keyHashE = sha.getBytesSHA512((masterPassword + "E").getBytes());
 
         // ========== RSA initialization START:
-        // ===========================================================
         Logger.printDebug("RSA init STARTS...");
         try
         {
@@ -154,16 +143,12 @@ public final class CryptoSystem
         }
         Logger.printDebug("RSA init DONE!");
         // ========== RSA initialization END:
-        // =============================================================
 
         // ========== FILE I/O initialization START:
-        // ======================================================
         Logger.printDebug("File I/O init STARTS...");
         try
         {
-            UserFileIO.init(
-                    sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()),
-                    isNewUser);
+            UserFileIO.init(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()), isNewUser);
         }
         catch (Exceptions e)
         {
@@ -179,7 +164,6 @@ public final class CryptoSystem
         }
         Logger.printDebug("File I/O init DONE...");
         // ========== FILE I/O initialization END:
-        // ========================================================
 
         randomizer = new Random(System.currentTimeMillis());
 
