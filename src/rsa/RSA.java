@@ -56,9 +56,9 @@ public final class RSA
             for (int j = 0; j < RSA_BYTE_PADDING_LENGTH; j++)
                 chunk[chunkLength - 1 - j] = padding[j];
 
-            Logger.printDebug("BIGINTEGER cipher: " + new BigInteger(chunk).toString());
+            Logger.printDebug("BIGINTEGER cipher: " + new BigInteger(1, chunk).toString());
 
-            StringBuilder fCipher = new StringBuilder(new BigInteger(chunk).modPow(e, n).toString());
+            StringBuilder fCipher = new StringBuilder(new BigInteger(1, chunk).modPow(e, n).toString());
 
             while (fCipher.length() < RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)
                 fCipher.insert(0, "0");
@@ -99,7 +99,8 @@ public final class RSA
     private void test() throws Exceptions
     {
         // SHA-512 from "Test hash for RSA" x2
-        String alphabet = "qwerty";
+        String alphabet =
+                "4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db94dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510adfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a";
         String cipher = "";
 
         cipher = encrypt(alphabet);
