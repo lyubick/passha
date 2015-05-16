@@ -13,6 +13,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Vector;
 
 import logger.Logger;
@@ -86,6 +88,22 @@ public final class Utilities
         }
 
         return object;
+    }
+
+    public static BitSet getBitSet(String s)
+    {
+        BitSet b = new BitSet();
+        // String format: "{x1, x2, ... xN}"
+
+        if (s.length() > 0 && s.charAt(0) == '{' && s.charAt(s.length() - 1) == '}')
+        {
+            // todo: check if we can avoid using .map method (maybe we do
+            // redundand work here)
+            Arrays.stream(s.substring(1, s.length() - 1).split(",")).map(String::trim)
+                    .mapToInt(Integer::parseInt).forEach((int e) -> b.set(e));
+        }
+
+        return b;
     }
 
     public static long toLong(byte in)

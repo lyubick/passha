@@ -6,6 +6,7 @@ package cryptosystem;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 import logger.Logger;
@@ -72,11 +73,12 @@ public final class CryptoSystem
         return self;
     }
 
+    // todo: rename method
     public String encryptPassword(SpecialPassword sp)
     {
         try
         {
-            return rsa.encrypt(Utilities.objectToBytes(sp));
+            return rsa.encrypt(Utilities.objectToBytes(sp.getMap()));
         }
         catch (Exceptions e)
         {
@@ -86,11 +88,12 @@ public final class CryptoSystem
         return "Error";
     }
 
-    public SpecialPassword decryptPassword(String s)
+    // todo: rename method
+    public HashMap<String, String> decryptPassword(String s)
     {
         try
         {
-            return (SpecialPassword) Utilities.bytesToObject(rsa.decryptBytes(s));
+            return (HashMap<String, String>) Utilities.bytesToObject(rsa.decryptBytes(s));
         }
         catch (Exceptions e)
         {

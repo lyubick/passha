@@ -24,7 +24,8 @@ public class Settings
         ENGLISH,
         RUSSIAN,
     }
-
+    
+    // use map of settings and enumerator of propery IDs
     private static LANG language          = LANG.ENGLISH;
     private static int  clipboardLiveTime = 5000;
 

@@ -154,8 +154,7 @@ public class PasswordCollection
 
                 for (int i = 0; i < cryptSP.size(); ++i)
                 {
-                    SpecialPassword tmp = cs.decryptPassword(cryptSP.elementAt(i));
-                    db.addElement(tmp);
+                    db.addElement(new SpecialPassword(cs.decryptPassword(cryptSP.elementAt(i))));
                     updateProgress(i + 1, cryptSP.size());
                 }
 

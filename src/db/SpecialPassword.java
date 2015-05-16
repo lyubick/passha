@@ -1,9 +1,8 @@
 package db;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.BitSet;
-
+import java.util.HashMap;
 import sha.SHA;
 import utilities.Utilities;
 import cryptosystem.CryptoSystem;
@@ -13,7 +12,7 @@ import main.Terminator;
 import main.Exceptions.XC;
 import javafx.concurrent.Task;
 
-public class SpecialPassword implements Serializable
+public class SpecialPassword
 {
     public enum ParamsMaskBits
     {
@@ -26,15 +25,46 @@ public class SpecialPassword implements Serializable
         TOTAL_COUNT,
     }
 
-    private long              shaCycles        = 0;
-    private String            name             = null;
-    private String            comment          = null;
-    private String            url              = null;
-    private int               length           = 0;
-    private String            specialChars     = null;
-    private BitSet            paramsMask       = null;
+    private long   shaCycles    = 0;
+    private String name         = null;
+    private String comment      = null;
+    private String url          = null;
+    private int    length       = 0;
+    private String specialChars = null;
+    private BitSet paramsMask   = null;
 
-    private static final long serialVersionUID = 1L;
+    public SpecialPassword(HashMap<String, String> m)
+    {
+        Logger.printDebug("SpecialPassword constructor from Map... START");
+        Logger.printDebug("Received map: " + m.toString());
+
+        shaCycles = Long.parseLong(m.getOrDefault("shaCycles", "0"));
+        name = m.getOrDefault("name", "");
+        comment = m.getOrDefault("comment", "");
+        url = m.getOrDefault("url", "");
+        length = Integer.parseInt(m.getOrDefault("length", "0"));
+        specialChars = m.getOrDefault("specialChars", "");
+        paramsMask = Utilities.getBitSet(m.getOrDefault("paramsMask", ""));
+
+        Logger.printDebug("SpecialPassword constructor from Map... END");
+    }
+
+    public HashMap<String, String> getMap()
+    {
+
+        HashMap<String, String> m = new HashMap<String, String>();
+        m.put("shaCycles", "" + shaCycles);
+        m.put("name", name);
+        m.put("comment", comment);
+        m.put("url", url);
+        m.put("length", "" + length);
+        m.put("specialChars", specialChars);
+        m.put("paramsMask", paramsMask.toString());
+
+        Logger.printDebug("Created map: " + m.toString());
+
+        return m;
+    }
 
     public SpecialPassword(String name, String comment, String url, int length, BitSet paramsMask,
             String specialChars) throws Exceptions
