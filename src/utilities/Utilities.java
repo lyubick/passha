@@ -55,10 +55,10 @@ public final class Utilities
 
             byteArrayStream.close();
             outObject.close();
-
         }
         catch (IOException e)
         {
+            Logger.printError("hahahahahaha");
             throw new main.Exceptions(XC.OBJECT_SERIALIZATION_FAILED);
         }
 
@@ -77,6 +77,7 @@ public final class Utilities
         }
         catch (IOException | ClassNotFoundException e)
         {
+            Logger.printError("hahahahahaha: " + e.getMessage());
             throw new main.Exceptions(XC.OBJECT_DESERIALIZATION_FAILED);
         }
 

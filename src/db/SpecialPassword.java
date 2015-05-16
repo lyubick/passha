@@ -3,6 +3,7 @@ package db;
 import java.math.BigInteger;
 import java.util.BitSet;
 import java.util.HashMap;
+
 import sha.SHA;
 import utilities.Utilities;
 import cryptosystem.CryptoSystem;
@@ -66,8 +67,8 @@ public class SpecialPassword
         return m;
     }
 
-    public SpecialPassword(String name, String comment, String url, int length, BitSet paramsMask,
-            String specialChars) throws Exceptions
+    public SpecialPassword(String name, String comment, String url, int length, BitSet paramsMask, String specialChars)
+            throws Exceptions
     {
         Logger.printDebug("SpecialPassword constructor... START");
 
@@ -187,8 +188,7 @@ public class SpecialPassword
             idx %= hash.length() - 1;
         }
 
-        return Math
-                .abs(hexArray.indexOf(hash.charAt(idx)) * hexArray.indexOf(hash.charAt(idx + 1)));
+        return Math.abs(hexArray.indexOf(hash.charAt(idx)) * hexArray.indexOf(hash.charAt(idx + 1)));
     }
 
     public String getPassword(Task<Void> passwordCalculation)
@@ -210,8 +210,7 @@ public class SpecialPassword
 
         try
         {
-            passwordHash =
-                    CryptoSystem.getInstance().getPassword(shaCycles, name, passwordCalculation);
+            passwordHash = CryptoSystem.getInstance().getPassword(shaCycles, name, passwordCalculation);
             specialHash = CryptoSystem.getInstance().getHash(passwordHash, specialSalt);
         }
         catch (Exceptions e)
@@ -235,8 +234,7 @@ public class SpecialPassword
          * 2. Stage - Result of Stage 1 (appropriate length password) will be
          * modified with special characters.
          */
-        if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal())
-                && specialChars.length() != 0)
+        if (paramsMask.get(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal()) && specialChars.length() != 0)
         {
 
             Logger.printDebug("Password generation. STAGE 2. START");
@@ -249,26 +247,21 @@ public class SpecialPassword
             {
                 do
                 {
-                    insertPosition =
-                            (getRandomNumberFromHex(specialHash, idx++) % password.length());
+                    insertPosition = (getRandomNumberFromHex(specialHash, idx++) % password.length());
                 }
                 while (specialChars.indexOf(password.charAt(insertPosition)) != -1);
 
-                specialCharacterPosition =
-                        (getRandomNumberFromHex(specialHash, idx++) % specialChars.length());
+                specialCharacterPosition = (getRandomNumberFromHex(specialHash, idx++) % specialChars.length());
 
                 if (specialChars.length() >= getSpecialCharactersCount())
                 {
-                    while (password.toString().indexOf(
-                            specialChars.charAt(specialCharacterPosition)) != -1)
+                    while (password.toString().indexOf(specialChars.charAt(specialCharacterPosition)) != -1)
                     {
-                        specialCharacterPosition =
-                                (++specialCharacterPosition % specialChars.length());
+                        specialCharacterPosition = (++specialCharacterPosition % specialChars.length());
                     }
                 }
 
-                Logger.printDebug("Special characters count left = " + count
-                        + "; insertPosition = " + insertPosition);
+                Logger.printDebug("Special characters count left = " + count + "; insertPosition = " + insertPosition);
 
                 password.setCharAt(insertPosition, specialChars.charAt(specialCharacterPosition));
                 count--;
@@ -327,8 +320,7 @@ public class SpecialPassword
             else if (specialChars.indexOf(pwd.charAt(i)) != -1)
             {
                 count--;
-                if (count == 0)
-                    currentMaskBitSet.set(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
+                if (count == 0) currentMaskBitSet.set(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
             }
             else
                 Logger.printError("How can it really happen???");

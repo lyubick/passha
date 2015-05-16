@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Random;
 
+import utilities.Utilities;
 import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
@@ -33,6 +34,8 @@ public final class RSA
     {
         StringBuilder cipher = new StringBuilder("");
         Random r = new Random();
+
+        Logger.printDebug("Encipher: " + Utilities.bytesToHex(message));
 
         int messageBlockCount =
                 (message.length / RSA_BYTE_MESSAGE_BLOCK_LENGTH)
@@ -84,10 +87,11 @@ public final class RSA
 
             byte[] chunk = fDecipher.toByteArray();
 
-            decipher.write(chunk, 0, chunk.length - RSA_BYTE_PADDING_LENGTH);
+            int offset = chunk[0] == 0x00 ? 1 : 0;
+            decipher.write(chunk, offset, chunk.length - RSA_BYTE_PADDING_LENGTH - offset);
         }
 
-        Logger.printDebug("Decipher: " + decipher);
+        Logger.printDebug("Decipher: " + Utilities.bytesToHex(decipher.toByteArray()));
 
         return decipher.toByteArray();
     }

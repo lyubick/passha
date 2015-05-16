@@ -8,6 +8,7 @@ package test;
 // functions and file missing headers
 
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.Vector;
 
 import cryptosystem.CryptoSystem;
@@ -74,7 +75,7 @@ public class Test
         return true;
     }
 
-    public static boolean TestSerialization()
+    public static boolean testHashMapSerialization()
     {
         SpecialPassword sp = null;
         try
@@ -86,8 +87,7 @@ public class Test
         }
         catch (Exceptions e1)
         {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            return false;
         }
         SpecialPassword sp1 = null;
         SpecialPassword sp2 = null;
@@ -108,19 +108,22 @@ public class Test
 
         try
         {
-            sp1 = (SpecialPassword) Utilities.bytesToObject(Utilities.objectToBytes(sp));
+            sp1 =
+                    new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(Utilities.objectToBytes(sp
+                            .getMap())));
         }
         catch (Exceptions e)
         {
-            return true;
+            return false;
         }
 
         if (sp.equals(sp1) != true) return false;
 
         try
         {
-            Logger.printDebug(rsa.encrypt(Utilities.objectToBytes(sp)));
-            sp2 = (SpecialPassword) Utilities.bytesToObject(rsa.decrypt(rsa.encrypt(Utilities.objectToBytes(sp))));
+            sp2 =
+                    new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(rsa
+                            .encrypt(Utilities.objectToBytes(sp.getMap())))));
         }
         catch (Exceptions e)
         {
@@ -187,7 +190,7 @@ public class Test
         }
         /* 1. */launchTest(TestRSA());
         /* 2. */launchTest(TestSHA());
-        /* 3. */launchTest(TestSerialization());
+        /* 3. */launchTest(testHashMapSerialization());
         /* 4. */launchTest(testFileIO());
 
         /* Summary */
