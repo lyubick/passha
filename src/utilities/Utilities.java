@@ -106,6 +106,21 @@ public final class Utilities
         return b;
     }
 
+    public static byte toByte(short in)
+    {
+        return (byte) ((byte) in & 0xFF);
+    }
+
+    public static byte toByte(int in)
+    {
+        return (byte) ((byte) in & 0xFF);
+    }
+
+    public static byte toByte(long in)
+    {
+        return (byte) ((byte) in & 0xFF);
+    }
+
     public static long toLong(byte in)
     {
         return (long) in & 0xFF;

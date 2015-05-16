@@ -93,7 +93,7 @@ public final class CryptoSystem
     {
         try
         {
-            return (HashMap<String, String>) Utilities.bytesToObject(rsa.decryptBytes(s));
+            return (HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(s));
         }
         catch (Exceptions e)
         {
