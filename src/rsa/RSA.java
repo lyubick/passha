@@ -52,16 +52,21 @@ public final class RSA
             byte[] padding = new byte[RSA_BYTE_PADDING_LENGTH];
 
             r.nextBytes(padding);
-
-            for (int j = 0; j < blockLength; j++)
-                chunk[j] = message[messagegBlockStart + j];
+            while (padding[0] == 0x00 || (padding[0] & 0x80) != 0)
+            {
+                // be sure BigInteger will be positive
+                padding[0] = Utilities.toByte(r.nextInt());
+            }
 
             for (int j = 0; j < RSA_BYTE_PADDING_LENGTH; j++)
-                chunk[chunkLength - 1 - j] = padding[j];
+                chunk[j] = padding[j];
 
-            Logger.printDebug("BIGINTEGER cipher: " + new BigInteger(1, chunk).toString());
+            for (int j = 0; j < blockLength; j++)
+                chunk[RSA_BYTE_PADDING_LENGTH + j] = message[messagegBlockStart + j];
 
-            StringBuilder fCipher = new StringBuilder(new BigInteger(1, chunk).modPow(e, n).toString());
+            Logger.printDebug("BIGINTEGER cipher: " + new BigInteger(chunk).toString());
+
+            StringBuilder fCipher = new StringBuilder(new BigInteger(chunk).modPow(e, n).toString());
 
             while (fCipher.length() < RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)
                 fCipher.insert(0, "0");
@@ -87,8 +92,7 @@ public final class RSA
 
             byte[] chunk = fDecipher.toByteArray();
 
-            int offset = chunk[0] == 0x00 ? 1 : 0;
-            decipher.write(chunk, offset, chunk.length - RSA_BYTE_PADDING_LENGTH - offset);
+            decipher.write(chunk, RSA_BYTE_PADDING_LENGTH, chunk.length - RSA_BYTE_PADDING_LENGTH);
         }
 
         Logger.printDebug("Decipher: " + Utilities.bytesToHex(decipher.toByteArray()));
