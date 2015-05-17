@@ -1,8 +1,7 @@
 /bin/
 .classpath
+.project
 /dist/logs/*.log
 /dist/user/*.cif
-.classpath
-/.settings/*.*
 /dist/pasSHA.jar
 /dist/*.passha
