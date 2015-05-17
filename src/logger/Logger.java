@@ -5,6 +5,8 @@ package logger;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import main.Exceptions;
 import main.Terminator;
@@ -79,9 +81,8 @@ public final class Logger // Static class
         methodNameWidth = Math.max(methodNameWidth, methodName.length());
 
         writeToFileAndToScreen(
-                String.format("[%1$s] %2$" + fileNameWidth + "s:%3$-" + lineWidth + "s %4$-"
-                        + methodNameWidth + "s ", getTime(), fileName, line, methodName)
-                        + lvl.name() + ": " + msg, lvl);
+                String.format("[%1$s] %2$" + fileNameWidth + "s:%3$-" + lineWidth + "s %4$-" + methodNameWidth + "s ",
+                        getTime(), fileName, line, methodName) + lvl.name() + ": " + msg, lvl);
     }
 
     private void writeToFileAndToScreen(String log, LOGLEVELS lvl)
@@ -105,7 +106,11 @@ public final class Logger // Static class
     {
         try
         {
-            writer = new PrintWriter(LOG_PATH + LOG_NAME + LOG_EXT);
+            int id = 0;
+            while (Files.exists(Paths.get(LOG_PATH + LOG_NAME + "_" + id + LOG_EXT)))
+                id++;
+
+            writer = new PrintWriter(LOG_PATH + LOG_NAME + "_" + id + LOG_EXT);
         }
         catch (FileNotFoundException e)
         {
