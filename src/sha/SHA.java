@@ -1,19 +1,10 @@
 package sha;
 
-// functions and file missing headers
-// check for explicit variable initialization
-// create public constructor and run self-test (throw on error)
-
 import utilities.Utilities;
 
 public class SHA
 {
-    private final int       SHA_BYTES_LENGTH               = 128;
     public static final int SHA_BYTES_RESULT               = 64;
-    private final int       SHA_STATES_COUNT               = 8;
-    private final int       SHA_WORDS_COUNT                = 80;
-    private final int       SHA_INIT_WORDS                 = 16;
-    private final long      LONG_BITS_COUNT                = 64;
 
     private final long[]    ROUND_CONSTANTS                =
                                                            { 0x428a2f98d728ae22L, 0x7137449123ef65cdL,
@@ -34,9 +25,9 @@ public class SHA
             0x28db77f523047d84L, 0x32caab7b40c72493L, 0x3c9ebe0a15c9bebcL, 0x431d67c49c100d4cL, 0x4cc5d4becb3e42b6L,
             0x597f299cfc657e2aL, 0x5fcb6fab3ad6faecL, 0x6c44198c4a475817L };
 
-    private long[]          state                          = new long[SHA_STATES_COUNT];
+    private long[]          state                          = new long[8];
     private byte[]          MessageBlock                   = null;
-    private byte[]          hashBlock                      = new byte[SHA_BYTES_LENGTH];
+    private byte[]          hashBlock                      = new byte[128];
     private int             hashBlocksCount                = 0;
 
     private final long      TEN_LESS_SIGNIFICANT_BITS_MASK = 0x3FFFF;
@@ -53,7 +44,7 @@ public class SHA
 
     private long ror(long x, long n)
     {
-        return (((x) >>> n) | ((x) << (LONG_BITS_COUNT - n)));
+        return (((x) >>> n) | ((x) << (64 - n)));
     }
 
     private long s(long x, long n)
@@ -101,7 +92,7 @@ public class SHA
 
     void compressSHA512()
     {
-        long W[] = new long[SHA_WORDS_COUNT];
+        long W[] = new long[80];
         long a, b, c, d, e, f, g, h;
         long t1, t2;
 
@@ -115,19 +106,19 @@ public class SHA
         h = state[7];
 
         /* WRITE W[0.. 15] FROM MSG */
-        for (int i = 0; i < SHA_INIT_WORDS; i++)
+        for (int i = 0; i < 16; i++)
         {
             W[i] = Utilities.load64(hashBlock, 8 * i);
         }
 
-        /* CALCULATE W[16.. 63] */
-        for (int i = SHA_INIT_WORDS; i < SHA_WORDS_COUNT; i++)
+        /* CALCULATE W[16.. 80] */
+        for (int i = 16; i < 80; i++)
         {
             W[i] = gamma1(W[i - 2]) + W[i - 7] + gamma0(W[i - 15]) + W[i - 16];
         }
 
         /* MODIFY */
-        for (int i = 0; i < SHA_WORDS_COUNT; i++)
+        for (int i = 0; i < 80; i++)
         {
             t1 = h + sigma1(e) + ch(e, f, g) + ROUND_CONSTANTS[i] + W[i];
             t2 = sigma0(a) + maj(a, b, c);
@@ -160,7 +151,7 @@ public class SHA
 
         hashBlocksCount = (int) ((bitLength >>> 10) + Math.min(bitLength & TEN_LESS_SIGNIFICANT_BITS_MASK, 1));
 
-        MessageBlock = new byte[SHA_BYTES_LENGTH * hashBlocksCount];
+        MessageBlock = new byte[128 * hashBlocksCount];
 
         for (int i = 0; i < length; i++)
         {
@@ -169,7 +160,7 @@ public class SHA
 
         MessageBlock[length] = (byte) 0x80;
 
-        Utilities.store64(length * 8, MessageBlock, SHA_BYTES_LENGTH * hashBlocksCount - 8);
+        Utilities.store64(length * 8, MessageBlock, 128 * hashBlocksCount - 8);
 
     }
 
@@ -177,10 +168,8 @@ public class SHA
     {
         byte[] output = new byte[SHA_BYTES_RESULT];
 
-        for (int i = 0; i < SHA_STATES_COUNT; i++)
-        {
+        for (int i = 0; i < state.length; i++)
             Utilities.store64(state[i], output, i * 8);
-        }
 
         return output;
     }
@@ -188,14 +177,14 @@ public class SHA
     /*
      * Public main functions
      */
-    public synchronized byte[] getBytesSHA512(final byte[] input)
+    public synchronized byte[] getHashBytes(final byte[] input)
     {
         initializeSHA512();
         padMessage(input);
         for (int i = 0; i < hashBlocksCount; i++)
         {
-            int offset = i * SHA_BYTES_LENGTH;
-            for (int j = 0; j < SHA_BYTES_LENGTH; j++)
+            int offset = i * 128;
+            for (int j = 0; j < 128; j++)
             {
                 hashBlock[j] = MessageBlock[j + offset];
             }
@@ -208,9 +197,9 @@ public class SHA
     /*
      * Public interface functions
      */
-    public synchronized String getStringSHA512(final byte[] input)
+    public synchronized String getHashString(final byte[] input)
     {
-        return Utilities.bytesToHex(getBytesSHA512(input));
+        return Utilities.bytesToHex(getHashBytes(input));
     }
 
 }

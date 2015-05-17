@@ -3,6 +3,7 @@
  */
 package db;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import utilities.Utilities;
@@ -67,8 +68,7 @@ public class PasswordCollection
     public void addPassword(SpecialPassword sp) throws Exceptions
     {
         for (SpecialPassword existing : db)
-            if (existing.getName().equals(sp.getName()))
-                throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
+            if (existing.getName().equals(sp.getName())) throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
 
         db.addElement(sp);
 
@@ -98,7 +98,7 @@ public class PasswordCollection
                 updateProgress(0, 1);
 
                 CryptoSystem cs = null;
-                Vector<String> cryptSP = new Vector<String>();
+                Vector<String> encryptedPasswords = new Vector<String>();
                 UserFileIO writer = null;
 
                 try
@@ -109,11 +109,11 @@ public class PasswordCollection
                     int i = 0;
                     for (SpecialPassword sp : db)
                     {
-                        cryptSP.add(cs.encryptPassword(sp));
+                        encryptedPasswords.add(cs.rsaEncrypt(Utilities.objectToBytes(sp.getMap())));
                         updateProgress(++i, db.size());
                     }
 
-                    writer.writeToUserFile(cryptSP);
+                    writer.writeToUserFile(encryptedPasswords);
                 }
                 catch (Exceptions e)
                 {
@@ -133,7 +133,7 @@ public class PasswordCollection
         Task<Void> loadTask = new Task<Void>()
         {
             @Override
-            protected Void call() throws Exception
+            protected Void call()
             {
                 updateProgress(1, 100);
                 CryptoSystem cs = null;
@@ -154,7 +154,15 @@ public class PasswordCollection
 
                 for (int i = 0; i < cryptSP.size(); ++i)
                 {
-                    db.addElement(new SpecialPassword(cs.decryptPassword(cryptSP.elementAt(i))));
+                    try
+                    {
+                        db.addElement(new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(cs
+                                .rsaDecrypt(cryptSP.elementAt(i)))));
+                    }
+                    catch (Exceptions e)
+                    {
+                        Terminator.terminate(e);
+                    }
                     updateProgress(i + 1, cryptSP.size());
                 }
 

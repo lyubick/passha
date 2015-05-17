@@ -26,13 +26,15 @@ public class SpecialPassword
         TOTAL_COUNT,
     }
 
-    private long   shaCycles    = 0;
-    private String name         = null;
-    private String comment      = null;
-    private String url          = null;
-    private int    length       = 0;
-    private String specialChars = null;
-    private BitSet paramsMask   = null;
+    private long   shaCycles             = 0;
+    private String name                  = null;
+    private String comment               = null;
+    private String url                   = null;
+    private int    length                = 0;
+    private String specialChars          = null;
+    private BitSet paramsMask            = null;
+
+    private String SALT_SPECIAL_PASSWORD = "SPECIAL";
 
     public SpecialPassword(HashMap<String, String> m)
     {
@@ -195,7 +197,6 @@ public class SpecialPassword
     {
         int idx = 0;
         String alphabeta = "0123456789abcdefghijklmnopqrstuvwxyz";
-        String specialSalt = "SPECIAL";
 
         String passwordHash = null;
         String specialHash = null;
@@ -211,7 +212,7 @@ public class SpecialPassword
         try
         {
             passwordHash = CryptoSystem.getInstance().getPassword(shaCycles, name, passwordCalculation);
-            specialHash = CryptoSystem.getInstance().getHash(passwordHash, specialSalt);
+            specialHash = CryptoSystem.getInstance().getHash(passwordHash, SALT_SPECIAL_PASSWORD);
         }
         catch (Exceptions e)
         {

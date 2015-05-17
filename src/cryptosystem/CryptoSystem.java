@@ -6,17 +6,14 @@ package cryptosystem;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 
 import logger.Logger;
 import main.Exceptions;
-import main.Terminator;
 import main.Exceptions.XC;
 import rsa.RSA;
 import sha.SHA;
 import utilities.Utilities;
-import db.SpecialPassword;
 import db.UserFileIO;
 import javafx.concurrent.Task;
 import javafx.scene.input.Clipboard;
@@ -33,85 +30,26 @@ public final class CryptoSystem
 
     private static Random       randomizer              = null;
 
-    private static SHA          sha                     = null;
-    private static RSA          rsa                     = null;
+    private SHA                 sha                     = null;
+    private RSA                 rsa                     = null;
 
     private static byte[]       masterHash              = null;
-
-    private static byte[]       keyHashP                = null;
-    private static byte[]       keyHashQ                = null;
-    private static byte[]       keyHashE                = null;
 
     static Clipboard            clipboard               = null;
     static ClipboardContent     content                 = null;
 
     private static CryptoSystem self                    = null;
 
-    // ================================================================================================
+    private static final String SALT_FILENAME           = "FILENAME";
+    private static final String SALT_P                  = "P";
+    private static final String SALT_Q                  = "Q";
+    private static final String SALT_E                  = "E";
+
     // ========== PRIVATE:
-    // ===========================================================================
-    // ================================================================================================
 
-    private CryptoSystem()
+    private CryptoSystem(String masterPassword, boolean isNewUser) throws Exceptions
     {
-        self = this;
-    };
-
-    // ================================================================================================
-    // ========== PUBLIC:
-    // ============================================================================
-    // ================================================================================================
-
-    public long randSHACycles()
-    {
-        return SHA_ITERATION_MIN_COUNT + randomizer.nextInt(SHA_ITERATION_MAX_COUNT);
-    }
-
-    public static CryptoSystem getInstance() throws Exceptions
-    {
-        if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
-        return self;
-    }
-
-    // todo: rename method
-    public String encryptPassword(SpecialPassword sp)
-    {
-        try
-        {
-            return rsa.encrypt(Utilities.objectToBytes(sp.getMap()));
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
-
-        return "Error";
-    }
-
-    // todo: rename method
-    public HashMap<String, String> decryptPassword(String s)
-    {
-        try
-        {
-            return (HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(s));
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
-
-        return null;
-    }
-
-    public static void init(String masterPassword, boolean isNewUser) throws Exceptions
-    {
-        Logger.printDebug("CryptoSystem init STARTS...");
-
-        if (self != null)
-        {
-            Logger.printError("CryptoSystem already initialized... exiting...");
-            Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
-        }
+        Logger.printDebug("CryptoSystem constructor STARTS...");
 
         // ========== SHA initialization START:
         Logger.printDebug("SHA init STARTS...");
@@ -121,26 +59,16 @@ public final class CryptoSystem
         Logger.printDebug("SHA init DONE!");
         // ========== SHA initialization END:
 
-        masterHash = sha.getBytesSHA512(masterPassword.getBytes());
-
-        keyHashP = sha.getBytesSHA512((masterPassword + "P").getBytes());
-        keyHashQ = sha.getBytesSHA512((masterPassword + "Q").getBytes());
-        keyHashE = sha.getBytesSHA512((masterPassword + "E").getBytes());
+        masterHash = sha.getHashBytes(masterPassword.getBytes());
 
         // ========== RSA initialization START:
         Logger.printDebug("RSA init STARTS...");
-        try
-        {
 
-            rsa =
-                    new RSA(Utilities.bytesToHex(keyHashP), Utilities.bytesToHex(keyHashQ),
-                            Utilities.bytesToHex(keyHashE));
-        }
-        catch (main.Exceptions e)
-        {
-            Logger.printError("RSA initialization failed... exiting...");
-            Terminator.terminate(e);
-        }
+        rsa =
+                new RSA(Utilities.bytesToHex(sha.getHashBytes((masterPassword + SALT_P).getBytes())),
+                        Utilities.bytesToHex(sha.getHashBytes((masterPassword + SALT_Q).getBytes())),
+                        Utilities.bytesToHex(sha.getHashBytes((masterPassword + SALT_E).getBytes())));
+
         Logger.printDebug("RSA init DONE!");
         // ========== RSA initialization END:
 
@@ -148,7 +76,7 @@ public final class CryptoSystem
         Logger.printDebug("File I/O init STARTS...");
         try
         {
-            UserFileIO.init(sha.getStringSHA512((Arrays.toString(masterHash) + "FILENAME").getBytes()), isNewUser);
+            UserFileIO.init(sha.getHashString((Arrays.toString(masterHash) + SALT_FILENAME).getBytes()), isNewUser);
         }
         catch (Exceptions e)
         {
@@ -159,17 +87,52 @@ public final class CryptoSystem
             }
             else
             {
-                Terminator.terminate(e);
+                throw e;
             }
         }
         Logger.printDebug("File I/O init DONE...");
         // ========== FILE I/O initialization END:
 
+        // ========== Randomizer initialization START:
         randomizer = new Random(System.currentTimeMillis());
+        // ========== Randomizer initialization END:
 
-        self = new CryptoSystem();
+        self = this;
+    };
+
+    // ========== PUBLIC STATICS :
+    public static void init(String masterPassword, boolean isNewUser) throws Exceptions
+    {
+        Logger.printDebug("CryptoSystem init STARTS...");
+
+        if (self != null) throw new Exceptions(XC.INSTANCE_ALREADY_EXISTS);
+
+        self = new CryptoSystem(masterPassword, isNewUser);
 
         Logger.printDebug("CryptoSystem init DONE!");
+    }
+
+    public static CryptoSystem getInstance() throws Exceptions
+    {
+        if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
+        return self;
+    }
+
+    // ========== PUBLIC:
+
+    public long randSHACycles()
+    {
+        return SHA_ITERATION_MIN_COUNT + randomizer.nextInt(SHA_ITERATION_MAX_COUNT);
+    }
+
+    public String rsaEncrypt(byte[] message)
+    {
+        return rsa.encrypt(message);
+    }
+
+    public byte[] rsaDecrypt(String message)
+    {
+        return rsa.decrypt(message);
     }
 
     public String getPassword(long cycles, String pwdName)
@@ -180,6 +143,7 @@ public final class CryptoSystem
     public String getPassword(long cycles, String pwdName, Task<Void> passwordCalculation)
     {
         byte[] tmp = null;
+
         try
         {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -201,7 +165,7 @@ public final class CryptoSystem
                 Logger.printDebug("calculation interrupted");
                 return "";
             }
-            tmp = sha.getBytesSHA512(tmp);
+            tmp = sha.getHashBytes(tmp);
         }
 
         return Utilities.bytesToHex(tmp);
@@ -209,6 +173,6 @@ public final class CryptoSystem
 
     public String getHash(String toHash, String salt)
     {
-        return sha.getStringSHA512((toHash + salt).getBytes());
+        return sha.getHashString((toHash + salt).getBytes());
     }
 }

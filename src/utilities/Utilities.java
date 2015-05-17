@@ -58,7 +58,6 @@ public final class Utilities
         }
         catch (IOException e)
         {
-            Logger.printError("hahahahahaha");
             throw new main.Exceptions(XC.OBJECT_SERIALIZATION_FAILED);
         }
 
