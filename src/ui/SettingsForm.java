@@ -51,9 +51,7 @@ public class SettingsForm extends AbstractForm
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
         // TODO
-        langOptions =
-                FXCollections.observableArrayList(Settings.LANG.ENGLISH.name(),
-                        Settings.LANG.RUSSIAN.name());
+        langOptions = FXCollections.observableArrayList(Settings.LANG.ENGLISH.name(), Settings.LANG.RUSSIAN.name());
 
         l_Language = new Label(TextID.LANGUAGE.toString());
         l_Language.setMinWidth(LABEL_WIDTH);
@@ -65,8 +63,8 @@ public class SettingsForm extends AbstractForm
         hb_Language = new HBox();
         hb_Language.getChildren().addAll(l_Language, cb_Language);
 
-        hb_Clipboard = getTextEntry(TextID.DELAY.toString(), FIELD_WIDTH_S);
-        hb_Clipboard.getEntryTextField().setText(Integer.toString(Settings.getclipboardLiveTime()));
+        hb_Clipboard = getTextEntry(TextID.DELAY.toString() + " " + TextID.S.toString(), FIELD_WIDTH_S);
+        hb_Clipboard.getEntryTextField().setText(Integer.toString(Settings.getclipboardLiveTime() / 1000));
 
         b_OK = getButton(TextID.OK.toString());
 
@@ -82,8 +80,7 @@ public class SettingsForm extends AbstractForm
             public void handle(ActionEvent event)
             {
                 Settings.setLanguage(LANG.valueOf(cb_Language.getValue()));
-                Settings.setclipboardLiveTime(Integer.parseInt(hb_Clipboard.getEntryTextField()
-                        .getText()));
+                Settings.setclipboardLiveTime(Integer.parseInt(hb_Clipboard.getEntryTextField().getText()) * 1000);
                 try
                 {
                     Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
