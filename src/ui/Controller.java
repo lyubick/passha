@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 import logger.Logger;
 import main.Exceptions;
+import main.Settings;
 import main.Terminator;
 import main.Exceptions.XC;
 import javafx.application.Platform;
@@ -67,7 +68,6 @@ public final class Controller
 
         TimerTask watcher = new Watcher()
         {
-
             @Override
             protected void onChange()
             {
@@ -92,7 +92,7 @@ public final class Controller
         };
 
         Timer timer = new Timer();
-        timer.schedule(watcher, new Date(), 2000);
+        timer.schedule(watcher, new Date(), Settings.ENV_VARS.SINGLE_INSTANCE_CHECK_TIMEOUT);
     }
 
     public static Controller init(Stage primaryStage)
@@ -134,8 +134,7 @@ public final class Controller
         mainStage.iconifiedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void
-                    changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
             {
                 // TODO Auto-generated method stub
                 mainStage.hide();
@@ -143,8 +142,7 @@ public final class Controller
             }
         });
 
-        Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to "
-                + form.name());
+        Logger.printDebug("Controller performs switch: from " + currentForm.name() + " to " + form.name());
         if (form == FORMS.CURRENT)
         {
             form = currentForm;

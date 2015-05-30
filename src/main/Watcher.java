@@ -3,48 +3,55 @@ package main;
 import java.util.*;
 import java.io.*;
 
-import utilities.Utilities;
+import logger.Logger;
 
 public abstract class Watcher extends TimerTask
 {
     private static Watcher self;
-    private long           timeStamp;
     private File           file;
 
     public Watcher()
     {
         this.file = new File("~passha.running");
-        this.timeStamp = file.lastModified();
         self = this;
 
         if (file.exists())
         {
-            try
-            {
-                Utilities.writeToFile(file.getPath(), "P");
-            }
-            catch (Exceptions e)
-            {
-                System.exit(0);
-            }
-
-            System.exit(0);
+            Logger.printDebug("Instance already launched.");
         }
         else
         {
             try
             {
                 file.createNewFile();
-                Utilities.writeToFile(file.getPath(), "R");
             }
             catch (IOException e)
             {
+                Logger.printError("Failed to create launch file [" + e.getMessage() + "]");
                 System.exit(0);
             }
-            catch (Exceptions e)
-            {
-                System.exit(0);
-            }
+        }
+
+        try
+        {
+            Logger.printDebug("Test if any other instance runs.");
+            Thread.sleep(Settings.ENV_VARS.SINGLE_INSTANCE_CHECK_WAIT);
+        }
+        catch (InterruptedException e)
+        {
+            Logger.printError("Unexpected interruption of Watcher.");
+            System.exit(0);
+        }
+
+        if (file.exists())
+        {
+            Logger.printDebug("No other instance exists.");
+            file.delete();
+        }
+        else
+        {
+            Logger.printError("Looks like other instance is running.");
+            System.exit(0);
         }
 
         self = this;
@@ -55,26 +62,12 @@ public abstract class Watcher extends TimerTask
         return self;
     }
 
-    public void die()
-    {
-        file.delete();
-    }
-
     public final void run()
     {
-        if (this.timeStamp < file.lastModified())
+        if (file.exists())
         {
-            try
-            {
-                if (Utilities.readFromFile(file.getPath()).get(0).equals("P")) onChange();
-                Utilities.writeToFile(file.getPath(), "R");
-                this.timeStamp = file.lastModified();
-            }
-            catch (Exceptions e)
-            {
-                Terminator.terminate(e);
-            }
-
+            file.delete();
+            onChange();
         }
     }
 

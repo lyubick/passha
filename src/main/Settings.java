@@ -14,6 +14,12 @@ import utilities.Utilities;
 public class Settings
 {
 
+    public static class ENV_VARS
+    {
+        public static int SINGLE_INSTANCE_CHECK_TIMEOUT = 2000;
+        public static int SINGLE_INSTANCE_CHECK_WAIT    = 3000;
+    }
+
     private final static String SETTINGS_FILE_NAME        = "settings.passha";
 
     private final static String OUT_LANG_PREFIX           = "language=";
@@ -24,8 +30,8 @@ public class Settings
         ENGLISH,
         RUSSIAN,
     }
-    
-    // use map of settings and enumerator of propery IDs
+
+    // use map of settings and enumerator of property IDs
     private static LANG language          = LANG.ENGLISH;
     private static int  clipboardLiveTime = 5000;
 

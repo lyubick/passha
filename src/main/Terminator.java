@@ -11,7 +11,6 @@ import ui.Controller.FORMS;
 import db.PasswordCollection;
 import logger.Logger;
 import main.Exceptions.XC;
-import main.Watcher;
 
 /**
  * @author lyubick
@@ -26,7 +25,6 @@ public class Terminator
         try
         {
             Logger.getInstance().loggerOFF();
-            Watcher.getInstance().die();
         }
         catch (Exceptions e1)
         {
@@ -64,8 +62,7 @@ public class Terminator
         if (stackTrace.length >= 3)
         {
             StackTraceElement element = stackTrace[2];
-            Logger.printError("TERMINATOR: CLASS: " + element.getClassName() + " METHOD: "
-                    + element.getMethodName());
+            Logger.printError("TERMINATOR: CLASS: " + element.getClassName() + " METHOD: " + element.getMethodName());
         }
 
         Logger.printError("TERMINATOR: STACK TRACE DUMP");
