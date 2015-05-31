@@ -58,34 +58,33 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 500;
     }
 
-    private final int                   tableMinHeight      = WINDOW.height - 300;
-    private final int                   tableMinWidth       = WINDOW.width - 200;
+    private final int                   tableMinHeight  = WINDOW.height - 300;
+    private final int                   tableMinWidth   = WINDOW.width - 200;
 
-    private TableView<iSpecialPassword> table               = null;
-    private TextField                   tf_pass             = null;
-    private Button                      b_Save              = null;
-    private Button                      b_Discard           = null;
-    private Button                      b_New               = null;
-    private Button                      b_Delete            = null;
-    private Button                      b_Reset             = null;
-    private Button                      b_Copy              = null;
-    private Button                      b_Export            = null;
+    private TableView<iSpecialPassword> table           = null;
+    private TextField                   tf_pass         = null;
+    private Button                      b_Save          = null;
+    private Button                      b_Discard       = null;
+    private Button                      b_New           = null;
+    private Button                      b_Delete        = null;
+    private Button                      b_Reset         = null;
+    private Button                      b_Copy          = null;
+    private Button                      b_Export        = null;
 
-    Task<Void>                          passwordCalculation = null;
-    Task<Void>                          tsk_PWDLifeTime     = null;
+    Task<Void>                          tsk_PWDLifeTime = null;
 
-    private ProgressIndicator           pi_PWDLifeTime      = null;
+    private ProgressIndicator           pi_PWDLifeTime  = null;
 
-    private MenuBar                     mb_Main             = null;
-    private Menu                        m_File              = null;
-    private MenuItem                    mi_Exit             = null;
-    private MenuItem                    mi_Settings         = null;
-    private ProgressBar                 pb_Progress         = null;
-    private Label                       l_Progress          = null;
+    private MenuBar                     mb_Main         = null;
+    private Menu                        m_File          = null;
+    private MenuItem                    mi_Exit         = null;
+    private MenuItem                    mi_Settings     = null;
+    private ProgressBar                 pb_Progress     = null;
+    private Label                       l_Progress      = null;
 
-    private boolean                     firstTime           = true;
+    private boolean                     firstTime       = true;
 
-    private Stage                       parrent             = null;
+    private Stage                       parrent         = null;
 
     private void setStatusBarShow(boolean v)
     {
@@ -425,40 +424,9 @@ public class ManagePasswordsForm extends AbstractForm
                     e.printStackTrace();
                 }
 
-                if (passwordCalculation != null)
-                {
-                    passwordCalculation.cancel();
-                }
-
-                passwordCalculation = new Task<Void>()
-                {
-                    @Override
-                    protected Void call() throws Exception
-                    {
-                        b_Copy.setDisable(true);
-                        updateMessage(TextID.CALCULATING.toString());
-                        updateMessage(table.getSelectionModel().getSelectedItem().getPassword(this));
-                        return null;
-                    }
-                };
-
-                tf_pass.textProperty().bind(passwordCalculation.messageProperty());
-                passwordCalculation.setOnSucceeded(EventHandler -> {
-                    tf_pass.textProperty().unbind();
-                    Logger.printDebug("PWDCALC -> successfully finished");
-                    passwordCalculation = null;
-                    b_Copy.setDisable(false);
-                });
-
-                passwordCalculation.setOnCancelled(EventHandler -> {
-                    tf_pass.textProperty().unbind();
-                    Logger.printDebug("PWDCALC -> cancelled finished");
-                    passwordCalculation = null;
-                });
-
-                Thread calculatePasswordThread = new Thread(passwordCalculation);
-                calculatePasswordThread.setDaemon(false);
-                calculatePasswordThread.start();
+                b_Copy.setDisable(true);
+                tf_pass.setText(table.getSelectionModel().getSelectedItem().getPassword());
+                b_Copy.setDisable(false);
             }
         });
 

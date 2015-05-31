@@ -4,7 +4,6 @@
 package db;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.concurrent.Task;
 import logger.Logger;
 
 /**
@@ -13,11 +12,11 @@ import logger.Logger;
  */
 public class iSpecialPassword
 {
-    private SimpleStringProperty       name;
-    private SimpleStringProperty       comment;
-    private SimpleStringProperty       url;
+    private SimpleStringProperty  name;
+    private SimpleStringProperty  comment;
+    private SimpleStringProperty  url;
 
-    private final SpecialPassword      origin;
+    private final SpecialPassword origin;
 
     public iSpecialPassword(SpecialPassword example)
     {
@@ -40,11 +39,6 @@ public class iSpecialPassword
     public String getPassword()
     {
         return origin.getPassword();
-    }
-
-    public String getPassword(Task<Void> passwordCalculation)
-    {
-        return origin.getPassword(passwordCalculation);
     }
 
     /**
