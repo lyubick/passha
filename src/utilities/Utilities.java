@@ -3,7 +3,10 @@ package utilities;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -76,7 +79,6 @@ public final class Utilities
         }
         catch (IOException | ClassNotFoundException e)
         {
-            Logger.printError("hahahahahaha: " + e.getMessage());
             throw new main.Exceptions(XC.OBJECT_DESERIALIZATION_FAILED);
         }
 
@@ -170,7 +172,46 @@ public final class Utilities
         Logger.printDebug("Writing to '" + fileName + "' DONE!");
     }
 
-    public static Vector<String> readFromFile(String fileName) throws Exceptions
+    public static void writeToFile(String fileName, byte[] writeable) throws Exceptions
+    {
+        Logger.printDebug("Writing to '" + fileName + "'; " + writeable.length + " bytes.");
+
+        try
+        {
+            FileOutputStream fos = new FileOutputStream(fileName);
+            fos.write(writeable);
+            fos.close(); // TODO
+        }
+        catch (IOException e)
+        {
+            throw new Exceptions(XC.WRITE_ERROR);
+        }
+
+        Logger.printDebug("Writing to '" + fileName + "' DONE!");
+    }
+
+    public static byte[] readBytesFromFile(String fileName) throws Exceptions
+    {
+        Logger.printDebug("Reading bytes from '" + fileName + "'");
+
+        byte[] readable = new byte[(int) new File(fileName).length()];
+
+        try
+        {
+            FileInputStream fis = new FileInputStream(fileName);
+            fis.read(readable);
+            fis.close();
+        }
+        catch (IOException e)
+        {
+            throw new Exceptions(XC.READ_ERROR);
+        }
+        Logger.printDebug("Reading bytes from '" + fileName + "'" + "DONE!");
+
+        return readable;
+    }
+
+    public static Vector<String> readStringsFromFile(String fileName) throws Exceptions
     {
         Vector<String> inLines = new Vector<String>();
 
@@ -193,7 +234,7 @@ public final class Utilities
             throw new Exceptions(XC.READ_ERROR);
         }
 
-        Logger.printDebug("Reading from '" + fileName + "'");
+        Logger.printDebug("Reading from '" + fileName + "'" + "DONE!");
 
         return inLines;
     }

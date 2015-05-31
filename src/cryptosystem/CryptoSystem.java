@@ -1,12 +1,13 @@
-/**
- *
- */
 package cryptosystem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
+
+import javafx.concurrent.Task;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 
 import logger.Logger;
 import main.Exceptions;
@@ -15,14 +16,7 @@ import rsa.RSA;
 import sha.SHA;
 import utilities.Utilities;
 import db.UserFileIO;
-import javafx.concurrent.Task;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 
-/**
- * @author lyubick
- *
- */
 public final class CryptoSystem
 {
     private static final int    SHA_ITERATION_MIN_COUNT = 10;

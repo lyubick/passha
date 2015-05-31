@@ -9,33 +9,32 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import main.Exceptions;
-import main.Terminator;
 import main.Exceptions.XC;
 
 /**
  * @author lyubick
  *
  */
-public final class Logger // Static class
+public final class Logger
 {
+    private final String  LOG_PATH        = "logs/";
+    private final String  LOG_NAME        = "PASSHA";
+    private final String  LOG_EXT         = ".log";
+
+    private static Logger self            = null;
+
+    private PrintWriter   writer          = null;
+
+    private int           fileNameWidth   = 20;
+    private int           lineWidth       = 4;
+    private int           methodNameWidth = 20;
+
     public enum LOGLEVELS
     {
         SILENT,
         DEBUG,
         ERROR
     }
-
-    private int           fileNameWidth   = 20;
-    private int           lineWidth       = 4;
-    private int           methodNameWidth = 20;
-
-    private PrintWriter   writer          = null;
-
-    private static Logger self            = null;
-
-    private String        LOG_PATH        = "logs/";
-    private String        LOG_NAME        = "PASSHA";
-    private String        LOG_EXT         = ".log";
 
     private String getTime()
     {
@@ -102,7 +101,7 @@ public final class Logger // Static class
         writer.println(log);
     }
 
-    private Logger()
+    private Logger() throws Exceptions
     {
         try
         {
@@ -114,13 +113,13 @@ public final class Logger // Static class
         }
         catch (FileNotFoundException e)
         {
-            Terminator.terminate(new Exceptions(XC.INIT_FAILURE));
+            throw new Exceptions(XC.INIT_FAILURE);
         }
     }
 
-    public static void loggerON()
+    public static void loggerON() throws Exceptions
     {
-        if (self != null) Terminator.terminate(new Exceptions(XC.INIT_FAILURE));
+        if (self != null) throw new Exceptions(XC.INSTANCE_ALREADY_EXISTS);
 
         self = new Logger();
     }

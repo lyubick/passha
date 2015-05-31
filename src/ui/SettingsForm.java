@@ -6,7 +6,6 @@ package ui;
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Settings;
-import main.Settings.LANG;
 import ui.Controller.FORMS;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -51,20 +50,38 @@ public class SettingsForm extends AbstractForm
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
         // TODO
-        langOptions = FXCollections.observableArrayList(Settings.LANG.ENGLISH.name(), Settings.LANG.RUSSIAN.name());
+        langOptions =
+                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
 
         l_Language = new Label(TextID.LANGUAGE.toString());
         l_Language.setMinWidth(LABEL_WIDTH);
 
         cb_Language = new ComboBox<String>(langOptions);
 
-        cb_Language.setValue(langOptions.get(Settings.getLanguage()));
+        try
+        {
+            cb_Language.setValue(langOptions.get(Settings.getInstance().getLanguage()));
+        }
+        catch (Exceptions e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
         hb_Language = new HBox();
         hb_Language.getChildren().addAll(l_Language, cb_Language);
 
         hb_Clipboard = getTextEntry(TextID.DELAY.toString() + " " + TextID.S.toString(), FIELD_WIDTH_S);
-        hb_Clipboard.getEntryTextField().setText(Integer.toString(Settings.getclipboardLiveTime() / 1000));
+        try
+        {
+            hb_Clipboard.getEntryTextField().setText(
+                    Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+        }
+        catch (Exceptions e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
         b_OK = getButton(TextID.OK.toString());
 
@@ -79,12 +96,14 @@ public class SettingsForm extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                Settings.setLanguage(LANG.valueOf(cb_Language.getValue()));
-                Settings.setclipboardLiveTime(Integer.parseInt(hb_Clipboard.getEntryTextField().getText()) * 1000);
+
                 try
                 {
+                    Settings.getInstance().setLanguage(cb_Language.getValue());
+                    Settings.getInstance().setClipboardLiveTime(hb_Clipboard.getEntryTextField().getText());
+
                     Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
-                    Settings.saveSettings();
+                    Settings.getInstance().saveSettings();
                 }
                 catch (Exceptions e)
                 {

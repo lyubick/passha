@@ -3,6 +3,7 @@
  */
 package languages;
 
+import main.Exceptions;
 import main.Settings;
 
 /**
@@ -144,8 +145,7 @@ public class Texts
         { "Save", "Сохранить" }),
 
         SAVE_CONFIRMATION(new String[]
-        { "There are unsaved changes. Save before exit?",
-                "Есть несохранённые изменения. Сохранить?" }),
+        { "There are unsaved changes. Save before exit?", "Есть несохранённые изменения. Сохранить?" }),
 
         SAVING(new String[]
         { "Saving", "Сохранение" }),
@@ -183,7 +183,17 @@ public class Texts
         @Override
         public String toString()
         {
-            return text[Settings.getLanguage()];
+            try
+            {
+                return text[Settings.getInstance().getLanguage()];
+            }
+            catch (Exceptions e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            return "CRASH";
         }
     }
 

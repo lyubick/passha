@@ -249,8 +249,7 @@ public class ManagePasswordsForm extends AbstractForm
                 new TableColumn<iSpecialPassword, String>(TextID.PWD_NAME.toString());
         TableColumn<iSpecialPassword, String> cComment =
                 new TableColumn<iSpecialPassword, String>(TextID.COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl =
-                new TableColumn<iSpecialPassword, String>(TextID.URL.toString());
+        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<iSpecialPassword, String>(TextID.URL.toString());
 
         table.getColumns().add(cName);
         table.getColumns().add(cComment);
@@ -302,20 +301,13 @@ public class ManagePasswordsForm extends AbstractForm
 
         try
         {
-            setButtonShortcut(b_New,
-                    new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Save, new KeyCodeCombination(KeyCode.S,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Discard, new KeyCodeCombination(KeyCode.Z,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R,
-                    KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_New, new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Save, new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Discard, new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN));
         }
         catch (Exceptions e)
         {
@@ -414,8 +406,7 @@ public class ManagePasswordsForm extends AbstractForm
         table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>()
         {
             @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
-                    Object newValue)
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
             {
                 try
                 {
@@ -528,26 +519,32 @@ public class ManagePasswordsForm extends AbstractForm
 
                         updateProgress(9, 10);
 
-                        for (int i = 0; i <= Settings.getclipboardLiveTime() && !isCancelled(); i +=
-                                100)
+                        int timeToLive = 0;
+
+                        try
                         {
-                            updateProgress(Settings.getclipboardLiveTime() - i,
-                                    Settings.getclipboardLiveTime());
+                            timeToLive = Settings.getInstance().getClipboardLiveTime();
+                        }
+                        catch (Exceptions e1)
+                        {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
+
+                        for (int i = 0; i <= timeToLive && !isCancelled(); i += 100)
+                        {
+                            updateProgress(timeToLive - i, timeToLive);
                             Thread.sleep(100);
 
                             if (i % 1000 == 0)
                             {
                                 try
                                 {
-                                    TrayAgent
-                                            .getInstance()
-                                            .showNotification(
-                                                    TextID.PASSWORD_COPIED.toString(),
-                                                    TextID.TIME_LEFT.toString()
-                                                            + ": "
-                                                            + ((Settings.getclipboardLiveTime() - i) / 1000)
-                                                            + " " + TextID.S.toString(),
-                                                    MessageType.INFO);
+                                    TrayAgent.getInstance().showNotification(
+                                            TextID.PASSWORD_COPIED.toString(),
+                                            TextID.TIME_LEFT.toString() + ": "
+                                                    + ((Settings.getInstance().getClipboardLiveTime() - i) / 1000)
+                                                    + " " + TextID.S.toString(), MessageType.INFO);
                                 }
                                 catch (Exceptions e)
                                 {
@@ -568,8 +565,8 @@ public class ManagePasswordsForm extends AbstractForm
                     pi_PWDLifeTime.setVisible(false);
                     try
                     {
-                        TrayAgent.getInstance().showNotification(
-                                TextID.PASSWORD_REMOVED.toString(), "", MessageType.INFO);
+                        TrayAgent.getInstance().showNotification(TextID.PASSWORD_REMOVED.toString(), "",
+                                MessageType.INFO);
                     }
                     catch (Exceptions e)
                     {

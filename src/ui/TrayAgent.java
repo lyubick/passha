@@ -1,6 +1,3 @@
-/**
- *
- */
 package ui;
 
 import java.awt.Image;
@@ -12,23 +9,18 @@ import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionListener;
 
+import javafx.application.Platform;
+import javafx.stage.Stage;
 import languages.Texts.TextID;
-import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.Controller.FORMS;
-import javafx.application.Platform;
-import javafx.stage.Stage;
 
-/**
- * @author curious-odd-man
- *
- */
 public class TrayAgent
 {
-    static TrayAgent self     = null;
-    private TrayIcon trayIcon = null;
+    private static TrayAgent self     = null;
+    private TrayIcon         trayIcon = null;
 
     public static TrayAgent getInstance() throws Exceptions
     {
@@ -37,39 +29,19 @@ public class TrayAgent
         return self;
     }
 
-    private TrayAgent(Stage primaryStage)
+    private TrayAgent(Stage primaryStage) throws Exceptions
     {
-        SystemTray tray = SystemTray.getSystemTray();
+        SystemTray sysTray = SystemTray.getSystemTray();
 
-        Image image =
-                Toolkit.getDefaultToolkit().getImage(
-                        ClassLoader.getSystemResource("resources/tray_icon.png"));
+        Image image = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("resources/tray_icon.png"));
         PopupMenu popup = new PopupMenu();
-        MenuItem item = new MenuItem("Exit");
+        MenuItem itemExit = new MenuItem(TextID.EXIT.toString());
 
-        popup.add(item);
+        popup.add(itemExit);
 
-        trayIcon =
-                new TrayIcon(image, TextID.PROGRAM_NAME.toString() + " "
-                        + TextID.VERSION.toString(), popup);
+        trayIcon = new TrayIcon(image, TextID.PROGRAM_NAME.toString() + " " + TextID.VERSION.toString(), popup);
 
-        ActionListener listener = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent arg0)
-            {
-                Platform.runLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        Terminator.terminate(new Exceptions(XC.END));
-                    }
-                });
-            }
-        };
-
-        ActionListener listenerTray = new ActionListener()
+        trayIcon.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent arg0)
@@ -90,18 +62,31 @@ public class TrayAgent
                     }
                 });
             }
-        };
+        });
 
-        trayIcon.addActionListener(listenerTray);
-        item.addActionListener(listener);
+        itemExit.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent arg0)
+            {
+                Platform.runLater(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        Terminator.terminate(new Exceptions(XC.END));
+                    }
+                });
+            }
+        });
 
         try
         {
-            tray.add(trayIcon);
+            sysTray.add(trayIcon);
         }
         catch (Exception e)
         {
-            Logger.printError("Can't add to tray");
+            throw new Exceptions(XC.INIT_FAILURE);
         }
     }
 
@@ -112,7 +97,7 @@ public class TrayAgent
         if (SystemTray.isSupported())
             self = new TrayAgent(primaryStage);
         else
-            Logger.printError("Tray unavailable");
+            throw new Exceptions(XC.INIT_FAILURE);
     }
 
     public void showNotification(String title, String msg, MessageType type)

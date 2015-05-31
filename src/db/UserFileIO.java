@@ -74,7 +74,7 @@ public final class UserFileIO
     {
         try
         {
-            return Utilities.readFromFile(file);
+            return Utilities.readStringsFromFile(file);
         }
         catch (Exceptions e)
         {

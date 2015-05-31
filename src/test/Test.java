@@ -178,10 +178,9 @@ public class Test
 
     public static void main(String[] args)
     {
-        Logger.loggerON();
-
         try
         {
+            Logger.loggerON();
             CryptoSystem.init("qwerty123", true);
         }
         catch (Exceptions e)

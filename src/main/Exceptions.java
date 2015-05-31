@@ -44,6 +44,10 @@ public final class Exceptions extends Throwable
         OBJECT_SERIALIZATION_FAILED,
         OBJECT_DESERIALIZATION_FAILED,
 
+        // Exception that indicates LOAD failure, but program can continue with
+        // DEFAULT presets
+        DEFAULT_SETTINGS_USED,
+
         // TODO
         END,
         END_DISCARD
