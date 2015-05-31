@@ -10,7 +10,6 @@ import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionListener;
 
 import javafx.application.Platform;
-import javafx.stage.Stage;
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
@@ -29,7 +28,7 @@ public class TrayAgent
         return self;
     }
 
-    private TrayAgent(Stage primaryStage) throws Exceptions
+    private TrayAgent() throws Exceptions
     {
         SystemTray sysTray = SystemTray.getSystemTray();
 
@@ -90,12 +89,12 @@ public class TrayAgent
         }
     }
 
-    public static void initTrayAgent(Stage primaryStage) throws Exceptions
+    public static TrayAgent init() throws Exceptions
     {
         if (self != null) throw new Exceptions(XC.INSTANCE_ALREADY_EXISTS);
 
         if (SystemTray.isSupported())
-            self = new TrayAgent(primaryStage);
+            return self = new TrayAgent();
         else
             throw new Exceptions(XC.INIT_FAILURE);
     }

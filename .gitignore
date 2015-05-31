@@ -2,3 +2,4 @@
 /dist/logs/*.log
 /dist/user/*.cif
 /dist/*.passha
+/docs/*.zargo~

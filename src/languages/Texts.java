@@ -57,6 +57,9 @@ public class Texts
         ENTER_PASSWORD(new String[]
         { "Enter Password", "Введите пароль" }),
 
+        ERROR(new String[]
+        { "ERROR!", "ОШИБКА!" }),
+
         ERR_MISSING_PASSWORD_NAME(new String[]
         { "Error! Password name must be entered!", "Ошибка! Необходимо ввести имя Пароля!" }),
 
@@ -68,6 +71,10 @@ public class Texts
 
         EXPORT(new String[]
         { "Export", "Экспортировать" }),
+
+        FAILED_TO_READ_SETTING(new String[]
+        { "FAILED to load settings. Using DEFAULTS!",
+                "Не удалось загрузить настройки. Используются настройки по-умлочанию!" }),
 
         FILE(new String[]
         { "File", "Файл" }),
