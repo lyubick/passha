@@ -120,12 +120,11 @@ public class ChangePasswordConfirmDlg extends AbstractForm
 
         stage.setTitle(TextID.PROGRAM_NAME.toString() + " " + TextID.VERSION.toString());
 
-        CurrentPassword.getEntryTextField().setText(
-                PasswordCollection.getInstance().getSelected().getPassword());
+        CurrentPassword.getEntryTextField().setText(PasswordCollection.getInstance().getSelected().getPassword());
 
         newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
 
-        NewPassword.getEntryTextField().setText(newSp.getPassword(null));
+        NewPassword.getEntryTextField().setText(newSp.getPassword());
 
         stage.setResizable(false);
 

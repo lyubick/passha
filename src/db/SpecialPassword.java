@@ -11,7 +11,6 @@ import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
-import javafx.concurrent.Task;
 
 public class SpecialPassword
 {
@@ -193,7 +192,7 @@ public class SpecialPassword
         return Math.abs(hexArray.indexOf(hash.charAt(idx)) * hexArray.indexOf(hash.charAt(idx + 1)));
     }
 
-    public String getPassword(Task<Void> passwordCalculation)
+    public String getPassword()
     {
         int idx = 0;
         String alphabeta = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -211,7 +210,7 @@ public class SpecialPassword
 
         try
         {
-            passwordHash = CryptoSystem.getInstance().getPassword(shaCycles, name, passwordCalculation);
+            passwordHash = CryptoSystem.getInstance().getPassword(shaCycles, name);
             specialHash = CryptoSystem.getInstance().getHash(passwordHash, SALT_SPECIAL_PASSWORD);
         }
         catch (Exceptions e)
@@ -297,11 +296,6 @@ public class SpecialPassword
         Logger.printDebug("Password generation. STAGE 3. DONE");
 
         return password.toString();
-    }
-
-    public String getPassword()
-    {
-        return getPassword(null);
     }
 
     public boolean isPasswordValid()

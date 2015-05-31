@@ -15,7 +15,6 @@ import rsa.RSA;
 import sha.SHA;
 import utilities.Utilities;
 import db.UserFileIO;
-import javafx.concurrent.Task;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 
@@ -137,11 +136,6 @@ public final class CryptoSystem
 
     public String getPassword(long cycles, String pwdName)
     {
-        return getPassword(cycles, pwdName, null);
-    }
-
-    public String getPassword(long cycles, String pwdName, Task<Void> passwordCalculation)
-    {
         byte[] tmp = null;
 
         try
@@ -160,11 +154,6 @@ public final class CryptoSystem
 
         while (cycles-- > 0)
         {
-            if (passwordCalculation != null && passwordCalculation.isCancelled())
-            {
-                Logger.printDebug("calculation interrupted");
-                return "";
-            }
             tmp = sha.getHashBytes(tmp);
         }
 

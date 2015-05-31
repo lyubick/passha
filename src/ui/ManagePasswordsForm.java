@@ -58,34 +58,33 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 500;
     }
 
-    private final int                   tableMinHeight      = WINDOW.height - 300;
-    private final int                   tableMinWidth       = WINDOW.width - 200;
+    private final int                   tableMinHeight  = WINDOW.height - 300;
+    private final int                   tableMinWidth   = WINDOW.width - 200;
 
-    private TableView<iSpecialPassword> table               = null;
-    private TextField                   tf_pass             = null;
-    private Button                      b_Save              = null;
-    private Button                      b_Discard           = null;
-    private Button                      b_New               = null;
-    private Button                      b_Delete            = null;
-    private Button                      b_Reset             = null;
-    private Button                      b_Copy              = null;
-    private Button                      b_Export            = null;
+    private TableView<iSpecialPassword> table           = null;
+    private TextField                   tf_pass         = null;
+    private Button                      b_Save          = null;
+    private Button                      b_Discard       = null;
+    private Button                      b_New           = null;
+    private Button                      b_Delete        = null;
+    private Button                      b_Reset         = null;
+    private Button                      b_Copy          = null;
+    private Button                      b_Export        = null;
 
-    Task<Void>                          passwordCalculation = null;
-    Task<Void>                          tsk_PWDLifeTime     = null;
+    Task<Void>                          tsk_PWDLifeTime = null;
 
-    private ProgressIndicator           pi_PWDLifeTime      = null;
+    private ProgressIndicator           pi_PWDLifeTime  = null;
 
-    private MenuBar                     mb_Main             = null;
-    private Menu                        m_File              = null;
-    private MenuItem                    mi_Exit             = null;
-    private MenuItem                    mi_Settings         = null;
-    private ProgressBar                 pb_Progress         = null;
-    private Label                       l_Progress          = null;
+    private MenuBar                     mb_Main         = null;
+    private Menu                        m_File          = null;
+    private MenuItem                    mi_Exit         = null;
+    private MenuItem                    mi_Settings     = null;
+    private ProgressBar                 pb_Progress     = null;
+    private Label                       l_Progress      = null;
 
-    private boolean                     firstTime           = true;
+    private boolean                     firstTime       = true;
 
-    private Stage                       parrent             = null;
+    private Stage                       parrent         = null;
 
     private void setStatusBarShow(boolean v)
     {
@@ -249,8 +248,7 @@ public class ManagePasswordsForm extends AbstractForm
                 new TableColumn<iSpecialPassword, String>(TextID.PWD_NAME.toString());
         TableColumn<iSpecialPassword, String> cComment =
                 new TableColumn<iSpecialPassword, String>(TextID.COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl =
-                new TableColumn<iSpecialPassword, String>(TextID.URL.toString());
+        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<iSpecialPassword, String>(TextID.URL.toString());
 
         table.getColumns().add(cName);
         table.getColumns().add(cComment);
@@ -302,20 +300,13 @@ public class ManagePasswordsForm extends AbstractForm
 
         try
         {
-            setButtonShortcut(b_New,
-                    new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Save, new KeyCodeCombination(KeyCode.S,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Discard, new KeyCodeCombination(KeyCode.Z,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R,
-                    KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_New, new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Save, new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Discard, new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN));
         }
         catch (Exceptions e)
         {
@@ -414,8 +405,7 @@ public class ManagePasswordsForm extends AbstractForm
         table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>()
         {
             @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
-                    Object newValue)
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
             {
                 try
                 {
@@ -434,40 +424,9 @@ public class ManagePasswordsForm extends AbstractForm
                     e.printStackTrace();
                 }
 
-                if (passwordCalculation != null)
-                {
-                    passwordCalculation.cancel();
-                }
-
-                passwordCalculation = new Task<Void>()
-                {
-                    @Override
-                    protected Void call() throws Exception
-                    {
-                        b_Copy.setDisable(true);
-                        updateMessage(TextID.CALCULATING.toString());
-                        updateMessage(table.getSelectionModel().getSelectedItem().getPassword(this));
-                        return null;
-                    }
-                };
-
-                tf_pass.textProperty().bind(passwordCalculation.messageProperty());
-                passwordCalculation.setOnSucceeded(EventHandler -> {
-                    tf_pass.textProperty().unbind();
-                    Logger.printDebug("PWDCALC -> successfully finished");
-                    passwordCalculation = null;
-                    b_Copy.setDisable(false);
-                });
-
-                passwordCalculation.setOnCancelled(EventHandler -> {
-                    tf_pass.textProperty().unbind();
-                    Logger.printDebug("PWDCALC -> cancelled finished");
-                    passwordCalculation = null;
-                });
-
-                Thread calculatePasswordThread = new Thread(passwordCalculation);
-                calculatePasswordThread.setDaemon(false);
-                calculatePasswordThread.start();
+                b_Copy.setDisable(true);
+                tf_pass.setText(table.getSelectionModel().getSelectedItem().getPassword());
+                b_Copy.setDisable(false);
             }
         });
 
@@ -528,26 +487,20 @@ public class ManagePasswordsForm extends AbstractForm
 
                         updateProgress(9, 10);
 
-                        for (int i = 0; i <= Settings.getclipboardLiveTime() && !isCancelled(); i +=
-                                100)
+                        for (int i = 0; i <= Settings.getclipboardLiveTime() && !isCancelled(); i += 100)
                         {
-                            updateProgress(Settings.getclipboardLiveTime() - i,
-                                    Settings.getclipboardLiveTime());
+                            updateProgress(Settings.getclipboardLiveTime() - i, Settings.getclipboardLiveTime());
                             Thread.sleep(100);
 
                             if (i % 1000 == 0)
                             {
                                 try
                                 {
-                                    TrayAgent
-                                            .getInstance()
-                                            .showNotification(
-                                                    TextID.PASSWORD_COPIED.toString(),
-                                                    TextID.TIME_LEFT.toString()
-                                                            + ": "
-                                                            + ((Settings.getclipboardLiveTime() - i) / 1000)
-                                                            + " " + TextID.S.toString(),
-                                                    MessageType.INFO);
+                                    TrayAgent.getInstance().showNotification(
+                                            TextID.PASSWORD_COPIED.toString(),
+                                            TextID.TIME_LEFT.toString() + ": "
+                                                    + ((Settings.getclipboardLiveTime() - i) / 1000) + " "
+                                                    + TextID.S.toString(), MessageType.INFO);
                                 }
                                 catch (Exceptions e)
                                 {
@@ -568,8 +521,8 @@ public class ManagePasswordsForm extends AbstractForm
                     pi_PWDLifeTime.setVisible(false);
                     try
                     {
-                        TrayAgent.getInstance().showNotification(
-                                TextID.PASSWORD_REMOVED.toString(), "", MessageType.INFO);
+                        TrayAgent.getInstance().showNotification(TextID.PASSWORD_REMOVED.toString(), "",
+                                MessageType.INFO);
                     }
                     catch (Exceptions e)
                     {
