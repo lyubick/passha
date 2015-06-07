@@ -14,7 +14,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -45,22 +44,22 @@ public class ChangePasswordConfirmDlg extends AbstractForm
     ChangePasswordConfirmDlg()
     {
         // ========== LABELS ========== //
-        l_Warning = new Label(TextID.CHANGE_PWD_WARNING.toString());
-
-        l_Warning.setMaxWidth(MAX_WARNING_WIDTH);
-        l_Warning.setWrapText(true);
+        l_Warning = new Label(TextID.CHANGE_PWD_WARNING.toString(), MAX_WARNING_WIDTH);
         l_Warning.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setHalignment(l_Warning, HPos.CENTER);
 
-        l_Header = getLabel(TextID.CHANGE_PWD_HEADER.toString());
+        l_Warning.beError();
+
+        l_Header = new Label(TextID.CHANGE_PWD_HEADER.toString());
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
         // ========== BUTTONS ========== //
 
         b_OK = getButton(TextID.OK.toString());
         b_Cancel = getButton(TextID.CANCEL.toString());
+
         GridPane.setHalignment(b_OK, HPos.RIGHT);
         GridPane.setHalignment(b_Cancel, HPos.RIGHT);
-
         GridPane.setMargin(b_OK, new Insets(0, BUTTON_X_WIDTH + HGAP, 0, 0));
 
         grid.add(l_Header, 0, 0);

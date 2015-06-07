@@ -7,7 +7,6 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import utilities.Utilities;
-import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
 
@@ -34,8 +33,6 @@ public final class RSA
     {
         StringBuilder cipher = new StringBuilder("");
         Random r = new Random();
-
-        Logger.printDebug("Encipher: " + Utilities.bytesToHex(message));
 
         int messageBlockCount =
                 (message.length / RSA_BYTE_MESSAGE_BLOCK_LENGTH)
@@ -64,8 +61,6 @@ public final class RSA
             for (int j = 0; j < blockLength; j++)
                 chunk[RSA_BYTE_PADDING_LENGTH + j] = message[messagegBlockStart + j];
 
-            Logger.printDebug("BIGINTEGER cipher: " + new BigInteger(chunk).toString());
-
             StringBuilder fCipher = new StringBuilder(new BigInteger(chunk).modPow(e, n).toString());
 
             while (fCipher.length() < RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)
@@ -73,8 +68,6 @@ public final class RSA
 
             cipher.append(fCipher);
         }
-
-        Logger.printDebug("Cipher: " + cipher);
 
         return cipher.toString();
     }
@@ -88,14 +81,10 @@ public final class RSA
             BigInteger fDecipher =
                     new BigInteger(message.substring(i, i + RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)).modPow(d, n);
 
-            Logger.printDebug("BIGINTEGER decipher: " + fDecipher.toString());
-
             byte[] chunk = fDecipher.toByteArray();
 
             decipher.write(chunk, RSA_BYTE_PADDING_LENGTH, chunk.length - RSA_BYTE_PADDING_LENGTH);
         }
-
-        Logger.printDebug("Decipher: " + Utilities.bytesToHex(decipher.toByteArray()));
 
         return decipher.toByteArray();
     }

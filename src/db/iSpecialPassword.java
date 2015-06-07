@@ -20,7 +20,7 @@ public class iSpecialPassword
 
     public iSpecialPassword(SpecialPassword example)
     {
-        Logger.printDebug("iSpecialPassword constructor... START");
+        Logger.printDebug("iSpecialPassword constructor STARTS...");
 
         this.name = new SimpleStringProperty(example.getName());
         this.comment = new SimpleStringProperty(example.getComment());
@@ -28,7 +28,7 @@ public class iSpecialPassword
 
         this.origin = example;
 
-        Logger.printDebug("iSpecialPassword constructor... DONE!");
+        Logger.printDebug("iSpecialPassword constructor END");
     }
 
     public SpecialPassword getOrigin()

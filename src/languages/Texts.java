@@ -60,8 +60,10 @@ public class Texts
         ERROR(new String[]
         { "ERROR!", "ОШИБКА!" }),
 
-        ERR_MISSING_PASSWORD_NAME(new String[]
-        { "Error! Password name must be entered!", "Ошибка! Необходимо ввести имя Пароля!" }),
+        ERR_MISSING_MANDATORY_PARAMETERS(
+                new String[]
+                { "Error! One or more mandatory fields are missing.",
+                        "Ошибка! Одно или более обязательных полей не заполнены." }),
 
         ERR_NAME_ALREADY_TAKEN(new String[]
         { "Error! Name already taken!", "Ошибка! Имя уже занято!" }),

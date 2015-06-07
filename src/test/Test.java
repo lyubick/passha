@@ -19,8 +19,8 @@ import rsa.RSA;
 import sha.SHA;
 import utilities.Utilities;
 import db.SpecialPassword;
+import db.SpecialPassword.PARAMS_MASK_BITS;
 import db.UserFileIO;
-import db.SpecialPassword.ParamsMaskBits;
 
 /**
  * @author lyubick
@@ -80,8 +80,8 @@ public class Test
         SpecialPassword sp = null;
         try
         {
-            BitSet paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
-            paramsMask.set(0, ParamsMaskBits.TOTAL_COUNT.ordinal());
+            BitSet paramsMask = new BitSet(PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
+            paramsMask.set(0, PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
 
             sp = new SpecialPassword("name", "comment", "url", 16, paramsMask, "@!=-%#");
         }

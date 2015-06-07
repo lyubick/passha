@@ -6,18 +6,22 @@ package ui;
 import main.Exceptions;
 import main.Exceptions.XC;
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -44,26 +48,32 @@ public abstract class AbstractForm
         public static final int height = 650;
     }
 
-    protected GridPane  grid            = new GridPane();
-    protected VBox      group           = new VBox();
-    protected Scene     scene           = new Scene(group, WINDOW.width, WINDOW.height);
+    protected GridPane  grid                    = new GridPane();
+    protected VBox      group                   = new VBox();
+    protected Scene     scene                   = new Scene(group, WINDOW.width, WINDOW.height);
 
-    protected MenuBar   mb_Main         = null;
+    protected MenuBar   mb_Main                 = null;
 
-    protected final int BUTTON_HEIGHT   = 30;
-    protected final int BUTTON_WIDTH    = 80;
-    protected final int BUTTON_X_WIDTH  = 125;
+    protected final int BUTTON_HEIGHT           = 30;
+    protected final int BUTTON_WIDTH            = 80;
+    protected final int BUTTON_X_WIDTH          = 125;
 
-    protected final int LABEL_WIDTH     = 100;
+    protected final int LABEL_WIDTH             = 100;
 
-    protected final int FIELD_WIDTH_S   = 50;
-    protected final int FIELD_WIDTH_N   = 100;
-    protected final int FIELD_WIDTH_L   = 300;
-    protected final int FIELD_WIDTH_PWD = 200;
+    protected final int FIELD_WIDTH_S           = 50;
+    protected final int FIELD_WIDTH_N           = 100;
+    protected final int FIELD_WIDTH_L           = 300;
+    protected final int FIELD_WIDTH_PWD         = 200;
 
-    protected final int buttonHoldTime  = 300;
+    protected final int buttonHoldTime          = 300;
+
+    // Magic number don't lose it!
+    protected final int LABEL_LENGTH_COEFICIENT = 7;
 
     public abstract void draw(Stage stage) throws Exceptions;
+
+    protected final Font FONT_PRIMARY = Font.font("Consolas", FontWeight.NORMAL, 12);
+    protected final Font FONT_ERROR   = Font.font("Consolas", FontWeight.BOLD, 12);
 
     protected AbstractForm()
     {
@@ -75,6 +85,65 @@ public abstract class AbstractForm
         grid.setVgap(VGAP);
         grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
         grid.setAlignment(Pos.CENTER);
+
+    }
+
+    public class Label extends javafx.scene.control.Label
+    {
+        private void setUp()
+        {
+            this.beNormal();
+
+            Label tmp = this;
+
+            this.textProperty().addListener(new ChangeListener<String>()
+            {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+                {
+                    tmp.setMinWidth(newValue.length() * 7);
+                    tmp.setMaxWidth(tmp.getMinWidth());
+                }
+            });
+        }
+
+        public Label()
+        {
+            super();
+            this.setUp();
+        }
+
+        public Label(String name)
+        {
+            super(name);
+            this.setUp();
+
+            this.setMinWidth(name.length() * LABEL_LENGTH_COEFICIENT);
+            this.setMaxWidth(this.getMinWidth());
+        }
+
+        public Label(String name, int wrapped)
+        {
+            super(name);
+            this.setUp();
+
+            this.setMinWidth(wrapped);
+            this.setMaxWidth(this.getMinWidth());
+
+            this.setWrapText(true);
+        }
+
+        public void beError()
+        {
+            this.setTextFill(Color.RED);
+            this.setFont(FONT_ERROR);
+        }
+
+        public void beNormal()
+        {
+            this.setTextFill(Color.BLACK);
+            this.setFont(FONT_PRIMARY);
+        }
 
     }
 
@@ -115,14 +184,6 @@ public abstract class AbstractForm
 
         if (tmp.getWidth() != BUTTON_WIDTH) tmp.setMinWidth(BUTTON_X_WIDTH);
 
-        return tmp;
-    }
-
-    protected Label getLabel(String text)
-    {
-        Label tmp = new Label(text);
-        tmp.setMinWidth(LABEL_WIDTH);
-        tmp.setMaxWidth(LABEL_WIDTH);
         return tmp;
     }
 

@@ -16,7 +16,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -46,7 +45,7 @@ public class LoginForm extends AbstractForm
 
         // ========== LABELS ========== //
 
-        l_Header = getLabel(TextID.ENTER_PASSWORD.toString() + ":");
+        l_Header = new Label(TextID.ENTER_PASSWORD.toString() + ":");
         l_Warning = getWarningLabel("");
 
         // ========== TEXTS ========== //

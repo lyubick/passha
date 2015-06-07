@@ -90,6 +90,8 @@ public final class CryptoSystem
         randomizer = new Random(System.currentTimeMillis());
         // ========== Randomizer initialization END:
 
+        Logger.printDebug("CryptoSystem constructor END");
+
         self = this;
     };
 
@@ -138,7 +140,6 @@ public final class CryptoSystem
             outputStream.write(masterHash.clone());
             outputStream.write((pwdName + cycles).getBytes());
             tmp = outputStream.toByteArray();
-            Logger.printDebug("master hash is " + Utilities.bytesToHex(tmp) + "cycles " + cycles);
         }
         catch (IOException e)
         {

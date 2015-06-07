@@ -6,14 +6,13 @@ package ui;
 import java.util.BitSet;
 
 import languages.Texts.TextID;
-import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.Controller.FORMS;
 import db.PasswordCollection;
 import db.SpecialPassword;
-import db.SpecialPassword.ParamsMaskBits;
+import db.SpecialPassword.PARAMS_MASK_BITS;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -21,7 +20,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Priority;
@@ -35,7 +33,7 @@ public class SpecialPasswordForm extends AbstractForm
 {
     private final class WINDOW
     {
-        public static final int width  = 500;
+        public static final int width  = 600;
         public static final int height = 350;
     }
 
@@ -62,8 +60,8 @@ public class SpecialPasswordForm extends AbstractForm
     private Label        l_name                         = null;
     private Label        l_comment                      = null;
     private Label        l_url                          = null;
-    private Label        lLength                        = null;
-    private Label        lSpecialChars                  = null;
+    private Label        l_Length                       = null;
+    private Label        l_SpecialChars                 = null;
     private CheckBox     cb_specialChars                = null;
     private CheckBox     cb_upperCaseChar               = null;
     private HBox         buttonsBox                     = null;
@@ -76,8 +74,7 @@ public class SpecialPasswordForm extends AbstractForm
             public void handle(KeyEvent keyEvent)
             {
                 String lengthFieldText = tf_length.getText();
-                if (!"0123456789".contains(keyEvent.getCharacter())
-                        || lengthFieldText.length() >= 2)
+                if (!"0123456789".contains(keyEvent.getCharacter()) || lengthFieldText.length() >= 2)
                 {
                     keyEvent.consume();
                 }
@@ -126,11 +123,11 @@ public class SpecialPasswordForm extends AbstractForm
 
         // ========== LABELS ========== //
 
-        l_name = getLabel(TextID.NAME.toString());
-        l_comment = getLabel(TextID.COMMENT.toString());
-        l_url = getLabel(TextID.URL.toString());
-        lLength = getLabel(TextID.LENGTH.toString());
-        lSpecialChars = getLabel(TextID.SPECIAL_CHARACTERS.toString());
+        l_name = new Label(TextID.NAME.toString() + "*");
+        l_comment = new Label(TextID.COMMENT.toString());
+        l_url = new Label(TextID.URL.toString());
+        l_Length = new Label(TextID.LENGTH.toString());
+        l_SpecialChars = new Label(TextID.SPECIAL_CHARACTERS.toString() + "*");
 
         // ========== CHECK BOXES ========== //
 
@@ -148,7 +145,6 @@ public class SpecialPasswordForm extends AbstractForm
         tf_specialChars = new TextField();
 
         tf_length.setMaxWidth(TEXT_FIELD_LENGTH_SIZE);
-        tf_name.setMaxWidth(TEXT_FIELDS_WIDTH);
         tf_name.setMinWidth(TEXT_FIELDS_WIDTH);
         tf_specialChars.setText(SPECIAL_CHARACTERS_DEFAULT_SET);
         tf_specialChars.addEventFilter(KeyEvent.KEY_TYPED, specialCharactersFieldFilter());
@@ -168,7 +164,7 @@ public class SpecialPasswordForm extends AbstractForm
         grid.add(tf_url, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
-        grid.add(lLength, LABELS_COLUMN, currentGridLine);
+        grid.add(l_Length, LABELS_COLUMN, currentGridLine);
         grid.add(tf_length, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
@@ -178,7 +174,7 @@ public class SpecialPasswordForm extends AbstractForm
         grid.add(cb_specialChars, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
-        grid.add(lSpecialChars, LABELS_COLUMN, currentGridLine);
+        grid.add(l_SpecialChars, LABELS_COLUMN, currentGridLine);
         grid.add(tf_specialChars, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
@@ -193,8 +189,7 @@ public class SpecialPasswordForm extends AbstractForm
         tf_length.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
             {
                 if (newValue)
                     tf_length.setText("");
@@ -217,29 +212,26 @@ public class SpecialPasswordForm extends AbstractForm
             public void handle(ActionEvent arg0)
             {
                 b_OK.setDisable(true);
-                Logger.printDebug("Fields: name " + tf_name.getText() + "; comment "
-                        + tf_comment.getText() + "; url " + tf_url.getText() + "; length"
-                        + tf_length.getText());
 
-                BitSet paramsMask = new BitSet(ParamsMaskBits.TOTAL_COUNT.ordinal());
-                paramsMask.set(0, ParamsMaskBits.TOTAL_COUNT.ordinal());
+                BitSet paramsMask = new BitSet(PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
+                paramsMask.set(0, PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
                 int passLength = Integer.parseInt(tf_length.getText());
 
                 if (!cb_specialChars.isSelected())
                 {
-                    paramsMask.clear(ParamsMaskBits.HAS_SPECIAL_CHARACTERS.ordinal());
+                    paramsMask.clear(PARAMS_MASK_BITS.HAS_SPECIAL_CHARACTERS.ordinal());
                 }
 
                 if (!cb_upperCaseChar.isSelected())
                 {
-                    paramsMask.clear(ParamsMaskBits.HAS_CAPITALS.ordinal());
+                    paramsMask.clear(PARAMS_MASK_BITS.HAS_CAPITALS.ordinal());
                 }
 
                 try
                 {
                     PasswordCollection.getInstance().addPassword(
-                            new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url
-                                    .getText(), passLength, paramsMask, tf_specialChars.getText()));
+                            new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url.getText(), passLength,
+                                    paramsMask, tf_specialChars.getText()));
 
                     Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
                 }
@@ -247,7 +239,13 @@ public class SpecialPasswordForm extends AbstractForm
                 {
                     b_OK.setDisable(false);
                     if (e.getCode() == XC.MANDATORY_DATA_MISSING)
-                        l_errorLabel.setText(TextID.ERR_MISSING_PASSWORD_NAME.toString());
+                    {
+                        l_errorLabel.setText(TextID.ERR_MISSING_MANDATORY_PARAMETERS.toString());
+
+                        l_name.beError();
+                        l_SpecialChars.beError();
+
+                    }
                     else if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS)
                         l_errorLabel.setText(TextID.ERR_NAME_ALREADY_TAKEN.toString());
                 }

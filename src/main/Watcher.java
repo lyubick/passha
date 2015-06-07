@@ -34,7 +34,7 @@ public abstract class Watcher extends TimerTask
 
         try
         {
-            Logger.printDebug("Test if any other instance runs.");
+            Logger.printDebug("Test if any other instance is running...");
             Thread.sleep(Settings.ENV_VARS.SINGLE_INSTANCE_CHECK_WAIT);
         }
         catch (InterruptedException e)

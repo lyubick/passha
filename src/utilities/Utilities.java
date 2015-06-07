@@ -192,7 +192,7 @@ public final class Utilities
 
     public static byte[] readBytesFromFile(String fileName) throws Exceptions
     {
-        Logger.printDebug("Reading bytes from '" + fileName + "'");
+        Logger.printDebug("Reading bytes from '" + fileName + "'...");
 
         byte[] readable = new byte[(int) new File(fileName).length()];
 
