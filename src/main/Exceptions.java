@@ -49,6 +49,7 @@ public final class Exceptions extends Throwable
         DEFAULT_SETTINGS_USED,
 
         // TODO
+        RESTART,
         END,
         END_DISCARD
     }

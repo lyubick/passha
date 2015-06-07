@@ -5,7 +5,9 @@ package ui;
 
 import languages.Texts.TextID;
 import main.Exceptions;
+import main.Exceptions.XC;
 import main.Settings;
+import main.Terminator;
 import ui.Controller.FORMS;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -101,8 +103,12 @@ public class SettingsForm extends AbstractForm
                     Settings.getInstance().setLanguage(cb_Language.getValue());
                     Settings.getInstance().setClipboardLiveTime(hb_Clipboard.getEntryTextField().getText());
 
-                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
                     Settings.getInstance().saveSettings();
+
+                    if (Settings.getInstance().isRestartRequired())
+                        Terminator.terminate(new Exceptions(XC.RESTART));
+                    else
+                        Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
                 }
                 catch (Exceptions e)
                 {

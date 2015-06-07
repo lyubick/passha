@@ -13,7 +13,9 @@ import utilities.Utilities;
  */
 public class Settings
 {
-    private static Settings self = null;
+    private static Settings self            = null;
+
+    private boolean         restartRequired = false;
 
     public static class ENV_VARS
     {
@@ -80,7 +82,15 @@ public class Settings
 
     public void setLanguage(String newLang)
     {
+        if (!settings.get(PREFIX.LANGUAGE.toString()).equals(newLang)) restartRequired = true;
+
         settings.put(PREFIX.LANGUAGE.toString(), newLang);
+
+    }
+
+    public boolean isRestartRequired()
+    {
+        return restartRequired;
     }
 
     // CLIPBOARD

@@ -3,8 +3,12 @@
  */
 package main;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import ui.Controller;
 import ui.Controller.FORMS;
@@ -18,6 +22,8 @@ import main.Exceptions.XC;
  */
 public class Terminator
 {
+    private static boolean restartPending = false;
+
     private static void exit(Exceptions e)
     {
         Logger.printDebug("Bye!");
@@ -34,15 +40,50 @@ public class Terminator
         System.exit(e.getCode().ordinal());
     }
 
+    public static void restart()
+    {
+        File currentJar = null;
+
+        try
+        {
+            currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        }
+        catch (URISyntaxException e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        // if (!currentJar.getName().endsWith(".jar")) return;
+
+        final ArrayList<String> command = new ArrayList<String>();
+        command.add(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
+        command.add("-jar");
+        command.add(currentJar.getPath());
+
+        final ProcessBuilder builder = new ProcessBuilder(command);
+        try
+        {
+            builder.start();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.exit(0);
+    }
+
     public static void terminate(Exceptions e)
     {
-        if (e.getCode().equals(XC.END))
+        if (e.getCode().equals(XC.END) || e.getCode().equals(XC.RESTART))
         {
             try
             {
                 if (PasswordCollection.getInstance().isChanged())
                 {
                     Controller.getInstance().switchForm(FORMS.SAVE_DB);
+                    if (e.getCode().equals(XC.RESTART)) restartPending = true;
                     return;
                 }
             }
@@ -50,11 +91,13 @@ public class Terminator
             {
                 Terminator.terminate(e1);
             }
-
-            exit(e); // Normal exit
         }
 
-        if (e.getCode().equals(XC.END_DISCARD)) exit(e);
+        if (e.getCode().equals(XC.END) || e.getCode().equals(XC.END_DISCARD) || e.getCode().equals(XC.RESTART))
+        {
+            if (restartPending || e.getCode().equals(XC.RESTART)) restart();
+            exit(e);
+        }
 
         Logger.printError("TERMINATOR: FATAL ERROR OCCURED: " + e.getCode().name());
 
