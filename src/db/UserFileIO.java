@@ -45,7 +45,7 @@ public final class UserFileIO
                 }
                 catch (FileNotFoundException e)
                 {
-                    Terminator.terminate(new Exceptions(XC.WRITE_ERROR));
+                    Terminator.terminate(new Exceptions(XC.FILE_WRITE_ERROR));
                 }
             }
             else
@@ -78,7 +78,7 @@ public final class UserFileIO
         }
         catch (Exceptions e)
         {
-            Terminator.terminate(new Exceptions(XC.READ_ERROR));
+            Terminator.terminate(new Exceptions(XC.FILE_READ_ERROR));
         }
         return null;
     }

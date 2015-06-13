@@ -34,7 +34,7 @@ public class Terminator
         }
         catch (Exceptions e1)
         {
-            // TODO
+            // TODO what can we do?
         }
 
         System.exit(e.getCode().ordinal());
@@ -42,36 +42,22 @@ public class Terminator
 
     public static void restart()
     {
-        File currentJar = null;
-
         try
         {
-            currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-        }
-        catch (URISyntaxException e1)
-        {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        // if (!currentJar.getName().endsWith(".jar")) return;
-
-        final ArrayList<String> command = new ArrayList<String>();
-        command.add(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
-        command.add("-jar");
-        command.add(currentJar.getPath());
-
-        final ProcessBuilder builder = new ProcessBuilder(command);
-        try
-        {
+            File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            final ArrayList<String> command = new ArrayList<String>();
+            command.add(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
+            command.add("-jar");
+            command.add(currentJar.getPath());
+            final ProcessBuilder builder = new ProcessBuilder(command);
             builder.start();
         }
-        catch (IOException e)
+        catch (URISyntaxException | IOException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Terminator.terminate(new Exceptions(XC.RESTART_FAILED));
         }
-        System.exit(0);
+
+        Terminator.exit(new Exceptions(XC.END));
     }
 
     public static void terminate(Exceptions e)

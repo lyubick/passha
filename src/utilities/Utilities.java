@@ -131,6 +131,8 @@ public final class Utilities
 
     public static String bytesToHex(byte[] bytes)
     {
+        if (bytes == null) return null;
+
         final char[] hexArray = "0123456789abcdef".toCharArray();
 
         char[] hexChars = new char[bytes.length * 2];
@@ -166,7 +168,7 @@ public final class Utilities
         }
         catch (FileNotFoundException e)
         {
-            throw new Exceptions(XC.WRITE_ERROR);
+            throw new Exceptions(XC.FILE_WRITE_ERROR);
         }
 
         Logger.printDebug("Writing to '" + fileName + "' DONE!");
@@ -184,7 +186,7 @@ public final class Utilities
         }
         catch (IOException e)
         {
-            throw new Exceptions(XC.WRITE_ERROR);
+            throw new Exceptions(XC.FILE_WRITE_ERROR);
         }
 
         Logger.printDebug("Writing to '" + fileName + "' DONE!");
@@ -204,7 +206,7 @@ public final class Utilities
         }
         catch (IOException e)
         {
-            throw new Exceptions(XC.READ_ERROR);
+            throw new Exceptions(XC.FILE_READ_ERROR);
         }
         Logger.printDebug("Reading bytes from '" + fileName + "'" + "DONE!");
 
@@ -231,7 +233,7 @@ public final class Utilities
         }
         catch (IOException e)
         {
-            throw new Exceptions(XC.READ_ERROR);
+            throw new Exceptions(XC.FILE_READ_ERROR);
         }
 
         Logger.printDebug("Reading from '" + fileName + "'" + "DONE!");

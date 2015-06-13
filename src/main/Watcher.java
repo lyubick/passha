@@ -7,13 +7,11 @@ import logger.Logger;
 
 public abstract class Watcher extends TimerTask
 {
-    private static Watcher self;
-    private File           file;
+    private File file;
 
     public Watcher()
     {
         this.file = new File("~passha.running");
-        self = this;
 
         if (file.exists())
         {
@@ -54,12 +52,6 @@ public abstract class Watcher extends TimerTask
             System.exit(0);
         }
 
-        self = this;
-    }
-
-    public static Watcher getInstance()
-    {
-        return self;
     }
 
     public final void run()

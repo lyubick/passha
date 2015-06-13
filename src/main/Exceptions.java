@@ -28,9 +28,9 @@ public final class Exceptions extends Throwable
         // ONLY FileIO class Exceptions
         FILE_DOES_NOT_EXISTS,
 
-        WRITE_ERROR,
-        READ_ERROR,
-        CLOSE_ERROR,
+        FILE_WRITE_ERROR,
+        FILE_READ_ERROR,
+        FILE_CLOSE_ERROR,
 
         // ONLY New Password dialog exceptions
         MANDATORY_DATA_MISSING,
@@ -47,6 +47,9 @@ public final class Exceptions extends Throwable
         // Exception that indicates LOAD failure, but program can continue with
         // DEFAULT presets
         DEFAULT_SETTINGS_USED,
+
+        // Terminator exceptions
+        RESTART_FAILED,
 
         // TODO
         RESTART,

@@ -124,10 +124,22 @@ public final class Logger
         self = new Logger();
     }
 
-    public void loggerOFF()
+    private void end()
     {
         writer.close();
         self = null;
+    }
+
+    public void loggerOFF()
+    {
+        try
+        {
+            Logger.getInstance().end();
+        }
+        catch (Exceptions e)
+        {
+            return;
+        }
     }
 
     public static Logger getInstance() throws Exceptions
