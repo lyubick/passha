@@ -10,9 +10,6 @@ import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-import ui.Controller;
-import ui.Controller.FORMS;
-import db.PasswordCollection;
 import logger.Logger;
 import main.Exceptions.XC;
 
@@ -62,28 +59,9 @@ public class Terminator
 
     public static void terminate(Exceptions e)
     {
-        if (e.getCode().equals(XC.END) || e.getCode().equals(XC.RESTART))
-        {
-            try
-            {
-                if (PasswordCollection.getInstance().isChanged())
-                {
-                    Controller.getInstance().switchForm(FORMS.SAVE_DB);
-                    if (e.getCode().equals(XC.RESTART)) restartPending = true;
-                    return;
-                }
-            }
-            catch (Exceptions e1)
-            {
-                Terminator.terminate(e1);
-            }
-        }
+        if (e.getCode().equals(XC.RESTART)) restart();
 
-        if (e.getCode().equals(XC.END) || e.getCode().equals(XC.END_DISCARD) || e.getCode().equals(XC.RESTART))
-        {
-            if (restartPending || e.getCode().equals(XC.RESTART)) restart();
-            exit(e);
-        }
+        if (e.getCode().equals(XC.END)) exit(e);
 
         Logger.printError("TERMINATOR: FATAL ERROR OCCURED: " + e.getCode().name());
 

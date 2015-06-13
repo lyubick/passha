@@ -110,7 +110,6 @@ public final class Controller
         forms[FORMS.CHANGE_PWD.ordinal()] = new ChangePasswordConfirmDlg();
         forms[FORMS.SETTINGS.ordinal()] = new SettingsForm();
         forms[FORMS.EXPORT.ordinal()] = new ExportForm();
-        forms[FORMS.SAVE_DB.ordinal()] = new SaveDlg();
 
         return self;
     }

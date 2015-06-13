@@ -13,7 +13,6 @@ import main.Terminator;
 import main.Exceptions.XC;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 
 /**
  * @author lyubick
@@ -23,23 +22,9 @@ public class PasswordCollection
 {
     private Vector<SpecialPassword>   db               = new Vector<SpecialPassword>();
     private static PasswordCollection self             = null;
-    private boolean                   changed          = false;
     private SpecialPassword           selectedPassword = null;
 
-    public SpecialPassword getSelected()
-    {
-        return selectedPassword;
-    }
-
-    public void setSelected(SpecialPassword pwd)
-    {
-        selectedPassword = pwd;
-    }
-
-    public boolean isChanged()
-    {
-        return changed;
-    }
+    // ==========
 
     private PasswordCollection()
     {
@@ -59,22 +44,45 @@ public class PasswordCollection
         return self;
     }
 
-    public void replacePasword(SpecialPassword newSp)
+    // ==========
+
+    public SpecialPassword getSelected()
     {
-        selectedPassword.setShaCycles(newSp.getShaCycles());
-        changed = true;
+        return selectedPassword;
     }
+
+    public void setSelected(SpecialPassword pwd)
+    {
+        selectedPassword = pwd;
+    }
+
+    // ==========
 
     public void addPassword(SpecialPassword sp) throws Exceptions
     {
         for (SpecialPassword existing : db)
             if (existing.getName().equals(sp.getName())) throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
 
+        UserFileIO.getInstance().add(CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(sp.getMap())));
         db.addElement(sp);
-
-        changed = true;
     }
 
+    public void removePassword(SpecialPassword sp) throws Exceptions
+    {
+        UserFileIO.getInstance().delete(CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(sp.getMap())));
+        db.remove(sp);
+    }
+
+    public void replacePasword(SpecialPassword sp) throws Exceptions
+    {
+        String oldEntry = CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(selectedPassword.getMap()));
+        selectedPassword.setShaCycles(sp.getShaCycles());
+        String newEntry = CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(selectedPassword.getMap()));
+
+        UserFileIO.getInstance().replace(newEntry, oldEntry);
+    }
+
+    // ==========
     public ObservableList<iSpecialPassword> getIface()
     {
         ObservableList<iSpecialPassword> pSet = FXCollections.observableArrayList();
@@ -87,102 +95,21 @@ public class PasswordCollection
         return pSet;
     }
 
-    public Task<Void> save()
+    public void load()
     {
-        Task<Void> saveTask = new Task<Void>()
+        Vector<String> encryptedDB;
+        try
         {
-
-            @Override
-            protected Void call() throws Exception
-            {
-                updateProgress(0, 1);
-
-                CryptoSystem cs = null;
-                Vector<String> encryptedPasswords = new Vector<String>();
-                UserFileIO writer = null;
-
-                try
-                {
-                    cs = CryptoSystem.getInstance();
-                    writer = UserFileIO.getInstance();
-
-                    int i = 0;
-                    for (SpecialPassword sp : db)
-                    {
-                        encryptedPasswords.add(cs.rsaEncrypt(Utilities.objectToBytes(sp.getMap())));
-                        updateProgress(++i, db.size());
-                    }
-
-                    writer.writeToUserFile(encryptedPasswords);
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-
-                changed = false;
-                return null;
-            }
-        };
-
-        return saveTask;
-    }
-
-    private Task<Void> load()
-    {
-        Task<Void> loadTask = new Task<Void>()
+            encryptedDB = UserFileIO.getInstance().read();
+            for (String entry : encryptedDB)
+                db.addElement(new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(CryptoSystem
+                        .getInstance().rsaDecrypt(entry))));
+        }
+        catch (Exceptions e)
         {
-            @Override
-            protected Void call()
-            {
-                updateProgress(1, 100);
-                CryptoSystem cs = null;
-                Vector<String> cryptSP = new Vector<String>();
-                UserFileIO reader = null;
+            Terminator.terminate(e);
+        }
 
-                try
-                {
-                    db.clear();
-                    cs = CryptoSystem.getInstance();
-                    reader = UserFileIO.getInstance();
-                    cryptSP = reader.readFromUserFile();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-
-                for (int i = 0; i < cryptSP.size(); ++i)
-                {
-                    try
-                    {
-                        db.addElement(new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(cs
-                                .rsaDecrypt(cryptSP.elementAt(i)))));
-                    }
-                    catch (Exceptions e)
-                    {
-                        Terminator.terminate(e);
-                    }
-                    updateProgress(i + 1, cryptSP.size());
-                }
-
-                return null;
-            }
-        };
-
-        return loadTask;
-    }
-
-    public Task<Void> reload()
-    {
-        changed = false;
-        return load();
-    }
-
-    public void removePassword(SpecialPassword sp)
-    {
-        db.remove(sp);
-        changed = true;
     }
 
     public void export(String fileName)

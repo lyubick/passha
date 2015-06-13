@@ -20,7 +20,6 @@ import sha.SHA;
 import utilities.Utilities;
 import db.SpecialPassword;
 import db.SpecialPassword.PARAMS_MASK_BITS;
-import db.UserFileIO;
 
 /**
  * @author lyubick
@@ -133,49 +132,6 @@ public class Test
         return sp.equals(sp2);
     }
 
-    public static boolean testFileIO()
-    {
-        final int strCount = 5;
-        Vector<String> initialStrings = new Vector<String>();
-        Vector<String> resultStrings = new Vector<String>();
-
-        initialStrings.add("This");
-        initialStrings.add("is");
-        initialStrings.add("sparta");
-        initialStrings.add("you");
-        initialStrings.add("motherfucker");
-
-        try
-        {
-            UserFileIO ftest = UserFileIO.getInstance();
-
-            ftest.writeToUserFile(initialStrings);
-            resultStrings = ftest.readFromUserFile();
-
-            if (strCount == resultStrings.size())
-            {
-                for (int j = 0; j < strCount; ++j)
-                {
-                    if (!resultStrings.elementAt(j).equals(initialStrings.elementAt(j)))
-                    {
-                        Logger.printError("strings does not match");
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-        catch (Exceptions e)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     public static void main(String[] args)
     {
         try
@@ -190,7 +146,6 @@ public class Test
         /* 1. */launchTest(TestRSA());
         /* 2. */launchTest(TestSHA());
         /* 3. */launchTest(testHashMapSerialization());
-        /* 4. */launchTest(testFileIO());
 
         /* Summary */
         System.out.println("\n-= SUMMARY =-");
