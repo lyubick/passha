@@ -6,8 +6,6 @@ package db;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.Vector;
-
 import javafx.concurrent.Task;
 import utilities.Utilities;
 import logger.Logger;
@@ -24,10 +22,10 @@ public final class UserFileIO
     private final String      USER_FILE_PATH = "user/";
     private final String      USER_FILE_EXT  = ".cif";
 
-    private Vector<String>    encryptedDB    = null;
-
     private String            file           = "";
     private static UserFileIO self           = null;
+
+    Database                  db             = null;
 
     public enum Status
     {
@@ -73,8 +71,7 @@ public final class UserFileIO
 
         file = filename.toString();
 
-        // Load a copy of DB from File into the memory
-        encryptedDB = Utilities.readStringsFromFile(file);
+        db = new Database(Utilities.readStringsFromFile(file), true);
     }
 
     public static UserFileIO init(String filename, boolean isNewUser) throws Exceptions
@@ -92,16 +89,11 @@ public final class UserFileIO
         return self;
     }
 
-    public Vector<String> read()
-    {
-        return encryptedDB;
-    }
-
     /**
      * Method will create Task and launch it within new Thread. Task will
      * synchronize contents of local Database with Database located in file.
      */
-    private void sync()
+    public void sync()
     {
         status = Status.IN_PROGRESS;
 
@@ -115,7 +107,7 @@ public final class UserFileIO
             {
                 try
                 {
-                    Utilities.writeToFile(file, encryptedDB);
+                    Utilities.writeToFile(file, db.getEncrypted());
                 }
                 catch (Exceptions e)
                 {
@@ -135,64 +127,8 @@ public final class UserFileIO
         thread.start();
     }
 
-    /**
-     * Method receives encrypted String (Special Password), will add it into
-     * encryptedDB and sync.
-     *
-     * @param entry
-     */
-    public void add(String entry)
+    public Database getDatabase()
     {
-        Logger.printError(entry);
-
-        encryptedDB.addElement(entry);
-        sync();
+        return db;
     }
-
-    /**
-     * Method receives encrypted String (Special Password), will delete it form
-     * encryptedDB and sync.
-     *
-     * @param entry
-     */
-    public void delete(String entry)
-    {
-        Logger.printError(entry);
-        for (String in : encryptedDB)
-        {
-            Logger.printError(in);
-            if (in.equals(entry))
-            {
-                encryptedDB.remove(encryptedDB.indexOf(in));
-                break;
-            }
-        }
-        sync();
-    }
-
-    /**
-     * Method receives two encrypted Strings (Special Password), will substitute
-     * Old Entry with New Entry.
-     *
-     * @param newEntry
-     * @param oldEntry
-     */
-    public void replace(String newEntry, String oldEntry)
-    {
-        Logger.printError(oldEntry);
-        Logger.printError(newEntry);
-        for (String in : encryptedDB)
-        {
-            Logger.printError(in);
-            if (in.equals(oldEntry))
-            {
-                encryptedDB.add(encryptedDB.indexOf(in), newEntry);
-                encryptedDB.remove(encryptedDB.indexOf(in) + 1);
-                break;
-            }
-        }
-
-        sync();
-    }
-
 }

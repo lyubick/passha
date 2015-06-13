@@ -76,22 +76,7 @@ public class ManagePasswordsForm extends AbstractForm
     private MenuItem                    mi_Exit         = null;
     private MenuItem                    mi_Settings     = null;
 
-    private boolean                     firstTime       = true;
-
     private Stage                       parrent         = null;
-
-    public void reloadAllItems()
-    {
-        try
-        {
-            PasswordCollection.getInstance().load();
-            table.setItems(PasswordCollection.getInstance().getIface());
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
-    }
 
     public ManagePasswordsForm()
     {
@@ -458,10 +443,5 @@ public class ManagePasswordsForm extends AbstractForm
 
         stage.show();
 
-        if (firstTime)
-        {
-            firstTime = false;
-            reloadAllItems();
-        }
     }
 }

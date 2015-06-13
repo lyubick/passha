@@ -42,6 +42,8 @@ public final class CryptoSystem
 
     private CryptoSystem(String masterPassword, boolean isNewUser) throws Exceptions
     {
+        self = this; // UserFileIO want CS to be up
+
         Logger.printDebug("CryptoSystem constructor STARTS...");
 
         // ========== SHA initialization START:
@@ -91,8 +93,6 @@ public final class CryptoSystem
         // ========== Randomizer initialization END:
 
         Logger.printDebug("CryptoSystem constructor END");
-
-        self = this;
     };
 
     // ========== PUBLIC STATICS :

@@ -1,33 +1,42 @@
-/**
- *
- */
 package db;
 
-import java.util.HashMap;
 import java.util.Vector;
 
 import utilities.Utilities;
-import cryptosystem.CryptoSystem;
 import main.Exceptions;
-import main.Terminator;
 import main.Exceptions.XC;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
+ * NB! All logic with Database must be implemented here and nowhere else!
+ *
+ * All checks for existence, naming etc. MUST be located in this Class. Password
+ * collection is the only Class that is working with UI. All request must be
+ * going through PasswordColeection.
+ *
+ * Physical File (on Disk) : contains encrypted Collection of Passwords.
+ * Database (in memory) : contains both encrypted/decrypted Collection of
+ * Passwords. UserFileIO : responsible for synchronization between memory and
+ * physical file.
+ *
  * @author lyubick
  *
  */
 public class PasswordCollection
 {
-    private Vector<SpecialPassword>   db               = new Vector<SpecialPassword>();
+    // Database IS and MUST be linked with UserFileIO, so use references with
+    // caution. Basically it could be Singleton (FIXME), but it would make too
+    // much Singletons in code. So lets try to keep it that way.
+    Database                          db               = null; /* UserFileIO */
     private static PasswordCollection self             = null;
     private SpecialPassword           selectedPassword = null;
 
     // ==========
 
-    private PasswordCollection()
+    private PasswordCollection() throws Exceptions
     {
+        db = UserFileIO.getInstance().getDatabase();
         self = this;
     }
 
@@ -58,28 +67,28 @@ public class PasswordCollection
 
     // ==========
 
-    public void addPassword(SpecialPassword sp) throws Exceptions
+    public void addPassword(SpecialPassword entry) throws Exceptions
     {
-        for (SpecialPassword existing : db)
-            if (existing.getName().equals(sp.getName())) throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
+        for (SpecialPassword existing : db.getDecrypted())
+            if (existing.getName().equals(entry.getName())) throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
 
-        UserFileIO.getInstance().add(CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(sp.getMap())));
-        db.addElement(sp);
+        db.addEntry(entry);
+
+        UserFileIO.getInstance().sync(); // Save to file
     }
 
-    public void removePassword(SpecialPassword sp) throws Exceptions
+    public void removePassword(SpecialPassword entry) throws Exceptions
     {
-        UserFileIO.getInstance().delete(CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(sp.getMap())));
-        db.remove(sp);
+        db.deleteEntry(entry);
+
+        UserFileIO.getInstance().sync(); // Save to file
     }
 
-    public void replacePasword(SpecialPassword sp) throws Exceptions
+    public void replacePasword(SpecialPassword newEntry) throws Exceptions
     {
-        String oldEntry = CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(selectedPassword.getMap()));
-        selectedPassword.setShaCycles(sp.getShaCycles());
-        String newEntry = CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(selectedPassword.getMap()));
+        db.replaceEntry(newEntry, selectedPassword);
 
-        UserFileIO.getInstance().replace(newEntry, oldEntry);
+        UserFileIO.getInstance().sync(); // Save to file
     }
 
     // ==========
@@ -87,29 +96,12 @@ public class PasswordCollection
     {
         ObservableList<iSpecialPassword> pSet = FXCollections.observableArrayList();
 
-        for (SpecialPassword sp : db)
+        for (SpecialPassword sp : db.getDecrypted())
         {
             pSet.add(new iSpecialPassword(sp));
         }
 
         return pSet;
-    }
-
-    public void load()
-    {
-        Vector<String> encryptedDB;
-        try
-        {
-            encryptedDB = UserFileIO.getInstance().read();
-            for (String entry : encryptedDB)
-                db.addElement(new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(CryptoSystem
-                        .getInstance().rsaDecrypt(entry))));
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
-
     }
 
     public void export(String fileName)
@@ -125,7 +117,7 @@ public class PasswordCollection
         Vector<String> exportStrings = new Vector<String>();
 
         exportStrings.add(FILE_START_TAG);
-        for (SpecialPassword sp : db)
+        for (SpecialPassword sp : db.getDecrypted())
         {
             exportStrings.add(RECORD_START_TAG);
             exportStrings.add(TAB + TAB + "name=" + sp.getName());
