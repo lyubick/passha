@@ -87,10 +87,10 @@ public class ManagePasswordsForm extends AbstractForm
 
         // ========== MENU ========== //
         mb_Main = new MenuBar();
-        m_File = new Menu(TextID.FILE.toString());
+        m_File = new Menu(TextID.FORM_MENU_LABEL_FILE.toString());
 
-        mi_Settings = new MenuItem(TextID.SETTINGS.toString());
-        mi_Exit = new MenuItem(TextID.EXIT.toString());
+        mi_Settings = new MenuItem(TextID.FORM_SETTINGS_NAME.toString());
+        mi_Exit = new MenuItem(TextID.FORM_MENU_LABEL_EXIT.toString());
 
         m_File.getItems().addAll(mi_Settings, mi_Exit);
         mb_Main.getMenus().add(m_File);
@@ -141,20 +141,20 @@ public class ManagePasswordsForm extends AbstractForm
 
         // ========== BUTTONS ========== //
         // FIXME LANG shortcuts
-        b_New = getButton("_" + TextID.NEW.toString());
-        b_Delete = getButton("_" + TextID.DELETE.toString());
-        b_Copy = getButton("_" + TextID.COPY_CLIPBOARD.toString());
-        b_Export = getButton("_" + TextID.EXPORT.toString());
-        b_Reset = getButton("_" + TextID.RESET_PASSWORD.toString());
+        b_New = getButton("_" + TextID.FORM_PWD_CHANGE_LABEL_NEW.toString());
+        b_Delete = getButton("_" + TextID.FORM_SP_MANAGER_LABEL_DELETE.toString());
+        b_Copy = getButton("_" + TextID.FORM_PWD_MANAGER_LABEL_COPY_TO_CLIPBOARD.toString());
+        b_Export = getButton("_" + TextID.FORM_PWD_MANAGER_LABEL_EXPORT.toString());
+        b_Reset = getButton("_" + TextID.FORM_PWD_MANAGER_LABEL_RESET.toString());
 
         // ========== TABLE ========== //
         table = new TableView<iSpecialPassword>();
 
         TableColumn<iSpecialPassword, String> cName =
-                new TableColumn<iSpecialPassword, String>(TextID.PWD_NAME.toString());
+                new TableColumn<iSpecialPassword, String>(TextID.FORM_PWD_MANAGER_TABLE_LABEL_PWD_NAME.toString());
         TableColumn<iSpecialPassword, String> cComment =
-                new TableColumn<iSpecialPassword, String>(TextID.COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<iSpecialPassword, String>(TextID.URL.toString());
+                new TableColumn<iSpecialPassword, String>(TextID.FORM_SP_LABEL_COMMENT.toString());
+        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<iSpecialPassword, String>(TextID.FORM_SP_LABEL_URL.toString());
 
         table.getColumns().add(cName);
         table.getColumns().add(cComment);
@@ -349,10 +349,10 @@ public class ManagePasswordsForm extends AbstractForm
                                 try
                                 {
                                     TrayAgent.getInstance().showNotification(
-                                            TextID.PASSWORD_COPIED.toString(),
-                                            TextID.TIME_LEFT.toString() + ": "
+                                            TextID.TRAY_MESSAGE_INFO_COPIED_TO_CLIPBOARD.toString(),
+                                            TextID.TRAY_MESSAGE_TIME_LEFT.toString() + ": "
                                                     + ((Settings.getInstance().getClipboardLiveTime() - i) / 1000)
-                                                    + " " + TextID.S.toString(), MessageType.INFO);
+                                                    + " " + TextID.COMMON_LABEL_SECONDS.toString(), MessageType.INFO);
                                 }
                                 catch (Exceptions e)
                                 {
@@ -373,7 +373,7 @@ public class ManagePasswordsForm extends AbstractForm
                     pi_PWDLifeTime.setVisible(false);
                     try
                     {
-                        TrayAgent.getInstance().showNotification(TextID.PASSWORD_REMOVED.toString(), "",
+                        TrayAgent.getInstance().showNotification(TextID.TRAY_MESSAGE_INFO_PWD_REMOVED_FROM_CLIPBOARD.toString(), "",
                                 MessageType.INFO);
                     }
                     catch (Exceptions e)
@@ -415,7 +415,7 @@ public class ManagePasswordsForm extends AbstractForm
         tf_pass.clear();
         table.setItems(PasswordCollection.getInstance().getIface());
 
-        stage.setTitle(TextID.PROGRAM_NAME.toString() + " " + TextID.VERSION.toString());
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);

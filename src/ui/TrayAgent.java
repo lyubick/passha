@@ -34,11 +34,11 @@ public class TrayAgent
 
         Image image = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("resources/tray_icon.png"));
         PopupMenu popup = new PopupMenu();
-        MenuItem itemExit = new MenuItem(TextID.EXIT.toString());
+        MenuItem itemExit = new MenuItem(TextID.FORM_MENU_LABEL_EXIT.toString());
 
         popup.add(itemExit);
 
-        trayIcon = new TrayIcon(image, TextID.PROGRAM_NAME.toString() + " " + TextID.VERSION.toString(), popup);
+        trayIcon = new TrayIcon(image, TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString(), popup);
 
         trayIcon.addActionListener(new ActionListener()
         {

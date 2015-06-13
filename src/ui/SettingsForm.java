@@ -46,14 +46,14 @@ public class SettingsForm extends AbstractForm
 
     public SettingsForm()
     {
-        l_Header = new Label(TextID.SETTINGS.toString());
+        l_Header = new Label(TextID.FORM_SETTINGS_NAME.toString());
         l_Header.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
         langOptions =
                 FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
 
-        l_Language = new Label(TextID.LANGUAGE.toString());
+        l_Language = new Label(TextID.FORM_SETTINGS_LABEL_LANGUAGE.toString());
         l_Language.setMinWidth(LABEL_WIDTH);
 
         cb_Language = new ComboBox<String>(langOptions);
@@ -70,7 +70,7 @@ public class SettingsForm extends AbstractForm
         hb_Language = new HBox();
         hb_Language.getChildren().addAll(l_Language, cb_Language);
 
-        hb_Clipboard = getTextEntry(TextID.DELAY.toString() + " " + TextID.S.toString(), FIELD_WIDTH_S);
+        hb_Clipboard = getTextEntry(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " " + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH_S);
         try
         {
             hb_Clipboard.getEntryTextField().setText(
@@ -81,7 +81,7 @@ public class SettingsForm extends AbstractForm
             Terminator.terminate(e);
         }
 
-        b_OK = getButton(TextID.OK.toString());
+        b_OK = getButton(TextID.COMMON_LABEL_OK.toString());
 
         grid.add(l_Header, 0, 0);
         grid.add(hb_Clipboard, 0, 1);
@@ -120,7 +120,7 @@ public class SettingsForm extends AbstractForm
     {
         stage.setScene(scene);
 
-        stage.setTitle(TextID.PROGRAM_NAME.toString() + " " + TextID.VERSION.toString());
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
 
         stage.setResizable(false);
 

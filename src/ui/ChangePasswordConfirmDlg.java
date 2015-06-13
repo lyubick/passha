@@ -44,19 +44,19 @@ public class ChangePasswordConfirmDlg extends AbstractForm
     ChangePasswordConfirmDlg()
     {
         // ========== LABELS ========== //
-        l_Warning = new Label(TextID.CHANGE_PWD_WARNING.toString(), MAX_WARNING_WIDTH);
+        l_Warning = new Label(TextID.FORM_PWD_CHANGE_WARNING.toString(), MAX_WARNING_WIDTH);
         l_Warning.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_Warning, HPos.CENTER);
 
         l_Warning.beError();
 
-        l_Header = new Label(TextID.CHANGE_PWD_HEADER.toString());
+        l_Header = new Label(TextID.FORM_PWD_CHANGE_NAME.toString());
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
         // ========== BUTTONS ========== //
 
-        b_OK = getButton(TextID.OK.toString());
-        b_Cancel = getButton(TextID.CANCEL.toString());
+        b_OK = getButton(TextID.COMMON_LABEL_OK.toString());
+        b_Cancel = getButton(TextID.COMMON_LABEL_CANCEL.toString());
 
         GridPane.setHalignment(b_OK, HPos.RIGHT);
         GridPane.setHalignment(b_Cancel, HPos.RIGHT);
@@ -64,8 +64,8 @@ public class ChangePasswordConfirmDlg extends AbstractForm
 
         grid.add(l_Header, 0, 0);
 
-        CurrentPassword = getTextEntry(TextID.CURRENT_PWD.toString(), FIELD_WIDTH_PWD);
-        NewPassword = getTextEntry(TextID.NEW.toString(), FIELD_WIDTH_PWD);
+        CurrentPassword = getTextEntry(TextID.FORM_PWD_CHANGE_LABEL_CURRENT.toString(), FIELD_WIDTH_PWD);
+        NewPassword = getTextEntry(TextID.FORM_PWD_CHANGE_LABEL_NEW.toString(), FIELD_WIDTH_PWD);
 
         CurrentPassword.getEntryTextField().setEditable(false);
         NewPassword.getEntryTextField().setEditable(false);
@@ -117,7 +117,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
     {
         stage.setScene(scene);
 
-        stage.setTitle(TextID.PROGRAM_NAME.toString() + " " + TextID.VERSION.toString());
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
 
         CurrentPassword.getEntryTextField().setText(PasswordCollection.getInstance().getSelected().getPassword());
 

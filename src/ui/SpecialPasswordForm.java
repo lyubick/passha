@@ -106,8 +106,8 @@ public class SpecialPasswordForm extends AbstractForm
 
         // ========== BUTTONS ========== //
 
-        b_OK = getButton(TextID.CREATE.toString());
-        b_cancel = getButton(TextID.CANCEL.toString());
+        b_OK = getButton(TextID.FORM_SP_LABEL_CREATE.toString());
+        b_cancel = getButton(TextID.COMMON_LABEL_CANCEL.toString());
 
         buttonsBox = new HBox();
 
@@ -122,16 +122,16 @@ public class SpecialPasswordForm extends AbstractForm
 
         // ========== LABELS ========== //
 
-        l_name = new Label(TextID.NAME.toString() + "*");
-        l_comment = new Label(TextID.COMMENT.toString());
-        l_url = new Label(TextID.URL.toString());
-        l_Length = new Label(TextID.LENGTH.toString());
-        l_SpecialChars = new Label(TextID.SPECIAL_CHARACTERS.toString() + "*");
+        l_name = new Label(TextID.FORM_SP_LABEL_NAME.toString() + "*");
+        l_comment = new Label(TextID.FORM_SP_LABEL_COMMENT.toString());
+        l_url = new Label(TextID.FORM_SP_LABEL_URL.toString());
+        l_Length = new Label(TextID.FORM_SP_LABEL_LENGTH.toString());
+        l_SpecialChars = new Label(TextID.FORM_SP_LABEL_SPECIAL_CHARACTERS.toString() + "*");
 
         // ========== CHECK BOXES ========== //
 
-        cb_specialChars = new CheckBox(TextID.MUST_CONTAINT_SPECIAL_CHARS.toString());
-        cb_upperCaseChar = new CheckBox(TextID.MUST_CONTAIN_UPPER_CASE_CHAR.toString());
+        cb_specialChars = new CheckBox(TextID.FORM_SP_LABEL_MUST_HAVE_SPECIAL.toString());
+        cb_upperCaseChar = new CheckBox(TextID.FORM_SP_LABEL_MUST_HAVE_UPPER.toString());
         cb_specialChars.setSelected(true);
         cb_upperCaseChar.setSelected(true);
 
@@ -239,14 +239,14 @@ public class SpecialPasswordForm extends AbstractForm
                     b_OK.setDisable(false);
                     if (e.getCode() == XC.MANDATORY_DATA_MISSING)
                     {
-                        l_errorLabel.setText(TextID.ERR_MISSING_MANDATORY_PARAMETERS.toString());
+                        l_errorLabel.setText(TextID.FORM_SP_LABEL_ERROR_MISSING_PARAM.toString());
 
                         l_name.beError();
                         l_SpecialChars.beError();
 
                     }
                     else if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS)
-                        l_errorLabel.setText(TextID.ERR_NAME_ALREADY_TAKEN.toString());
+                        l_errorLabel.setText(TextID.FORM_SP_LABEL_ERROR_NAME_EXISTS.toString());
                 }
             }
         });

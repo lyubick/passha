@@ -45,7 +45,7 @@ public class LoginForm extends AbstractForm
 
         // ========== LABELS ========== //
 
-        l_Header = new Label(TextID.ENTER_PASSWORD.toString() + ":");
+        l_Header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ":");
         l_Warning = getWarningLabel("");
 
         // ========== TEXTS ========== //
@@ -55,8 +55,8 @@ public class LoginForm extends AbstractForm
 
         // ========== BUTTONS ========== //
 
-        b_Login = getButton(TextID.LOGIN.toString());
-        b_Register = getButton(TextID.REGISTER.toString());
+        b_Login = getButton(TextID.FORM_LOGIN_LABEL_LOGIN.toString());
+        b_Register = getButton(TextID.FORM_LOGIN_LABEL_REGISTER.toString());
 
         b_Login.setDefaultButton(true);
 
@@ -75,9 +75,9 @@ public class LoginForm extends AbstractForm
         // ========== PROPERTIES ========== //
 
         pf_Password.setMinWidth(WINDOW.width - 50);
-        pf_Password.setPromptText(TextID.PWD.toString());
+        pf_Password.setPromptText(TextID.FORM_LOGIN_LABEL_PASSWORD.toString());
 
-        pf_PasswordConfirm.setPromptText(TextID.RETYPE.toString());
+        pf_PasswordConfirm.setPromptText(TextID.FORM_LOGIN_LABEL_RETYPE.toString());
         pf_PasswordConfirm.setVisible(false);
 
         b_Login.setMinWidth(BUTTON_WIDTH);
@@ -112,7 +112,7 @@ public class LoginForm extends AbstractForm
                                 pf_PasswordConfirm.setVisible(true);
                                 pf_Password.setDisable(true);
 
-                                l_Warning.setText(TextID.PASSWORD_INCORRECT.toString());
+                                l_Warning.setText(TextID.FORM_LOGIN_ERROR_PWD_INCORRECT.toString());
                             }
                             else
                             {
@@ -141,7 +141,7 @@ public class LoginForm extends AbstractForm
                     else
                     {
                         reset();
-                        l_Warning.setText(TextID.PASSWORDS_DONT_MATCH.toString());
+                        l_Warning.setText(TextID.FORM_LOGIN_ERROR_PWDS_DONT_MATCH.toString());
                     }
                 }
                 catch (Exceptions e)
@@ -169,7 +169,7 @@ public class LoginForm extends AbstractForm
     {
         Logger.printDebug("LoginForm preparing...");
 
-        stage.setTitle(TextID.PROGRAM_NAME.toString());
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString());
         stage.setResizable(false);
 
         stage.setHeight(WINDOW.height);

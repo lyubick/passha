@@ -37,7 +37,7 @@ public class Main extends Application
         {
             if (e.getCode().equals(XC.DEFAULT_SETTINGS_USED))
             {
-                info = TextID.FAILED_TO_READ_SETTING.toString();
+                info = TextID.TRAY_MESSAGE_ERROR_FAILED_LOAD_SETTINGS.toString();
             }
             else
             {
@@ -51,7 +51,7 @@ public class Main extends Application
             TrayAgent.init();
 
             if (info.length() > 0)
-                TrayAgent.getInstance().showNotification(TextID.ERROR.toString(), info, MessageType.ERROR);
+                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR.toString(), info, MessageType.ERROR);
         }
         catch (Exceptions e)
         {

@@ -70,12 +70,12 @@ public abstract class AbstractForm
     protected final int buttonHoldTime          = 300;
 
     // Magic number don't lose it!
-    protected final int LABEL_LENGTH_COEFICIENT = 7;
+    protected final int LABEL_LENGTH_COEFICIENT = 8;
 
     public abstract void draw(Stage stage) throws Exceptions;
 
-    protected final Font FONT_PRIMARY = Font.font("Consolas", FontWeight.NORMAL, 12);
-    protected final Font FONT_ERROR   = Font.font("Consolas", FontWeight.BOLD, 12);
+    protected final Font FONT_PRIMARY = Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
+    protected final Font FONT_ERROR   = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
 
     protected AbstractForm()
     {
