@@ -50,7 +50,6 @@ public class SettingsForm extends AbstractForm
         l_Header.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
-        // TODO
         langOptions =
                 FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
 
@@ -63,10 +62,9 @@ public class SettingsForm extends AbstractForm
         {
             cb_Language.setValue(langOptions.get(Settings.getInstance().getLanguage()));
         }
-        catch (Exceptions e1)
+        catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            Terminator.terminate(e);
         }
 
         hb_Language = new HBox();
@@ -78,10 +76,9 @@ public class SettingsForm extends AbstractForm
             hb_Clipboard.getEntryTextField().setText(
                     Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
-        catch (Exceptions e1)
+        catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            Terminator.terminate(e);
         }
 
         b_OK = getButton(TextID.OK.toString());
@@ -112,8 +109,7 @@ public class SettingsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Terminator.terminate(e);
                 }
             }
         });

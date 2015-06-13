@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import utilities.Utilities;
 import main.Exceptions;
+import main.Terminator;
 import main.Exceptions.XC;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +27,7 @@ import javafx.collections.ObservableList;
 public class PasswordCollection
 {
     // Database IS and MUST be linked with UserFileIO, so use references with
-    // caution. Basically it could be Singleton (FIXME), but it would make too
+    // caution. Basically it could be Singleton (TODO), but it would make too
     // much Singletons in code. So lets try to keep it that way.
     Database                          db               = null; /* UserFileIO */
     private static PasswordCollection self             = null;
@@ -141,8 +142,7 @@ public class PasswordCollection
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Terminator.terminate(e); // FIXME
         }
     }
 }

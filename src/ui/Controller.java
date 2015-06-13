@@ -38,16 +38,15 @@ public final class Controller
         LOGIN,
         MANAGE_PWDS,
         CREATE_PWD,
+        SETTINGS,
 
         // Dialogues
         CHANGE_PWD,
         EXPORT,
-        SAVE_DB,
 
-        SETTINGS,
-
-        // other TODO PREV should be usefull
         END,
+
+        // Management
         PREVIOUS,
         CURRENT,
         UNKNOWN,
@@ -116,7 +115,6 @@ public final class Controller
 
     public void switchForm(FORMS form) throws Exceptions
     {
-        // TODO
         mainStage.close();
         mainStage = new Stage();
 
@@ -135,7 +133,6 @@ public final class Controller
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
             {
-                // TODO Auto-generated method stub
                 mainStage.hide();
                 mainStage.setIconified(false);
             }

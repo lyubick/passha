@@ -31,8 +31,10 @@ import javafx.util.Duration;
  */
 public abstract class AbstractForm
 {
-    protected static final int HGAP = 10;
-    protected static final int VGAP = 10;
+    private static final boolean IS_DEBUG = false; // FIXME
+
+    protected static final int   HGAP     = 10;
+    protected static final int   VGAP     = 10;
 
     protected final class PADDING
     {
@@ -77,7 +79,7 @@ public abstract class AbstractForm
 
     protected AbstractForm()
     {
-        grid.setGridLinesVisible(false); // FIXME Debug
+        grid.setGridLinesVisible(IS_DEBUG);
 
         group.getChildren().addAll(grid);
 
@@ -193,8 +195,6 @@ public abstract class AbstractForm
         return tmp;
     }
 
-    // note: this should be done AFTER buttons is added to scene, else will TODO
-    // throw
     protected void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
     {
         if (btn.getScene() == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
@@ -203,7 +203,7 @@ public abstract class AbstractForm
             @Override
             public void run()
             {
-                // Do it with stile - show animation
+                // Do it with style - show animation
                 btn.arm();
                 PauseTransition pt = new PauseTransition(Duration.millis(buttonHoldTime));
                 pt.setOnFinished(new EventHandler<ActionEvent>()

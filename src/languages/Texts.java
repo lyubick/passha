@@ -5,6 +5,7 @@ package languages;
 
 import main.Exceptions;
 import main.Settings;
+import main.Terminator;
 
 /**
  * @author curious-odd-man
@@ -198,8 +199,7 @@ public class Texts
             }
             catch (Exceptions e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Terminator.terminate(e);
             }
 
             return "CRASH";

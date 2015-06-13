@@ -31,7 +31,6 @@ public class Terminator
         }
         catch (Exceptions e1)
         {
-            // TODO what can we do?
         }
 
         System.exit(e.getCode().ordinal());

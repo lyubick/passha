@@ -7,10 +7,10 @@ import java.util.Random;
 
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-
 import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
+import main.Terminator;
 import rsa.RSA;
 import sha.SHA;
 import utilities.Utilities;
@@ -143,8 +143,7 @@ public final class CryptoSystem
         }
         catch (IOException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Terminator.terminate(new Exceptions(XC.ERROR));
         }
 
         while (cycles-- > 0)

@@ -8,6 +8,8 @@ import java.awt.TrayIcon.MessageType;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 import languages.Texts.TextID;
 import logger.Logger;
@@ -81,7 +83,7 @@ public class ManagePasswordsForm extends AbstractForm
     public ManagePasswordsForm()
     {
         // ========== CSS ========== //
-        scene.getStylesheets().add("resources/progress.css"); // TODO
+        scene.getStylesheets().add("resources/progress.css");
 
         // ========== MENU ========== //
         mb_Main = new MenuBar();
@@ -125,7 +127,7 @@ public class ManagePasswordsForm extends AbstractForm
         statusBar.setAlignment(Pos.BOTTOM_RIGHT);
 
         // ========== REFRESH ========== //
-        group.getChildren().remove(grid); // TODO
+        group.getChildren().remove(grid);
         group.getChildren().addAll(mb_Main, grid, statusBar);
 
         // ========== HRENJ ========== //
@@ -138,7 +140,7 @@ public class ManagePasswordsForm extends AbstractForm
         GridPane.setMargin(pi_PWDLifeTime, new Insets(20, 0, 0, 210));
 
         // ========== BUTTONS ========== //
-        // TODO LANG shortcuts
+        // FIXME LANG shortcuts
         b_New = getButton("_" + TextID.NEW.toString());
         b_Delete = getButton("_" + TextID.DELETE.toString());
         b_Copy = getButton("_" + TextID.COPY_CLIPBOARD.toString());
@@ -228,7 +230,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                // TODO Confirmation!
+                // FIXME Confirmation!
                 iSpecialPassword pwd = table.getSelectionModel().getSelectedItem();
                 if (pwd != null)
                 {
@@ -264,8 +266,7 @@ public class ManagePasswordsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Terminator.terminate(e);
                 }
 
                 b_Copy.setDisable(true);
@@ -286,8 +287,7 @@ public class ManagePasswordsForm extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Terminator.terminate(e);
                 }
             }
         });
@@ -299,14 +299,11 @@ public class ManagePasswordsForm extends AbstractForm
             {
                 try
                 {
-                    // TODO if any changes in db - ask user to save or discard
-                    // first
                     Controller.getInstance().switchForm(FORMS.EXPORT);
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Terminator.terminate(e);
                 }
             }
         });
@@ -337,10 +334,9 @@ public class ManagePasswordsForm extends AbstractForm
                         {
                             timeToLive = Settings.getInstance().getClipboardLiveTime();
                         }
-                        catch (Exceptions e1)
+                        catch (Exceptions e)
                         {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
+                            Terminator.terminate(e);
                         }
 
                         for (int i = 0; i <= timeToLive && !isCancelled(); i += 100)
@@ -389,10 +385,9 @@ public class ManagePasswordsForm extends AbstractForm
                         if (tf_pass.getText().equals(clipboard.getData(DataFlavor.stringFlavor)))
                             clipboard.setContents(new StringSelection(""), null);
                     }
-                    catch (Exception e)
+                    catch (UnsupportedFlavorException | IOException e)
                     {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        Terminator.terminate(new Exceptions(XC.ERROR));
                     }
                 });
 

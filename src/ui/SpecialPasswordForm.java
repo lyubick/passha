@@ -100,7 +100,6 @@ public class SpecialPasswordForm extends AbstractForm
         return aux;
     }
 
-    // TODO add text field for special characters and show check box too
     public SpecialPasswordForm()
     {
         int currentGridLine = 0;

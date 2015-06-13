@@ -182,7 +182,7 @@ public final class Utilities
         {
             FileOutputStream fos = new FileOutputStream(fileName);
             fos.write(writeable);
-            fos.close(); // TODO
+            fos.close();
         }
         catch (IOException e)
         {

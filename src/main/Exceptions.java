@@ -51,10 +51,11 @@ public final class Exceptions extends Throwable
         // Terminator exceptions
         RESTART_FAILED,
 
-        // TODO
         RESTART,
         END,
-        END_DISCARD
+
+        // General, can be used if error reasons are unknown
+        ERROR
     }
 
     public XC getCode()

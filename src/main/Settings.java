@@ -110,7 +110,7 @@ public class Settings
         Utilities.writeToFile(SETTINGS_FILE_NAME, Utilities.objectToBytes(settings));
     }
 
-    public void loadSettings() throws Exceptions // TODO
+    public void loadSettings() throws Exceptions
     {
         try
         {
