@@ -43,11 +43,15 @@ public class Database
         }
     }
 
+    @Deprecated
     public Database(Vector<SpecialPassword> decryptedDB) throws Exceptions
     {
+        encrypted = new Vector<String>();
+        decrypted = new Vector<SpecialPassword>();
+
         for (SpecialPassword entry : decryptedDB)
         {
-            decryptedDB.add(entry);
+            decrypted.add(entry);
             encrypted.add(CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(entry)));
         }
     }

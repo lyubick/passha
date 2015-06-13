@@ -76,7 +76,7 @@ public final class UserFileIO
 
     public static UserFileIO init(String filename, boolean isNewUser) throws Exceptions
     {
-        if (self != null) Terminator.terminate(new Exceptions(XC.INSTANCE_ALREADY_EXISTS));
+        if (self != null) throw new Exceptions(XC.INSTANCE_ALREADY_EXISTS);
 
         self = new UserFileIO(filename, isNewUser);
 

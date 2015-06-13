@@ -19,8 +19,6 @@ import main.Exceptions.XC;
  */
 public class Terminator
 {
-    private static boolean restartPending = false;
-
     private static void exit(Exceptions e)
     {
         Logger.printDebug("Bye!");

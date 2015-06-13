@@ -4,6 +4,7 @@
 package main;
 
 import java.util.HashMap;
+
 import main.Exceptions.XC;
 import utilities.Utilities;
 
@@ -110,6 +111,7 @@ public class Settings
         Utilities.writeToFile(SETTINGS_FILE_NAME, Utilities.objectToBytes(settings));
     }
 
+    @SuppressWarnings("unchecked")
     public void loadSettings() throws Exceptions
     {
         try
