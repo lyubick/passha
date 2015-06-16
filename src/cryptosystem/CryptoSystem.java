@@ -42,8 +42,6 @@ public final class CryptoSystem
 
     private CryptoSystem(String masterPassword, boolean isNewUser) throws Exceptions
     {
-        self = this; // UserFileIO want CS to be up
-
         Logger.printDebug("CryptoSystem constructor STARTS...");
 
         // ========== SHA initialization START:
@@ -71,10 +69,12 @@ public final class CryptoSystem
         Logger.printDebug("File I/O init STARTS...");
         try
         {
+            self = this; // UserFileIO want CS to be up
             UserFileIO.init(sha.getHashString((Arrays.toString(masterHash) + SALT_FILENAME).getBytes()), isNewUser);
         }
         catch (Exceptions e)
         {
+            self = null;
             if (e.getCode() == XC.FILE_DOES_NOT_EXISTS)
             {
                 Logger.printError("No User file found. New user?");
@@ -85,6 +85,10 @@ public final class CryptoSystem
                 throw e;
             }
         }
+        finally
+        {
+            self = null;
+        }
         Logger.printDebug("File I/O init DONE...");
         // ========== FILE I/O initialization END:
 
@@ -93,6 +97,7 @@ public final class CryptoSystem
         // ========== Randomizer initialization END:
 
         Logger.printDebug("CryptoSystem constructor END");
+        self = this;
     };
 
     // ========== PUBLIC STATICS :
