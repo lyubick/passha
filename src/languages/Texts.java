@@ -103,6 +103,9 @@ public class Texts
         FORM_SP_LABEL_CREATE(new String[]
         { "Create", "Создать" }),
 
+        FORM_SP_BTN_PREVIEW_PASSWORD(new String[]
+        { "Generate password", "Сгенерировать пароль" }),
+
         FORM_SP_LABEL_ERROR_MISSING_PARAM(
                 new String[]
                 { "Error! One or more mandatory fields are missing.",

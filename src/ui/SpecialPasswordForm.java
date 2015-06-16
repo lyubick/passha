@@ -3,8 +3,6 @@
  */
 package ui;
 
-import java.util.BitSet;
-
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
@@ -12,16 +10,19 @@ import main.Exceptions.XC;
 import ui.Controller.FORMS;
 import db.PasswordCollection;
 import db.SpecialPassword;
-import db.SpecialPassword.PARAMS_MASK_BITS;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
@@ -34,37 +35,42 @@ public class SpecialPasswordForm extends AbstractForm
     private final class WINDOW
     {
         public static final int width  = 600;
-        public static final int height = 350;
+        public static final int height = 400;
     }
 
-    private final int    LABELS_COLUMN                  = 0;
-    private final int    TEXT_FIELDS_COLUMN             = 1;
-    private final int    TEXT_FIELD_LENGTH_SIZE         = 40;
-    private final int    TEXT_FIELDS_WIDTH              = 300;
-    private final String DEFAULT_LENGTH                 = "16";
-    private final String MIN_PASSWORD_LENGTH            = "8";
-    private final String MAX_PASSWORD_LENGTH            = "64";
-    private final String SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
-    private final int    maxPasswordLength              = 64;
-    private final int    minPasswordLength              = 8;
+    private final int       LABELS_COLUMN                  = 0;
+    private final int       TEXT_FIELDS_COLUMN             = 1;
+    private final int       TEXT_FIELD_LENGTH_SIZE         = 40;
+    private final int       TEXT_FIELDS_WIDTH              = 350;
+    private final String    DEFAULT_LENGTH                 = "16";
+    private final String    MIN_PASSWORD_LENGTH_TEXT       = "8";
+    private final String    MAX_PASSWORD_LENGTH_TEXT       = "64";
+    private final String    SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
+    private final int       MAX_PASSWORD_LENGTH            = 64;
+    private final int       MIN_PASSWORD_LENGTH            = 8;
 
-    private final Label  l_errorLabel                   = getWarningLabel("");
+    private SpecialPassword password                       = null;
 
-    private TextField    tf_name                        = null;
-    private TextField    tf_comment                     = null;
-    private TextField    tf_url                         = null;
-    private TextField    tf_length                      = null;
-    private TextField    tf_specialChars                = null;
-    private Button       b_OK                           = null;
-    private Button       b_cancel                       = null;
-    private Label        l_name                         = null;
-    private Label        l_comment                      = null;
-    private Label        l_url                          = null;
-    private Label        l_Length                       = null;
-    private Label        l_SpecialChars                 = null;
-    private CheckBox     cb_specialChars                = null;
-    private CheckBox     cb_upperCaseChar               = null;
-    private HBox         buttonsBox                     = null;
+    private final Label     l_errorLabel                   = getWarningLabel("");
+
+    private TextField       tf_name                        = null;
+    private TextField       tf_comment                     = null;
+    private TextField       tf_url                         = null;
+    private TextField       tf_length                      = null;
+    private TextField       tf_specialChars                = null;
+    private TextField       tf_passwordPreview             = null;
+    private Button          b_OK                           = null;
+    private Button          b_cancel                       = null;
+    private Button          b_regeneratePassword           = null;
+    private Label           l_name                         = null;
+    private Label           l_comment                      = null;
+    private Label           l_url                          = null;
+    private Label           l_Length                       = null;
+    private Label           l_SpecialChars                 = null;
+    private Label           l_passwordPreview              = null;
+    private CheckBox        cb_specialChars                = null;
+    private CheckBox        cb_upperCaseChar               = null;
+    private HBox            buttonsBox                     = null;
 
     private EventHandler<KeyEvent> numFilter()
     {
@@ -100,6 +106,43 @@ public class SpecialPasswordForm extends AbstractForm
         return aux;
     }
 
+    private void showPasswordPreview()
+    {
+        try
+        {
+            if (tf_length.getText().length() > 0 && Integer.parseInt(tf_length.getText()) >= MIN_PASSWORD_LENGTH
+                    && Integer.parseInt(tf_length.getText()) <= MAX_PASSWORD_LENGTH)
+            {
+                password =
+                        new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url.getText(),
+                                tf_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
+                                tf_specialChars.getText());
+                tf_passwordPreview.setText(password.getPassword());
+                l_errorLabel.setText("");
+                l_name.beNormal();
+                l_SpecialChars.beNormal();
+                b_OK.setDisable(false);
+            }
+            else
+            {
+                b_OK.setDisable(true);
+                password = null;
+            }
+        }
+        catch (Exceptions e)
+        {
+            if (e.getCode() == XC.MANDATORY_DATA_MISSING)
+            {
+                l_errorLabel.setText(TextID.FORM_SP_LABEL_ERROR_MISSING_PARAM.toString());
+
+                l_name.beError();
+                l_SpecialChars.beError();
+            }
+            b_OK.setDisable(true);
+            password = null;
+        }
+    }
+
     public SpecialPasswordForm()
     {
         int currentGridLine = 0;
@@ -108,6 +151,10 @@ public class SpecialPasswordForm extends AbstractForm
 
         b_OK = getButton(TextID.FORM_SP_LABEL_CREATE.toString());
         b_cancel = getButton(TextID.COMMON_LABEL_CANCEL.toString());
+        ImageView imgView = new ImageView(new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
+        imgView.setStyle("-fx-background-color:transparent");
+        b_regeneratePassword = new Button("", imgView);
+        b_regeneratePassword.setMaxSize(27, 24);
 
         buttonsBox = new HBox();
 
@@ -127,6 +174,8 @@ public class SpecialPasswordForm extends AbstractForm
         l_url = new Label(TextID.FORM_SP_LABEL_URL.toString());
         l_Length = new Label(TextID.FORM_SP_LABEL_LENGTH.toString());
         l_SpecialChars = new Label(TextID.FORM_SP_LABEL_SPECIAL_CHARACTERS.toString() + "*");
+        l_passwordPreview = new Label(TextID.FORM_LOGIN_LABEL_PASSWORD.toString());
+        l_errorLabel.beError();
 
         // ========== CHECK BOXES ========== //
 
@@ -142,12 +191,15 @@ public class SpecialPasswordForm extends AbstractForm
         tf_url = new TextField();
         tf_length = new TextField();
         tf_specialChars = new TextField();
+        tf_passwordPreview = new TextField();
 
         tf_length.setMaxWidth(TEXT_FIELD_LENGTH_SIZE);
         tf_name.setMinWidth(TEXT_FIELDS_WIDTH);
         tf_specialChars.setText(SPECIAL_CHARACTERS_DEFAULT_SET);
         tf_specialChars.addEventFilter(KeyEvent.KEY_TYPED, specialCharactersFieldFilter());
         tf_length.addEventFilter(KeyEvent.KEY_TYPED, numFilter());
+        tf_passwordPreview.setMinWidth(TEXT_FIELDS_WIDTH);
+        tf_passwordPreview.setEditable(false);
 
         // ========== GRID ========== //
 
@@ -177,6 +229,12 @@ public class SpecialPasswordForm extends AbstractForm
         grid.add(tf_specialChars, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
+        grid.add(l_passwordPreview, LABELS_COLUMN, currentGridLine);
+        grid.add(b_regeneratePassword, LABELS_COLUMN, currentGridLine);
+        GridPane.setHalignment(b_regeneratePassword, HPos.RIGHT);
+        grid.add(tf_passwordPreview, TEXT_FIELDS_COLUMN, currentGridLine);
+        currentGridLine++;
+
         grid.add(buttonsBox, TEXT_FIELDS_COLUMN, currentGridLine);
         currentGridLine++;
 
@@ -185,23 +243,72 @@ public class SpecialPasswordForm extends AbstractForm
 
         // ========== LISTENERS ========== //
 
+        tf_name.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            {
+                showPasswordPreview();
+            }
+        });
+
+        tf_specialChars.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            {
+                showPasswordPreview();
+            }
+        });
+
+        tf_length.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            {
+                showPasswordPreview();
+            }
+        });
+
+        cb_specialChars.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                tf_specialChars.setDisable(!tf_specialChars.isDisabled());
+                showPasswordPreview();
+            }
+        });
+
+        cb_upperCaseChar.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                showPasswordPreview();
+            }
+        });
+
         tf_length.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
             {
                 if (newValue)
+                {
                     tf_length.setText("");
+                    b_OK.setDisable(true);
+                }
                 else
                 {
+                    b_OK.setDisable(false);
                     if (tf_length.getText().length() == 0) tf_length.setText(DEFAULT_LENGTH);
-                    if (Integer.parseInt(tf_length.getText()) > maxPasswordLength)
-                        tf_length.setText(MAX_PASSWORD_LENGTH);
+                    if (Integer.parseInt(tf_length.getText()) > MAX_PASSWORD_LENGTH)
+                        tf_length.setText(MAX_PASSWORD_LENGTH_TEXT);
 
-                    if (Integer.parseInt(tf_length.getText()) < minPasswordLength)
-                        tf_length.setText(MIN_PASSWORD_LENGTH);
+                    if (Integer.parseInt(tf_length.getText()) < MIN_PASSWORD_LENGTH)
+                        tf_length.setText(MIN_PASSWORD_LENGTH_TEXT);
                 }
-
             }
         });
 
@@ -212,25 +319,15 @@ public class SpecialPasswordForm extends AbstractForm
             {
                 b_OK.setDisable(true);
 
-                BitSet paramsMask = new BitSet(PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
-                paramsMask.set(0, PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
-                int passLength = Integer.parseInt(tf_length.getText());
-
-                if (!cb_specialChars.isSelected())
-                {
-                    paramsMask.clear(PARAMS_MASK_BITS.HAS_SPECIAL_CHARACTERS.ordinal());
-                }
-
-                if (!cb_upperCaseChar.isSelected())
-                {
-                    paramsMask.clear(PARAMS_MASK_BITS.HAS_CAPITALS.ordinal());
-                }
-
                 try
                 {
-                    PasswordCollection.getInstance().addPassword(
-                            new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url.getText(), passLength,
-                                    paramsMask, tf_specialChars.getText()));
+                    if (password != null)
+                        PasswordCollection.getInstance().addPassword(password);
+                    else
+                        PasswordCollection.getInstance().addPassword(
+                                new SpecialPassword(tf_name.getText(), tf_comment.getText(), tf_url.getText(),
+                                        tf_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar
+                                                .isSelected(), tf_specialChars.getText()));
 
                     Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
                 }
@@ -265,15 +362,14 @@ public class SpecialPasswordForm extends AbstractForm
                     Terminator.terminate(e);
                 }
             }
-
         });
 
-        cb_specialChars.setOnAction(new EventHandler<ActionEvent>()
+        b_regeneratePassword.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
-            public void handle(ActionEvent arg0)
+            public void handle(ActionEvent event)
             {
-                tf_specialChars.setDisable(!tf_specialChars.isDisabled());
+                showPasswordPreview();
             }
         });
     }
@@ -282,6 +378,8 @@ public class SpecialPasswordForm extends AbstractForm
     public void draw(Stage stage)
     {
         l_errorLabel.setText("");
+        l_name.beNormal();
+        l_SpecialChars.beNormal();
         b_OK.setDisable(false);
 
         // maybe we can somehow clean all field in a loop??
@@ -289,6 +387,7 @@ public class SpecialPasswordForm extends AbstractForm
         tf_comment.clear();
         tf_url.clear();
         tf_length.setText(DEFAULT_LENGTH);
+        tf_passwordPreview.clear();
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);

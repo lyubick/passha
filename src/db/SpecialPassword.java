@@ -67,19 +67,34 @@ public class SpecialPassword
         return m;
     }
 
-    public SpecialPassword(String name, String comment, String url, int length, BitSet paramsMask, String specialChars)
-            throws Exceptions
+    public SpecialPassword(String name, String comment, String url, String length, boolean needSpecialChars,
+            boolean needUpperCaseChar, String specialChars) throws Exceptions
     {
         Logger.printDebug("SpecialPassword constructor... START");
 
-        if (name.length() == 0) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
-        if (paramsMask.get(PARAMS_MASK_BITS.HAS_SPECIAL_CHARACTERS.ordinal()) && specialChars.length() == 0)
-            throw new Exceptions(XC.MANDATORY_DATA_MISSING);
+        if (name.length() == 0 || length.length() == 0) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
+
+        BitSet paramsMask = new BitSet(PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
+        paramsMask.set(0, PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
+
+        if (!needSpecialChars)
+        {
+            paramsMask.clear(PARAMS_MASK_BITS.HAS_SPECIAL_CHARACTERS.ordinal());
+        }
+        else
+        {
+            if (specialChars.length() == 0) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
+        }
+
+        if (!needUpperCaseChar)
+        {
+            paramsMask.clear(PARAMS_MASK_BITS.HAS_CAPITALS.ordinal());
+        }
 
         this.name = name;
         this.comment = comment;
         this.url = url;
-        this.length = length;
+        this.length = Integer.parseInt(length);
         this.paramsMask = paramsMask;
         this.specialChars = specialChars;
 
