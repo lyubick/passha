@@ -42,6 +42,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -154,7 +155,8 @@ public class ManagePasswordsForm extends AbstractForm
                 new TableColumn<iSpecialPassword, String>(TextID.FORM_PWD_MANAGER_TABLE_LABEL_PWD_NAME.toString());
         TableColumn<iSpecialPassword, String> cComment =
                 new TableColumn<iSpecialPassword, String>(TextID.FORM_SP_LABEL_COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<iSpecialPassword, String>(TextID.FORM_SP_LABEL_URL.toString());
+        TableColumn<iSpecialPassword, String> cUrl =
+                new TableColumn<iSpecialPassword, String>(TextID.FORM_SP_LABEL_URL.toString());
 
         table.getColumns().add(cName);
         table.getColumns().add(cComment);
@@ -373,8 +375,8 @@ public class ManagePasswordsForm extends AbstractForm
                     pi_PWDLifeTime.setVisible(false);
                     try
                     {
-                        TrayAgent.getInstance().showNotification(TextID.TRAY_MESSAGE_INFO_PWD_REMOVED_FROM_CLIPBOARD.toString(), "",
-                                MessageType.INFO);
+                        TrayAgent.getInstance().showNotification(
+                                TextID.TRAY_MESSAGE_INFO_PWD_REMOVED_FROM_CLIPBOARD.toString(), "", MessageType.INFO);
                     }
                     catch (Exceptions e)
                     {

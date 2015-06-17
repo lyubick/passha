@@ -9,6 +9,8 @@ import main.Exceptions.XC;
 import main.Settings;
 import main.Terminator;
 import ui.Controller.FORMS;
+import ui.elements.EntryField;
+import ui.elements.Label;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,6 +19,7 @@ import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
@@ -26,17 +29,17 @@ import javafx.stage.Stage;
  */
 public class SettingsForm extends AbstractForm
 {
-    private HBox                   hb_Clipboard = null;
+    private EntryField             f_Clipboard = null;
 
-    private HBox                   hb_Language  = null;
-    private Label                  l_Language   = null;
-    private ComboBox<String>       cb_Language  = null;
+    private HBox                   hb_Language = null;
+    private Label                  l_Language  = null;
+    private ComboBox<String>       cb_Language = null;
 
-    private Label                  l_Header     = null;
+    private Label                  l_Header    = null;
 
-    private ObservableList<String> langOptions  = null;
+    private ObservableList<String> langOptions = null;
 
-    private Button                 b_OK         = null;
+    private Button                 b_OK        = null;
 
     private final class WINDOW
     {
@@ -54,7 +57,7 @@ public class SettingsForm extends AbstractForm
                 FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
 
         l_Language = new Label(TextID.FORM_SETTINGS_LABEL_LANGUAGE.toString());
-        l_Language.setMinWidth(LABEL_WIDTH);
+        l_Language.setMinWidth(EntryField.LABEL_WIDTH);
 
         cb_Language = new ComboBox<String>(langOptions);
 
@@ -70,11 +73,12 @@ public class SettingsForm extends AbstractForm
         hb_Language = new HBox();
         hb_Language.getChildren().addAll(l_Language, cb_Language);
 
-        hb_Clipboard = getTextEntry(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " " + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH_S);
+        f_Clipboard =
+                new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
+                        + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH_S);
         try
         {
-            hb_Clipboard.getEntryTextField().setText(
-                    Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+            f_Clipboard.setText(Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
         {
@@ -84,7 +88,7 @@ public class SettingsForm extends AbstractForm
         b_OK = getButton(TextID.COMMON_LABEL_OK.toString());
 
         grid.add(l_Header, 0, 0);
-        grid.add(hb_Clipboard, 0, 1);
+        grid.add(f_Clipboard.getHBoxed(), 0, 1);
         grid.add(hb_Language, 0, 2);
         grid.add(b_OK, 0, 3);
 
@@ -98,8 +102,7 @@ public class SettingsForm extends AbstractForm
                 try
                 {
                     Settings.getInstance().setLanguage(cb_Language.getValue());
-                    Settings.getInstance().setClipboardLiveTime(hb_Clipboard.getEntryTextField().getText());
-
+                    Settings.getInstance().setClipboardLiveTime(f_Clipboard.getText());
                     Settings.getInstance().saveSettings();
 
                     if (Settings.getInstance().isRestartRequired())

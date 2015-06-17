@@ -10,6 +10,7 @@ import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.Controller.FORMS;
+import ui.elements.Label;
 import db.PasswordCollection;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
