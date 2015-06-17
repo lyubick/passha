@@ -34,6 +34,12 @@ public class Texts
         COMMON_LABEL_VERSION(new String[]
         { "v." + version, "в." + version }),
 
+        FORM_CONFIRM_DELETE_HEADER(new String[]
+        { "Delete password", "Удалить пароль" }),
+
+        FORM_CONFIRM_DELETE_NOTE(new String[]
+        { "Enter this text to confirm deletion:", "Введите этот текст, чтобы подтвердить удаление:" }),
+
         FORM_LOGIN_ERROR_PWD_INCORRECT(new String[]
         { "Password incorrect!", "Неверный пароль!" }),
 
@@ -97,14 +103,14 @@ public class Texts
         FORM_SETTINGS_NAME(new String[]
         { "Settings", "Настройки" }),
 
+        FORM_SP_BTN_PREVIEW_PASSWORD(new String[]
+        { "Generate password", "Сгенерировать пароль" }),
+
         FORM_SP_LABEL_COMMENT(new String[]
         { "Comment", "Комментарий" }),
 
         FORM_SP_LABEL_CREATE(new String[]
         { "Create", "Создать" }),
-
-        FORM_SP_BTN_PREVIEW_PASSWORD(new String[]
-        { "Generate password", "Сгенерировать пароль" }),
 
         FORM_SP_LABEL_ERROR_MISSING_PARAM(
                 new String[]

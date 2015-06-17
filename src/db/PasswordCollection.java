@@ -80,6 +80,7 @@ public class PasswordCollection
 
     public void removePassword(SpecialPassword entry) throws Exceptions
     {
+        if (entry == null) entry = selectedPassword;
         db.deleteEntry(entry);
 
         UserFileIO.getInstance().sync(); // Save to file

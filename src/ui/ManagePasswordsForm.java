@@ -232,22 +232,16 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                // FIXME Confirmation!
-                iSpecialPassword pwd = table.getSelectionModel().getSelectedItem();
-                if (pwd != null)
+                try
                 {
-                    table.getItems().remove(pwd);
-                    try
-                    {
-                        PasswordCollection.getInstance().removePassword(pwd.getOrigin());
-                    }
-                    catch (Exceptions e)
-                    {
-                        Terminator.terminate(e);
-                    }
+                    if (PasswordCollection.getInstance().getSelected() == null) return;
+                    Controller.getInstance().switchForm(FORMS.DELETE_PWD);
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
                 }
             }
-
         });
 
         table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>()

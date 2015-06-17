@@ -42,6 +42,7 @@ public final class Controller
 
         // Dialogues
         CHANGE_PWD,
+        DELETE_PWD,
         EXPORT,
 
         END,
@@ -107,6 +108,7 @@ public final class Controller
         forms[FORMS.MANAGE_PWDS.ordinal()] = new ManagePasswordsForm();
         forms[FORMS.CREATE_PWD.ordinal()] = new SpecialPasswordForm();
         forms[FORMS.CHANGE_PWD.ordinal()] = new ChangePasswordConfirmDlg();
+        forms[FORMS.DELETE_PWD.ordinal()] = new DeletePasswordConfirmDlg();
         forms[FORMS.SETTINGS.ordinal()] = new SettingsForm();
         forms[FORMS.EXPORT.ordinal()] = new ExportForm();
 
