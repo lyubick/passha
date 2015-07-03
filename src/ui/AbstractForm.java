@@ -3,11 +3,14 @@
  */
 package ui;
 
+import java.util.Vector;
+
 import ui.elements.GridPane;
-import ui.elements.Label;
 import main.Exceptions;
 import main.Exceptions.XC;
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,7 +21,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import main.Terminator;
 
 /**
  * @author curious-odd-man
@@ -26,10 +31,22 @@ import javafx.util.Duration;
  */
 public abstract class AbstractForm
 {
-    private static final boolean IS_DEBUG = false; // FIXME
+    protected AbstractForm         parent  = null;
+    protected Vector<AbstractForm> childs  = null;
+    protected int                  priority;      // TODO
 
-    protected static final int   HGAP     = 10;
-    protected static final int   VGAP     = 10;
+    protected GridPane             grid    = null;
+    protected VBox                 group   = null;
+    protected Scene                scene   = null;
+    protected Stage                stage   = null;
+
+    protected MenuBar              mb_Main = null;
+
+    protected static final class GAP
+    {
+        public static final int H = 10;
+        public static final int V = 10;
+    };
 
     protected final class PADDING
     {
@@ -45,52 +62,87 @@ public abstract class AbstractForm
         public static final int height = 650;
     }
 
-    protected GridPane  grid            = new GridPane();
-    protected VBox      group           = new VBox();
-    protected Scene     scene           = new Scene(group, WINDOW.width, WINDOW.height);
-
-    protected MenuBar   mb_Main         = null;
-
-    protected final int BUTTON_HEIGHT   = 30;
-    protected final int BUTTON_WIDTH    = 80;
-    protected final int BUTTON_X_WIDTH  = 125;
-
-    protected final int FIELD_WIDTH_S   = 50;
-    protected final int FIELD_WIDTH_N   = 100;
-    protected final int FIELD_WIDTH_L   = 300;
-    protected final int FIELD_WIDTH_PWD = 200;
-
-    protected final int buttonHoldTime  = 300;
-
-    public abstract void draw(Stage stage) throws Exceptions;
-
-    protected AbstractForm()
+    protected final class BUTTON
     {
-        grid.setGridLinesVisible(IS_DEBUG);
+        public static final int height   = 30;
+        public static final int width    = 80;
+        public static final int xWidth   = 125;
+        public static final int holdTime = 300;
+    }
 
-        group.getChildren().addAll(grid);
+    protected final class FIELD_WIDTH
+    {
+        public static final int S  = 50;
+        public static final int M  = 100;
+        public static final int L  = 200;
+        public static final int XL = 300;
+    }
 
-        grid.setHgap(HGAP);
-        grid.setVgap(VGAP);
+    // Method that must be called when User try to close form, by pressing X
+    public abstract void onClose() throws Exceptions;
+
+    // Actual Form closing (destroying) called by Programmer wisely
+    public abstract void close() throws Exceptions;
+
+    // Actual Form opening (creation) called by Programmer wisely
+    public abstract void open() throws Exceptions;
+
+    protected AbstractForm(AbstractForm parent)
+    {
+        this.parent = parent;
+
+        grid = new GridPane();
+        grid.setHgap(GAP.H);
+        grid.setVgap(GAP.V);
         grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
         grid.setAlignment(Pos.CENTER);
 
+        group = new VBox();
+        group.getChildren().addAll(grid);
+
+        scene = new Scene(group, WINDOW.width, WINDOW.height);
+        // scene.getWindow().centerOnScreen();
+
+        stage = new Stage();
+        stage.setScene(scene);
+
+        stage.setResizable(false);
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>()
+        {
+            @Override
+            public void handle(WindowEvent event)
+            {
+                try
+                {
+                    onClose();
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+            }
+        });
+
+        stage.iconifiedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
+            {
+                stage.hide();
+                stage.setIconified(false);
+            }
+        });
     }
 
-    protected Button getButton(String name)
+    protected static Button getButton(String name)
     {
         Button tmp = new Button(name);
-        tmp.setMinWidth(BUTTON_WIDTH);
-        tmp.setMinHeight(BUTTON_HEIGHT);
+        tmp.setMinWidth(BUTTON.width);
+        tmp.setMinHeight(BUTTON.height);
 
-        if (tmp.getWidth() != BUTTON_WIDTH) tmp.setMinWidth(BUTTON_X_WIDTH);
+        if (tmp.getWidth() != BUTTON.width) tmp.setMinWidth(BUTTON.xWidth);
 
-        return tmp;
-    }
-
-    protected Label getWarningLabel(String text)
-    {
-        Label tmp = new Label(text);
         return tmp;
     }
 
@@ -104,7 +156,7 @@ public abstract class AbstractForm
             {
                 // Do it with style - show animation
                 btn.arm();
-                PauseTransition pt = new PauseTransition(Duration.millis(buttonHoldTime));
+                PauseTransition pt = new PauseTransition(Duration.millis(BUTTON.holdTime));
                 pt.setOnFinished(new EventHandler<ActionEvent>()
                 {
                     @Override

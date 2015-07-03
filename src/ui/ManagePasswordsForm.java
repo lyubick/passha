@@ -17,7 +17,6 @@ import main.Exceptions;
 import main.Settings;
 import main.Terminator;
 import main.Exceptions.XC;
-import ui.Controller.FORMS;
 import db.PasswordCollection;
 import db.iSpecialPassword;
 import javafx.beans.value.ChangeListener;
@@ -43,7 +42,6 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 /**
@@ -79,10 +77,14 @@ public class ManagePasswordsForm extends AbstractForm
     private MenuItem                    mi_Exit         = null;
     private MenuItem                    mi_Settings     = null;
 
-    private Stage                       parrent         = null;
+    private static AbstractForm         This            = null;
 
     public ManagePasswordsForm()
     {
+        super(null); // No parents it is a main Form
+
+        This = this;
+
         // ========== CSS ========== //
         scene.getStylesheets().add("resources/progress.css");
 
@@ -103,7 +105,7 @@ public class ManagePasswordsForm extends AbstractForm
             {
                 try
                 {
-                    Controller.getInstance().switchForm(FORMS.SETTINGS);
+                    new SettingsForm(This).open();
                 }
                 catch (Exceptions e)
                 {
@@ -183,7 +185,7 @@ public class ManagePasswordsForm extends AbstractForm
 
         // ========== TEXT FIELD ========== //
         tf_pass = new TextField();
-        tf_pass.setMaxWidth(FIELD_WIDTH_PWD);
+        tf_pass.setMaxWidth(FIELD_WIDTH.L);
         tf_pass.setEditable(false);
 
         // ========== GRID ========== //
@@ -218,7 +220,7 @@ public class ManagePasswordsForm extends AbstractForm
             {
                 try
                 {
-                    Controller.getInstance().switchForm(FORMS.CREATE_PWD);
+                    new SpecialPasswordForm(This).open();
                 }
                 catch (Exceptions e)
                 {
@@ -235,7 +237,7 @@ public class ManagePasswordsForm extends AbstractForm
                 try
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
-                    Controller.getInstance().switchForm(FORMS.DELETE_PWD);
+                    new DeletePasswordConfirmDlg(This).open();
                 }
                 catch (Exceptions e)
                 {
@@ -279,7 +281,7 @@ public class ManagePasswordsForm extends AbstractForm
                 try
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
-                    Controller.getInstance().switchForm(FORMS.CHANGE_PWD);
+                    new ChangePasswordConfirmDlg(This).open();
                 }
                 catch (Exceptions e)
                 {
@@ -295,7 +297,7 @@ public class ManagePasswordsForm extends AbstractForm
             {
                 try
                 {
-                    Controller.getInstance().switchForm(FORMS.EXPORT);
+                    new ExportForm(This).open();
                 }
                 catch (Exceptions e)
                 {
@@ -398,19 +400,20 @@ public class ManagePasswordsForm extends AbstractForm
                 calculatePasswordThread.start();
 
                 pi_PWDLifeTime.setVisible(true);
-                parrent.setIconified(true);
             }
         });
     }
 
     @Override
-    public void draw(Stage stage) throws Exceptions
+    public void close() throws Exceptions
     {
-        parrent = stage;
+        stage.close();
+        Terminator.terminate(new Exceptions(XC.END));
+    }
 
-        tf_pass.clear();
-        table.setItems(PasswordCollection.getInstance().getIface());
-
+    @Override
+    public void open() throws Exceptions
+    {
         stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
 
         stage.setHeight(WINDOW.height);
@@ -418,10 +421,9 @@ public class ManagePasswordsForm extends AbstractForm
         stage.setMinHeight(WINDOW.height);
         stage.setMinWidth(WINDOW.width);
 
-        stage.setResizable(false);
-        stage.setScene(scene);
+        tf_pass.clear();
 
-        scene.getWindow().centerOnScreen();
+        table.setItems(PasswordCollection.getInstance().getIface());
 
         stage.setOnShowing(new EventHandler<WindowEvent>()
         {
@@ -433,6 +435,25 @@ public class ManagePasswordsForm extends AbstractForm
         });
 
         stage.show();
+    }
 
+    @Override
+    public void onClose() throws Exceptions
+    {
+        stage.hide();
+        stage.setIconified(false);
+    }
+
+    public static void maximize()
+    {
+        try
+        {
+            This.open();
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

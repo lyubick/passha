@@ -8,7 +8,6 @@ import main.Exceptions;
 import main.Exceptions.XC;
 import main.Settings;
 import main.Terminator;
-import ui.Controller.FORMS;
 import ui.elements.EntryField;
 import ui.elements.Label;
 import javafx.collections.FXCollections;
@@ -21,7 +20,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 
 /**
  * @author lyubick
@@ -47,8 +45,10 @@ public class SettingsForm extends AbstractForm
         public static final int height = 200;
     }
 
-    public SettingsForm()
+    public SettingsForm(AbstractForm parent)
     {
+        super(parent);
+
         l_Header = new Label(TextID.FORM_SETTINGS_NAME.toString());
         l_Header.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_Header, HPos.CENTER);
@@ -75,7 +75,7 @@ public class SettingsForm extends AbstractForm
 
         f_Clipboard =
                 new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
-                        + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH_S);
+                        + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH.S);
         try
         {
             f_Clipboard.setText(Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
@@ -108,7 +108,7 @@ public class SettingsForm extends AbstractForm
                     if (Settings.getInstance().isRestartRequired())
                         Terminator.terminate(new Exceptions(XC.RESTART));
                     else
-                        Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
+                        close();
                 }
                 catch (Exceptions e)
                 {
@@ -119,13 +119,21 @@ public class SettingsForm extends AbstractForm
     }
 
     @Override
-    public void draw(Stage stage) throws Exceptions
+    public void onClose() throws Exceptions
     {
-        stage.setScene(scene);
+        close();
+    }
 
+    @Override
+    public void close() throws Exceptions
+    {
+        stage.hide();
+    }
+
+    @Override
+    public void open() throws Exceptions
+    {
         stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
-
-        stage.setResizable(false);
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);

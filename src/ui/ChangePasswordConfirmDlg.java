@@ -9,11 +9,9 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
-import ui.Controller.FORMS;
 import ui.elements.EntryField;
 import ui.elements.GridPane;
 import ui.elements.Label;
@@ -32,7 +30,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
         public static final int height = 250;
     }
 
-    private final int       MAX_WARNING_WIDTH = EntryField.LABEL_WIDTH + FIELD_WIDTH_PWD;
+    private final int       MAX_WARNING_WIDTH = EntryField.LABEL_WIDTH + FIELD_WIDTH.L;
 
     private Button          b_OK              = null;
     private Button          b_Cancel          = null;
@@ -43,8 +41,10 @@ public class ChangePasswordConfirmDlg extends AbstractForm
 
     private SpecialPassword newSp             = null;
 
-    ChangePasswordConfirmDlg()
+    ChangePasswordConfirmDlg(AbstractForm parent)
     {
+        super(parent);
+
         // ========== LABELS ========== //
         l_Warning = new Label(TextID.FORM_PWD_CHANGE_WARNING.toString(), MAX_WARNING_WIDTH);
         l_Warning.setTextAlignment(TextAlignment.CENTER);
@@ -62,12 +62,12 @@ public class ChangePasswordConfirmDlg extends AbstractForm
 
         GridPane.setHalignment(b_OK, HPos.RIGHT);
         GridPane.setHalignment(b_Cancel, HPos.RIGHT);
-        GridPane.setMargin(b_OK, new Insets(0, BUTTON_X_WIDTH + HGAP, 0, 0));
+        GridPane.setMargin(b_OK, new Insets(0, BUTTON.xWidth + GAP.H, 0, 0));
 
         grid.add(l_Header, 0, 0);
 
-        CurrentPassword = new EntryField(TextID.FORM_PWD_CHANGE_LABEL_CURRENT.toString(), FIELD_WIDTH_PWD);
-        NewPassword = new EntryField(TextID.FORM_PWD_CHANGE_LABEL_NEW.toString(), FIELD_WIDTH_PWD);
+        CurrentPassword = new EntryField(TextID.FORM_PWD_CHANGE_LABEL_CURRENT.toString(), FIELD_WIDTH.L);
+        NewPassword = new EntryField(TextID.FORM_PWD_CHANGE_LABEL_NEW.toString(), FIELD_WIDTH.L);
 
         CurrentPassword.setEditable(false);
         NewPassword.setEditable(false);
@@ -87,7 +87,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
                 try
                 {
                     PasswordCollection.getInstance().replacePasword(newSp);
-                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
+                    close();
                 }
                 catch (Exceptions e)
                 {
@@ -104,7 +104,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
                 try
                 {
                     newSp = null;
-                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
+                    close();
                 }
                 catch (Exceptions e)
                 {
@@ -115,10 +115,23 @@ public class ChangePasswordConfirmDlg extends AbstractForm
     }
 
     @Override
-    public void draw(Stage stage) throws Exceptions
+    public void onClose() throws Exceptions
     {
-        stage.setScene(scene);
+        // TODO Auto-generated method stub
+        close();
+    }
 
+    @Override
+    public void close() throws Exceptions
+    {
+        // TODO Auto-generated method stub
+        stage.hide();
+    }
+
+    @Override
+    public void open() throws Exceptions
+    {
+        // TODO Auto-generated method stub
         stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
 
         CurrentPassword.setText(PasswordCollection.getInstance().getSelected().getPassword());
@@ -126,8 +139,6 @@ public class ChangePasswordConfirmDlg extends AbstractForm
         newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
 
         NewPassword.setText(newSp.getPassword());
-
-        stage.setResizable(false);
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);

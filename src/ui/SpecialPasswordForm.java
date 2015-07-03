@@ -7,7 +7,6 @@ import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
-import ui.Controller.FORMS;
 import ui.elements.EntryField;
 import ui.elements.Label;
 import db.PasswordCollection;
@@ -26,7 +25,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.stage.Stage;
 
 /**
  * @author curious-odd-man
@@ -53,7 +51,7 @@ public class SpecialPasswordForm extends AbstractForm
 
     private SpecialPassword password                       = null;
 
-    private final Label     l_errorLabel                   = getWarningLabel("");
+    private final Label     l_errorLabel                   = new Label("");
 
     private Button          b_OK                           = null;
     private Button          b_cancel                       = null;
@@ -140,8 +138,9 @@ public class SpecialPasswordForm extends AbstractForm
         }
     }
 
-    public SpecialPasswordForm()
+    public SpecialPasswordForm(AbstractForm parent)
     {
+        super(parent);
         // ========== BUTTONS ========== //
 
         b_OK = getButton(TextID.FORM_SP_LABEL_CREATE.toString());
@@ -153,7 +152,7 @@ public class SpecialPasswordForm extends AbstractForm
 
         buttonsBox = new HBox();
 
-        buttonsBox.setSpacing(HGAP);
+        buttonsBox.setSpacing(GAP.H);
         buttonsBox.setAlignment(Pos.BASELINE_CENTER);
         buttonsBox.getChildren().addAll(b_OK, b_cancel);
 
@@ -296,7 +295,7 @@ public class SpecialPasswordForm extends AbstractForm
                                         ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar
                                                 .isSelected(), ef_specialChars.getText()));
 
-                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
+                    close();
                 }
                 catch (Exceptions e)
                 {
@@ -322,7 +321,7 @@ public class SpecialPasswordForm extends AbstractForm
             {
                 try
                 {
-                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
+                    close();
                 }
                 catch (Exceptions e)
                 {
@@ -342,8 +341,23 @@ public class SpecialPasswordForm extends AbstractForm
     }
 
     @Override
-    public void draw(Stage stage)
+    public void onClose() throws Exceptions
     {
+        // TODO Auto-generated method stub
+        close();
+    }
+
+    @Override
+    public void close() throws Exceptions
+    {
+        // TODO Auto-generated method stub
+        stage.close();
+    }
+
+    @Override
+    public void open() throws Exceptions
+    {
+        // TODO Auto-generated method stub
         l_errorLabel.setText("");
         ef_name.beNormal();
         ef_specialChars.beNormal();

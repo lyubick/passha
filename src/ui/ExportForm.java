@@ -1,15 +1,13 @@
 /**
- * 
+ *
  */
 package ui;
 
 import java.io.File;
 
 import main.Exceptions;
-import ui.Controller.FORMS;
 import db.PasswordCollection;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 /**
  * @author curious-odd-man
@@ -18,9 +16,30 @@ import javafx.stage.Stage;
 public class ExportForm extends AbstractForm
 {
 
-    @Override
-    public void draw(Stage stage) throws Exceptions
+    protected ExportForm(AbstractForm parent)
     {
+        super(parent);
+        // TODO Auto-generated constructor stub
+    }
+
+    @Override
+    public void onClose() throws Exceptions
+    {
+        // TODO Auto-generated method stub
+        close();
+    }
+
+    @Override
+    public void close() throws Exceptions
+    {
+        // TODO Auto-generated method stub
+        stage.hide();
+    }
+
+    @Override
+    public void open() throws Exceptions
+    {
+        // TODO Auto-generated method stub
         FileChooser fc = new FileChooser();
         File outFile = fc.showSaveDialog(stage);
 
@@ -29,6 +48,6 @@ public class ExportForm extends AbstractForm
             PasswordCollection.getInstance().export(outFile.getAbsolutePath());
         }
 
-        Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
+        close();
     }
 }

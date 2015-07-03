@@ -8,8 +8,7 @@ import javafx.stage.Stage;
 import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions.XC;
-import ui.Controller;
-import ui.Controller.FORMS;
+import ui.LoginForm;
 import ui.TrayAgent;
 
 public class Main extends Application
@@ -70,7 +69,7 @@ public class Main extends Application
 
         try
         {
-            Controller.init(primaryStage).switchForm(FORMS.LOGIN);
+            new LoginForm().open();
         }
         catch (Exceptions e)
         {

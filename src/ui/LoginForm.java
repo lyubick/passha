@@ -9,7 +9,6 @@ import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
-import ui.Controller.FORMS;
 import ui.elements.Label;
 import db.PasswordCollection;
 import javafx.event.ActionEvent;
@@ -19,7 +18,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
+import ui.ManagePasswordsForm;
 
 /**
  * @author lyubick
@@ -40,14 +39,16 @@ public class LoginForm extends AbstractForm
     private Button        b_Login            = null;
     private Button        b_Register         = null;
 
-    LoginForm()
+    public LoginForm()
     {
+        super(null); // Login doesn't have parents :(
+
         int gridRowCounter = 0;
 
         // ========== LABELS ========== //
 
         l_Header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ":");
-        l_Warning = getWarningLabel("");
+        l_Warning = new Label("");
 
         // ========== TEXTS ========== //
 
@@ -81,8 +82,6 @@ public class LoginForm extends AbstractForm
         pf_PasswordConfirm.setPromptText(TextID.FORM_LOGIN_LABEL_RETYPE.toString());
         pf_PasswordConfirm.setVisible(false);
 
-        b_Login.setMinWidth(BUTTON_WIDTH);
-        b_Register.setMinWidth(BUTTON_WIDTH);
         b_Register.setVisible(false);
 
         grid.setAlignment(Pos.CENTER);
@@ -165,28 +164,39 @@ public class LoginForm extends AbstractForm
         l_Warning.setText("");
     }
 
-    @Override
-    public void draw(Stage stage)
-    {
-        Logger.printDebug("LoginForm preparing...");
-
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString());
-        stage.setResizable(false);
-
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
-        stage.setScene(scene);
-
-        Logger.printDebug("LoginForm displaying");
-        stage.show();
-    }
-
     private void init(String password, boolean isNewUser) throws Exceptions
     {
         CryptoSystem.init(password, isNewUser);
         PasswordCollection.init();
 
-        Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
+        new ManagePasswordsForm().open();
+        stage.hide();
+    }
+
+    @Override
+    public void close() throws Exceptions
+    {
+        stage.close();
+        Terminator.terminate(new Exceptions(XC.END));
+    }
+
+    @Override
+    public void open() throws Exceptions
+    {
+        Logger.printDebug("LoginForm preparing...");
+
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString());
+
+        stage.setHeight(WINDOW.height);
+        stage.setWidth(WINDOW.width);
+
+        Logger.printDebug("LoginForm displaying");
+        stage.show();
+    }
+
+    @Override
+    public void onClose() throws Exceptions
+    {
+        close(); // FIXME maybe we should minimize
     }
 }

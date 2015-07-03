@@ -1,7 +1,6 @@
 package ui;
 
 import db.PasswordCollection;
-import ui.Controller.FORMS;
 import ui.elements.EntryField;
 import ui.elements.GridPane;
 import ui.elements.Label;
@@ -13,7 +12,6 @@ import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
@@ -35,8 +33,10 @@ public class DeletePasswordConfirmDlg extends AbstractForm
 
     private String     confirmationText = null;
 
-    public DeletePasswordConfirmDlg()
+    public DeletePasswordConfirmDlg(AbstractForm parent)
     {
+        super(parent);
+
         confirmationText = new String("DELETE");
         l_Header = new Label(TextID.FORM_CONFIRM_DELETE_HEADER.toString());
         l_note = new Label(TextID.FORM_CONFIRM_DELETE_NOTE.toString() + "\n" + confirmationText, WINDOW.width - 100);
@@ -90,7 +90,7 @@ public class DeletePasswordConfirmDlg extends AbstractForm
 
                 try
                 {
-                    Controller.getInstance().switchForm(FORMS.MANAGE_PWDS);
+                    close();
                 }
                 catch (Exceptions e)
                 {
@@ -103,8 +103,23 @@ public class DeletePasswordConfirmDlg extends AbstractForm
     }
 
     @Override
-    public void draw(Stage stage) throws Exceptions
+    public void onClose() throws Exceptions
     {
+        // TODO Auto-generated method stub
+        close();
+    }
+
+    @Override
+    public void close() throws Exceptions
+    {
+        // TODO Auto-generated method stub
+        stage.hide();
+    }
+
+    @Override
+    public void open() throws Exceptions
+    {
+        // TODO Auto-generated method stub
         tf_confirmation.clear();
         tf_confirmation.requestFocus();
         try
@@ -116,11 +131,7 @@ public class DeletePasswordConfirmDlg extends AbstractForm
             Terminator.terminate(e);
         }
 
-        stage.setScene(scene);
-
         stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
-
-        stage.setResizable(false);
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
