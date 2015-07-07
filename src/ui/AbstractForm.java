@@ -6,6 +6,7 @@ package ui;
 import java.util.Vector;
 
 import ui.elements.GridPane;
+import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
 import javafx.animation.PauseTransition;
@@ -31,9 +32,17 @@ import main.Terminator;
  */
 public abstract class AbstractForm
 {
+    protected enum ShowPriority
+    {
+        LOW,
+        NORMAL,
+        ABOVE,
+        ALWAYS,
+    };
+
     protected AbstractForm         parent  = null;
     protected Vector<AbstractForm> childs  = null;
-    protected int                  priority;      // TODO
+    protected ShowPriority         priority;      // TODO
 
     protected GridPane             grid    = null;
     protected VBox                 group   = null;
@@ -78,18 +87,57 @@ public abstract class AbstractForm
         public static final int XL = 300;
     }
 
-    // Method that must be called when User try to close form, by pressing X
-    public abstract void onClose() throws Exceptions;
+    // Method that must be called when User try to close form, by pressing [X]
+    public abstract void onUserCloseRequest() throws Exceptions;
 
-    // Actual Form closing (destroying) called by Programmer wisely
-    public abstract void close() throws Exceptions;
+    // Actual Form closing (hiding) called by Programmer wisely
+    public abstract void hide() throws Exceptions;
 
-    // Actual Form opening (creation) called by Programmer wisely
-    public abstract void open() throws Exceptions;
+    // Actual Form opening (showing) called by Programmer wisely
+    public abstract void show() throws Exceptions;
+
+    // Used to open new Form that depends on current form
+    public void open(AbstractForm form)
+    {
+        if (form.priority == ShowPriority.ABOVE)
+        {
+            for (AbstractForm child : childs)
+            {
+                if (child.getClass().getName().equals(form.getClass().getName()))
+                {
+                    child.stage.requestFocus();
+                    return;
+                }
+            }
+        }
+
+        childs.add(form);
+
+        // Automatically show new Form
+        try
+        {
+            form.show();
+        }
+        catch (Exceptions e)
+        {
+            Logger.printError("Form showing FAILED!");
+            childs.remove(form);
+        }
+    }
+
+    // Used to close Form that depends on current form
+    public void close(AbstractForm form)
+    {
+        childs.remove(form);
+    }
 
     protected AbstractForm(AbstractForm parent)
     {
         this.parent = parent;
+        priority = ShowPriority.NORMAL;
+
+        // initialize everything to avoid NullPointerExceptions
+        childs = new Vector<AbstractForm>();
 
         grid = new GridPane();
         grid.setHgap(GAP.H);
@@ -101,7 +149,6 @@ public abstract class AbstractForm
         group.getChildren().addAll(grid);
 
         scene = new Scene(group, WINDOW.width, WINDOW.height);
-        // scene.getWindow().centerOnScreen();
 
         stage = new Stage();
         stage.setScene(scene);
@@ -115,7 +162,7 @@ public abstract class AbstractForm
             {
                 try
                 {
-                    onClose();
+                    onUserCloseRequest();
                 }
                 catch (Exceptions e)
                 {
@@ -127,10 +174,54 @@ public abstract class AbstractForm
         stage.iconifiedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
+            public void
+                    changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
             {
                 stage.hide();
                 stage.setIconified(false);
+            }
+        });
+
+        stage.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue)
+            {
+                // Check if we have Children with highest priorities
+                if (!childs.isEmpty())
+                {
+                    for (AbstractForm child : childs)
+                    {
+                        if (child.priority.equals(ShowPriority.ALWAYS))
+                        {
+                            child.stage.requestFocus();
+
+                            Logger.printDebug("Focus of window will be switched to "
+                                    + child.getClass().getName());
+                            return;
+                        }
+                    }
+                }
+
+                // No, we have no children with higher priority. Maybe brothers?
+                if ((parent != null) && (!parent.childs.isEmpty()))
+                {
+                    for (AbstractForm child : parent.childs)
+                    {
+                        if (child.priority.equals(ShowPriority.ALWAYS))
+                        {
+                            child.stage.requestFocus();
+
+                            Logger.printDebug("Focus of window will be switched to "
+                                    + child.getClass().getName());
+                            return;
+                        }
+                    }
+                }
+
+                // No! Let focus! :)
             }
         });
     }

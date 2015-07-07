@@ -75,7 +75,8 @@ public class SpecialPasswordForm extends AbstractForm
             public void handle(KeyEvent keyEvent)
             {
                 String lengthFieldText = ef_length.getText();
-                if (!"0123456789".contains(keyEvent.getCharacter()) || lengthFieldText.length() >= 2)
+                if (!"0123456789".contains(keyEvent.getCharacter())
+                        || lengthFieldText.length() >= 2)
                 {
                     keyEvent.consume();
                 }
@@ -105,12 +106,14 @@ public class SpecialPasswordForm extends AbstractForm
     {
         try
         {
-            if (ef_length.getText().length() > 0 && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
+            if (ef_length.getText().length() > 0
+                    && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
                 password =
-                        new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
-                                ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
+                        new SpecialPassword(ef_name.getText(), ef_comment.getText(),
+                                ef_url.getText(), ef_length.getText(),
+                                cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
                                 ef_specialChars.getText());
                 ef_passwordPreview.setText(password.getPassword());
                 l_errorLabel.setText("");
@@ -141,11 +144,14 @@ public class SpecialPasswordForm extends AbstractForm
     public SpecialPasswordForm(AbstractForm parent)
     {
         super(parent);
+        priority = ShowPriority.ABOVE;
         // ========== BUTTONS ========== //
 
         b_OK = getButton(TextID.FORM_SP_LABEL_CREATE.toString());
         b_cancel = getButton(TextID.COMMON_LABEL_CANCEL.toString());
-        ImageView imgView = new ImageView(new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
+        ImageView imgView =
+                new ImageView(
+                        new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
         imgView.setStyle("-fx-background-color:transparent");
         b_regeneratePassword = new Button("", imgView);
         b_regeneratePassword.setMaxSize(27, 24);
@@ -167,8 +173,11 @@ public class SpecialPasswordForm extends AbstractForm
         ef_comment = new EntryField(TextID.FORM_SP_LABEL_COMMENT.toString(), TEXT_FIELDS_WIDTH);
         ef_url = new EntryField(TextID.FORM_SP_LABEL_URL.toString(), TEXT_FIELDS_WIDTH);
         ef_length = new EntryField(TextID.FORM_SP_LABEL_LENGTH.toString(), TEXT_FIELD_LENGTH_SIZE);
-        ef_specialChars = new EntryField(TextID.FORM_SP_LABEL_SPECIAL_CHARACTERS.toString() + "*", TEXT_FIELDS_WIDTH);
-        ef_passwordPreview = new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD.toString(), TEXT_FIELDS_WIDTH);
+        ef_specialChars =
+                new EntryField(TextID.FORM_SP_LABEL_SPECIAL_CHARACTERS.toString() + "*",
+                        TEXT_FIELDS_WIDTH);
+        ef_passwordPreview =
+                new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD.toString(), TEXT_FIELDS_WIDTH);
 
         // ========== LABELS ========== //
 
@@ -212,7 +221,8 @@ public class SpecialPasswordForm extends AbstractForm
         ef_name.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue)
             {
                 showPasswordPreview();
             }
@@ -221,7 +231,8 @@ public class SpecialPasswordForm extends AbstractForm
         ef_specialChars.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue)
             {
                 showPasswordPreview();
             }
@@ -230,7 +241,8 @@ public class SpecialPasswordForm extends AbstractForm
         ef_length.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue)
             {
                 showPasswordPreview();
             }
@@ -258,7 +270,8 @@ public class SpecialPasswordForm extends AbstractForm
         ef_length.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue)
             {
                 if (newValue)
                 {
@@ -291,11 +304,12 @@ public class SpecialPasswordForm extends AbstractForm
                         PasswordCollection.getInstance().addPassword(password);
                     else
                         PasswordCollection.getInstance().addPassword(
-                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
-                                        ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar
-                                                .isSelected(), ef_specialChars.getText()));
+                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url
+                                        .getText(), ef_length.getText(), cb_specialChars
+                                        .isSelected(), cb_upperCaseChar.isSelected(),
+                                        ef_specialChars.getText()));
 
-                    close();
+                    hide();
                 }
                 catch (Exceptions e)
                 {
@@ -321,7 +335,7 @@ public class SpecialPasswordForm extends AbstractForm
             {
                 try
                 {
-                    close();
+                    hide();
                 }
                 catch (Exceptions e)
                 {
@@ -341,21 +355,21 @@ public class SpecialPasswordForm extends AbstractForm
     }
 
     @Override
-    public void onClose() throws Exceptions
+    public void onUserCloseRequest() throws Exceptions
     {
         // TODO Auto-generated method stub
-        close();
+        hide();
     }
 
     @Override
-    public void close() throws Exceptions
+    public void hide() throws Exceptions
     {
         // TODO Auto-generated method stub
         stage.close();
     }
 
     @Override
-    public void open() throws Exceptions
+    public void show() throws Exceptions
     {
         // TODO Auto-generated method stub
         l_errorLabel.setText("");

@@ -48,13 +48,15 @@ public class SettingsForm extends AbstractForm
     public SettingsForm(AbstractForm parent)
     {
         super(parent);
+        priority = ShowPriority.ALWAYS;
 
         l_Header = new Label(TextID.FORM_SETTINGS_NAME.toString());
         l_Header.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
         langOptions =
-                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
+                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
+                        Settings.LANGUAGE.RUSSIAN.name());
 
         l_Language = new Label(TextID.FORM_SETTINGS_LABEL_LANGUAGE.toString());
         l_Language.setMinWidth(EntryField.LABEL_WIDTH);
@@ -78,7 +80,8 @@ public class SettingsForm extends AbstractForm
                         + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH.S);
         try
         {
-            f_Clipboard.setText(Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+            f_Clipboard.setText(Integer
+                    .toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
         {
@@ -108,7 +111,7 @@ public class SettingsForm extends AbstractForm
                     if (Settings.getInstance().isRestartRequired())
                         Terminator.terminate(new Exceptions(XC.RESTART));
                     else
-                        close();
+                        hide();
                 }
                 catch (Exceptions e)
                 {
@@ -119,21 +122,23 @@ public class SettingsForm extends AbstractForm
     }
 
     @Override
-    public void onClose() throws Exceptions
+    public void onUserCloseRequest() throws Exceptions
     {
-        close();
+        hide();
     }
 
     @Override
-    public void close() throws Exceptions
+    public void hide() throws Exceptions
     {
         stage.hide();
+        parent.close(this);
     }
 
     @Override
-    public void open() throws Exceptions
+    public void show() throws Exceptions
     {
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " "
+                + TextID.COMMON_LABEL_VERSION.toString());
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);

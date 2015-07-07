@@ -87,7 +87,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
                 try
                 {
                     PasswordCollection.getInstance().replacePasword(newSp);
-                    close();
+                    hide();
                 }
                 catch (Exceptions e)
                 {
@@ -104,7 +104,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
                 try
                 {
                     newSp = null;
-                    close();
+                    hide();
                 }
                 catch (Exceptions e)
                 {
@@ -115,21 +115,21 @@ public class ChangePasswordConfirmDlg extends AbstractForm
     }
 
     @Override
-    public void onClose() throws Exceptions
+    public void onUserCloseRequest() throws Exceptions
     {
         // TODO Auto-generated method stub
-        close();
+        hide();
     }
 
     @Override
-    public void close() throws Exceptions
+    public void hide() throws Exceptions
     {
         // TODO Auto-generated method stub
         stage.hide();
     }
 
     @Override
-    public void open() throws Exceptions
+    public void show() throws Exceptions
     {
         // TODO Auto-generated method stub
         stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());

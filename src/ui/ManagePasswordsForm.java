@@ -103,14 +103,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                try
-                {
-                    new SettingsForm(This).open();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                open(new SettingsForm(This));
             }
         });
 
@@ -154,7 +147,8 @@ public class ManagePasswordsForm extends AbstractForm
         table = new TableView<iSpecialPassword>();
 
         TableColumn<iSpecialPassword, String> cName =
-                new TableColumn<iSpecialPassword, String>(TextID.FORM_PWD_MANAGER_TABLE_LABEL_PWD_NAME.toString());
+                new TableColumn<iSpecialPassword, String>(
+                        TextID.FORM_PWD_MANAGER_TABLE_LABEL_PWD_NAME.toString());
         TableColumn<iSpecialPassword, String> cComment =
                 new TableColumn<iSpecialPassword, String>(TextID.FORM_SP_LABEL_COMMENT.toString());
         TableColumn<iSpecialPassword, String> cUrl =
@@ -202,11 +196,16 @@ public class ManagePasswordsForm extends AbstractForm
 
         try
         {
-            setButtonShortcut(b_New, new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_New,
+                    new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D,
+                    KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C,
+                    KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E,
+                    KeyCombination.SHORTCUT_DOWN));
+            setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R,
+                    KeyCombination.SHORTCUT_DOWN));
         }
         catch (Exceptions e)
         {
@@ -218,14 +217,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent ae)
             {
-                try
-                {
-                    new SpecialPasswordForm(This).open();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                open(new SpecialPasswordForm(This));
             }
         });
 
@@ -237,7 +229,7 @@ public class ManagePasswordsForm extends AbstractForm
                 try
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
-                    new DeletePasswordConfirmDlg(This).open();
+                    open(new DeletePasswordConfirmDlg(This));
                 }
                 catch (Exceptions e)
                 {
@@ -249,7 +241,8 @@ public class ManagePasswordsForm extends AbstractForm
         table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>()
         {
             @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
+                    Object newValue)
             {
                 try
                 {
@@ -281,7 +274,7 @@ public class ManagePasswordsForm extends AbstractForm
                 try
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
-                    new ChangePasswordConfirmDlg(This).open();
+                    open(new ChangePasswordConfirmDlg(This));
                 }
                 catch (Exceptions e)
                 {
@@ -295,14 +288,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                try
-                {
-                    new ExportForm(This).open();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                open(new ExportForm(This));
             }
         });
 
@@ -346,11 +332,18 @@ public class ManagePasswordsForm extends AbstractForm
                             {
                                 try
                                 {
-                                    TrayAgent.getInstance().showNotification(
-                                            TextID.TRAY_MESSAGE_INFO_COPIED_TO_CLIPBOARD.toString(),
-                                            TextID.TRAY_MESSAGE_TIME_LEFT.toString() + ": "
-                                                    + ((Settings.getInstance().getClipboardLiveTime() - i) / 1000)
-                                                    + " " + TextID.COMMON_LABEL_SECONDS.toString(), MessageType.INFO);
+                                    TrayAgent
+                                            .getInstance()
+                                            .showNotification(
+                                                    TextID.TRAY_MESSAGE_INFO_COPIED_TO_CLIPBOARD
+                                                            .toString(),
+                                                    TextID.TRAY_MESSAGE_TIME_LEFT.toString()
+                                                            + ": "
+                                                            + ((Settings.getInstance()
+                                                                    .getClipboardLiveTime() - i) / 1000)
+                                                            + " "
+                                                            + TextID.COMMON_LABEL_SECONDS
+                                                                    .toString(), MessageType.INFO);
                                 }
                                 catch (Exceptions e)
                                 {
@@ -372,7 +365,8 @@ public class ManagePasswordsForm extends AbstractForm
                     try
                     {
                         TrayAgent.getInstance().showNotification(
-                                TextID.TRAY_MESSAGE_INFO_PWD_REMOVED_FROM_CLIPBOARD.toString(), "", MessageType.INFO);
+                                TextID.TRAY_MESSAGE_INFO_PWD_REMOVED_FROM_CLIPBOARD.toString(), "",
+                                MessageType.INFO);
                     }
                     catch (Exceptions e)
                     {
@@ -405,16 +399,17 @@ public class ManagePasswordsForm extends AbstractForm
     }
 
     @Override
-    public void close() throws Exceptions
+    public void hide() throws Exceptions
     {
         stage.close();
         Terminator.terminate(new Exceptions(XC.END));
     }
 
     @Override
-    public void open() throws Exceptions
+    public void show() throws Exceptions
     {
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " "
+                + TextID.COMMON_LABEL_VERSION.toString());
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
@@ -438,7 +433,7 @@ public class ManagePasswordsForm extends AbstractForm
     }
 
     @Override
-    public void onClose() throws Exceptions
+    public void onUserCloseRequest() throws Exceptions
     {
         stage.hide();
         stage.setIconified(false);
@@ -448,7 +443,7 @@ public class ManagePasswordsForm extends AbstractForm
     {
         try
         {
-            This.open();
+            This.show();
         }
         catch (Exceptions e)
         {

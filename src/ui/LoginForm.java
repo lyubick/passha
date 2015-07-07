@@ -169,19 +169,19 @@ public class LoginForm extends AbstractForm
         CryptoSystem.init(password, isNewUser);
         PasswordCollection.init();
 
-        new ManagePasswordsForm().open();
+        new ManagePasswordsForm().show();
         stage.hide();
     }
 
     @Override
-    public void close() throws Exceptions
+    public void hide() throws Exceptions
     {
         stage.close();
         Terminator.terminate(new Exceptions(XC.END));
     }
 
     @Override
-    public void open() throws Exceptions
+    public void show() throws Exceptions
     {
         Logger.printDebug("LoginForm preparing...");
 
@@ -195,8 +195,8 @@ public class LoginForm extends AbstractForm
     }
 
     @Override
-    public void onClose() throws Exceptions
+    public void onUserCloseRequest() throws Exceptions
     {
-        close(); // FIXME maybe we should minimize
+        hide(); // FIXME maybe we should minimize
     }
 }

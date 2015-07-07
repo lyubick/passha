@@ -69,7 +69,7 @@ public class Main extends Application
 
         try
         {
-            new LoginForm().open();
+            new LoginForm().show();
         }
         catch (Exceptions e)
         {

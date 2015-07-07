@@ -90,7 +90,7 @@ public class DeletePasswordConfirmDlg extends AbstractForm
 
                 try
                 {
-                    close();
+                    hide();
                 }
                 catch (Exceptions e)
                 {
@@ -103,21 +103,21 @@ public class DeletePasswordConfirmDlg extends AbstractForm
     }
 
     @Override
-    public void onClose() throws Exceptions
+    public void onUserCloseRequest() throws Exceptions
     {
         // TODO Auto-generated method stub
-        close();
+        hide();
     }
 
     @Override
-    public void close() throws Exceptions
+    public void hide() throws Exceptions
     {
         // TODO Auto-generated method stub
         stage.hide();
     }
 
     @Override
-    public void open() throws Exceptions
+    public void show() throws Exceptions
     {
         // TODO Auto-generated method stub
         tf_confirmation.clear();

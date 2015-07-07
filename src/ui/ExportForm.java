@@ -23,21 +23,21 @@ public class ExportForm extends AbstractForm
     }
 
     @Override
-    public void onClose() throws Exceptions
+    public void onUserCloseRequest() throws Exceptions
     {
         // TODO Auto-generated method stub
-        close();
+        hide();
     }
 
     @Override
-    public void close() throws Exceptions
+    public void hide() throws Exceptions
     {
         // TODO Auto-generated method stub
         stage.hide();
     }
 
     @Override
-    public void open() throws Exceptions
+    public void show() throws Exceptions
     {
         // TODO Auto-generated method stub
         FileChooser fc = new FileChooser();
@@ -48,6 +48,6 @@ public class ExportForm extends AbstractForm
             PasswordCollection.getInstance().export(outFile.getAbsolutePath());
         }
 
-        close();
+        hide();
     }
 }
