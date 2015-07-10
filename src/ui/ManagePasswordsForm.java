@@ -16,6 +16,7 @@ import logger.Logger;
 import main.Exceptions;
 import main.Settings;
 import main.Terminator;
+import ui.elements.Button;
 import main.Exceptions.XC;
 import db.PasswordCollection;
 import db.iSpecialPassword;
@@ -28,7 +29,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -42,7 +42,6 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.WindowEvent;
 
 /**
  * @author curious-odd-man
@@ -57,31 +56,38 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 500;
     }
 
-    private final int                   tableMinHeight  = WINDOW.height - 300;
-    private final int                   tableMinWidth   = WINDOW.width - 200;
+    private final int tableMinHeight = WINDOW.height - 300;
+    private final int tableMinWidth  = WINDOW.width - 200;
 
-    private TableView<iSpecialPassword> table           = null;
-    private TextField                   tf_pass         = null;
-    private Button                      b_New           = null;
-    private Button                      b_Delete        = null;
-    private Button                      b_Reset         = null;
-    private Button                      b_Copy          = null;
-    private Button                      b_Export        = null;
+    private TableView<iSpecialPassword> table    = null;
+    private TextField                   tf_pass  = null;
+    private Button                      b_New    = null;
+    private Button                      b_Delete = null;
+    private Button                      b_Reset  = null;
+    private Button                      b_Copy   = null;
+    private Button                      b_Export = null;
 
-    Task<Void>                          tsk_PWDLifeTime = null;
+    Task<Void> tsk_PWDLifeTime = null;
 
-    private ProgressIndicator           pi_PWDLifeTime  = null;
+    private ProgressIndicator pi_PWDLifeTime = null;
 
-    private MenuBar                     mb_Main         = null;
-    private Menu                        m_File          = null;
-    private MenuItem                    mi_Exit         = null;
-    private MenuItem                    mi_Settings     = null;
+    private MenuBar  mb_Main     = null;
+    private Menu     m_File      = null;
+    private MenuItem mi_Exit     = null;
+    private MenuItem mi_Settings = null;
 
-    private static AbstractForm         This            = null;
+    private static AbstractForm This = null;
 
     public ManagePasswordsForm()
     {
         super(null); // No parents it is a main Form
+
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
+
+        stage.setHeight(WINDOW.height);
+        stage.setWidth(WINDOW.width);
+        stage.setMinHeight(WINDOW.height);
+        stage.setMinWidth(WINDOW.width);
 
         This = this;
 
@@ -103,7 +109,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                open(new SettingsForm(This));
+                new SettingsForm(This);
             }
         });
 
@@ -137,18 +143,17 @@ public class ManagePasswordsForm extends AbstractForm
 
         // ========== BUTTONS ========== //
         // FIXME LANG shortcuts
-        b_New = getButton("_" + TextID.FORM_PWD_CHANGE_LABEL_NEW.toString());
-        b_Delete = getButton("_" + TextID.FORM_SP_MANAGER_LABEL_DELETE.toString());
-        b_Copy = getButton("_" + TextID.FORM_PWD_MANAGER_LABEL_COPY_TO_CLIPBOARD.toString());
-        b_Export = getButton("_" + TextID.FORM_PWD_MANAGER_LABEL_EXPORT.toString());
-        b_Reset = getButton("_" + TextID.FORM_PWD_MANAGER_LABEL_RESET.toString());
+        b_New = new Button("_" + TextID.FORM_PWD_CHANGE_LABEL_NEW.toString());
+        b_Delete = new Button("_" + TextID.FORM_SP_MANAGER_LABEL_DELETE.toString());
+        b_Copy = new Button("_" + TextID.FORM_PWD_MANAGER_LABEL_COPY_TO_CLIPBOARD.toString());
+        b_Export = new Button("_" + TextID.FORM_PWD_MANAGER_LABEL_EXPORT.toString());
+        b_Reset = new Button("_" + TextID.FORM_PWD_MANAGER_LABEL_RESET.toString());
 
         // ========== TABLE ========== //
         table = new TableView<iSpecialPassword>();
 
         TableColumn<iSpecialPassword, String> cName =
-                new TableColumn<iSpecialPassword, String>(
-                        TextID.FORM_PWD_MANAGER_TABLE_LABEL_PWD_NAME.toString());
+                new TableColumn<iSpecialPassword, String>(TextID.FORM_PWD_MANAGER_TABLE_LABEL_PWD_NAME.toString());
         TableColumn<iSpecialPassword, String> cComment =
                 new TableColumn<iSpecialPassword, String>(TextID.FORM_SP_LABEL_COMMENT.toString());
         TableColumn<iSpecialPassword, String> cUrl =
@@ -196,16 +201,11 @@ public class ManagePasswordsForm extends AbstractForm
 
         try
         {
-            setButtonShortcut(b_New,
-                    new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E,
-                    KeyCombination.SHORTCUT_DOWN));
-            setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R,
-                    KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_New, new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN));
         }
         catch (Exceptions e)
         {
@@ -217,7 +217,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent ae)
             {
-                open(new SpecialPasswordForm(This));
+                new SpecialPasswordForm(This);
             }
         });
 
@@ -229,7 +229,7 @@ public class ManagePasswordsForm extends AbstractForm
                 try
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
-                    open(new DeletePasswordConfirmDlg(This));
+                    new DeletePasswordConfirmDlg(This);
                 }
                 catch (Exceptions e)
                 {
@@ -241,8 +241,7 @@ public class ManagePasswordsForm extends AbstractForm
         table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>()
         {
             @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
-                    Object newValue)
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
             {
                 try
                 {
@@ -252,8 +251,8 @@ public class ManagePasswordsForm extends AbstractForm
                         return;
                     }
 
-                    PasswordCollection.getInstance().setSelected(
-                            table.getSelectionModel().getSelectedItem().getOrigin());
+                    PasswordCollection.getInstance()
+                            .setSelected(table.getSelectionModel().getSelectedItem().getOrigin());
                 }
                 catch (Exceptions e)
                 {
@@ -274,7 +273,7 @@ public class ManagePasswordsForm extends AbstractForm
                 try
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
-                    open(new ChangePasswordConfirmDlg(This));
+                    new ChangePasswordConfirmDlg(This);
                 }
                 catch (Exceptions e)
                 {
@@ -288,7 +287,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                open(new ExportForm(This));
+                new ExportForm(This);
             }
         });
 
@@ -332,18 +331,15 @@ public class ManagePasswordsForm extends AbstractForm
                             {
                                 try
                                 {
-                                    TrayAgent
-                                            .getInstance()
+                                    TrayAgent.getInstance()
                                             .showNotification(
                                                     TextID.TRAY_MESSAGE_INFO_COPIED_TO_CLIPBOARD
                                                             .toString(),
-                                                    TextID.TRAY_MESSAGE_TIME_LEFT.toString()
-                                                            + ": "
-                                                            + ((Settings.getInstance()
-                                                                    .getClipboardLiveTime() - i) / 1000)
-                                                            + " "
-                                                            + TextID.COMMON_LABEL_SECONDS
-                                                                    .toString(), MessageType.INFO);
+                                                    TextID.TRAY_MESSAGE_TIME_LEFT.toString() + ": "
+                                                            + ((Settings.getInstance().getClipboardLiveTime() - i)
+                                                                    / 1000)
+                                                            + " " + TextID.COMMON_LABEL_SECONDS.toString(),
+                                            MessageType.INFO);
                                 }
                                 catch (Exceptions e)
                                 {
@@ -365,8 +361,7 @@ public class ManagePasswordsForm extends AbstractForm
                     try
                     {
                         TrayAgent.getInstance().showNotification(
-                                TextID.TRAY_MESSAGE_INFO_PWD_REMOVED_FROM_CLIPBOARD.toString(), "",
-                                MessageType.INFO);
+                                TextID.TRAY_MESSAGE_INFO_PWD_REMOVED_FROM_CLIPBOARD.toString(), "", MessageType.INFO);
                     }
                     catch (Exceptions e)
                     {
@@ -399,56 +394,10 @@ public class ManagePasswordsForm extends AbstractForm
     }
 
     @Override
-    public void hide() throws Exceptions
-    {
-        stage.close();
-        Terminator.terminate(new Exceptions(XC.END));
-    }
-
-    @Override
-    public void show() throws Exceptions
-    {
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " "
-                + TextID.COMMON_LABEL_VERSION.toString());
-
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-        stage.setMinHeight(WINDOW.height);
-        stage.setMinWidth(WINDOW.width);
-
-        tf_pass.clear();
-
-        table.setItems(PasswordCollection.getInstance().getIface());
-
-        stage.setOnShowing(new EventHandler<WindowEvent>()
-        {
-            @Override
-            public void handle(WindowEvent event)
-            {
-                table.getSelectionModel().clearSelection();
-            }
-        });
-
-        stage.show();
-    }
-
-    @Override
     public void onUserCloseRequest() throws Exceptions
     {
         stage.hide();
         stage.setIconified(false);
     }
 
-    public static void maximize()
-    {
-        try
-        {
-            This.show();
-        }
-        catch (Exceptions e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 }

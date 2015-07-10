@@ -5,7 +5,6 @@ package ui;
 
 import languages.Texts.TextID;
 import main.Exceptions;
-import main.Terminator;
 import main.Exceptions.XC;
 import ui.elements.EntryField;
 import ui.elements.Label;
@@ -38,34 +37,34 @@ public class SpecialPasswordForm extends AbstractForm
         public static final int height = 400;
     }
 
-    private final int       LABELS_COLUMN                  = 0;
-    private final int       TEXT_FIELDS_COLUMN             = 1;
-    private final int       TEXT_FIELD_LENGTH_SIZE         = 40;
-    private final int       TEXT_FIELDS_WIDTH              = 350;
-    private final String    DEFAULT_LENGTH                 = "16";
-    private final String    MIN_PASSWORD_LENGTH_TEXT       = "8";
-    private final String    MAX_PASSWORD_LENGTH_TEXT       = "64";
-    private final String    SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
-    private final int       MAX_PASSWORD_LENGTH            = 64;
-    private final int       MIN_PASSWORD_LENGTH            = 8;
+    private final int    LABELS_COLUMN                  = 0;
+    private final int    TEXT_FIELDS_COLUMN             = 1;
+    private final int    TEXT_FIELD_LENGTH_SIZE         = 40;
+    private final int    TEXT_FIELDS_WIDTH              = 350;
+    private final String DEFAULT_LENGTH                 = "16";
+    private final String MIN_PASSWORD_LENGTH_TEXT       = "8";
+    private final String MAX_PASSWORD_LENGTH_TEXT       = "64";
+    private final String SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
+    private final int    MAX_PASSWORD_LENGTH            = 64;
+    private final int    MIN_PASSWORD_LENGTH            = 8;
 
-    private SpecialPassword password                       = null;
+    private SpecialPassword password = null;
 
-    private final Label     l_errorLabel                   = new Label("");
+    private final Label l_errorLabel = new Label("");
 
-    private Button          b_OK                           = null;
-    private Button          b_cancel                       = null;
-    private Button          b_regeneratePassword           = null;
-    private CheckBox        cb_specialChars                = null;
-    private CheckBox        cb_upperCaseChar               = null;
-    private HBox            buttonsBox                     = null;
+    private Button   b_OK                 = null;
+    private Button   b_cancel             = null;
+    private Button   b_regeneratePassword = null;
+    private CheckBox cb_specialChars      = null;
+    private CheckBox cb_upperCaseChar     = null;
+    private HBox     buttonsBox           = null;
 
-    private EntryField      ef_name                        = null;
-    private EntryField      ef_comment                     = null;
-    private EntryField      ef_url                         = null;
-    private EntryField      ef_length                      = null;
-    private EntryField      ef_specialChars                = null;
-    private EntryField      ef_passwordPreview             = null;
+    private EntryField ef_name            = null;
+    private EntryField ef_comment         = null;
+    private EntryField ef_url             = null;
+    private EntryField ef_length          = null;
+    private EntryField ef_specialChars    = null;
+    private EntryField ef_passwordPreview = null;
 
     private EventHandler<KeyEvent> numFilter()
     {
@@ -75,8 +74,7 @@ public class SpecialPasswordForm extends AbstractForm
             public void handle(KeyEvent keyEvent)
             {
                 String lengthFieldText = ef_length.getText();
-                if (!"0123456789".contains(keyEvent.getCharacter())
-                        || lengthFieldText.length() >= 2)
+                if (!"0123456789".contains(keyEvent.getCharacter()) || lengthFieldText.length() >= 2)
                 {
                     keyEvent.consume();
                 }
@@ -106,15 +104,12 @@ public class SpecialPasswordForm extends AbstractForm
     {
         try
         {
-            if (ef_length.getText().length() > 0
-                    && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
+            if (ef_length.getText().length() > 0 && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
-                password =
-                        new SpecialPassword(ef_name.getText(), ef_comment.getText(),
-                                ef_url.getText(), ef_length.getText(),
-                                cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
-                                ef_specialChars.getText());
+                password = new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
+                        ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
+                        ef_specialChars.getText());
                 ef_passwordPreview.setText(password.getPassword());
                 l_errorLabel.setText("");
                 ef_name.beNormal();
@@ -144,14 +139,16 @@ public class SpecialPasswordForm extends AbstractForm
     public SpecialPasswordForm(AbstractForm parent)
     {
         super(parent);
+
+        stage.setHeight(WINDOW.height);
+        stage.setWidth(WINDOW.width);
+
         priority = ShowPriority.ABOVE;
         // ========== BUTTONS ========== //
 
-        b_OK = getButton(TextID.FORM_SP_LABEL_CREATE.toString());
-        b_cancel = getButton(TextID.COMMON_LABEL_CANCEL.toString());
-        ImageView imgView =
-                new ImageView(
-                        new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
+        b_OK = new Button(TextID.FORM_SP_LABEL_CREATE.toString());
+        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
+        ImageView imgView = new ImageView(new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
         imgView.setStyle("-fx-background-color:transparent");
         b_regeneratePassword = new Button("", imgView);
         b_regeneratePassword.setMaxSize(27, 24);
@@ -173,11 +170,8 @@ public class SpecialPasswordForm extends AbstractForm
         ef_comment = new EntryField(TextID.FORM_SP_LABEL_COMMENT.toString(), TEXT_FIELDS_WIDTH);
         ef_url = new EntryField(TextID.FORM_SP_LABEL_URL.toString(), TEXT_FIELDS_WIDTH);
         ef_length = new EntryField(TextID.FORM_SP_LABEL_LENGTH.toString(), TEXT_FIELD_LENGTH_SIZE);
-        ef_specialChars =
-                new EntryField(TextID.FORM_SP_LABEL_SPECIAL_CHARACTERS.toString() + "*",
-                        TEXT_FIELDS_WIDTH);
-        ef_passwordPreview =
-                new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD.toString(), TEXT_FIELDS_WIDTH);
+        ef_specialChars = new EntryField(TextID.FORM_SP_LABEL_SPECIAL_CHARACTERS.toString() + "*", TEXT_FIELDS_WIDTH);
+        ef_passwordPreview = new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD.toString(), TEXT_FIELDS_WIDTH);
 
         // ========== LABELS ========== //
 
@@ -221,8 +215,7 @@ public class SpecialPasswordForm extends AbstractForm
         ef_name.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
             {
                 showPasswordPreview();
             }
@@ -231,8 +224,7 @@ public class SpecialPasswordForm extends AbstractForm
         ef_specialChars.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
             {
                 showPasswordPreview();
             }
@@ -241,8 +233,7 @@ public class SpecialPasswordForm extends AbstractForm
         ef_length.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
             {
                 showPasswordPreview();
             }
@@ -270,8 +261,7 @@ public class SpecialPasswordForm extends AbstractForm
         ef_length.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
             {
                 if (newValue)
                 {
@@ -303,13 +293,12 @@ public class SpecialPasswordForm extends AbstractForm
                     if (password != null)
                         PasswordCollection.getInstance().addPassword(password);
                     else
-                        PasswordCollection.getInstance().addPassword(
-                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url
-                                        .getText(), ef_length.getText(), cb_specialChars
-                                        .isSelected(), cb_upperCaseChar.isSelected(),
-                                        ef_specialChars.getText()));
+                        PasswordCollection.getInstance()
+                                .addPassword(new SpecialPassword(ef_name.getText(), ef_comment.getText(),
+                                        ef_url.getText(), ef_length.getText(), cb_specialChars.isSelected(),
+                                        cb_upperCaseChar.isSelected(), ef_specialChars.getText()));
 
-                    hide();
+                    close();
                 }
                 catch (Exceptions e)
                 {
@@ -333,14 +322,7 @@ public class SpecialPasswordForm extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                try
-                {
-                    hide();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                close();
             }
         });
 
@@ -354,40 +336,4 @@ public class SpecialPasswordForm extends AbstractForm
         });
     }
 
-    @Override
-    public void onUserCloseRequest() throws Exceptions
-    {
-        // TODO Auto-generated method stub
-        hide();
-    }
-
-    @Override
-    public void hide() throws Exceptions
-    {
-        // TODO Auto-generated method stub
-        stage.close();
-    }
-
-    @Override
-    public void show() throws Exceptions
-    {
-        // TODO Auto-generated method stub
-        l_errorLabel.setText("");
-        ef_name.beNormal();
-        ef_specialChars.beNormal();
-        b_OK.setDisable(false);
-
-        // maybe we can somehow clean all field in a loop??
-        ef_name.clear();
-        ef_comment.clear();
-        ef_url.clear();
-        ef_length.setText(DEFAULT_LENGTH);
-        ef_passwordPreview.clear();
-
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
-        stage.setScene(scene);
-        stage.show();
-    }
 }

@@ -43,6 +43,11 @@ public class LoginForm extends AbstractForm
     {
         super(null); // Login doesn't have parents :(
 
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString());
+
+        stage.setHeight(WINDOW.height);
+        stage.setWidth(WINDOW.width);
+
         int gridRowCounter = 0;
 
         // ========== LABELS ========== //
@@ -57,8 +62,8 @@ public class LoginForm extends AbstractForm
 
         // ========== BUTTONS ========== //
 
-        b_Login = getButton(TextID.FORM_LOGIN_LABEL_LOGIN.toString());
-        b_Register = getButton(TextID.FORM_LOGIN_LABEL_REGISTER.toString());
+        b_Login = new Button(TextID.FORM_LOGIN_LABEL_LOGIN.toString());
+        b_Register = new Button(TextID.FORM_LOGIN_LABEL_REGISTER.toString());
 
         b_Login.setDefaultButton(true);
 
@@ -169,11 +174,10 @@ public class LoginForm extends AbstractForm
         CryptoSystem.init(password, isNewUser);
         PasswordCollection.init();
 
-        new ManagePasswordsForm().show();
+        new ManagePasswordsForm();
         stage.hide();
     }
 
-    @Override
     public void hide() throws Exceptions
     {
         stage.close();
@@ -181,22 +185,9 @@ public class LoginForm extends AbstractForm
     }
 
     @Override
-    public void show() throws Exceptions
-    {
-        Logger.printDebug("LoginForm preparing...");
-
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString());
-
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
-        Logger.printDebug("LoginForm displaying");
-        stage.show();
-    }
-
-    @Override
     public void onUserCloseRequest() throws Exceptions
     {
-        hide(); // FIXME maybe we should minimize
+        close(); // FIXME maybe we should minimize
+        Terminator.terminate(new Exceptions(XC.END));
     }
 }

@@ -37,9 +37,8 @@ public class TrayAgent
 
         popup.add(itemExit);
 
-        trayIcon =
-                new TrayIcon(image, TextID.COMMON_LABEL_APP_NAME.toString() + " "
-                        + TextID.COMMON_LABEL_VERSION.toString(), popup);
+        trayIcon = new TrayIcon(image,
+                TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString(), popup);
 
         trayIcon.addActionListener(new ActionListener()
         {
@@ -51,7 +50,7 @@ public class TrayAgent
                     @Override
                     public void run()
                     {
-                        ManagePasswordsForm.maximize();
+                        new ManagePasswordsForm();
                     }
                 });
             }

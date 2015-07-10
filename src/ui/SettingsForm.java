@@ -27,17 +27,17 @@ import javafx.scene.text.TextAlignment;
  */
 public class SettingsForm extends AbstractForm
 {
-    private EntryField             f_Clipboard = null;
+    private EntryField f_Clipboard = null;
 
-    private HBox                   hb_Language = null;
-    private Label                  l_Language  = null;
-    private ComboBox<String>       cb_Language = null;
+    private HBox             hb_Language = null;
+    private Label            l_Language  = null;
+    private ComboBox<String> cb_Language = null;
 
-    private Label                  l_Header    = null;
+    private Label l_Header = null;
 
     private ObservableList<String> langOptions = null;
 
-    private Button                 b_OK        = null;
+    private Button b_OK = null;
 
     private final class WINDOW
     {
@@ -48,6 +48,12 @@ public class SettingsForm extends AbstractForm
     public SettingsForm(AbstractForm parent)
     {
         super(parent);
+
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
+
+        stage.setHeight(WINDOW.height);
+        stage.setWidth(WINDOW.width);
+
         priority = ShowPriority.ALWAYS;
 
         l_Header = new Label(TextID.FORM_SETTINGS_NAME.toString());
@@ -55,8 +61,7 @@ public class SettingsForm extends AbstractForm
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
         langOptions =
-                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
-                        Settings.LANGUAGE.RUSSIAN.name());
+                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
 
         l_Language = new Label(TextID.FORM_SETTINGS_LABEL_LANGUAGE.toString());
         l_Language.setMinWidth(EntryField.LABEL_WIDTH);
@@ -75,20 +80,19 @@ public class SettingsForm extends AbstractForm
         hb_Language = new HBox();
         hb_Language.getChildren().addAll(l_Language, cb_Language);
 
-        f_Clipboard =
-                new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
-                        + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH.S);
+        f_Clipboard = new EntryField(
+                TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " " + TextID.COMMON_LABEL_SECONDS.toString(),
+                FIELD_WIDTH.S);
         try
         {
-            f_Clipboard.setText(Integer
-                    .toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+            f_Clipboard.setText(Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
         {
             Terminator.terminate(e);
         }
 
-        b_OK = getButton(TextID.COMMON_LABEL_OK.toString());
+        b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
 
         grid.add(l_Header, 0, 0);
         grid.add(f_Clipboard.getHBoxed(), 0, 1);
@@ -111,7 +115,7 @@ public class SettingsForm extends AbstractForm
                     if (Settings.getInstance().isRestartRequired())
                         Terminator.terminate(new Exceptions(XC.RESTART));
                     else
-                        hide();
+                        close();
                 }
                 catch (Exceptions e)
                 {
@@ -119,30 +123,5 @@ public class SettingsForm extends AbstractForm
                 }
             }
         });
-    }
-
-    @Override
-    public void onUserCloseRequest() throws Exceptions
-    {
-        hide();
-    }
-
-    @Override
-    public void hide() throws Exceptions
-    {
-        stage.hide();
-        parent.close(this);
-    }
-
-    @Override
-    public void show() throws Exceptions
-    {
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " "
-                + TextID.COMMON_LABEL_VERSION.toString());
-
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
-        stage.show();
     }
 }

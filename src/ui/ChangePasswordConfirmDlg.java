@@ -6,12 +6,11 @@ package ui;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.text.TextAlignment;
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
+import ui.elements.Button;
 import ui.elements.EntryField;
 import ui.elements.GridPane;
 import ui.elements.Label;
@@ -30,20 +29,24 @@ public class ChangePasswordConfirmDlg extends AbstractForm
         public static final int height = 250;
     }
 
-    private final int       MAX_WARNING_WIDTH = EntryField.LABEL_WIDTH + FIELD_WIDTH.L;
+    private final int MAX_WARNING_WIDTH = EntryField.LABEL_WIDTH + FIELD_WIDTH.L;
 
-    private Button          b_OK              = null;
-    private Button          b_Cancel          = null;
-    private Label           l_Warning         = null;
-    private Label           l_Header          = null;
-    private EntryField      CurrentPassword   = null;
-    private EntryField      NewPassword       = null;
+    private Button     b_OK            = null;
+    private Button     b_Cancel        = null;
+    private Label      l_Warning       = null;
+    private Label      l_Header        = null;
+    private EntryField CurrentPassword = null;
+    private EntryField NewPassword     = null;
 
-    private SpecialPassword newSp             = null;
+    private SpecialPassword newSp = null;
 
     ChangePasswordConfirmDlg(AbstractForm parent)
     {
         super(parent);
+
+        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
+        stage.setWidth(WINDOW.width);
+        stage.setHeight(WINDOW.height);
 
         // ========== LABELS ========== //
         l_Warning = new Label(TextID.FORM_PWD_CHANGE_WARNING.toString(), MAX_WARNING_WIDTH);
@@ -57,12 +60,11 @@ public class ChangePasswordConfirmDlg extends AbstractForm
 
         // ========== BUTTONS ========== //
 
-        b_OK = getButton(TextID.COMMON_LABEL_OK.toString());
-        b_Cancel = getButton(TextID.COMMON_LABEL_CANCEL.toString());
+        b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
+        b_Cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
 
         GridPane.setHalignment(b_OK, HPos.RIGHT);
         GridPane.setHalignment(b_Cancel, HPos.RIGHT);
-        GridPane.setMargin(b_OK, new Insets(0, BUTTON.xWidth + GAP.H, 0, 0));
 
         grid.add(l_Header, 0, 0);
 
@@ -87,7 +89,7 @@ public class ChangePasswordConfirmDlg extends AbstractForm
                 try
                 {
                     PasswordCollection.getInstance().replacePasword(newSp);
-                    hide();
+                    close();
                 }
                 catch (Exceptions e)
                 {
@@ -101,42 +103,21 @@ public class ChangePasswordConfirmDlg extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                try
-                {
-                    newSp = null;
-                    hide();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                newSp = null;
+                close();
             }
         });
-    }
 
-    @Override
-    public void onUserCloseRequest() throws Exceptions
-    {
-        // TODO Auto-generated method stub
-        hide();
-    }
-
-    @Override
-    public void hide() throws Exceptions
-    {
-        // TODO Auto-generated method stub
-        stage.hide();
-    }
-
-    @Override
-    public void show() throws Exceptions
-    {
-        // TODO Auto-generated method stub
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
-
-        CurrentPassword.setText(PasswordCollection.getInstance().getSelected().getPassword());
-
-        newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
+        try
+        {
+            CurrentPassword.setText(PasswordCollection.getInstance().getSelected().getPassword());
+            newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         NewPassword.setText(newSp.getPassword());
 

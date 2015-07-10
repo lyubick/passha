@@ -67,13 +67,6 @@ public class Main extends Application
     {
         Platform.setImplicitExit(false);
 
-        try
-        {
-            new LoginForm().show();
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
+        new LoginForm();
     }
 }
