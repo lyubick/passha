@@ -74,7 +74,8 @@ public class FormCreatePwd extends AbstractForm
             public void handle(KeyEvent keyEvent)
             {
                 String lengthFieldText = ef_length.getText();
-                if (!"0123456789".contains(keyEvent.getCharacter()) || lengthFieldText.length() >= 2)
+                if (!"0123456789".contains(keyEvent.getCharacter())
+                        || lengthFieldText.length() >= 2)
                 {
                     keyEvent.consume();
                 }
@@ -104,13 +105,16 @@ public class FormCreatePwd extends AbstractForm
     {
         try
         {
-            if (ef_length.getText().length() > 0 && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
+            if (ef_length.getText().length() > 0
+                    && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
                 password =
-                        new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
-                                ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
-                                ef_specialChars.getText());
+                        new SpecialPassword(ef_name.getText(), ef_comment.getText(),
+                                ef_url.getText(), ef_length.getText(),
+                                cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
+                                ef_specialChars.getText(), ""); // FIXME
+                                                                // shortcut
                 ef_passwordPreview.setText(password.getPassword());
                 l_errorLabel.setText("");
                 ef_name.beNormal();
@@ -151,7 +155,9 @@ public class FormCreatePwd extends AbstractForm
 
         b_OK = new Button(TextID.FORM_CREATEPWD_LABEL_CREATE.toString());
         b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
-        ImageView imgView = new ImageView(new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
+        ImageView imgView =
+                new ImageView(
+                        new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
         imgView.setStyle("-fx-background-color:transparent");
         b_regeneratePassword = new Button("", imgView);
         b_regeneratePassword.setMaxSize(27, 24);
@@ -169,12 +175,19 @@ public class FormCreatePwd extends AbstractForm
 
         // ========== ENTRY FIELDS ========== //
 
-        ef_name = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*", TEXT_FIELDS_WIDTH);
-        ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT.toString(), TEXT_FIELDS_WIDTH);
+        ef_name =
+                new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*", TEXT_FIELDS_WIDTH);
+        ef_comment =
+                new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT.toString(), TEXT_FIELDS_WIDTH);
         ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL.toString(), TEXT_FIELDS_WIDTH);
-        ef_length = new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*", TEXT_FIELD_LENGTH_SIZE);
-        ef_specialChars = new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*", TEXT_FIELDS_WIDTH);
-        ef_passwordPreview = new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD.toString(), TEXT_FIELDS_WIDTH);
+        ef_length =
+                new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
+                        TEXT_FIELD_LENGTH_SIZE);
+        ef_specialChars =
+                new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*",
+                        TEXT_FIELDS_WIDTH);
+        ef_passwordPreview =
+                new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD.toString(), TEXT_FIELDS_WIDTH);
 
         // ========== LABELS ========== //
 
@@ -218,7 +231,8 @@ public class FormCreatePwd extends AbstractForm
         ef_name.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue)
             {
                 showPasswordPreview();
             }
@@ -227,7 +241,8 @@ public class FormCreatePwd extends AbstractForm
         ef_specialChars.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue)
             {
                 showPasswordPreview();
             }
@@ -236,7 +251,8 @@ public class FormCreatePwd extends AbstractForm
         ef_length.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue)
             {
                 showPasswordPreview();
             }
@@ -264,7 +280,8 @@ public class FormCreatePwd extends AbstractForm
         ef_length.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue)
             {
                 if (newValue)
                 {
@@ -297,9 +314,11 @@ public class FormCreatePwd extends AbstractForm
                         PasswordCollection.getInstance().addPassword(password);
                     else
                         PasswordCollection.getInstance().addPassword(
-                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
-                                        ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar
-                                                .isSelected(), ef_specialChars.getText()));
+                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url
+                                        .getText(), ef_length.getText(), cb_specialChars
+                                        .isSelected(), cb_upperCaseChar.isSelected(),
+                                        ef_specialChars.getText(), "")); // FIXME
+                                                                         // shortcut
 
                     close();
                 }

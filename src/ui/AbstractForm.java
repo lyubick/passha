@@ -18,6 +18,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 /**
@@ -145,7 +146,7 @@ public abstract class AbstractForm
 
         scene = new Scene(group, WINDOW.width, WINDOW.height);
 
-        stage = new Stage();
+        stage = new Stage(StageStyle.UNIFIED);
         stage.setScene(scene);
 
         stage.getIcons().add(new Image("resources/tray_icon.png"));
@@ -165,7 +166,8 @@ public abstract class AbstractForm
         stage.iconifiedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule,
+                    Boolean newValue)
             {
                 if (newValue) onUserMinimizeRequest();
             }
@@ -175,7 +177,8 @@ public abstract class AbstractForm
         {
 
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue)
             {
                 // Check if we have Children with highest priorities
                 if (!childs.isEmpty())
@@ -186,7 +189,8 @@ public abstract class AbstractForm
                         {
                             child.stage.requestFocus();
 
-                            Logger.printDebug("Focus of window will be switched to " + child.getClass().getName());
+                            Logger.printDebug("Focus of window will be switched to "
+                                    + child.getClass().getName());
                             return;
                         }
                     }
@@ -201,7 +205,8 @@ public abstract class AbstractForm
                         {
                             child.stage.requestFocus();
 
-                            Logger.printDebug("Focus of window will be switched to " + child.getClass().getName());
+                            Logger.printDebug("Focus of window will be switched to "
+                                    + child.getClass().getName());
                             return;
                         }
                     }

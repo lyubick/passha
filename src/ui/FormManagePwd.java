@@ -19,6 +19,7 @@ import main.Terminator;
 import ui.elements.Button;
 import main.Exceptions.XC;
 import db.PasswordCollection;
+import db.SpecialPassword;
 import db.iSpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -67,10 +68,11 @@ public class FormManagePwd extends AbstractForm
     private Button                      b_Reset         = null;
     private Button                      b_Copy          = null;
     private Button                      b_Export        = null;
+    private Button                      b_Edit          = null;
 
-    Task<Void>                          tsk_PWDLifeTime = null;
+    static Task<Void>                   tsk_PWDLifeTime = null;
 
-    private ProgressIndicator           pi_PWDLifeTime  = null;
+    private static ProgressIndicator    pi_PWDLifeTime  = null;
 
     private MenuBar                     mb_Main         = null;
     private Menu                        m_File          = null;
@@ -78,6 +80,152 @@ public class FormManagePwd extends AbstractForm
     private MenuItem                    mi_Settings     = null;
 
     private static AbstractForm         This            = null;
+
+    private EventHandler<ActionEvent> editActionHandler()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                try
+                {
+                    if (PasswordCollection.getInstance().getSelected() == null) return;
+                    new FormEditPwd(This);
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> copyToClipboardHandler()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                minimize();
+                copyToClipboard();
+            }
+        };
+    }
+
+    // FIXME: move maybe?
+    public static void copyToClipboard()
+    {
+        SpecialPassword sp = null;
+        try
+        {
+            sp = PasswordCollection.getInstance().getSelected();
+        }
+        catch (Exceptions e)
+        {
+            Terminator.terminate(e);
+        }
+        if (sp == null)
+        {
+            Logger.printError("No password selected");
+            return;
+        }
+
+        String pwd = sp.getPassword();
+
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(new StringSelection(pwd), null);
+
+        if (tsk_PWDLifeTime != null) tsk_PWDLifeTime.cancel();
+
+        tsk_PWDLifeTime = new Task<Void>()
+        {
+            @Override
+            protected Void call() throws Exception
+            {
+
+                updateProgress(9, 10);
+
+                int timeToLive = 0;
+
+                try
+                {
+                    timeToLive = Settings.getInstance().getClipboardLiveTime();
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+
+                for (int i = 0; i <= timeToLive && !isCancelled(); i += 100)
+                {
+                    updateProgress(timeToLive - i, timeToLive);
+                    Thread.sleep(100);
+
+                    if (i % 1000 == 0)
+                    {
+                        try
+                        {
+                            TrayAgent.getInstance()
+                                    .showNotification(
+                                            TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD.toString(),
+                                            TextID.TRAY_MSG_TIME_LEFT.toString()
+                                                    + ": "
+                                                    + ((Settings.getInstance()
+                                                            .getClipboardLiveTime() - i) / 1000)
+                                                    + " " + TextID.COMMON_LABEL_SECONDS.toString(),
+                                            MessageType.INFO);
+                        }
+                        catch (Exceptions e)
+                        {
+                            Terminator.terminate(e);
+                        }
+                    }
+                }
+
+                return null;
+            }
+        };
+
+        pi_PWDLifeTime.progressProperty().bind(tsk_PWDLifeTime.progressProperty());
+
+        tsk_PWDLifeTime.setOnSucceeded(EventHandler -> {
+            pi_PWDLifeTime.progressProperty().unbind();
+            Logger.printDebug("PWDCLIP -> Successfully finished.");
+            pi_PWDLifeTime.setVisible(false);
+            try
+            {
+                TrayAgent.getInstance()
+                        .showNotification(TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD.toString(),
+                                "", MessageType.INFO);
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
+            }
+            try
+            {
+                if (pwd.equals(clipboard.getData(DataFlavor.stringFlavor)))
+                    clipboard.setContents(new StringSelection(""), null);
+            }
+            catch (UnsupportedFlavorException | IOException e)
+            {
+                Terminator.terminate(new Exceptions(XC.ERROR));
+            }
+        });
+
+        tsk_PWDLifeTime.setOnCancelled(EventHandler -> {
+            Logger.printDebug("PWDCLIP -> Cancelled finished");
+            pi_PWDLifeTime.setVisible(false);
+        });
+
+        Thread calculatePasswordThread = new Thread(tsk_PWDLifeTime);
+        calculatePasswordThread.setDaemon(false);
+        calculatePasswordThread.start();
+
+        pi_PWDLifeTime.setVisible(true);
+    }
 
     public static FormManagePwd getInstance() throws Exceptions
     {
@@ -155,6 +303,7 @@ public class FormManagePwd extends AbstractForm
         b_Copy = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD.toString());
         b_Export = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_EXPORT.toString());
         b_Reset = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_RESET.toString());
+        b_Edit = new Button("_" + TextID.FORM_MANAGEWD_LABEL_EDIT.toString());
 
         // ========== TABLE ========== //
         table = new TableView<iSpecialPassword>();
@@ -169,13 +318,20 @@ public class FormManagePwd extends AbstractForm
                 new TableColumn<iSpecialPassword, String>(
                         TextID.FORM_CREATEPWD_LABEL_URL.toString());
 
+        TableColumn<iSpecialPassword, String> cShortcut =
+                new TableColumn<iSpecialPassword, String>(
+                        TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
+
         table.getColumns().add(cName);
         table.getColumns().add(cComment);
         table.getColumns().add(cUrl);
+        table.getColumns().add(cShortcut);
 
         cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
         cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
         cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
+        cShortcut
+                .setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
 
         table.setMinHeight(tableMinHeight);
         table.setMinWidth(tableMinWidth);
@@ -188,8 +344,10 @@ public class FormManagePwd extends AbstractForm
         GridPane.setValignment(b_Delete, VPos.TOP);
         GridPane.setHalignment(b_Copy, HPos.LEFT);
         GridPane.setValignment(b_Export, VPos.BOTTOM);
+        GridPane.setValignment(b_Edit, VPos.TOP);
 
-        GridPane.setMargin(b_Delete, new Insets(40, 0, 0, 0));
+        GridPane.setMargin(b_Edit, new Insets(40, 0, 0, 0));
+        GridPane.setMargin(b_Delete, new Insets(80, 0, 0, 0));
         GridPane.setMargin(b_Copy, new Insets(0, 0, 0, 270));
 
         // ========== TEXT FIELD ========== //
@@ -206,6 +364,7 @@ public class FormManagePwd extends AbstractForm
 
         grid.add(b_Export, 1, 0);
         grid.add(b_New, 1, 0);
+        grid.add(b_Edit, 1, 0);
         grid.add(b_Delete, 1, 0);
         grid.add(b_Reset, 1, 0);
 
@@ -235,6 +394,8 @@ public class FormManagePwd extends AbstractForm
                 new FormCreatePwd(This);
             }
         });
+
+        b_Edit.setOnAction(editActionHandler());
 
         b_Delete.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -307,106 +468,7 @@ public class FormManagePwd extends AbstractForm
             }
         });
 
-        b_Copy.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                if (tf_pass.getText().length() == 0) return;
-
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(new StringSelection(tf_pass.getText()), null);
-
-                if (tsk_PWDLifeTime != null) tsk_PWDLifeTime.cancel();
-
-                tsk_PWDLifeTime = new Task<Void>()
-                {
-                    @Override
-                    protected Void call() throws Exception
-                    {
-
-                        updateProgress(9, 10);
-
-                        int timeToLive = 0;
-
-                        try
-                        {
-                            timeToLive = Settings.getInstance().getClipboardLiveTime();
-                        }
-                        catch (Exceptions e)
-                        {
-                            Terminator.terminate(e);
-                        }
-
-                        for (int i = 0; i <= timeToLive && !isCancelled(); i += 100)
-                        {
-                            updateProgress(timeToLive - i, timeToLive);
-                            Thread.sleep(100);
-
-                            if (i % 1000 == 0)
-                            {
-                                try
-                                {
-                                    TrayAgent.getInstance().showNotification(
-                                            TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD.toString(),
-                                            TextID.TRAY_MSG_TIME_LEFT.toString()
-                                                    + ": "
-                                                    + ((Settings.getInstance()
-                                                            .getClipboardLiveTime() - i) / 1000)
-                                                    + " " + TextID.COMMON_LABEL_SECONDS.toString(),
-                                            MessageType.INFO);
-                                }
-                                catch (Exceptions e)
-                                {
-                                    Terminator.terminate(e);
-                                }
-                            }
-                        }
-
-                        return null;
-                    }
-                };
-
-                pi_PWDLifeTime.progressProperty().bind(tsk_PWDLifeTime.progressProperty());
-
-                tsk_PWDLifeTime.setOnSucceeded(EventHandler -> {
-                    pi_PWDLifeTime.progressProperty().unbind();
-                    Logger.printDebug("PWDCLIP -> Successfully finished.");
-                    pi_PWDLifeTime.setVisible(false);
-                    try
-                    {
-                        TrayAgent.getInstance().showNotification(
-                                TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD.toString(), "",
-                                MessageType.INFO);
-                    }
-                    catch (Exceptions e)
-                    {
-                        Terminator.terminate(e);
-                    }
-                    try
-                    {
-                        if (tf_pass.getText().equals(clipboard.getData(DataFlavor.stringFlavor)))
-                            clipboard.setContents(new StringSelection(""), null);
-                    }
-                    catch (UnsupportedFlavorException | IOException e)
-                    {
-                        Terminator.terminate(new Exceptions(XC.ERROR));
-                    }
-                });
-
-                tsk_PWDLifeTime.setOnCancelled(EventHandler -> {
-                    tf_pass.textProperty().unbind();
-                    Logger.printDebug("PWDCLIP -> Cancelled finished");
-                    pi_PWDLifeTime.setVisible(false);
-                });
-
-                Thread calculatePasswordThread = new Thread(tsk_PWDLifeTime);
-                calculatePasswordThread.setDaemon(false);
-                calculatePasswordThread.start();
-
-                pi_PWDLifeTime.setVisible(true);
-            }
-        });
+        b_Copy.setOnAction(copyToClipboardHandler());
 
         stage.setOnShowing(new EventHandler<WindowEvent>()
         {

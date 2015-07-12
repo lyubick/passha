@@ -32,6 +32,7 @@ public class SpecialPassword
     private int    length                = 0;
     private String specialChars          = null;
     private BitSet paramsMask            = null;
+    private String shortcut              = null;
 
     private String SALT_SPECIAL_PASSWORD = "SPECIAL";
 
@@ -46,6 +47,7 @@ public class SpecialPassword
         length = Integer.parseInt(m.getOrDefault("length", "0"));
         specialChars = m.getOrDefault("specialChars", "");
         paramsMask = Utilities.getBitSet(m.getOrDefault("paramsMask", ""));
+        shortcut = m.getOrDefault("shortcut", "");
 
         Logger.printDebug("SpecialPassword constructor from Map END");
     }
@@ -61,18 +63,21 @@ public class SpecialPassword
         m.put("length", "" + length);
         m.put("specialChars", specialChars);
         m.put("paramsMask", paramsMask.toString());
+        m.put("shortcut", shortcut);
 
         Logger.printDebug("Created map: " + m.toString());
 
         return m;
     }
 
-    public SpecialPassword(String name, String comment, String url, String length, boolean needSpecialChars,
-            boolean needUpperCaseChar, String specialChars) throws Exceptions
+    public SpecialPassword(String name, String comment, String url, String length,
+            boolean needSpecialChars, boolean needUpperCaseChar, String specialChars,
+            String shortcut) throws Exceptions
     {
         Logger.printDebug("SpecialPassword constructor... START");
 
-        if (name.length() == 0 || length.length() == 0) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
+        if (name.length() == 0 || length.length() == 0)
+            throw new Exceptions(XC.MANDATORY_DATA_MISSING);
 
         BitSet paramsMask = new BitSet(PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
         paramsMask.set(0, PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
@@ -97,12 +102,12 @@ public class SpecialPassword
         this.length = Integer.parseInt(length);
         this.paramsMask = paramsMask;
         this.specialChars = specialChars;
+        this.shortcut = shortcut;
 
         do
         {
             shaCycles = CryptoSystem.getInstance().randSHACycles();
-        }
-        while (!isPasswordValid());
+        } while (!isPasswordValid());
 
         Logger.printDebug("SpecialPassword constructor... DONE!");
     }
@@ -119,12 +124,12 @@ public class SpecialPassword
         this.length = other.length;
         this.paramsMask = (BitSet) other.paramsMask.clone();
         this.specialChars = other.specialChars.toString();
+        this.shortcut = other.shortcut.toString();
 
         do
         {
             shaCycles = CryptoSystem.getInstance().randSHACycles();
-        }
-        while (!isPasswordValid());
+        } while (!isPasswordValid());
 
         Logger.printDebug("SpecialPassword copy-constructor... DONE!");
     }
@@ -169,6 +174,16 @@ public class SpecialPassword
         shaCycles = sc;
     }
 
+    public void setShortcut(String shortcut)
+    {
+        this.shortcut = shortcut;
+    }
+
+    public String getShortcut()
+    {
+        return shortcut;
+    }
+
     @Override
     public boolean equals(Object other)
     {
@@ -179,8 +194,6 @@ public class SpecialPassword
         SpecialPassword otherCasted = (SpecialPassword) other;
 
         if (otherCasted.name.equals(this.name) == false) return false;
-        if (otherCasted.comment.equals(this.comment) == false) return false;
-        if (otherCasted.url.equals(this.url) == false) return false;
         if (otherCasted.shaCycles != this.shaCycles) return false;
 
         return true;
@@ -203,7 +216,8 @@ public class SpecialPassword
 
         idx = (idx >= hash.length() - 1) ? idx % hash.length() - 1 : idx;
 
-        return Math.abs(hexArray.indexOf(hash.charAt(idx)) * hexArray.indexOf(hash.charAt(idx + 1)));
+        return Math
+                .abs(hexArray.indexOf(hash.charAt(idx)) * hexArray.indexOf(hash.charAt(idx + 1)));
     }
 
     /**
@@ -227,7 +241,8 @@ public class SpecialPassword
         {
             int currIdx = i * mapChunkLength;
 
-            password.append(ALPHABETA.charAt(Utilities.hexToInt(hash.substring(currIdx, currIdx + mapChunkLength))
+            password.append(ALPHABETA.charAt(Utilities
+                    .hexToInt(hash.substring(currIdx, currIdx + mapChunkLength))
                     .mod(new BigInteger(Integer.toString(ALPHABETA.length()))).intValue()));
         }
 
@@ -257,8 +272,7 @@ public class SpecialPassword
             do
             {
                 insertPosition = (getNumberFromHashAt(hash, idx++) % password.length());
-            }
-            while (specialChars.indexOf(password.charAt(insertPosition)) != -1);
+            } while (specialChars.indexOf(password.charAt(insertPosition)) != -1);
 
             specialCharacterPosition = (getNumberFromHashAt(hash, idx++) % specialChars.length());
 
@@ -363,7 +377,8 @@ public class SpecialPassword
             else if (specialChars.indexOf(pwd.charAt(i)) != -1)
             {
                 count--;
-                if (count == 0) currentMaskBitSet.set(PARAMS_MASK_BITS.HAS_SPECIAL_CHARACTERS.ordinal());
+                if (count == 0)
+                    currentMaskBitSet.set(PARAMS_MASK_BITS.HAS_SPECIAL_CHARACTERS.ordinal());
             }
             else
                 Logger.printError("Invalid character during validation.");
@@ -371,8 +386,8 @@ public class SpecialPassword
             if (currentMaskBitSet.equals(paramsMask)) return true;
         }
 
-        Logger.printError("Validation Failed! Current Mask: " + currentMaskBitSet.toString() + " != Ethalon Mask"
-                + paramsMask.toString());
+        Logger.printError("Validation Failed! Current Mask: " + currentMaskBitSet.toString()
+                + " != Ethalon Mask" + paramsMask.toString());
 
         return false;
     }

@@ -54,6 +54,9 @@ public final class Exceptions extends Throwable
         RESTART,
         END,
 
+        // Only Shortcuts form
+        NO_SHORTCUTS_EXISTS,
+
         // General, can be used if error reasons are unknown
         ERROR
     }

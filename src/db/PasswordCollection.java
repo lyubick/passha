@@ -71,7 +71,8 @@ public class PasswordCollection
     public void addPassword(SpecialPassword entry) throws Exceptions
     {
         for (SpecialPassword existing : db.getDecrypted())
-            if (existing.getName().equals(entry.getName())) throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
+            if (existing.getName().equals(entry.getName()))
+                throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
 
         db.addEntry(entry);
 
@@ -145,5 +146,22 @@ public class PasswordCollection
         {
             Terminator.terminate(e); // FIXME
         }
+    }
+
+    public SpecialPassword getPasswordByShortcut(String shortcut)
+    {
+        for (SpecialPassword sp : db.getDecrypted())
+            if (sp.getShortcut().equals(shortcut)) return sp;
+        return null;
+    }
+
+    public Vector<SpecialPassword> getPasswordsWithShortcut()
+    {
+        Vector<SpecialPassword> pwds = new Vector<SpecialPassword>();
+
+        for (SpecialPassword sp : db.getDecrypted())
+            if (!sp.getShortcut().equals("")) pwds.add(sp);
+
+        return pwds;
     }
 }

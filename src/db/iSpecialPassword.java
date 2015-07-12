@@ -15,6 +15,7 @@ public class iSpecialPassword
     private SimpleStringProperty  name;
     private SimpleStringProperty  comment;
     private SimpleStringProperty  url;
+    private SimpleStringProperty  shortcut;
 
     private final SpecialPassword origin;
 
@@ -25,6 +26,7 @@ public class iSpecialPassword
         this.name = new SimpleStringProperty(example.getName());
         this.comment = new SimpleStringProperty(example.getComment());
         this.url = new SimpleStringProperty(example.getUrl());
+        this.shortcut = new SimpleStringProperty(example.getShortcut());
 
         this.origin = example;
 
@@ -93,6 +95,17 @@ public class iSpecialPassword
     {
         this.url = url;
         this.origin.setUrl(url.get());
+    }
+
+    public void setShortcut(SimpleStringProperty shortcut)
+    {
+        this.shortcut = shortcut;
+        this.origin.setShortcut(shortcut.get());
+    }
+
+    public String getShortcut()
+    {
+        return shortcut.get();
     }
 
 }

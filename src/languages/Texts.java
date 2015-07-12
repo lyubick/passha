@@ -107,6 +107,19 @@ public class Texts
         { "Delete password", "Удалить пароль" }),
 
         /**************************************************************************************************************
+         * EDIT PASSWORD FORM
+         *************************************************************************************************************/
+        FORM_EDITPWD_LABEL_SHORTCUT(new String[]
+        { "Shortcut", "Горячая клавиша" }),
+
+        FORM_EDITPWD_NAME(new String[]
+        { "Edit Password", "Редактировать пароль" }),
+
+        FORM_EDITPWD_MSG_SHORTCUT_IN_USE(new String[]
+        { TextID.COMMON_LABEL_ERROR.toString() + " Shortcut is in use by: ",
+                TextID.COMMON_LABEL_ERROR.toString() + " Горячая клавиша занята: " }),
+
+        /**************************************************************************************************************
          * LOGIN FORM
          *************************************************************************************************************/
         FORM_LOGIN_LABEL_ENTER_PWD(new String[]
@@ -150,6 +163,9 @@ public class Texts
 
         FORM_MANAGEPWD_NAME(new String[]
         { "Password Manager", "Управление паролями" }),
+
+        FORM_MANAGEWD_LABEL_EDIT(new String[]
+        { "Edit", "Редактировать" }),
 
         /**************************************************************************************************************
          * RESET PASSWORD FORM
