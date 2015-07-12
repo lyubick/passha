@@ -250,5 +250,5 @@ public class Texts
         }
     }
 
-    static String version = "2.1";
+    static String version = "2.2";
 }
