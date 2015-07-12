@@ -25,19 +25,19 @@ import javafx.scene.text.TextAlignment;
  * @author lyubick
  *
  */
-public class SettingsForm extends AbstractForm
+public class FormSettings extends AbstractForm
 {
-    private EntryField f_Clipboard = null;
+    private EntryField             f_Clipboard = null;
 
-    private HBox             hb_Language = null;
-    private Label            l_Language  = null;
-    private ComboBox<String> cb_Language = null;
+    private HBox                   hb_Language = null;
+    private Label                  l_Language  = null;
+    private ComboBox<String>       cb_Language = null;
 
-    private Label l_Header = null;
+    private Label                  l_Header    = null;
 
     private ObservableList<String> langOptions = null;
 
-    private Button b_OK = null;
+    private Button                 b_OK        = null;
 
     private final class WINDOW
     {
@@ -45,11 +45,9 @@ public class SettingsForm extends AbstractForm
         public static final int height = 200;
     }
 
-    public SettingsForm(AbstractForm parent)
+    public FormSettings(AbstractForm parent)
     {
-        super(parent);
-
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
+        super(parent, TextID.FORM_SETTINGS_NAME.toString());
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
@@ -80,9 +78,9 @@ public class SettingsForm extends AbstractForm
         hb_Language = new HBox();
         hb_Language.getChildren().addAll(l_Language, cb_Language);
 
-        f_Clipboard = new EntryField(
-                TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " " + TextID.COMMON_LABEL_SECONDS.toString(),
-                FIELD_WIDTH.S);
+        f_Clipboard =
+                new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
+                        + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH.S);
         try
         {
             f_Clipboard.setText(Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
@@ -123,5 +121,13 @@ public class SettingsForm extends AbstractForm
                 }
             }
         });
+
+        open();
+    }
+
+    @Override
+    protected void onUserMinimizeRequest()
+    {
+        stage.setIconified(false);
     }
 }

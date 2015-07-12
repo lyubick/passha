@@ -6,8 +6,8 @@ package ui;
 import java.util.Vector;
 
 import ui.elements.GridPane;
+import languages.Texts.TextID;
 import logger.Logger;
-import main.Exceptions;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -15,10 +15,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import main.Terminator;
 
 /**
  * @author curious-odd-man
@@ -34,16 +34,16 @@ public abstract class AbstractForm
         ALWAYS,
     };
 
-    protected AbstractForm         parent = null;
-    protected Vector<AbstractForm> childs = null;
-    protected ShowPriority         priority;     // TODO
+    protected AbstractForm         parent  = null;
+    protected Vector<AbstractForm> childs  = null;
+    protected ShowPriority         priority;      // TODO
 
-    protected GridPane grid  = null;
-    protected VBox     group = null;
-    protected Scene    scene = null;
-    protected Stage    stage = null;
+    protected GridPane             grid    = null;
+    protected VBox                 group   = null;
+    protected Scene                scene   = null;
+    protected Stage                stage   = null;
 
-    protected MenuBar mb_Main = null;
+    protected MenuBar              mb_Main = null;
 
     protected static final class GAP
     {
@@ -74,36 +74,59 @@ public abstract class AbstractForm
     }
 
     // Method will create reference to this instance in parent instance
-    private void open()
+    protected void open()
     {
         if (parent != null) parent.childs.add(this);
         stage.show();
     }
 
     // Method will delete references to this from parent instance
-    public void close()
+    protected void close()
     {
         if (parent != null) parent.childs.remove(this);
+        if (childs != null)
+        {
+            for (AbstractForm child : childs)
+                child.close();
+        }
         stage.close();
     }
 
     public void maximize()
     {
         stage.show();
+        stage.requestFocus();
+        if (childs != null)
+        {
+            for (AbstractForm child : childs)
+                child.maximize();
+        }
     }
 
     public void minimize()
     {
+        if (childs != null)
+        {
+            for (AbstractForm child : childs)
+                child.minimize();
+        }
         stage.hide();
+        stage.setIconified(false);
     }
 
-    // Method that must be called when User try to close form, by pressing [X]
-    public void onUserCloseRequest() throws Exceptions
+    // Method that is called when User try to close form, by pressing [X]
+    protected void onUserCloseRequest()
     {
         close(); // default
     }
 
-    protected AbstractForm(AbstractForm parent)
+    // Method that is called when User try to minimize form, by pressing [_]
+    protected void onUserMinimizeRequest()
+    {
+        minimize(); // default
+    }
+
+    protected AbstractForm(AbstractForm parent, String title)
     {
         this.parent = parent;
         priority = ShowPriority.NORMAL;
@@ -125,6 +148,9 @@ public abstract class AbstractForm
         stage = new Stage();
         stage.setScene(scene);
 
+        stage.getIcons().add(new Image("resources/tray_icon.png"));
+        stage.setTitle(title + " - " + TextID.COMMON_APPLICATION_NAME.toString() + " ("
+                + TextID.COMMON_LABEL_VERSION.toString() + ")");
         stage.setResizable(false);
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>()
@@ -132,24 +158,16 @@ public abstract class AbstractForm
             @Override
             public void handle(WindowEvent event)
             {
-                try
-                {
-                    onUserCloseRequest();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                onUserCloseRequest();
             }
         });
 
         stage.iconifiedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
             {
-                stage.hide();
-                stage.setIconified(false);
+                if (newValue) onUserMinimizeRequest();
             }
         });
 
@@ -192,7 +210,5 @@ public abstract class AbstractForm
                 // No! Let focus! :)
             }
         });
-
-        open();
     }
 }

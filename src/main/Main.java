@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions.XC;
-import ui.LoginForm;
+import ui.FormLogin;
 import ui.TrayAgent;
 
 public class Main extends Application
@@ -36,7 +36,7 @@ public class Main extends Application
         {
             if (e.getCode().equals(XC.DEFAULT_SETTINGS_USED))
             {
-                info = TextID.TRAY_MESSAGE_ERROR_FAILED_LOAD_SETTINGS.toString();
+                info = TextID.TRAY_MSG_FAILED_LOAD_SETTINGS.toString();
             }
             else
             {
@@ -67,6 +67,6 @@ public class Main extends Application
     {
         Platform.setImplicitExit(false);
 
-        new LoginForm();
+        new FormLogin();
     }
 }

@@ -33,7 +33,7 @@
 		<!-- Customize jar manifest (optional) -->
 		<manifest>
 			<attribute name="Implementation-Vendor" value="KGBT" />
-			<attribute name="Implementation-Version" value="2.0.000" />
+			<attribute name="Implementation-Version" value="2.1.000" />
 		</manifest>
 	</fx:jar>
 </project>

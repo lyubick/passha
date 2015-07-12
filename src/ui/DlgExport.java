@@ -13,12 +13,12 @@ import main.Exceptions;
  * @author curious-odd-man
  *
  */
-public class ExportForm extends AbstractForm
+public class DlgExport extends AbstractForm
 {
 
-    protected ExportForm(AbstractForm parent)
+    protected DlgExport(AbstractForm parent)
     {
-        super(parent);
+        super(parent, ""); // FIXME
 
         // TODO Auto-generated method stub
         FileChooser fc = new FileChooser();
@@ -37,5 +37,4 @@ public class ExportForm extends AbstractForm
             }
         }
     }
-
 }

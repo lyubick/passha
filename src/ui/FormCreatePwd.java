@@ -29,7 +29,7 @@ import javafx.scene.layout.Priority;
  * @author curious-odd-man
  *
  */
-public class SpecialPasswordForm extends AbstractForm
+public class FormCreatePwd extends AbstractForm
 {
     private final class WINDOW
     {
@@ -37,34 +37,34 @@ public class SpecialPasswordForm extends AbstractForm
         public static final int height = 400;
     }
 
-    private final int    LABELS_COLUMN                  = 0;
-    private final int    TEXT_FIELDS_COLUMN             = 1;
-    private final int    TEXT_FIELD_LENGTH_SIZE         = 40;
-    private final int    TEXT_FIELDS_WIDTH              = 350;
-    private final String DEFAULT_LENGTH                 = "16";
-    private final String MIN_PASSWORD_LENGTH_TEXT       = "8";
-    private final String MAX_PASSWORD_LENGTH_TEXT       = "64";
-    private final String SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
-    private final int    MAX_PASSWORD_LENGTH            = 64;
-    private final int    MIN_PASSWORD_LENGTH            = 8;
+    private final int       LABELS_COLUMN                  = 0;
+    private final int       TEXT_FIELDS_COLUMN             = 1;
+    private final int       TEXT_FIELD_LENGTH_SIZE         = 40;
+    private final int       TEXT_FIELDS_WIDTH              = 350;
+    private final String    DEFAULT_LENGTH                 = "16";
+    private final String    MIN_PASSWORD_LENGTH_TEXT       = "8";
+    private final String    MAX_PASSWORD_LENGTH_TEXT       = "64";
+    private final String    SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
+    private final int       MAX_PASSWORD_LENGTH            = 64;
+    private final int       MIN_PASSWORD_LENGTH            = 8;
 
-    private SpecialPassword password = null;
+    private SpecialPassword password                       = null;
 
-    private final Label l_errorLabel = new Label("");
+    private final Label     l_errorLabel                   = new Label("");
 
-    private Button   b_OK                 = null;
-    private Button   b_cancel             = null;
-    private Button   b_regeneratePassword = null;
-    private CheckBox cb_specialChars      = null;
-    private CheckBox cb_upperCaseChar     = null;
-    private HBox     buttonsBox           = null;
+    private Button          b_OK                           = null;
+    private Button          b_cancel                       = null;
+    private Button          b_regeneratePassword           = null;
+    private CheckBox        cb_specialChars                = null;
+    private CheckBox        cb_upperCaseChar               = null;
+    private HBox            buttonsBox                     = null;
 
-    private EntryField ef_name            = null;
-    private EntryField ef_comment         = null;
-    private EntryField ef_url             = null;
-    private EntryField ef_length          = null;
-    private EntryField ef_specialChars    = null;
-    private EntryField ef_passwordPreview = null;
+    private EntryField      ef_name                        = null;
+    private EntryField      ef_comment                     = null;
+    private EntryField      ef_url                         = null;
+    private EntryField      ef_length                      = null;
+    private EntryField      ef_specialChars                = null;
+    private EntryField      ef_passwordPreview             = null;
 
     private EventHandler<KeyEvent> numFilter()
     {
@@ -107,12 +107,14 @@ public class SpecialPasswordForm extends AbstractForm
             if (ef_length.getText().length() > 0 && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
-                password = new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
-                        ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
-                        ef_specialChars.getText());
+                password =
+                        new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
+                                ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
+                                ef_specialChars.getText());
                 ef_passwordPreview.setText(password.getPassword());
                 l_errorLabel.setText("");
                 ef_name.beNormal();
+                ef_length.beNormal();
                 ef_specialChars.beNormal();
                 b_OK.setDisable(false);
             }
@@ -126,19 +128,20 @@ public class SpecialPasswordForm extends AbstractForm
         {
             if (e.getCode() == XC.MANDATORY_DATA_MISSING)
             {
-                l_errorLabel.setText(TextID.FORM_SP_LABEL_ERROR_MISSING_PARAM.toString());
+                l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_MISSING_PARAM.toString());
 
                 ef_name.beError();
                 ef_specialChars.beError();
+                ef_length.beError();
             }
             b_OK.setDisable(true);
             password = null;
         }
     }
 
-    public SpecialPasswordForm(AbstractForm parent)
+    public FormCreatePwd(AbstractForm parent)
     {
-        super(parent);
+        super(parent, TextID.FORM_CREATEPWD_NAME.toString());
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
@@ -146,7 +149,7 @@ public class SpecialPasswordForm extends AbstractForm
         priority = ShowPriority.ABOVE;
         // ========== BUTTONS ========== //
 
-        b_OK = new Button(TextID.FORM_SP_LABEL_CREATE.toString());
+        b_OK = new Button(TextID.FORM_CREATEPWD_LABEL_CREATE.toString());
         b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
         ImageView imgView = new ImageView(new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
         imgView.setStyle("-fx-background-color:transparent");
@@ -166,11 +169,11 @@ public class SpecialPasswordForm extends AbstractForm
 
         // ========== ENTRY FIELDS ========== //
 
-        ef_name = new EntryField(TextID.FORM_SP_LABEL_NAME.toString() + "*", TEXT_FIELDS_WIDTH);
-        ef_comment = new EntryField(TextID.FORM_SP_LABEL_COMMENT.toString(), TEXT_FIELDS_WIDTH);
-        ef_url = new EntryField(TextID.FORM_SP_LABEL_URL.toString(), TEXT_FIELDS_WIDTH);
-        ef_length = new EntryField(TextID.FORM_SP_LABEL_LENGTH.toString(), TEXT_FIELD_LENGTH_SIZE);
-        ef_specialChars = new EntryField(TextID.FORM_SP_LABEL_SPECIAL_CHARACTERS.toString() + "*", TEXT_FIELDS_WIDTH);
+        ef_name = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*", TEXT_FIELDS_WIDTH);
+        ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT.toString(), TEXT_FIELDS_WIDTH);
+        ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL.toString(), TEXT_FIELDS_WIDTH);
+        ef_length = new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*", TEXT_FIELD_LENGTH_SIZE);
+        ef_specialChars = new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*", TEXT_FIELDS_WIDTH);
         ef_passwordPreview = new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD.toString(), TEXT_FIELDS_WIDTH);
 
         // ========== LABELS ========== //
@@ -179,8 +182,8 @@ public class SpecialPasswordForm extends AbstractForm
 
         // ========== CHECK BOXES ========== //
 
-        cb_specialChars = new CheckBox(TextID.FORM_SP_LABEL_MUST_HAVE_SPECIAL.toString());
-        cb_upperCaseChar = new CheckBox(TextID.FORM_SP_LABEL_MUST_HAVE_UPPER.toString());
+        cb_specialChars = new CheckBox(TextID.FORM_CREATEPWD_MSG_MUST_HAVE_SPECIAL.toString());
+        cb_upperCaseChar = new CheckBox(TextID.FORM_CREATEPWD_MSG_MUST_HAVE_UPPER.toString());
         cb_specialChars.setSelected(true);
         cb_upperCaseChar.setSelected(true);
 
@@ -293,26 +296,19 @@ public class SpecialPasswordForm extends AbstractForm
                     if (password != null)
                         PasswordCollection.getInstance().addPassword(password);
                     else
-                        PasswordCollection.getInstance()
-                                .addPassword(new SpecialPassword(ef_name.getText(), ef_comment.getText(),
-                                        ef_url.getText(), ef_length.getText(), cb_specialChars.isSelected(),
-                                        cb_upperCaseChar.isSelected(), ef_specialChars.getText()));
+                        PasswordCollection.getInstance().addPassword(
+                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
+                                        ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar
+                                                .isSelected(), ef_specialChars.getText()));
 
                     close();
                 }
                 catch (Exceptions e)
                 {
+                    if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS)
+                        l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_NAME_EXISTS.toString());
+
                     b_OK.setDisable(false);
-                    if (e.getCode() == XC.MANDATORY_DATA_MISSING)
-                    {
-                        l_errorLabel.setText(TextID.FORM_SP_LABEL_ERROR_MISSING_PARAM.toString());
-
-                        ef_name.beError();
-                        ef_specialChars.beError();
-
-                    }
-                    else if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS)
-                        l_errorLabel.setText(TextID.FORM_SP_LABEL_ERROR_NAME_EXISTS.toString());
                 }
             }
         });
@@ -334,6 +330,16 @@ public class SpecialPasswordForm extends AbstractForm
                 showPasswordPreview();
             }
         });
+
+        b_OK.setDisable(true);
+        ef_length.setText(DEFAULT_LENGTH);
+        open();
+    }
+
+    @Override
+    protected void onUserMinimizeRequest()
+    {
+        // do nothing
     }
 
 }

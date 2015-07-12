@@ -21,7 +21,7 @@ import db.SpecialPassword;
  * @author curious-odd-man
  *
  */
-public class ChangePasswordConfirmDlg extends AbstractForm
+public class FormResetPwd extends AbstractForm
 {
     private final class WINDOW
     {
@@ -29,33 +29,33 @@ public class ChangePasswordConfirmDlg extends AbstractForm
         public static final int height = 250;
     }
 
-    private final int MAX_WARNING_WIDTH = EntryField.LABEL_WIDTH + FIELD_WIDTH.L;
+    private final int       MAX_WARNING_WIDTH = EntryField.LABEL_WIDTH + FIELD_WIDTH.L;
 
-    private Button     b_OK            = null;
-    private Button     b_Cancel        = null;
-    private Label      l_Warning       = null;
-    private Label      l_Header        = null;
-    private EntryField CurrentPassword = null;
-    private EntryField NewPassword     = null;
+    private Button          b_OK              = null;
+    private Button          b_Cancel          = null;
+    private Label           l_Warning         = null;
+    private Label           l_Header          = null;
+    private EntryField      CurrentPassword   = null;
+    private EntryField      NewPassword       = null;
 
-    private SpecialPassword newSp = null;
+    private SpecialPassword newSp             = null;
 
-    ChangePasswordConfirmDlg(AbstractForm parent)
+    FormResetPwd(AbstractForm parent)
     {
-        super(parent);
+        super(parent, TextID.FORM_RESETPWD_NAME.toString());
+        priority = ShowPriority.ALWAYS;
 
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
         stage.setWidth(WINDOW.width);
         stage.setHeight(WINDOW.height);
 
         // ========== LABELS ========== //
-        l_Warning = new Label(TextID.FORM_PWD_CHANGE_WARNING.toString(), MAX_WARNING_WIDTH);
+        l_Warning = new Label(TextID.FORM_RESETPWD_MSG_WARNING.toString(), MAX_WARNING_WIDTH);
         l_Warning.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_Warning, HPos.CENTER);
 
         l_Warning.beError();
 
-        l_Header = new Label(TextID.FORM_PWD_CHANGE_NAME.toString());
+        l_Header = new Label(TextID.FORM_RESETPWD_NAME.toString());
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
         // ========== BUTTONS ========== //
@@ -63,13 +63,14 @@ public class ChangePasswordConfirmDlg extends AbstractForm
         b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
         b_Cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
 
-        GridPane.setHalignment(b_OK, HPos.RIGHT);
+        GridPane.setHalignment(b_OK, HPos.LEFT);
         GridPane.setHalignment(b_Cancel, HPos.RIGHT);
 
         grid.add(l_Header, 0, 0);
 
-        CurrentPassword = new EntryField(TextID.FORM_PWD_CHANGE_LABEL_CURRENT.toString(), FIELD_WIDTH.L);
-        NewPassword = new EntryField(TextID.FORM_PWD_CHANGE_LABEL_NEW.toString(), FIELD_WIDTH.L);
+        CurrentPassword =
+                new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT.toString(), FIELD_WIDTH.L);
+        NewPassword = new EntryField(TextID.COMMON_LABEL_NEW.toString(), FIELD_WIDTH.L);
 
         CurrentPassword.setEditable(false);
         NewPassword.setEditable(false);
@@ -124,6 +125,12 @@ public class ChangePasswordConfirmDlg extends AbstractForm
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
 
-        stage.show();
+        open();
+    }
+
+    @Override
+    protected void onUserMinimizeRequest()
+    {
+        stage.setIconified(false);
     }
 }

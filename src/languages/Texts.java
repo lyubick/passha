@@ -13,10 +13,25 @@ import main.Terminator;
  */
 public class Texts
 {
-    // TODO: Use String.split to parse CSV file with texts
+    //@fmt:off
+    /**************************************************************************************************************
+     * SYNTAX
+     *
+     * <SCOPE>_[<SCOPE_NAME>]_<ELEMENT>_[<ELEMENT_NAME>]
+     *
+     * ELEMENT : {
+     *              LABEL - captions
+     *              NAME - window header
+     *              MSG  - text
+     *           }
+     *************************************************************************************************************/
+    //@fmt:on
     public enum TextID
     {
-        COMMON_LABEL_APP_NAME(new String[]
+        /**************************************************************************************************************
+         * COMMON TEXTS
+         *************************************************************************************************************/
+        COMMON_APPLICATION_NAME(new String[]
         { "pasSHA", "pasSHA" }),
 
         COMMON_LABEL_CANCEL(new String[]
@@ -24,6 +39,9 @@ public class Texts
 
         COMMON_LABEL_ERROR(new String[]
         { "ERROR!", "ОШИБКА!" }),
+
+        COMMON_LABEL_NEW(new String[]
+        { "New", "Новый" }),
 
         COMMON_LABEL_OK(new String[]
         { "OK", "OK" }),
@@ -34,18 +52,63 @@ public class Texts
         COMMON_LABEL_VERSION(new String[]
         { "v." + version, "в." + version }),
 
-        FORM_CONFIRM_DELETE_HEADER(new String[]
+        /**************************************************************************************************************
+         * CREATE PASSWORD FORM
+         *************************************************************************************************************/
+        FORM_CREATEPWD_LABEL_COMMENT(new String[]
+        { "Comment", "Комментарий" }),
+
+        FORM_CREATEPWD_LABEL_CREATE(new String[]
+        { "Create", "Создать" }),
+
+        FORM_CREATEPWD_LABEL_LENGTH(new String[]
+        { "Length", "Длинна" }),
+
+        FORM_CREATEPWD_LABEL_NAME(new String[]
+        { "Name", "Имя" }),
+
+        FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS(new String[]
+        { "Special characters", "Специальные символы" }),
+
+        FORM_CREATEPWD_LABEL_URL(new String[]
+        { "URL", "URL" }),
+
+        FORM_CREATEPWD_MANAGER_LABEL_DELETE(new String[]
+        { "Delete", "Удалить" }),
+
+        FORM_CREATEPWD_MSG_MISSING_PARAM(new String[]
+        {
+                TextID.COMMON_LABEL_ERROR.toString() + "One or more mandatory fields are missing.",
+                TextID.COMMON_LABEL_ERROR.toString()
+                        + "Одно или более обязательных полей не заполнены." }),
+
+        FORM_CREATEPWD_MSG_MUST_HAVE_SPECIAL(new String[]
+        { "Must contain special characters", "Обязан иметь специальные символы" }),
+
+        FORM_CREATEPWD_MSG_MUST_HAVE_UPPER(new String[]
+        { "Must have UPPER case character", "Обязан иметь ПРОПИСНЫЕ буквы" }),
+
+        FORM_CREATEPWD_MSG_NAME_EXISTS(new String[]
+        { TextID.COMMON_LABEL_ERROR.toString() + " Name already taken!",
+                TextID.COMMON_LABEL_ERROR.toString() + " Имя уже занято!" }),
+
+        FORM_CREATEPWD_NAME(new String[]
+        { "Create new password", "Создать новый пароль" }),
+
+        /**************************************************************************************************************
+         * DELETE PASSWORD FORM
+         *************************************************************************************************************/
+        FORM_DELETEPWD_MSG_NOTE(
+                new String[]
+                { "Enter this text to confirm deletion:",
+                        "Введите этот текст, чтобы подтвердить удаление:" }),
+
+        FORM_DELETEPWD_NAME(new String[]
         { "Delete password", "Удалить пароль" }),
 
-        FORM_CONFIRM_DELETE_NOTE(new String[]
-        { "Enter this text to confirm deletion:", "Введите этот текст, чтобы подтвердить удаление:" }),
-
-        FORM_LOGIN_ERROR_PWD_INCORRECT(new String[]
-        { "Password incorrect!", "Неверный пароль!" }),
-
-        FORM_LOGIN_ERROR_PWDS_DONT_MATCH(new String[]
-        { "Passwords don't match!", "Пароли не совпадают!" }),
-
+        /**************************************************************************************************************
+         * LOGIN FORM
+         *************************************************************************************************************/
         FORM_LOGIN_LABEL_ENTER_PWD(new String[]
         { "Enter Password", "Введите пароль" }),
 
@@ -61,39 +124,51 @@ public class Texts
         FORM_LOGIN_LABEL_RETYPE(new String[]
         { "Re-type", "Повторно" }),
 
-        FORM_MENU_LABEL_EXIT(new String[]
-        { "Exit", "Выход" }),
+        FORM_LOGIN_MSG_INCORRECT_PWD(new String[]
+        { "Password incorrect!", "Неверный пароль!" }),
 
-        FORM_MENU_LABEL_FILE(new String[]
-        { "File", "Файл" }),
+        FORM_LOGIN_MSG_PWDS_DONT_MATCH(new String[]
+        { "Passwords don't match!", "Пароли не совпадают!" }),
 
-        FORM_PWD_CHANGE_LABEL_CURRENT(new String[]
-        { "Current", "Нынешний" }),
+        FORM_LOGIN_NAME(new String[]
+        { "Login", "Вход" }),
 
-        FORM_PWD_CHANGE_LABEL_NEW(new String[]
-        { "New", "Новый" }),
+        /**************************************************************************************************************
+         * MANAGE PASSWORDS FORM
+         *************************************************************************************************************/
+        FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD(new String[]
+        { "Copy To Clipboard", "Поместить в буфер обмена" }),
 
-        FORM_PWD_CHANGE_NAME(new String[]
-        { "Update Password", "Обновить пароль" }),
+        FORM_MANAGEPWD_LABEL_EXPORT(new String[]
+        { "Export", "Экспортировать" }),
 
-        FORM_PWD_CHANGE_WARNING(
+        FORM_MANAGEPWD_LABEL_PWD_NAME(new String[]
+        { "Password name", "Название пароля" }),
+
+        FORM_MANAGEPWD_LABEL_RESET(new String[]
+        { "Reset password", "Обновить пароль" }),
+
+        FORM_MANAGEPWD_NAME(new String[]
+        { "Password Manager", "Управление паролями" }),
+
+        /**************************************************************************************************************
+         * RESET PASSWORD FORM
+         *************************************************************************************************************/
+        FORM_RESETPWD_MSG_WARNING(
                 new String[]
                 {
                         "By pressing \'OK\' you will substitute current Password with the new Password.\n Thus current Password will be permanently lost!",
-                        "Нажав \'OK\' Вы замените существующий Пароль на Новый.\n В результатье существующий Пароль будет безвозвратно утерян!" }),
+                        "Нажав \'OK\' Вы замените текущий Пароль на Новый.\n В результатье текущий Пароль будет безвозвратно утерян!" }),
 
-        FORM_PWD_MANAGER_LABEL_COPY_TO_CLIPBOARD(new String[]
-        { "Copy To Clipboard", "Скопировать в буфер обмена" }),
-
-        FORM_PWD_MANAGER_LABEL_EXPORT(new String[]
-        { "Export", "Экспортировать" }),
-
-        FORM_PWD_MANAGER_LABEL_RESET(new String[]
+        FORM_RESETPWD_NAME(new String[]
         { "Reset password", "Обновить пароль" }),
 
-        FORM_PWD_MANAGER_TABLE_LABEL_PWD_NAME(new String[]
-        { "Password name", "Название пароля" }),
+        FORM_RESETWD_LABEL_CURRENT(new String[]
+        { "Current", "Текущий" }),
 
+        /**************************************************************************************************************
+         * SETTINGS PASSWORD FORM
+         *************************************************************************************************************/
         FORM_SETTINGS_LABEL_DELAY(new String[]
         { "Delay", "Задержка" }),
 
@@ -103,60 +178,34 @@ public class Texts
         FORM_SETTINGS_NAME(new String[]
         { "Settings", "Настройки" }),
 
-        FORM_SP_BTN_PREVIEW_PASSWORD(new String[]
-        { "Generate password", "Сгенерировать пароль" }),
+        /**************************************************************************************************************
+         * MENU FORM
+         *************************************************************************************************************/
+        MENU_LABEL_EXIT(new String[]
+        { "Exit", "Выход" }),
 
-        FORM_SP_LABEL_COMMENT(new String[]
-        { "Comment", "Комментарий" }),
+        MENU_LABEL_FILE(new String[]
+        { "File", "Файл" }),
 
-        FORM_SP_LABEL_CREATE(new String[]
-        { "Create", "Создать" }),
-
-        FORM_SP_LABEL_ERROR_MISSING_PARAM(
-                new String[]
-                { "Error! One or more mandatory fields are missing.",
-                        "Ошибка! Одно или более обязательных полей не заполнены." }),
-
-        FORM_SP_LABEL_ERROR_NAME_EXISTS(new String[]
-        { "Error! Name already taken!", "Ошибка! Имя уже занято!" }),
-
-        FORM_SP_LABEL_LENGTH(new String[]
-        { "Length", "Длинна" }),
-
-        FORM_SP_LABEL_MUST_HAVE_SPECIAL(new String[]
-        { "Must contain special characters", "Обящан иметь специальные символы" }),
-
-        FORM_SP_LABEL_MUST_HAVE_UPPER(new String[]
-        { "Must have UPPER case character", "Обязан иметь ПРОПИСНЫЕ буквы" }),
-
-        FORM_SP_LABEL_NAME(new String[]
-        { "Name", "Имя" }),
-
-        FORM_SP_LABEL_SPECIAL_CHARACTERS(new String[]
-        { "Special characters", "Специальные символы" }),
-
-        FORM_SP_LABEL_URL(new String[]
-        { "URL", "URL" }),
-
-        FORM_SP_MANAGER_LABEL_DELETE(new String[]
-        { "Delete", "Удалить" }),
-
-        FORM_SP_NAME(new String[]
-        { "Create new password", "Создать новый пароль" }),
-
-        TRAY_MESSAGE_ERROR_FAILED_LOAD_SETTINGS(new String[]
+        /**************************************************************************************************************
+         * TRAY FORM
+         *************************************************************************************************************/
+        TRAY_MSG_FAILED_LOAD_SETTINGS(new String[]
         { "FAILED to load settings. Using DEFAULTS!",
                 "Не удалось загрузить настройки. Используются настройки по-умлочанию!" }),
 
-        TRAY_MESSAGE_INFO_COPIED_TO_CLIPBOARD(new String[]
+        TRAY_MSG_PWD_COPIED_TO_CLIPBOARD(new String[]
         { "Password copied to Clipboard", "Пароль помещён в буфер обмена" }),
 
-        TRAY_MESSAGE_INFO_PWD_REMOVED_FROM_CLIPBOARD(new String[]
+        TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD(new String[]
         { "Password removed from Clipboard", "Пароль убран из буфера обмена" }),
 
-        TRAY_MESSAGE_TIME_LEFT(new String[]
+        TRAY_MSG_TIME_LEFT(new String[]
         { "Time left", "Времени осталось" }),
 
+        /**************************************************************************************************************
+         * TEMPLATE
+         *************************************************************************************************************/
         Z_ETHALON(new String[]
         { "", "" }),
 
@@ -185,5 +234,5 @@ public class Texts
         }
     }
 
-    static String version = "2.0.000";
+    static String version = "2.1";
 }

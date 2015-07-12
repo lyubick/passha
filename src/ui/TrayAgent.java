@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 
 import javafx.application.Platform;
 import languages.Texts.TextID;
+import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
@@ -33,12 +34,13 @@ public class TrayAgent
 
         Image image = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("resources/tray_icon.png"));
         PopupMenu popup = new PopupMenu();
-        MenuItem itemExit = new MenuItem(TextID.FORM_MENU_LABEL_EXIT.toString());
+        MenuItem itemExit = new MenuItem(TextID.MENU_LABEL_EXIT.toString());
 
         popup.add(itemExit);
 
-        trayIcon = new TrayIcon(image,
-                TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString(), popup);
+        trayIcon =
+                new TrayIcon(image, TextID.COMMON_APPLICATION_NAME.toString() + " "
+                        + TextID.COMMON_LABEL_VERSION.toString(), popup);
 
         trayIcon.addActionListener(new ActionListener()
         {
@@ -50,7 +52,14 @@ public class TrayAgent
                     @Override
                     public void run()
                     {
-                        new ManagePasswordsForm();
+                        try
+                        {
+                            FormManagePwd.getInstance().maximize();
+                        }
+                        catch (Exceptions e)
+                        {
+                            Logger.printDebug("Manage Passwords not yet created");
+                        }
                     }
                 });
             }

@@ -16,7 +16,7 @@ import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
 
-public class DeletePasswordConfirmDlg extends AbstractForm
+public class FormDeletePwd extends AbstractForm
 {
     private final class WINDOW
     {
@@ -24,33 +24,32 @@ public class DeletePasswordConfirmDlg extends AbstractForm
         public static final int height = 250;
     }
 
-    private Button     b_Confirm       = null;
-    private Label      l_note          = null;
-    private Label      l_Header        = null;
-    private TextField  tf_confirmation = null;
-    private boolean    confirmed       = false;
-    private EntryField ef_passwordName = null;
+    private Button     b_Confirm        = null;
+    private Label      l_note           = null;
+    private Label      l_Header         = null;
+    private TextField  tf_confirmation  = null;
+    private boolean    confirmed        = false;
+    private EntryField ef_passwordName  = null;
 
-    private String confirmationText = null;
+    private String     confirmationText = null;
 
-    public DeletePasswordConfirmDlg(AbstractForm parent)
+    public FormDeletePwd(AbstractForm parent)
     {
-        super(parent);
-
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
+        super(parent, TextID.FORM_DELETEPWD_NAME.toString());
+        priority = ShowPriority.ALWAYS;
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
 
         confirmationText = new String("DELETE");
-        l_Header = new Label(TextID.FORM_CONFIRM_DELETE_HEADER.toString());
-        l_note = new Label(TextID.FORM_CONFIRM_DELETE_NOTE.toString() + "\n" + confirmationText, WINDOW.width - 100);
+        l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
+        l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText, WINDOW.width - 100);
         l_note.setTextAlignment(TextAlignment.CENTER);
         b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
         l_note.beError();
         tf_confirmation = new TextField();
         tf_confirmation.setMaxWidth(WINDOW.width - 100);
-        ef_passwordName = new EntryField(TextID.FORM_SP_LABEL_NAME.toString(), WINDOW.width - 200);
+        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString(), WINDOW.width - 200);
         ef_passwordName.setEditable(false);
 
         GridPane.setHalignment(l_Header, HPos.CENTER);
@@ -65,7 +64,7 @@ public class DeletePasswordConfirmDlg extends AbstractForm
             {
                 if (newValue.equals(confirmationText))
                 {
-                    b_Confirm.setText(TextID.FORM_CONFIRM_DELETE_HEADER.toString());
+                    b_Confirm.setText(TextID.FORM_DELETEPWD_NAME.toString());
                     confirmed = true;
                 }
                 else
@@ -98,5 +97,22 @@ public class DeletePasswordConfirmDlg extends AbstractForm
         });
 
         grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation, b_Confirm);
+
+        try
+        {
+            ef_passwordName.setText(PasswordCollection.getInstance().getSelected().getName());
+        }
+        catch (Exceptions e)
+        {
+            Terminator.terminate(e);
+        }
+
+        open();
+    }
+
+    @Override
+    protected void onUserMinimizeRequest()
+    {
+        stage.setIconified(false);
     }
 }

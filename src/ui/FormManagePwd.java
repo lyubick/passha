@@ -42,12 +42,13 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.WindowEvent;
 
 /**
  * @author curious-odd-man
  *
  */
-public class ManagePasswordsForm extends AbstractForm
+public class FormManagePwd extends AbstractForm
 {
 
     private final class WINDOW
@@ -56,33 +57,38 @@ public class ManagePasswordsForm extends AbstractForm
         public static final int height = 500;
     }
 
-    private final int tableMinHeight = WINDOW.height - 300;
-    private final int tableMinWidth  = WINDOW.width - 200;
+    private final int                   tableMinHeight  = WINDOW.height - 300;
+    private final int                   tableMinWidth   = WINDOW.width - 200;
 
-    private TableView<iSpecialPassword> table    = null;
-    private TextField                   tf_pass  = null;
-    private Button                      b_New    = null;
-    private Button                      b_Delete = null;
-    private Button                      b_Reset  = null;
-    private Button                      b_Copy   = null;
-    private Button                      b_Export = null;
+    private TableView<iSpecialPassword> table           = null;
+    private TextField                   tf_pass         = null;
+    private Button                      b_New           = null;
+    private Button                      b_Delete        = null;
+    private Button                      b_Reset         = null;
+    private Button                      b_Copy          = null;
+    private Button                      b_Export        = null;
 
-    Task<Void> tsk_PWDLifeTime = null;
+    Task<Void>                          tsk_PWDLifeTime = null;
 
-    private ProgressIndicator pi_PWDLifeTime = null;
+    private ProgressIndicator           pi_PWDLifeTime  = null;
 
-    private MenuBar  mb_Main     = null;
-    private Menu     m_File      = null;
-    private MenuItem mi_Exit     = null;
-    private MenuItem mi_Settings = null;
+    private MenuBar                     mb_Main         = null;
+    private Menu                        m_File          = null;
+    private MenuItem                    mi_Exit         = null;
+    private MenuItem                    mi_Settings     = null;
 
-    private static AbstractForm This = null;
+    private static AbstractForm         This            = null;
 
-    public ManagePasswordsForm()
+    public static FormManagePwd getInstance() throws Exceptions
     {
-        super(null); // No parents it is a main Form
+        if (This == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
+        return (FormManagePwd) This;
+    }
 
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString() + " " + TextID.COMMON_LABEL_VERSION.toString());
+    public FormManagePwd()
+    {
+        super(null, TextID.FORM_MANAGEPWD_NAME.toString()); // No parents it
+                                                            // is a main Form
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
@@ -95,11 +101,12 @@ public class ManagePasswordsForm extends AbstractForm
         scene.getStylesheets().add("resources/progress.css");
 
         // ========== MENU ========== //
+        // TODO: create class for menu
         mb_Main = new MenuBar();
-        m_File = new Menu(TextID.FORM_MENU_LABEL_FILE.toString());
+        m_File = new Menu(TextID.MENU_LABEL_FILE.toString());
 
         mi_Settings = new MenuItem(TextID.FORM_SETTINGS_NAME.toString());
-        mi_Exit = new MenuItem(TextID.FORM_MENU_LABEL_EXIT.toString());
+        mi_Exit = new MenuItem(TextID.MENU_LABEL_EXIT.toString());
 
         m_File.getItems().addAll(mi_Settings, mi_Exit);
         mb_Main.getMenus().add(m_File);
@@ -109,7 +116,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                new SettingsForm(This);
+                new FormSettings(This);
             }
         });
 
@@ -143,21 +150,24 @@ public class ManagePasswordsForm extends AbstractForm
 
         // ========== BUTTONS ========== //
         // FIXME LANG shortcuts
-        b_New = new Button("_" + TextID.FORM_PWD_CHANGE_LABEL_NEW.toString());
-        b_Delete = new Button("_" + TextID.FORM_SP_MANAGER_LABEL_DELETE.toString());
-        b_Copy = new Button("_" + TextID.FORM_PWD_MANAGER_LABEL_COPY_TO_CLIPBOARD.toString());
-        b_Export = new Button("_" + TextID.FORM_PWD_MANAGER_LABEL_EXPORT.toString());
-        b_Reset = new Button("_" + TextID.FORM_PWD_MANAGER_LABEL_RESET.toString());
+        b_New = new Button("_" + TextID.COMMON_LABEL_NEW.toString());
+        b_Delete = new Button("_" + TextID.FORM_CREATEPWD_MANAGER_LABEL_DELETE.toString());
+        b_Copy = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD.toString());
+        b_Export = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_EXPORT.toString());
+        b_Reset = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_RESET.toString());
 
         // ========== TABLE ========== //
         table = new TableView<iSpecialPassword>();
 
         TableColumn<iSpecialPassword, String> cName =
-                new TableColumn<iSpecialPassword, String>(TextID.FORM_PWD_MANAGER_TABLE_LABEL_PWD_NAME.toString());
+                new TableColumn<iSpecialPassword, String>(
+                        TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
         TableColumn<iSpecialPassword, String> cComment =
-                new TableColumn<iSpecialPassword, String>(TextID.FORM_SP_LABEL_COMMENT.toString());
+                new TableColumn<iSpecialPassword, String>(
+                        TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
         TableColumn<iSpecialPassword, String> cUrl =
-                new TableColumn<iSpecialPassword, String>(TextID.FORM_SP_LABEL_URL.toString());
+                new TableColumn<iSpecialPassword, String>(
+                        TextID.FORM_CREATEPWD_LABEL_URL.toString());
 
         table.getColumns().add(cName);
         table.getColumns().add(cComment);
@@ -201,11 +211,16 @@ public class ManagePasswordsForm extends AbstractForm
 
         try
         {
-            Button.setButtonShortcut(b_New, new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_New, new KeyCodeCombination(KeyCode.N,
+                    KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D,
+                    KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C,
+                    KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E,
+                    KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R,
+                    KeyCombination.SHORTCUT_DOWN));
         }
         catch (Exceptions e)
         {
@@ -217,7 +232,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent ae)
             {
-                new SpecialPasswordForm(This);
+                new FormCreatePwd(This);
             }
         });
 
@@ -229,7 +244,7 @@ public class ManagePasswordsForm extends AbstractForm
                 try
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
-                    new DeletePasswordConfirmDlg(This);
+                    new FormDeletePwd(This);
                 }
                 catch (Exceptions e)
                 {
@@ -241,7 +256,8 @@ public class ManagePasswordsForm extends AbstractForm
         table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>()
         {
             @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
+                    Object newValue)
             {
                 try
                 {
@@ -251,8 +267,8 @@ public class ManagePasswordsForm extends AbstractForm
                         return;
                     }
 
-                    PasswordCollection.getInstance()
-                            .setSelected(table.getSelectionModel().getSelectedItem().getOrigin());
+                    PasswordCollection.getInstance().setSelected(
+                            table.getSelectionModel().getSelectedItem().getOrigin());
                 }
                 catch (Exceptions e)
                 {
@@ -273,7 +289,7 @@ public class ManagePasswordsForm extends AbstractForm
                 try
                 {
                     if (PasswordCollection.getInstance().getSelected() == null) return;
-                    new ChangePasswordConfirmDlg(This);
+                    new FormResetPwd(This);
                 }
                 catch (Exceptions e)
                 {
@@ -287,7 +303,7 @@ public class ManagePasswordsForm extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                new ExportForm(This);
+                new DlgExport(This);
             }
         });
 
@@ -331,14 +347,13 @@ public class ManagePasswordsForm extends AbstractForm
                             {
                                 try
                                 {
-                                    TrayAgent.getInstance()
-                                            .showNotification(
-                                                    TextID.TRAY_MESSAGE_INFO_COPIED_TO_CLIPBOARD
-                                                            .toString(),
-                                                    TextID.TRAY_MESSAGE_TIME_LEFT.toString() + ": "
-                                                            + ((Settings.getInstance().getClipboardLiveTime() - i)
-                                                                    / 1000)
-                                                            + " " + TextID.COMMON_LABEL_SECONDS.toString(),
+                                    TrayAgent.getInstance().showNotification(
+                                            TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD.toString(),
+                                            TextID.TRAY_MSG_TIME_LEFT.toString()
+                                                    + ": "
+                                                    + ((Settings.getInstance()
+                                                            .getClipboardLiveTime() - i) / 1000)
+                                                    + " " + TextID.COMMON_LABEL_SECONDS.toString(),
                                             MessageType.INFO);
                                 }
                                 catch (Exceptions e)
@@ -361,7 +376,8 @@ public class ManagePasswordsForm extends AbstractForm
                     try
                     {
                         TrayAgent.getInstance().showNotification(
-                                TextID.TRAY_MESSAGE_INFO_PWD_REMOVED_FROM_CLIPBOARD.toString(), "", MessageType.INFO);
+                                TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD.toString(), "",
+                                MessageType.INFO);
                     }
                     catch (Exceptions e)
                     {
@@ -391,13 +407,47 @@ public class ManagePasswordsForm extends AbstractForm
                 pi_PWDLifeTime.setVisible(true);
             }
         });
+
+        stage.setOnShowing(new EventHandler<WindowEvent>()
+        {
+            @Override
+            public void handle(WindowEvent event)
+            {
+                refresh();
+            }
+        });
+
+        stage.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue)
+            {
+                if (newValue) refresh();
+            }
+        });
+
+        open();
+    }
+
+    public void refresh()
+    {
+        tf_pass.clear();
+        table.getSelectionModel().clearSelection();
+        try
+        {
+            table.setItems(PasswordCollection.getInstance().getIface());
+        }
+        catch (Exceptions e)
+        {
+            Terminator.terminate(e);
+        }
     }
 
     @Override
-    public void onUserCloseRequest() throws Exceptions
+    public void onUserCloseRequest()
     {
-        stage.hide();
-        stage.setIconified(false);
+        minimize();
     }
 
 }

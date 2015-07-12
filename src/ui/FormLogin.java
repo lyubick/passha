@@ -18,13 +18,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.GridPane;
-import ui.ManagePasswordsForm;
+import ui.FormManagePwd;
 
 /**
  * @author lyubick
  *
  */
-public class LoginForm extends AbstractForm
+public class FormLogin extends AbstractForm
 {
     private final class WINDOW
     {
@@ -39,11 +39,10 @@ public class LoginForm extends AbstractForm
     private Button        b_Login            = null;
     private Button        b_Register         = null;
 
-    public LoginForm()
+    public FormLogin()
     {
-        super(null); // Login doesn't have parents :(
-
-        stage.setTitle(TextID.COMMON_LABEL_APP_NAME.toString());
+        super(null, TextID.FORM_LOGIN_NAME.toString()); // Login doesn't have
+                                                        // parents :(
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
@@ -117,7 +116,7 @@ public class LoginForm extends AbstractForm
                                 pf_PasswordConfirm.setVisible(true);
                                 pf_Password.setDisable(true);
 
-                                l_Warning.setText(TextID.FORM_LOGIN_ERROR_PWD_INCORRECT.toString());
+                                l_Warning.setText(TextID.FORM_LOGIN_MSG_INCORRECT_PWD.toString());
                             }
                             else
                             {
@@ -146,7 +145,7 @@ public class LoginForm extends AbstractForm
                     else
                     {
                         reset();
-                        l_Warning.setText(TextID.FORM_LOGIN_ERROR_PWDS_DONT_MATCH.toString());
+                        l_Warning.setText(TextID.FORM_LOGIN_MSG_PWDS_DONT_MATCH.toString());
                     }
                 }
                 catch (Exceptions e)
@@ -156,6 +155,7 @@ public class LoginForm extends AbstractForm
             }
         });
 
+        open();
     }
 
     private void reset()
@@ -174,20 +174,20 @@ public class LoginForm extends AbstractForm
         CryptoSystem.init(password, isNewUser);
         PasswordCollection.init();
 
-        new ManagePasswordsForm();
-        stage.hide();
+        new FormManagePwd();
+        close();
     }
 
-    public void hide() throws Exceptions
+    @Override
+    protected void onUserCloseRequest()
     {
-        stage.close();
+        close(); // FIXME maybe we should minimize
         Terminator.terminate(new Exceptions(XC.END));
     }
 
     @Override
-    public void onUserCloseRequest() throws Exceptions
+    protected void onUserMinimizeRequest()
     {
-        close(); // FIXME maybe we should minimize
-        Terminator.terminate(new Exceptions(XC.END));
+        // do nothing
     }
 }
