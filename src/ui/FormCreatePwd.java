@@ -68,7 +68,7 @@ public class FormCreatePwd extends AbstractForm
 
     private EventHandler<KeyEvent> numFilter()
     {
-        EventHandler<KeyEvent> aux = new EventHandler<KeyEvent>()
+        return new EventHandler<KeyEvent>()
         {
             @Override
             public void handle(KeyEvent keyEvent)
@@ -81,12 +81,11 @@ public class FormCreatePwd extends AbstractForm
                 }
             }
         };
-        return aux;
     }
 
     private EventHandler<KeyEvent> specialCharactersFieldFilter()
     {
-        EventHandler<KeyEvent> aux = new EventHandler<KeyEvent>()
+        return new EventHandler<KeyEvent>()
         {
             @Override
             public void handle(KeyEvent keyEvent)
@@ -98,7 +97,6 @@ public class FormCreatePwd extends AbstractForm
                 }
             }
         };
-        return aux;
     }
 
     private void showPasswordPreview()
@@ -143,6 +141,129 @@ public class FormCreatePwd extends AbstractForm
         }
     }
 
+    private ChangeListener<String> showPasswordListener()
+    {
+        return new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue)
+            {
+                showPasswordPreview();
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> onClickCbSpecialCharacters()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                ef_specialChars.setDisable(!ef_specialChars.isDisabled());
+                showPasswordPreview();
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> onClickCbUpperCase()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                showPasswordPreview();
+            }
+        };
+    }
+
+    private ChangeListener<Boolean> lengthFieldFocusHandler()
+    {
+        return new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue)
+            {
+                if (newValue)
+                {
+                    ef_length.setText("");
+                    b_OK.setDisable(true);
+                }
+                else
+                {
+                    b_OK.setDisable(false);
+                    if (ef_length.getText().length() == 0) ef_length.setText(DEFAULT_LENGTH);
+                    if (Integer.parseInt(ef_length.getText()) > MAX_PASSWORD_LENGTH)
+                        ef_length.setText(MAX_PASSWORD_LENGTH_TEXT);
+
+                    if (Integer.parseInt(ef_length.getText()) < MIN_PASSWORD_LENGTH)
+                        ef_length.setText(MIN_PASSWORD_LENGTH_TEXT);
+                }
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> onCreatePasswordConfirm()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                b_OK.setDisable(true);
+
+                try
+                {
+                    if (password != null)
+                        PasswordCollection.getInstance().addPassword(password);
+                    else
+                        PasswordCollection.getInstance().addPassword(
+                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url
+                                        .getText(), ef_length.getText(), cb_specialChars
+                                        .isSelected(), cb_upperCaseChar.isSelected(),
+                                        ef_specialChars.getText(), "")); // FIXME
+                                                                         // shortcut
+
+                    close();
+                }
+                catch (Exceptions e)
+                {
+                    if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS)
+                        l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_NAME_EXISTS.toString());
+
+                    b_OK.setDisable(false);
+                }
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> onCreatePasswordCancel()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                close();
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> onRegenerate()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                showPasswordPreview();
+            }
+        };
+    }
+
     public FormCreatePwd(AbstractForm parent)
     {
         super(parent, TextID.FORM_CREATEPWD_NAME.toString());
@@ -177,17 +298,15 @@ public class FormCreatePwd extends AbstractForm
 
         ef_name =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*", TEXT_FIELDS_WIDTH);
-        ef_comment =
-                new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT.toString(), TEXT_FIELDS_WIDTH);
-        ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL.toString(), TEXT_FIELDS_WIDTH);
+        ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXT_FIELDS_WIDTH);
+        ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXT_FIELDS_WIDTH);
         ef_length =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
                         TEXT_FIELD_LENGTH_SIZE);
         ef_specialChars =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*",
                         TEXT_FIELDS_WIDTH);
-        ef_passwordPreview =
-                new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD.toString(), TEXT_FIELDS_WIDTH);
+        ef_passwordPreview = new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD, TEXT_FIELDS_WIDTH);
 
         // ========== LABELS ========== //
 
@@ -228,127 +347,20 @@ public class FormCreatePwd extends AbstractForm
 
         // ========== LISTENERS ========== //
 
-        ef_name.textProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue)
-            {
-                showPasswordPreview();
-            }
-        });
+        ef_name.textProperty().addListener(showPasswordListener());
+        ef_specialChars.textProperty().addListener(showPasswordListener());
 
-        ef_specialChars.textProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue)
-            {
-                showPasswordPreview();
-            }
-        });
+        ef_length.textProperty().addListener(showPasswordListener());
+        ef_length.focusedProperty().addListener(lengthFieldFocusHandler());
 
-        ef_length.textProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue)
-            {
-                showPasswordPreview();
-            }
-        });
+        cb_specialChars.setOnAction(onClickCbSpecialCharacters());
+        cb_upperCaseChar.setOnAction(onClickCbUpperCase());
 
-        cb_specialChars.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                ef_specialChars.setDisable(!ef_specialChars.isDisabled());
-                showPasswordPreview();
-            }
-        });
+        b_OK.setOnAction(onCreatePasswordConfirm());
 
-        cb_upperCaseChar.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                showPasswordPreview();
-            }
-        });
+        b_cancel.setOnAction(onCreatePasswordCancel());
 
-        ef_length.focusedProperty().addListener(new ChangeListener<Boolean>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue)
-            {
-                if (newValue)
-                {
-                    ef_length.setText("");
-                    b_OK.setDisable(true);
-                }
-                else
-                {
-                    b_OK.setDisable(false);
-                    if (ef_length.getText().length() == 0) ef_length.setText(DEFAULT_LENGTH);
-                    if (Integer.parseInt(ef_length.getText()) > MAX_PASSWORD_LENGTH)
-                        ef_length.setText(MAX_PASSWORD_LENGTH_TEXT);
-
-                    if (Integer.parseInt(ef_length.getText()) < MIN_PASSWORD_LENGTH)
-                        ef_length.setText(MIN_PASSWORD_LENGTH_TEXT);
-                }
-            }
-        });
-
-        b_OK.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                b_OK.setDisable(true);
-
-                try
-                {
-                    if (password != null)
-                        PasswordCollection.getInstance().addPassword(password);
-                    else
-                        PasswordCollection.getInstance().addPassword(
-                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url
-                                        .getText(), ef_length.getText(), cb_specialChars
-                                        .isSelected(), cb_upperCaseChar.isSelected(),
-                                        ef_specialChars.getText(), "")); // FIXME
-                                                                         // shortcut
-
-                    close();
-                }
-                catch (Exceptions e)
-                {
-                    if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS)
-                        l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_NAME_EXISTS.toString());
-
-                    b_OK.setDisable(false);
-                }
-            }
-        });
-
-        b_cancel.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                close();
-            }
-        });
-
-        b_regeneratePassword.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                showPasswordPreview();
-            }
-        });
+        b_regeneratePassword.setOnAction(onRegenerate());
 
         b_OK.setDisable(true);
         ef_length.setText(DEFAULT_LENGTH);

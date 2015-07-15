@@ -23,8 +23,7 @@ public class FormShortcuts extends AbstractForm
 
     private final class WINDOW
     {
-        public static final int width  = 200;
-        public static final int height = 300;
+        public static final int width = 200;
     }
 
     ChangeListener<Boolean> onFocusChange()

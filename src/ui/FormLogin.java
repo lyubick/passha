@@ -39,6 +39,72 @@ public class FormLogin extends AbstractForm
     private Button        b_Login            = null;
     private Button        b_Register         = null;
 
+    private EventHandler<ActionEvent> onLogin()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                if (pf_Password.getText().length() != 0)
+                {
+                    if (!pf_PasswordConfirm.isVisible())
+                        try
+                        {
+                            init(pf_Password.getText().toString(), false);
+                        }
+                        catch (Exceptions e)
+                        {
+                            if (e.getCode() == XC.USER_UNKNOWN)
+                            {
+                                b_Register.setVisible(true);
+
+                                pf_PasswordConfirm.setVisible(true);
+                                pf_Password.setDisable(true);
+
+                                l_Warning.setText(TextID.FORM_LOGIN_MSG_INCORRECT_PWD.toString());
+                            }
+                            else
+                            {
+                                Terminator.terminate(e);
+                            }
+                        }
+                    else
+                    {
+                        reset();
+                    }
+                }
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> onRegister()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                Logger.printDebug("b_Register button pressed");
+
+                try
+                {
+                    if (pf_Password.getText().equals(pf_PasswordConfirm.getText()))
+                        init(pf_PasswordConfirm.getText(), true);
+                    else
+                    {
+                        reset();
+                        l_Warning.setText(TextID.FORM_LOGIN_MSG_PWDS_DONT_MATCH.toString());
+                    }
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+            }
+        };
+    }
+
     public FormLogin()
     {
         super(null, TextID.FORM_LOGIN_NAME.toString()); // Login doesn't have
@@ -95,65 +161,9 @@ public class FormLogin extends AbstractForm
         GridPane.setHalignment(b_Register, HPos.LEFT);
 
         // ========== LISTENERS ========== //
-        b_Login.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                if (pf_Password.getText().length() != 0)
-                {
-                    if (!pf_PasswordConfirm.isVisible())
-                        try
-                        {
-                            init(pf_Password.getText().toString(), false);
-                        }
-                        catch (Exceptions e)
-                        {
-                            if (e.getCode() == XC.USER_UNKNOWN)
-                            {
-                                b_Register.setVisible(true);
+        b_Login.setOnAction(onLogin());
 
-                                pf_PasswordConfirm.setVisible(true);
-                                pf_Password.setDisable(true);
-
-                                l_Warning.setText(TextID.FORM_LOGIN_MSG_INCORRECT_PWD.toString());
-                            }
-                            else
-                            {
-                                Terminator.terminate(e);
-                            }
-                        }
-                    else
-                    {
-                        reset();
-                    }
-                }
-            }
-        });
-
-        b_Register.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                Logger.printDebug("b_Register button pressed");
-
-                try
-                {
-                    if (pf_Password.getText().equals(pf_PasswordConfirm.getText()))
-                        init(pf_PasswordConfirm.getText(), true);
-                    else
-                    {
-                        reset();
-                        l_Warning.setText(TextID.FORM_LOGIN_MSG_PWDS_DONT_MATCH.toString());
-                    }
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-            }
-        });
+        b_Register.setOnAction(onRegister());
 
         open();
     }

@@ -233,6 +233,101 @@ public class FormManagePwd extends AbstractForm
         return (FormManagePwd) This;
     }
 
+    private EventHandler<ActionEvent> newActionHandler()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent ae)
+            {
+                new FormCreatePwd(This);
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> deleteActionHandler()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                try
+                {
+                    if (PasswordCollection.getInstance().getSelected() == null) return;
+                    new FormDeletePwd(This);
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> resetActionHandler()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                try
+                {
+                    if (PasswordCollection.getInstance().getSelected() == null) return;
+                    new FormResetPwd(This);
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> exportActionHandler()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                new DlgExport(This);
+            }
+        };
+    }
+
+    private ChangeListener<Object> onSelectionChange()
+    {
+        return new ChangeListener<Object>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
+                    Object newValue)
+            {
+                try
+                {
+                    if (newValue == null)
+                    {
+                        PasswordCollection.getInstance().setSelected(null);
+                        return;
+                    }
+
+                    PasswordCollection.getInstance().setSelected(
+                            table.getSelectionModel().getSelectedItem().getOrigin());
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+
+                b_Copy.setDisable(true);
+                tf_pass.setText(table.getSelectionModel().getSelectedItem().getPassword());
+                b_Copy.setDisable(false);
+            }
+        };
+    }
+
     public FormManagePwd()
     {
         super(null, TextID.FORM_MANAGEPWD_NAME.toString()); // No parents it
@@ -386,100 +481,25 @@ public class FormManagePwd extends AbstractForm
             Terminator.terminate(e);
         }
 
-        b_New.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent ae)
-            {
-                new FormCreatePwd(This);
-            }
-        });
-
+        b_New.setOnAction(newActionHandler());
         b_Edit.setOnAction(editActionHandler());
-
-        b_Delete.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                try
-                {
-                    if (PasswordCollection.getInstance().getSelected() == null) return;
-                    new FormDeletePwd(This);
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-            }
-        });
-
-        table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
-                    Object newValue)
-            {
-                try
-                {
-                    if (newValue == null)
-                    {
-                        PasswordCollection.getInstance().setSelected(null);
-                        return;
-                    }
-
-                    PasswordCollection.getInstance().setSelected(
-                            table.getSelectionModel().getSelectedItem().getOrigin());
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-
-                b_Copy.setDisable(true);
-                tf_pass.setText(table.getSelectionModel().getSelectedItem().getPassword());
-                b_Copy.setDisable(false);
-            }
-        });
-
-        b_Reset.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                try
-                {
-                    if (PasswordCollection.getInstance().getSelected() == null) return;
-                    new FormResetPwd(This);
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-            }
-        });
-
-        b_Export.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                new DlgExport(This);
-            }
-        });
-
+        b_Delete.setOnAction(deleteActionHandler());
+        b_Reset.setOnAction(resetActionHandler());
+        b_Export.setOnAction(exportActionHandler());
         b_Copy.setOnAction(copyToClipboardHandler());
 
-        stage.setOnShowing(new EventHandler<WindowEvent>()
-        {
-            @Override
-            public void handle(WindowEvent event)
-            {
-                refresh();
-            }
-        });
+        table.getSelectionModel().selectedItemProperty().addListener(onSelectionChange());
 
-        stage.focusedProperty().addListener(new ChangeListener<Boolean>()
+        stage.setOnShowing(onFormShowing());
+
+        stage.focusedProperty().addListener(onFormFocused());
+
+        open();
+    }
+
+    private ChangeListener<Boolean> onFormFocused()
+    {
+        return new ChangeListener<Boolean>()
         {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
@@ -487,9 +507,19 @@ public class FormManagePwd extends AbstractForm
             {
                 if (newValue) refresh();
             }
-        });
+        };
+    }
 
-        open();
+    private EventHandler<WindowEvent> onFormShowing()
+    {
+        return new EventHandler<WindowEvent>()
+        {
+            @Override
+            public void handle(WindowEvent event)
+            {
+                refresh();
+            }
+        };
     }
 
     public void refresh()

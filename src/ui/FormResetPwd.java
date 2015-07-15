@@ -40,6 +40,39 @@ public class FormResetPwd extends AbstractForm
 
     private SpecialPassword newSp             = null;
 
+    private EventHandler<ActionEvent> onConfirm()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                try
+                {
+                    PasswordCollection.getInstance().replacePasword(newSp);
+                    close();
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> onCancel()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                newSp = null;
+                close();
+            }
+        };
+    }
+
     FormResetPwd(AbstractForm parent)
     {
         super(parent, TextID.FORM_RESETPWD_NAME.toString());
@@ -68,9 +101,8 @@ public class FormResetPwd extends AbstractForm
 
         grid.add(l_Header, 0, 0);
 
-        CurrentPassword =
-                new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT.toString(), FIELD_WIDTH.L);
-        NewPassword = new EntryField(TextID.COMMON_LABEL_NEW.toString(), FIELD_WIDTH.L);
+        CurrentPassword = new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT, FIELD_WIDTH.L);
+        NewPassword = new EntryField(TextID.COMMON_LABEL_NEW, FIELD_WIDTH.L);
 
         CurrentPassword.setEditable(false);
         NewPassword.setEditable(false);
@@ -82,32 +114,8 @@ public class FormResetPwd extends AbstractForm
         grid.add(b_OK, 0, 4);
         grid.add(b_Cancel, 0, 4);
 
-        b_OK.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                try
-                {
-                    PasswordCollection.getInstance().replacePasword(newSp);
-                    close();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-            }
-        });
-
-        b_Cancel.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                newSp = null;
-                close();
-            }
-        });
+        b_OK.setOnAction(onConfirm());
+        b_Cancel.setOnAction(onCancel());
 
         try
         {

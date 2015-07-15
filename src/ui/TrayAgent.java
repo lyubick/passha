@@ -127,6 +127,25 @@ public class TrayAgent
         };
     }
 
+    private ActionListener onExit()
+    {
+        return new ActionListener()
+        {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent arg0)
+            {
+                Platform.runLater(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        Terminator.terminate(new Exceptions(XC.END));
+                    }
+                });
+            }
+        };
+    }
+
     private TrayAgent() throws Exceptions
     {
         SystemTray sysTray = SystemTray.getSystemTray();
@@ -145,21 +164,7 @@ public class TrayAgent
 
         trayIcon.addMouseListener(lmbHandler());
 
-        itemExit.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent arg0)
-            {
-                Platform.runLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        Terminator.terminate(new Exceptions(XC.END));
-                    }
-                });
-            }
-        });
+        itemExit.addActionListener(onExit());
 
         try
         {

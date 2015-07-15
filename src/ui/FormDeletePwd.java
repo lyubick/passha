@@ -33,34 +33,13 @@ public class FormDeletePwd extends AbstractForm
 
     private String     confirmationText = null;
 
-    public FormDeletePwd(AbstractForm parent)
+    private ChangeListener<String> onConfirmationChanged()
     {
-        super(parent, TextID.FORM_DELETEPWD_NAME.toString());
-        priority = ShowPriority.ALWAYS;
-
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
-        confirmationText = new String("DELETE");
-        l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
-        l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText, WINDOW.width - 100);
-        l_note.setTextAlignment(TextAlignment.CENTER);
-        b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
-        l_note.beError();
-        tf_confirmation = new TextField();
-        tf_confirmation.setMaxWidth(WINDOW.width - 100);
-        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString(), WINDOW.width - 200);
-        ef_passwordName.setEditable(false);
-
-        GridPane.setHalignment(l_Header, HPos.CENTER);
-        GridPane.setHalignment(l_note, HPos.CENTER);
-        GridPane.setHalignment(b_Confirm, HPos.CENTER);
-        GridPane.setHalignment(tf_confirmation, HPos.CENTER);
-
-        tf_confirmation.textProperty().addListener(new ChangeListener<String>()
+        return new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue)
             {
                 if (newValue.equals(confirmationText))
                 {
@@ -73,9 +52,12 @@ public class FormDeletePwd extends AbstractForm
                     confirmed = false;
                 }
             }
-        });
+        };
+    }
 
-        b_Confirm.setOnAction(new EventHandler<ActionEvent>()
+    private EventHandler<ActionEvent> onConfirm()
+    {
+        return new EventHandler<ActionEvent>()
         {
             @Override
             public void handle(ActionEvent event)
@@ -94,7 +76,38 @@ public class FormDeletePwd extends AbstractForm
 
                 close();
             }
-        });
+        };
+    }
+
+    public FormDeletePwd(AbstractForm parent)
+    {
+        super(parent, TextID.FORM_DELETEPWD_NAME.toString());
+        priority = ShowPriority.ALWAYS;
+
+        stage.setHeight(WINDOW.height);
+        stage.setWidth(WINDOW.width);
+
+        confirmationText = new String("DELETE");
+        l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
+        l_note =
+                new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
+                        WINDOW.width - 100);
+        l_note.setTextAlignment(TextAlignment.CENTER);
+        b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
+        l_note.beError();
+        tf_confirmation = new TextField();
+        tf_confirmation.setMaxWidth(WINDOW.width - 100);
+        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, WINDOW.width - 200);
+        ef_passwordName.setEditable(false);
+
+        GridPane.setHalignment(l_Header, HPos.CENTER);
+        GridPane.setHalignment(l_note, HPos.CENTER);
+        GridPane.setHalignment(b_Confirm, HPos.CENTER);
+        GridPane.setHalignment(tf_confirmation, HPos.CENTER);
+
+        tf_confirmation.textProperty().addListener(onConfirmationChanged());
+
+        b_Confirm.setOnAction(onConfirm());
 
         grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation, b_Confirm);
 

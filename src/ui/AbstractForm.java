@@ -127,43 +127,21 @@ public abstract class AbstractForm
         minimize(); // default
     }
 
-    protected AbstractForm(AbstractForm parent, String title)
+    private EventHandler<WindowEvent> onCloseRequestHandler()
     {
-        this.parent = parent;
-        priority = ShowPriority.NORMAL;
-
-        // initialize everything to avoid NullPointerExceptions
-        childs = new Vector<AbstractForm>();
-
-        grid = new GridPane();
-        grid.setHgap(GAP.H);
-        grid.setVgap(GAP.V);
-        grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
-        grid.setAlignment(Pos.CENTER);
-
-        group = new VBox();
-        group.getChildren().addAll(grid);
-
-        scene = new Scene(group, WINDOW.width, WINDOW.height);
-
-        stage = new Stage(StageStyle.UNIFIED);
-        stage.setScene(scene);
-
-        stage.getIcons().add(new Image("resources/tray_icon.png"));
-        stage.setTitle(title + " - " + TextID.COMMON_APPLICATION_NAME.toString() + " ("
-                + TextID.COMMON_LABEL_VERSION.toString() + ")");
-        stage.setResizable(false);
-
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>()
+        return new EventHandler<WindowEvent>()
         {
             @Override
             public void handle(WindowEvent event)
             {
                 onUserCloseRequest();
             }
-        });
+        };
+    }
 
-        stage.iconifiedProperty().addListener(new ChangeListener<Boolean>()
+    private ChangeListener<Boolean> onIiconifiedChange()
+    {
+        return new ChangeListener<Boolean>()
         {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule,
@@ -171,9 +149,12 @@ public abstract class AbstractForm
             {
                 if (newValue) onUserMinimizeRequest();
             }
-        });
+        };
+    }
 
-        stage.focusedProperty().addListener(new ChangeListener<Boolean>()
+    private ChangeListener<Boolean> onFocusChange()
+    {
+        return new ChangeListener<Boolean>()
         {
 
             @Override
@@ -214,6 +195,38 @@ public abstract class AbstractForm
 
                 // No! Let focus! :)
             }
-        });
+        };
+    }
+
+    protected AbstractForm(AbstractForm parent, String title)
+    {
+        this.parent = parent;
+        priority = ShowPriority.NORMAL;
+
+        // initialize everything to avoid NullPointerExceptions
+        childs = new Vector<AbstractForm>();
+
+        grid = new GridPane();
+        grid.setHgap(GAP.H);
+        grid.setVgap(GAP.V);
+        grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
+        grid.setAlignment(Pos.CENTER);
+
+        group = new VBox();
+        group.getChildren().addAll(grid);
+
+        scene = new Scene(group, WINDOW.width, WINDOW.height);
+
+        stage = new Stage(StageStyle.UNIFIED);
+        stage.setScene(scene);
+
+        stage.getIcons().add(new Image("resources/tray_icon.png"));
+        stage.setTitle(title + " - " + TextID.COMMON_APPLICATION_NAME.toString() + " ("
+                + TextID.COMMON_LABEL_VERSION.toString() + ")");
+        stage.setResizable(false);
+
+        stage.setOnCloseRequest(onCloseRequestHandler());
+        stage.iconifiedProperty().addListener(onIiconifiedChange());
+        stage.focusedProperty().addListener(onFocusChange());
     }
 }

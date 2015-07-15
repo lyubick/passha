@@ -87,9 +87,8 @@ public class FormEditPwd extends AbstractForm
 
         pwd = PasswordCollection.getInstance().getSelected();
 
-        ef_PwdName =
-                new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString(), TEXT_FIELDS_WIDTH);
-        ef_Shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString(), 25);
+        ef_PwdName = new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXT_FIELDS_WIDTH);
+        ef_Shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, 25);
         b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
 
         ef_PwdName.setEditable(false);

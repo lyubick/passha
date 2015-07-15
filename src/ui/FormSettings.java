@@ -45,6 +45,33 @@ public class FormSettings extends AbstractForm
         public static final int height = 200;
     }
 
+    private EventHandler<ActionEvent> onConfirm()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+
+                try
+                {
+                    Settings.getInstance().setLanguage(cb_Language.getValue());
+                    Settings.getInstance().setClipboardLiveTime(f_Clipboard.getText());
+                    Settings.getInstance().saveSettings();
+
+                    if (Settings.getInstance().isRestartRequired())
+                        Terminator.terminate(new Exceptions(XC.RESTART));
+                    else
+                        close();
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+            }
+        };
+    }
+
     public FormSettings(AbstractForm parent)
     {
         super(parent, TextID.FORM_SETTINGS_NAME.toString());
@@ -59,7 +86,8 @@ public class FormSettings extends AbstractForm
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
         langOptions =
-                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
+                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
+                        Settings.LANGUAGE.RUSSIAN.name());
 
         l_Language = new Label(TextID.FORM_SETTINGS_LABEL_LANGUAGE.toString());
         l_Language.setMinWidth(EntryField.LABEL_WIDTH);
@@ -83,7 +111,8 @@ public class FormSettings extends AbstractForm
                         + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH.S);
         try
         {
-            f_Clipboard.setText(Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+            f_Clipboard.setText(Integer
+                    .toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
         {
@@ -97,30 +126,7 @@ public class FormSettings extends AbstractForm
         grid.add(hb_Language, 0, 2);
         grid.add(b_OK, 0, 3);
 
-        b_OK.setOnAction(new EventHandler<ActionEvent>()
-        {
-
-            @Override
-            public void handle(ActionEvent event)
-            {
-
-                try
-                {
-                    Settings.getInstance().setLanguage(cb_Language.getValue());
-                    Settings.getInstance().setClipboardLiveTime(f_Clipboard.getText());
-                    Settings.getInstance().saveSettings();
-
-                    if (Settings.getInstance().isRestartRequired())
-                        Terminator.terminate(new Exceptions(XC.RESTART));
-                    else
-                        close();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-            }
-        });
+        b_OK.setOnAction(onConfirm());
 
         open();
     }
