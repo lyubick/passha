@@ -1,39 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Expect definition of JavaFX ant tasks is already imported -->
 
-<project name="pasSHA" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
+<project name="pasSHA" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant" default="all">
+
 	<buildnumber file="resources\build.version"/>
+
+	<!-- Detect correct Operating system and set PATH variables -->
+	<condition property="JDKLIB" value="${java.home}/../jdk${java.version}/lib" else="${java.home}/../lib" >
+		<os family="windows" />
+	</condition>
+	<condition property="JRELIB" value="${java.home}/lib" else="${java.home}/lib" >
+		<os family="windows" />
+	</condition>
 	
+	<!-- Default build target -->
+	<target name="all">
+
 	<path id="fxant">
 		<filelist>
-			<file name="C:\Program Files\Java\jdk1.8.0_45\lib\ant-javafx.jar" />
-			<file name="C:\Program Files\Java\jre1.8.0_45\lib\ext\jfxrt.jar" />
+			<file name="${JDKLIB}/ant-javafx.jar" />
+			<file name="${JRELIB}/ext/jfxrt.jar" />
 		</filelist>
 	</path>
+		
+		<!-- Build routine -->
+		<taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpathref="fxant" />
+		
+		<!-- Copy all resources like .gif, licence etc. -->
+		<copy todir="./bin/resources">
+			<fileset dir="./resources" />
+		</copy>
 
-	<taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpathref="fxant" />
+		<fx:jar destfile="dist/pasSHA.jar">
 
-	<copy todir="./bin/resources">
-		<fileset dir="./resources" />
-	</copy>
+			<!-- Details about application -->
+			<fx:application name="pasSHA" mainClass="main.Main" />
 
-	<fx:jar destfile="dist/pasSHA.jar">
+			<!-- Define what auxilary resources are needed -->
+			<fx:resources>
+				<fx:fileset dir="dist" includes="resources/*.jar" />
+			</fx:resources>
 
-		<!-- Details about application -->
-		<fx:application name="pasSHA" mainClass="main.Main" />
+			<!-- What to include into result jar file? Everything in the build tree -->
+			<fileset dir="bin" />
 
-		<!-- Define what auxilary resources are needed -->
-		<fx:resources>
-			<fx:fileset dir="dist" includes="resources/*.jar" />
-		</fx:resources>
+			<!-- Customize jar manifest (optional) -->
+			<manifest>
+				<attribute name="Implementation-Vendor" value="KGBT" />
+				<attribute name="Implementation-Version" value="2.2.000" />
+			</manifest>
+		</fx:jar>
 
-		<!-- What to include into result jar file? Everything in the build tree -->
-		<fileset dir="bin" />
+		<!-- Release -->
+		<copy file="resources/README.txt" tofile="dist/RESOURCES.txt" />
+		<copy file="resources/GNUGPLv3.txt" tofile="dist/GNUGPLv3.txt" />
+	</target>
+	
+	<target name="cleanall">
+		<delete dir="dist" />
+		<mkdir dir="dist" />
+		<mkdir dir="dist/logs" />
+		<mkdir dir="dist/user" />
+	</target>
 
-		<!-- Customize jar manifest (optional) -->
-		<manifest>
-			<attribute name="Implementation-Vendor" value="KGBT" />
-			<attribute name="Implementation-Version" value="2.1.000" />
-		</manifest>
-	</fx:jar>
 </project>
