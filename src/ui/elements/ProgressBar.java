@@ -1,5 +1,7 @@
 package ui.elements;
 
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.scene.layout.VBox;
 import languages.Texts.TextID;
 
@@ -39,5 +41,20 @@ public class ProgressBar extends javafx.scene.control.ProgressBar
     public void setLabel(TextID label)
     {
         setLabel(label.toString());
+    }
+
+    public void rebind(ReadOnlyDoubleProperty readOnlyDoubleProperty,
+            ReadOnlyStringProperty readOnlyStringProperty)
+    {
+        unbind();
+
+        this.progressProperty().bind(readOnlyDoubleProperty);
+        this.getLabel().textProperty().bind(readOnlyStringProperty);
+    }
+
+    public void unbind()
+    {
+        this.progressProperty().unbind();
+        this.getLabel().textProperty().unbind();
     }
 }

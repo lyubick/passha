@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -100,6 +101,10 @@ public class FormUpdate extends AbstractForm
                 Task<Void> tsk_downloadLatestVersion = downloadLatestVersion();
                 tsk_downloadLatestVersion.setOnSucceeded(getOnDownloadSucceeded());
                 tsk_downloadLatestVersion.setOnFailed(getOnUpdateTaskFailed());
+
+                pb_Progress.rebind(tsk_downloadLatestVersion.progressProperty(),
+                        tsk_downloadLatestVersion.messageProperty());
+
                 new Thread(tsk_downloadLatestVersion).start();
             }
         };
@@ -112,11 +117,14 @@ public class FormUpdate extends AbstractForm
             @Override
             public void handle(WorkerStateEvent event)
             {
-                // Download latest
+                pb_Progress.unbind();
+                close();
+
+                // Install latest
                 Task<Void> tsk_installLatestVersion = installLatestVersion();
                 Thread install = new Thread(tsk_installLatestVersion);
                 install.setDaemon(true);
-                install.run();
+                install.start();
 
                 Terminator.terminate(new Exceptions(XC.END));
             }
@@ -130,18 +138,26 @@ public class FormUpdate extends AbstractForm
             @Override
             protected Void call() throws Exception
             {
-                pb_Progress.setLabel(TextID.FORM_UPDATE_LABEL_CHECK);
+                double maxSize = 0;
+                double curSize = 0;
+
+                updateProgress(0, 1);
+                updateMessage(TextID.FORM_UPDATE_LABEL_CHECK.toString());
 
                 try
                 {
-                    updateProgress(0, 1);
-
                     URL url = new URL(GITHUB_RELEASE_URL);
-                    BufferedReader html = new BufferedReader(
-                            new InputStreamReader(url.openConnection().getInputStream()));
+                    URLConnection conn = url.openConnection();
+
+                    BufferedReader html =
+                            new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                    curSize = maxSize = conn.getContentLength();
 
                     while ((latestVersion = html.readLine()) != null)
                     {
+                        curSize -= latestVersion.length();
+
                         if (latestVersion.contains(RELEASE_VERSION_PREFIX))
                         {
                             int idx = latestVersion.indexOf(RELEASE_VERSION_PREFIX)
@@ -151,6 +167,8 @@ public class FormUpdate extends AbstractForm
                             // Latest version should be on top always
                             break;
                         }
+
+                        updateProgress(1 - curSize / maxSize, 1);
                     }
 
                     html.close();
@@ -172,7 +190,7 @@ public class FormUpdate extends AbstractForm
                     this.failed();
                 }
 
-                updateProgress(0.1, 1);
+                updateProgress(1, 1);
 
                 return null;
             }
@@ -186,25 +204,36 @@ public class FormUpdate extends AbstractForm
             @Override
             protected Void call() throws Exception
             {
-                updateProgress(0.1, 1);
+                double maxSize = 0;
+                double curSize = 0;
 
-                pb_Progress.setLabel(TextID.FORM_UPDATE_LABEL_DOWNLOAD);
+                updateProgress(0, 1);
+                updateMessage(TextID.FORM_UPDATE_LABEL_DOWNLOAD.toString());
 
                 try
                 {
-                    URL github =
+                    URL url =
                             new URL(GITHUB_ARCHIVE_URL + latestVersion + RELEASE_ARCHIVE_EXTENSION);
+
+                    URLConnection conn = url.openConnection();
+
+                    maxSize = conn.getContentLength();
 
                     downloaded = File.createTempFile(latestVersion, RELEASE_ARCHIVE_EXTENSION);
 
-                    InputStream is = github.openConnection().getInputStream();
+                    InputStream is = conn.getInputStream();
                     FileOutputStream fos = new FileOutputStream(downloaded.getCanonicalPath());
 
                     byte[] buffer = new byte[BUFFER_SIZE];
                     int len;
 
                     while ((len = is.read(buffer)) > 0)
+                    {
+                        curSize += len;
                         fos.write(buffer, 0, len);
+
+                        updateProgress(curSize, maxSize);
+                    }
 
                     is.close();
                     fos.close();
@@ -221,7 +250,7 @@ public class FormUpdate extends AbstractForm
                     this.failed();
                 }
 
-                updateProgress(0.9, 1);
+                updateProgress(1, 1);
                 return null;
             }
         };
@@ -274,7 +303,7 @@ public class FormUpdate extends AbstractForm
                     this.failed();
                 }
 
-                Terminator.restart();
+                Terminator.terminate(new Exceptions(XC.RESTART));
 
                 return null;
             }
@@ -293,6 +322,10 @@ public class FormUpdate extends AbstractForm
                 Task<Void> tsk_LatestVersion = getLatestVersion();
                 tsk_LatestVersion.setOnSucceeded(getOnLatestVersionSucceded());
                 tsk_LatestVersion.setOnFailed(getOnUpdateTaskFailed());
+
+                pb_Progress.rebind(tsk_LatestVersion.progressProperty(),
+                        tsk_LatestVersion.messageProperty());
+
                 new Thread(tsk_LatestVersion).start();
             }
         };
