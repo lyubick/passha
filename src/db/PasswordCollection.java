@@ -144,7 +144,7 @@ public class PasswordCollection
         }
         catch (Exceptions e)
         {
-            Terminator.terminate(e); // FIXME
+            Terminator.terminate(e); // 12
         }
     }
 

@@ -20,7 +20,6 @@ public class Button extends javafx.scene.control.Button
 
     public Button(String name)
     {
-        // TODO Auto-generated constructor stub
         super(name);
         setMinWidth(BUTTON.width);
         setMinHeight(BUTTON.height);

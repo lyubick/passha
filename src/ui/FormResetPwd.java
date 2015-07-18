@@ -29,18 +29,19 @@ public class FormResetPwd extends AbstractForm
         public static final int height = 250;
     }
 
-    private final int       MAX_WARNING_WIDTH = EntryField.LABEL_WIDTH + FIELD_WIDTH.L;
+    private final int MAX_WARNING_WIDTH = EntryField.LABEL_WIDTH + TEXTFIELD_WIDTH.L;
 
-    private Button          b_OK              = null;
-    private Button          b_Cancel          = null;
-    private Label           l_Warning         = null;
-    private Label           l_Header          = null;
-    private EntryField      CurrentPassword   = null;
-    private EntryField      NewPassword       = null;
+    private Button     b_OK            = null;
+    private Button     b_Cancel        = null;
+    private Label      l_Warning       = null;
+    private Label      l_Header        = null;
+    private EntryField CurrentPassword = null;
+    private EntryField NewPassword     = null;
 
-    private SpecialPassword newSp             = null;
+    private SpecialPassword newSp = null;
 
-    private EventHandler<ActionEvent> onConfirm()
+    /* EVENT HANDLERS & CHANGE LISTENERS */
+    private EventHandler<ActionEvent> getOnOKBtnAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -60,7 +61,7 @@ public class FormResetPwd extends AbstractForm
         };
     }
 
-    private EventHandler<ActionEvent> onCancel()
+    private EventHandler<ActionEvent> getOnCancelBtnAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -73,10 +74,11 @@ public class FormResetPwd extends AbstractForm
         };
     }
 
-    FormResetPwd(AbstractForm parent)
+    /* PUBLIC ROUTINE */
+    public FormResetPwd(AbstractForm parent)
     {
         super(parent, TextID.FORM_RESETPWD_NAME.toString());
-        priority = ShowPriority.ALWAYS;
+        priority = WindowPriority.ALWAYS_ON_TOP;
 
         stage.setWidth(WINDOW.width);
         stage.setHeight(WINDOW.height);
@@ -101,8 +103,8 @@ public class FormResetPwd extends AbstractForm
 
         grid.add(l_Header, 0, 0);
 
-        CurrentPassword = new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT, FIELD_WIDTH.L);
-        NewPassword = new EntryField(TextID.COMMON_LABEL_NEW, FIELD_WIDTH.L);
+        CurrentPassword = new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT, TEXTFIELD_WIDTH.L);
+        NewPassword = new EntryField(TextID.COMMON_LABEL_NEW, TEXTFIELD_WIDTH.L);
 
         CurrentPassword.setEditable(false);
         NewPassword.setEditable(false);
@@ -114,8 +116,8 @@ public class FormResetPwd extends AbstractForm
         grid.add(b_OK, 0, 4);
         grid.add(b_Cancel, 0, 4);
 
-        b_OK.setOnAction(onConfirm());
-        b_Cancel.setOnAction(onCancel());
+        b_OK.setOnAction(getOnOKBtnAction());
+        b_Cancel.setOnAction(getOnCancelBtnAction());
 
         try
         {
@@ -124,8 +126,7 @@ public class FormResetPwd extends AbstractForm
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Terminator.terminate(e);
         }
 
         NewPassword.setText(newSp.getPassword());
@@ -136,6 +137,7 @@ public class FormResetPwd extends AbstractForm
         open();
     }
 
+    /* OVERRIDE */
     @Override
     protected void onUserMinimizeRequest()
     {

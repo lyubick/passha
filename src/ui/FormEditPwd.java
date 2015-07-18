@@ -28,7 +28,8 @@ public class FormEditPwd extends AbstractForm
     private SpecialPassword pwd          = null;
     private final Label     l_errorLabel = new Label("");
 
-    private EventHandler<ActionEvent> okActionHandler()
+    /* EVENT HANDLERS & CHANGE LISTENERS */
+    private EventHandler<ActionEvent> getOnOKBtnAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -37,9 +38,8 @@ public class FormEditPwd extends AbstractForm
             {
                 try
                 {
-                    SpecialPassword sp =
-                            PasswordCollection.getInstance().getPasswordByShortcut(
-                                    ef_Shortcut.getText());
+                    SpecialPassword sp = PasswordCollection.getInstance()
+                            .getPasswordByShortcut(ef_Shortcut.getText());
                     if (sp == null)
                     {
                         pwd.setShortcut(ef_Shortcut.getText());
@@ -62,7 +62,7 @@ public class FormEditPwd extends AbstractForm
         };
     }
 
-    private EventHandler<KeyEvent> shortcutFilter()
+    private EventHandler<KeyEvent> getShortcutTFFiler()
     {
         return new EventHandler<KeyEvent>()
         {
@@ -76,11 +76,12 @@ public class FormEditPwd extends AbstractForm
         };
     }
 
-    protected FormEditPwd(AbstractForm parent) throws Exceptions
+    /* PUBLIC ROUTINE */
+    public FormEditPwd(AbstractForm parent) throws Exceptions
     {
         super(parent, TextID.FORM_EDITPWD_NAME.toString());
 
-        priority = ShowPriority.ALWAYS;
+        priority = WindowPriority.ALWAYS_ON_TOP;
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
@@ -92,7 +93,7 @@ public class FormEditPwd extends AbstractForm
         b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
 
         ef_PwdName.setEditable(false);
-        ef_Shortcut.addEventFilter(KeyEvent.KEY_TYPED, shortcutFilter());
+        ef_Shortcut.addEventFilter(KeyEvent.KEY_TYPED, getShortcutTFFiler());
 
         ef_PwdName.setText(pwd.getName());
         ef_Shortcut.setText(pwd.getShortcut());
@@ -102,12 +103,13 @@ public class FormEditPwd extends AbstractForm
         grid.add(l_errorLabel, 1, 2);
         grid.add(b_OK, 1, 3);
 
-        b_OK.setOnAction(okActionHandler());
+        b_OK.setOnAction(getOnOKBtnAction());
 
         open();
         ef_Shortcut.requestFocus();
     }
 
+    /* OVERRIDE */
     @Override
     protected void onUserMinimizeRequest()
     {

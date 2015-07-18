@@ -1,10 +1,6 @@
-/**
- *
- */
 package ui;
 
 import java.util.Vector;
-
 import ui.elements.GridPane;
 import languages.Texts.TextID;
 import logger.Logger;
@@ -21,30 +17,25 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
-/**
- * @author curious-odd-man
- *
- */
 public abstract class AbstractForm
 {
-    protected enum ShowPriority
+    protected enum WindowPriority
     {
-        LOW,
         NORMAL,
-        ABOVE,
-        ALWAYS,
+        ONLY_ONE_OPENED,
+        ALWAYS_ON_TOP,
     };
 
-    protected AbstractForm         parent  = null;
-    protected Vector<AbstractForm> childs  = null;
-    protected ShowPriority         priority;      // TODO
+    protected AbstractForm         parent = null;
+    protected Vector<AbstractForm> childs = null;
+    protected WindowPriority       priority;
 
-    protected GridPane             grid    = null;
-    protected VBox                 group   = null;
-    protected Scene                scene   = null;
-    protected Stage                stage   = null;
+    protected GridPane grid  = null;
+    protected VBox     group = null;
+    protected Scene    scene = null;
+    protected Stage    stage = null;
 
-    protected MenuBar              mb_Main = null;
+    protected MenuBar mb_Main = null;
 
     protected static final class GAP
     {
@@ -52,7 +43,7 @@ public abstract class AbstractForm
         public static final int V = 10;
     };
 
-    protected final class PADDING
+    protected static final class PADDING
     {
         public static final int bottom = 10;
         public static final int top    = 10;
@@ -60,13 +51,13 @@ public abstract class AbstractForm
         public static final int left   = 10;
     };
 
-    protected final class WINDOW
+    protected static final class WINDOW
     {
         public static final int width  = 1050;
         public static final int height = 650;
     }
 
-    protected final class FIELD_WIDTH
+    protected static final class TEXTFIELD_WIDTH
     {
         public static final int S  = 50;
         public static final int M  = 100;
@@ -127,7 +118,8 @@ public abstract class AbstractForm
         minimize(); // default
     }
 
-    private EventHandler<WindowEvent> onCloseRequestHandler()
+    /* EVENT HANDLERS & CHANGE LISTENERS */
+    private EventHandler<WindowEvent> getOnCloseRequest()
     {
         return new EventHandler<WindowEvent>()
         {
@@ -139,7 +131,7 @@ public abstract class AbstractForm
         };
     }
 
-    private ChangeListener<Boolean> onIiconifiedChange()
+    private ChangeListener<Boolean> getIconifiedPropertyListener()
     {
         return new ChangeListener<Boolean>()
         {
@@ -152,7 +144,7 @@ public abstract class AbstractForm
         };
     }
 
-    private ChangeListener<Boolean> onFocusChange()
+    private ChangeListener<Boolean> getFocusedPropertyListener()
     {
         return new ChangeListener<Boolean>()
         {
@@ -161,12 +153,24 @@ public abstract class AbstractForm
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
                     Boolean newValue)
             {
+                if (!newValue && priority == WindowPriority.NORMAL)
+                {
+                    Logger.printDebug("Lost focus. Ignore. (NORMAL)");
+                    return;
+                }
+
+                if (newValue && priority == WindowPriority.ALWAYS_ON_TOP)
+                {
+                    Logger.printDebug("Gain focus. Ignore. (ALWAYS_ON_TOP)");
+                    return;
+                }
+
                 // Check if we have Children with highest priorities
                 if (!childs.isEmpty())
                 {
                     for (AbstractForm child : childs)
                     {
-                        if (child.priority.equals(ShowPriority.ALWAYS))
+                        if (child.priority.equals(WindowPriority.ALWAYS_ON_TOP))
                         {
                             child.stage.requestFocus();
 
@@ -182,7 +186,7 @@ public abstract class AbstractForm
                 {
                     for (AbstractForm child : parent.childs)
                     {
-                        if (child.priority.equals(ShowPriority.ALWAYS))
+                        if (child.priority.equals(WindowPriority.ALWAYS_ON_TOP))
                         {
                             child.stage.requestFocus();
 
@@ -201,7 +205,7 @@ public abstract class AbstractForm
     protected AbstractForm(AbstractForm parent, String title)
     {
         this.parent = parent;
-        priority = ShowPriority.NORMAL;
+        priority = WindowPriority.NORMAL;
 
         // initialize everything to avoid NullPointerExceptions
         childs = new Vector<AbstractForm>();
@@ -225,8 +229,8 @@ public abstract class AbstractForm
                 + TextID.COMMON_LABEL_VERSION.toString() + ")");
         stage.setResizable(false);
 
-        stage.setOnCloseRequest(onCloseRequestHandler());
-        stage.iconifiedProperty().addListener(onIiconifiedChange());
-        stage.focusedProperty().addListener(onFocusChange());
+        stage.setOnCloseRequest(getOnCloseRequest());
+        stage.iconifiedProperty().addListener(getIconifiedPropertyListener());
+        stage.focusedProperty().addListener(getFocusedPropertyListener());
     }
 }

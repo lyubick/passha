@@ -27,17 +27,17 @@ import javafx.scene.text.TextAlignment;
  */
 public class FormSettings extends AbstractForm
 {
-    private EntryField             f_Clipboard = null;
+    private EntryField f_Clipboard = null;
 
-    private HBox                   hb_Language = null;
-    private Label                  l_Language  = null;
-    private ComboBox<String>       cb_Language = null;
+    private HBox             hb_Language = null;
+    private Label            l_Language  = null;
+    private ComboBox<String> cb_Language = null;
 
-    private Label                  l_Header    = null;
+    private Label l_Header = null;
 
     private ObservableList<String> langOptions = null;
 
-    private Button                 b_OK        = null;
+    private Button b_OK = null;
 
     private final class WINDOW
     {
@@ -45,7 +45,8 @@ public class FormSettings extends AbstractForm
         public static final int height = 200;
     }
 
-    private EventHandler<ActionEvent> onConfirm()
+    /* EVENT HANDLERS & CHANGE LISTENERS */
+    private EventHandler<ActionEvent> getOnOKBtnAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -72,6 +73,7 @@ public class FormSettings extends AbstractForm
         };
     }
 
+    /* PUBLIC ROUTINE */
     public FormSettings(AbstractForm parent)
     {
         super(parent, TextID.FORM_SETTINGS_NAME.toString());
@@ -79,15 +81,14 @@ public class FormSettings extends AbstractForm
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
 
-        priority = ShowPriority.ALWAYS;
+        priority = WindowPriority.ALWAYS_ON_TOP;
 
         l_Header = new Label(TextID.FORM_SETTINGS_NAME.toString());
         l_Header.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_Header, HPos.CENTER);
 
-        langOptions =
-                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
-                        Settings.LANGUAGE.RUSSIAN.name());
+        langOptions = FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
+                Settings.LANGUAGE.RUSSIAN.name());
 
         l_Language = new Label(TextID.FORM_SETTINGS_LABEL_LANGUAGE.toString());
         l_Language.setMinWidth(EntryField.LABEL_WIDTH);
@@ -106,13 +107,12 @@ public class FormSettings extends AbstractForm
         hb_Language = new HBox();
         hb_Language.getChildren().addAll(l_Language, cb_Language);
 
-        f_Clipboard =
-                new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
-                        + TextID.COMMON_LABEL_SECONDS.toString(), FIELD_WIDTH.S);
+        f_Clipboard = new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
+                + TextID.COMMON_LABEL_SECONDS.toString(), TEXTFIELD_WIDTH.S);
         try
         {
-            f_Clipboard.setText(Integer
-                    .toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+            f_Clipboard.setText(
+                    Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
         {
@@ -126,11 +126,12 @@ public class FormSettings extends AbstractForm
         grid.add(hb_Language, 0, 2);
         grid.add(b_OK, 0, 3);
 
-        b_OK.setOnAction(onConfirm());
+        b_OK.setOnAction(getOnOKBtnAction());
 
         open();
     }
 
+    /* OVERRIDE */
     @Override
     protected void onUserMinimizeRequest()
     {

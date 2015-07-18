@@ -39,7 +39,8 @@ public class FormLogin extends AbstractForm
     private Button        b_Login            = null;
     private Button        b_Register         = null;
 
-    private EventHandler<ActionEvent> onLogin()
+    /* EVENT HANDLERS & CHANGE LISTENERS */
+    private EventHandler<ActionEvent> getOnLoginBtnAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -78,7 +79,7 @@ public class FormLogin extends AbstractForm
         };
     }
 
-    private EventHandler<ActionEvent> onRegister()
+    private EventHandler<ActionEvent> getOnRegisterBtnAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -105,6 +106,28 @@ public class FormLogin extends AbstractForm
         };
     }
 
+    /* PRIVATE ROUTINE */
+    private void reset()
+    {
+        pf_Password.clear();
+        pf_Password.setDisable(false);
+        pf_Password.requestFocus();
+        pf_PasswordConfirm.clear();
+        pf_PasswordConfirm.setVisible(false);
+        b_Register.setVisible(false);
+        l_Warning.setText("");
+    }
+
+    private void init(String password, boolean isNewUser) throws Exceptions
+    {
+        CryptoSystem.init(password, isNewUser);
+        PasswordCollection.init();
+
+        new FormManagePwd();
+        close();
+    }
+
+    /* PUBLIC ROUTINE */
     public FormLogin()
     {
         super(null, TextID.FORM_LOGIN_NAME.toString()); // Login doesn't have
@@ -161,33 +184,14 @@ public class FormLogin extends AbstractForm
         GridPane.setHalignment(b_Register, HPos.LEFT);
 
         // ========== LISTENERS ========== //
-        b_Login.setOnAction(onLogin());
+        b_Login.setOnAction(getOnLoginBtnAction());
 
-        b_Register.setOnAction(onRegister());
+        b_Register.setOnAction(getOnRegisterBtnAction());
 
         open();
     }
 
-    private void reset()
-    {
-        pf_Password.clear();
-        pf_Password.setDisable(false);
-        pf_Password.requestFocus();
-        pf_PasswordConfirm.clear();
-        pf_PasswordConfirm.setVisible(false);
-        b_Register.setVisible(false);
-        l_Warning.setText("");
-    }
-
-    private void init(String password, boolean isNewUser) throws Exceptions
-    {
-        CryptoSystem.init(password, isNewUser);
-        PasswordCollection.init();
-
-        new FormManagePwd();
-        close();
-    }
-
+    /* OVERRIDE */
     @Override
     protected void onUserCloseRequest()
     {

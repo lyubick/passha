@@ -30,10 +30,10 @@ public class FormDeletePwd extends AbstractForm
     private TextField  tf_confirmation  = null;
     private boolean    confirmed        = false;
     private EntryField ef_passwordName  = null;
-
     private String     confirmationText = null;
 
-    private ChangeListener<String> onConfirmationChanged()
+    /* EVENT HANDLERS & CHANGE LISTENERS */
+    private ChangeListener<String> getConfirmationTFListener()
     {
         return new ChangeListener<String>()
         {
@@ -55,7 +55,7 @@ public class FormDeletePwd extends AbstractForm
         };
     }
 
-    private EventHandler<ActionEvent> onConfirm()
+    private EventHandler<ActionEvent> getOnConfirmBtnAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -79,19 +79,19 @@ public class FormDeletePwd extends AbstractForm
         };
     }
 
+    /* PUBLIC ROUTINE */
     public FormDeletePwd(AbstractForm parent)
     {
         super(parent, TextID.FORM_DELETEPWD_NAME.toString());
-        priority = ShowPriority.ALWAYS;
+        priority = WindowPriority.ALWAYS_ON_TOP;
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
 
         confirmationText = new String("DELETE");
         l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
-        l_note =
-                new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
-                        WINDOW.width - 100);
+        l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
+                WINDOW.width - 100);
         l_note.setTextAlignment(TextAlignment.CENTER);
         b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
         l_note.beError();
@@ -105,11 +105,12 @@ public class FormDeletePwd extends AbstractForm
         GridPane.setHalignment(b_Confirm, HPos.CENTER);
         GridPane.setHalignment(tf_confirmation, HPos.CENTER);
 
-        tf_confirmation.textProperty().addListener(onConfirmationChanged());
+        tf_confirmation.textProperty().addListener(getConfirmationTFListener());
 
-        b_Confirm.setOnAction(onConfirm());
+        b_Confirm.setOnAction(getOnConfirmBtnAction());
 
-        grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation, b_Confirm);
+        grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation,
+                b_Confirm);
 
         try
         {
@@ -123,6 +124,7 @@ public class FormDeletePwd extends AbstractForm
         open();
     }
 
+    /* OVERRIDE */
     @Override
     protected void onUserMinimizeRequest()
     {

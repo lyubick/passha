@@ -1,18 +1,11 @@
-/**
- *
- */
 package ui;
 
 import java.io.File;
-
 import db.PasswordCollection;
 import javafx.stage.FileChooser;
 import main.Exceptions;
+import main.Terminator;
 
-/**
- * @author curious-odd-man
- *
- */
 public class DlgExport extends AbstractForm
 {
 
@@ -20,7 +13,6 @@ public class DlgExport extends AbstractForm
     {
         super(parent, ""); // FIXME
 
-        // TODO Auto-generated method stub
         FileChooser fc = new FileChooser();
         File outFile = fc.showSaveDialog(stage);
 
@@ -32,8 +24,7 @@ public class DlgExport extends AbstractForm
             }
             catch (Exceptions e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Terminator.terminate(e);
             }
         }
     }

@@ -1,7 +1,6 @@
 package ui;
 
 import java.util.Vector;
-
 import ui.elements.EntryField;
 import ui.elements.Label;
 import languages.Texts.TextID;
@@ -26,7 +25,8 @@ public class FormShortcuts extends AbstractForm
         public static final int width = 200;
     }
 
-    ChangeListener<Boolean> onFocusChange()
+    /* EVENT HANDLERS & CHANGE LISTENERS */
+    private ChangeListener<Boolean> getFocusedPropertyListner()
     {
         return new ChangeListener<Boolean>()
         {
@@ -39,7 +39,7 @@ public class FormShortcuts extends AbstractForm
         };
     }
 
-    private EventHandler<KeyEvent> onKeyPressed()
+    private EventHandler<KeyEvent> getOnKeyPressed()
     {
         return new EventHandler<KeyEvent>()
         {
@@ -48,9 +48,8 @@ public class FormShortcuts extends AbstractForm
             {
                 try
                 {
-                    PasswordCollection.getInstance().setSelected(
-                            PasswordCollection.getInstance().getPasswordByShortcut(
-                                    keyEvent.getText()));
+                    PasswordCollection.getInstance().setSelected(PasswordCollection.getInstance()
+                            .getPasswordByShortcut(keyEvent.getText()));
 
                     FormManagePwd.copyToClipboard();
 
@@ -65,6 +64,7 @@ public class FormShortcuts extends AbstractForm
         };
     }
 
+    /* PRIVATE ROUTINE */
     private void fillFormWithPwds() throws Exceptions
     {
         Vector<SpecialPassword> tmp = PasswordCollection.getInstance().getPasswordsWithShortcut();
@@ -87,22 +87,23 @@ public class FormShortcuts extends AbstractForm
         grid.getChildren().get(0).requestFocus(); // remove focus from ef
     }
 
-    protected FormShortcuts(AbstractForm parent) throws Exceptions
+    /* PUBLIC ROUTINE */
+    public FormShortcuts(AbstractForm parent) throws Exceptions
     {
         // TODO: background
         super(parent, "");
         stage.initStyle(StageStyle.UNDECORATED);
 
-        stage.focusedProperty().addListener(onFocusChange());
+        stage.focusedProperty().addListener(getFocusedPropertyListner());
 
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, onKeyPressed());
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, getOnKeyPressed());
 
         fillFormWithPwds();
 
         stage.setWidth(WINDOW.width);
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth()
-                - stage.getWidth());
+        stage.setX(
+                primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() - stage.getWidth());
         stage.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight()
                 - stage.getHeight());
 
