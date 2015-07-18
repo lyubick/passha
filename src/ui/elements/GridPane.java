@@ -19,11 +19,19 @@ public class GridPane extends javafx.scene.layout.GridPane
         return nextLine;
     }
 
-    public GridPane addNextEntryField(EntryField fld)
+    public GridPane addHElement(EntryField fld)
     {
         this.add(fld.getLabel(), 0, nextLine);
         this.add(fld, 1, nextLine);
         nextLine++;
+        return this;
+    }
+
+    public GridPane addVElement(ProgressBar pb, Integer columnIndex)
+    {
+        this.add(pb.getLabel(), columnIndex, nextLine++);
+        this.add(pb, columnIndex, nextLine++);
+
         return this;
     }
 }

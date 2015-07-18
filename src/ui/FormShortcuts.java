@@ -79,7 +79,7 @@ public class FormShortcuts extends AbstractForm
             EntryField ef = new EntryField(sp.getName(), 25);
             ef.setEditable(false);
             ef.setText(sp.getShortcut());
-            grid.addNextEntryField(ef);
+            grid.addHElement(ef);
         }
 
         stage.setHeight((tmp.size() + 1) * 40);

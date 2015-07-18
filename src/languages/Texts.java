@@ -77,8 +77,7 @@ public class Texts
         { "Delete", "Удалить" }),
 
         FORM_CREATEPWD_MSG_MISSING_PARAM(new String[]
-        {
-                TextID.COMMON_LABEL_ERROR.toString() + "One or more mandatory fields are missing.",
+        { TextID.COMMON_LABEL_ERROR.toString() + "One or more mandatory fields are missing.",
                 TextID.COMMON_LABEL_ERROR.toString()
                         + "Одно или более обязательных полей не заполнены." }),
 
@@ -98,10 +97,9 @@ public class Texts
         /**************************************************************************************************************
          * DELETE PASSWORD FORM
          *************************************************************************************************************/
-        FORM_DELETEPWD_MSG_NOTE(
-                new String[]
-                { "Enter this text to confirm deletion:",
-                        "Введите этот текст, чтобы подтвердить удаление:" }),
+        FORM_DELETEPWD_MSG_NOTE(new String[]
+        { "Enter this text to confirm deletion:",
+                "Введите этот текст, чтобы подтвердить удаление:" }),
 
         FORM_DELETEPWD_NAME(new String[]
         { "Delete password", "Удалить пароль" }),
@@ -170,11 +168,9 @@ public class Texts
         /**************************************************************************************************************
          * RESET PASSWORD FORM
          *************************************************************************************************************/
-        FORM_RESETPWD_MSG_WARNING(
-                new String[]
-                {
-                        "By pressing \'OK\' you will substitute current Password with the new Password.\n Thus current Password will be permanently lost!",
-                        "Нажав \'OK\' Вы замените текущий Пароль на Новый.\n В результатье текущий Пароль будет безвозвратно утерян!" }),
+        FORM_RESETPWD_MSG_WARNING(new String[]
+        { "By pressing \'OK\' you will substitute current Password with the new Password.\n Thus current Password will be permanently lost!",
+                "Нажав \'OK\' Вы замените текущий Пароль на Новый.\n В результатье текущий Пароль будет безвозвратно утерян!" }),
 
         FORM_RESETPWD_NAME(new String[]
         { "Reset password", "Обновить пароль" }),
@@ -193,6 +189,21 @@ public class Texts
 
         FORM_SETTINGS_NAME(new String[]
         { "Settings", "Настройки" }),
+
+        /**************************************************************************************************************
+         * UPDATE FORM
+         *************************************************************************************************************/
+        FORM_UPDATE_LABEL_CHECK(new String[]
+        { "Searching for available updates...", "Поиск доступных обновлений..." }),
+
+        FORM_UPDATE_LABEL_DOWNLOAD(new String[]
+        { "Downloading updates...", "Загрузка обновлений..." }),
+
+        FORM_UPDATE_LABEL_INSTALL(new String[]
+        { "Installing...", "Установка..." }),
+
+        FORM_UPDATE_LABEL_RESTART(new String[]
+        { "YOUR TEXT HERE", "YOUR TEXT HERE" }), // TODO
 
         /**************************************************************************************************************
          * MENU FORM
@@ -250,5 +261,11 @@ public class Texts
         }
     }
 
-    static String version = "2.2";
+    static private String version = "1.2";
+
+    public static String getVersion()
+    {
+        return version;
+    }
+
 }

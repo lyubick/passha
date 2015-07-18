@@ -9,6 +9,7 @@ import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions.XC;
 import ui.FormLogin;
+import ui.FormUpdate;
 import ui.TrayAgent;
 
 public class Main extends Application
@@ -50,12 +51,15 @@ public class Main extends Application
             TrayAgent.init();
 
             if (info.length() > 0)
-                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR.toString(), info, MessageType.ERROR);
+                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR.toString(), info,
+                        MessageType.ERROR);
         }
         catch (Exceptions e)
         {
             Terminator.terminate(e);
         }
+
+        Logger.printError("THIS MUST NOT PRESENT IN LOGS");
 
         launch();
 
@@ -67,6 +71,6 @@ public class Main extends Application
     {
         Platform.setImplicitExit(false);
 
-        new FormLogin();
+        new FormUpdate(null);
     }
 }

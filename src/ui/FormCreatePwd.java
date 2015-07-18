@@ -329,16 +329,16 @@ public class FormCreatePwd extends AbstractForm
 
         // ========== GRID ========== //
 
-        grid.addNextEntryField(ef_name);
-        grid.addNextEntryField(ef_comment);
-        grid.addNextEntryField(ef_url);
-        grid.addNextEntryField(ef_length);
+        grid.addHElement(ef_name);
+        grid.addHElement(ef_comment);
+        grid.addHElement(ef_url);
+        grid.addHElement(ef_length);
         grid.add(cb_upperCaseChar, TEXT_FIELDS_COLUMN, grid.getNextLine());
         grid.add(cb_specialChars, TEXT_FIELDS_COLUMN, grid.getNextLine() + 1);
         grid.skipLines(2);
-        grid.addNextEntryField(ef_specialChars);
+        grid.addHElement(ef_specialChars);
         grid.add(b_regeneratePassword, LABELS_COLUMN, grid.getNextLine());
-        grid.addNextEntryField(ef_passwordPreview);
+        grid.addHElement(ef_passwordPreview);
 
         GridPane.setHalignment(b_regeneratePassword, HPos.RIGHT);
 

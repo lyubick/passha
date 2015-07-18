@@ -98,8 +98,8 @@ public class FormEditPwd extends AbstractForm
         ef_PwdName.setText(pwd.getName());
         ef_Shortcut.setText(pwd.getShortcut());
 
-        grid.addNextEntryField(ef_PwdName);
-        grid.addNextEntryField(ef_Shortcut);
+        grid.addHElement(ef_PwdName);
+        grid.addHElement(ef_Shortcut);
         grid.add(l_errorLabel, 1, 2);
         grid.add(b_OK, 1, 3);
 

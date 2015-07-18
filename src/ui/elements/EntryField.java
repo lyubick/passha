@@ -7,7 +7,7 @@ public class EntryField extends javafx.scene.control.TextField
 {
     public static final int LABEL_WIDTH = 100;
 
-    private Label           label       = null;
+    private Label label = null;
 
     public EntryField(TextID label, int maxLength)
     {
