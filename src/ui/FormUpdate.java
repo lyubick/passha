@@ -17,7 +17,11 @@ import java.util.zip.ZipFile;
 
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.scene.layout.GridPane;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import languages.Texts;
@@ -26,6 +30,7 @@ import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
+import ui.elements.Button;
 import ui.elements.ProgressBar;
 
 public class FormUpdate extends AbstractForm
@@ -34,7 +39,7 @@ public class FormUpdate extends AbstractForm
     // TODO make WINDOW private when override
     private static final class WINDOW
     {
-        public static final int width  = 300;
+        public static final int width  = 350;
         public static final int height = 150;
     }
 
@@ -45,6 +50,7 @@ public class FormUpdate extends AbstractForm
 
     private File         downloaded                = null;
     private File         executable                = null;
+    private File         newExecutable             = null;
 
     private final String GITHUB_RELEASE_URL        = "https://github.com/lyubick/passha/releases";
     private final String GITHUB_ARCHIVE_URL        = "https://github.com/lyubick/passha/archive/";
@@ -57,7 +63,16 @@ public class FormUpdate extends AbstractForm
 
     private int          BUFFER_SIZE               = 4096;
 
+    private Button       b_update                  = null;
+    private Button       b_skip                    = null;
+
     // ***** GET LATEST VERSION ROUTINE *****//
+    private void skipUpdate()
+    {
+        new FormLogin();
+        close();
+    }
+
     private EventHandler<WorkerStateEvent> getOnUpdateTaskFailed()
     {
         return new EventHandler<WorkerStateEvent>()
@@ -67,11 +82,10 @@ public class FormUpdate extends AbstractForm
             {
                 try
                 {
-                    TrayAgent.getInstance().showNotification("Update", "FAIELD",
-                            MessageType.WARNING);
-
-                    new FormLogin();
-                    close();
+                    TrayAgent.getInstance().showNotification(
+                            TextID.FORM_UPDATE_LABEL_UPDATE.toString(),
+                            TextID.TRAY_MSG_FAILED_TO_UPDATE.toString(), MessageType.WARNING);
+                    skipUpdate();
                 }
                 catch (Exceptions e)
                 {
@@ -93,10 +107,25 @@ public class FormUpdate extends AbstractForm
                 // No update required continue
                 if (currentVersion.equals(latestVersion))
                 {
-                    new FormLogin();
-                    close();
+                    skipUpdate();
                     return;
                 }
+
+                showNotification(latestVersion);
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> getOnUpdateBtnAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                Logger.printDebug("Updating...");
+                b_update.setDisable(true);
+                b_skip.setVisible(false);
 
                 // Download latest
                 Task<Void> tsk_downloadLatestVersion = downloadLatestVersion();
@@ -106,7 +135,20 @@ public class FormUpdate extends AbstractForm
                 pb_progress.rebind(tsk_downloadLatestVersion.progressProperty(),
                         tsk_downloadLatestVersion.messageProperty());
 
+                Logger.printDebug("Launching download thread...");
                 new Thread(tsk_downloadLatestVersion).start();
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> getOnSkipBtnAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                skipUpdate();
             }
         };
     }
@@ -125,6 +167,7 @@ public class FormUpdate extends AbstractForm
                 Task<Void> tsk_installLatestVersion = installLatestVersion();
                 Thread install = new Thread(tsk_installLatestVersion);
                 install.setDaemon(true);
+                Logger.printDebug("install.start();");
                 install.start();
 
                 Terminator.terminate(new Exceptions(XC.END));
@@ -207,6 +250,7 @@ public class FormUpdate extends AbstractForm
             @Override
             protected Void call() throws Exception
             {
+                Logger.printDebug("Downloading...");
                 double maxSize = 0;
                 double curSize = 0;
 
@@ -254,24 +298,19 @@ public class FormUpdate extends AbstractForm
                 }
 
                 updateProgress(1, 1);
-                return null;
-            }
-        };
-    }
+                Logger.printDebug("Download OK.");
 
-    private Task<Void> installLatestVersion()
-    {
-        return new Task<Void>()
-        {
-            @Override
-            protected Void call() throws Exception
-            {
-                executable =
-                        new File(FormUpdate.class.getProtectionDomain().getCodeSource()
-                                .getLocation().toURI().getPath());
+                updateMessage(TextID.FORM_UPDATE_LABEL_INSTALL.toString());
+                updateProgress(0, 1);
 
                 try
                 {
+                    Logger.printDebug("Unzipping...");
+                    newExecutable =
+                            new File(FormUpdate.class.getProtectionDomain().getCodeSource()
+                                    .getLocation().toURI().getPath()
+                                    + "~");
+
                     ZipFile zip = new ZipFile(downloaded);
 
                     Enumeration<?> enu = zip.entries();
@@ -285,17 +324,20 @@ public class FormUpdate extends AbstractForm
                         ;
 
                     InputStream is = zip.getInputStream(entry);
+                    maxSize = entry.getSize();
+                    curSize = 0;
 
-                    // DANGER ZONE
-                    executable.delete();
-
-                    FileOutputStream fos = new FileOutputStream(executable);
+                    FileOutputStream fos = new FileOutputStream(newExecutable);
 
                     byte[] buffer = new byte[BUFFER_SIZE];
                     int len;
 
                     while ((len = is.read(buffer)) > 0)
+                    {
+                        curSize += len;
+                        updateProgress(curSize, maxSize);
                         fos.write(buffer, 0, len);
+                    }
 
                     is.close();
                     fos.close();
@@ -306,6 +348,38 @@ public class FormUpdate extends AbstractForm
                 {
                     Logger.printError("Update failed! Unable to create file! Hello Linux users!");
                     this.failed();
+                }
+
+                updateProgress(1, 1);
+                Logger.printDebug("Unzip OK.");
+
+                return null;
+            }
+        };
+    }
+
+    private Task<Void> installLatestVersion()
+    {
+        return new Task<Void>()
+        {
+            @Override
+            protected Void call() throws Exception
+            {
+                File executable =
+                        new File(FormUpdate.class.getProtectionDomain().getCodeSource()
+                                .getLocation().toURI().getPath());
+
+                File newExecutable =
+                        new File(FormUpdate.class.getProtectionDomain().getCodeSource()
+                                .getLocation().toURI().getPath()
+                                + "~");
+
+                Thread.sleep(20);
+
+                if (executable.delete())
+                {
+                    newExecutable.renameTo(executable);
+                    newExecutable.delete();
                 }
 
                 Terminator.terminate(new Exceptions(XC.RESTART));
@@ -337,24 +411,57 @@ public class FormUpdate extends AbstractForm
 
     }
 
+    private void showNotification(String newVersion)
+    {
+        b_update.setVisible(true);
+        b_skip.setVisible(true);
+        pb_progress.requestFocus();
+        pb_progress.unbind();
+
+        pb_progress.getLabel().setText(
+                TextID.FORM_UPDATE_MSG_UPDATE_AVAILABLE.toString() + " "
+                        + TextID.FORM_UPDATE_LABEL_UPDATE.toString() + " to " + newVersion + " ?");
+    }
+
     public FormUpdate(AbstractForm parent)
     {
-        super(parent, "");
+        super(parent, TextID.FORM_UPDATE_LABEL_UPDATE.toString());
 
-        stage.initStyle(StageStyle.UNDECORATED);
+        b_update = new Button(TextID.FORM_UPDATE_LABEL_UPDATE.toString(), true);
+        b_skip = new Button(TextID.FORM_UPDATE_LABEL_SKIP.toString(), true);
+        b_update.setDefaultButton(true);
+        b_update.setVisible(false);
+        b_skip.setVisible(false);
+
+        pb_progress = new ProgressBar("");
+
+        grid.setAlignment(Pos.CENTER);
+        GridPane.setHalignment(pb_progress, HPos.CENTER);
+        GridPane.setHalignment(b_update, HPos.RIGHT);
+
+        stage.initStyle(StageStyle.UNIFIED);
         stage.centerOnScreen();
 
         stage.setWidth(WINDOW.width);
         stage.setHeight(WINDOW.height);
 
-        pb_progress = new ProgressBar("");
+        pb_progress.setMinSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height * 0.2);
 
         grid.addVElement(pb_progress, 0);
+        grid.add(b_skip, 0);
+        grid.add(b_update, 0);
 
         stage.setOnShown(getOnShown());
 
-        stage.show();
+        b_update.setOnAction(getOnUpdateBtnAction());
+        b_skip.setOnAction(getOnSkipBtnAction());
 
+        stage.show();
+    }
+
+    protected void onUserCloseRequest()
+    {
+        skipUpdate();
     }
 
 }

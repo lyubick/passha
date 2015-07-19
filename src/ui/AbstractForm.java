@@ -39,7 +39,7 @@ public abstract class AbstractForm
 
     protected static final class GAP
     {
-        public static final int H = 10;
+        public static final int H = 20;
         public static final int V = 10;
     };
 
@@ -47,8 +47,8 @@ public abstract class AbstractForm
     {
         public static final int bottom = 10;
         public static final int top    = 10;
-        public static final int right  = 10;
-        public static final int left   = 10;
+        public static final int right  = 20;
+        public static final int left   = 20;
     };
 
     protected static final class WINDOW

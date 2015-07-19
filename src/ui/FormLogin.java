@@ -9,13 +9,13 @@ import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
+import ui.elements.Button;
 import ui.elements.Label;
 import db.PasswordCollection;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.GridPane;
 import ui.FormManagePwd;
@@ -135,8 +135,6 @@ public class FormLogin extends AbstractForm
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
-
-        int gridRowCounter = 0;
 
         // ========== LABELS ========== //
 

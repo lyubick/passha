@@ -12,21 +12,47 @@ public class Button extends javafx.scene.control.Button
 {
     private final class BUTTON
     {
-        public static final int height   = 30;
-        public static final int width    = 80;
-        public static final int xWidth   = 125;
+        public final class WIDTH
+        {
+            public final static int S = 40;
+            public final static int M = 80;
+            public final static int L = 125;
+        }
+
+        public final class HEIGHT
+        {
+            public final static int S = 20;
+            public final static int M = 30;
+        }
+
         public static final int holdTime = 300;
     }
 
     public Button(String name)
     {
-        super(name);
-        setMinWidth(BUTTON.width);
-        setMinHeight(BUTTON.height);
-        if (getWidth() != BUTTON.width) setMinWidth(BUTTON.xWidth);
+        this(name, false);
     }
 
-    public static void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
+    public Button(String name, boolean isSmall)
+    {
+        super(name);
+        if (isSmall)
+        {
+            setMinWidth(BUTTON.WIDTH.S);
+            setMinHeight(BUTTON.HEIGHT.S);
+            if (getWidth() != BUTTON.WIDTH.S) setMinWidth(BUTTON.WIDTH.M);
+        }
+        else
+        {
+            setMinWidth(BUTTON.WIDTH.M);
+            setMinHeight(BUTTON.HEIGHT.M);
+            if (getWidth() != BUTTON.WIDTH.M) setMinWidth(BUTTON.WIDTH.L);
+        }
+
+    }
+
+    public static void setButtonShortcut(final Button btn, KeyCodeCombination cmb)
+            throws Exceptions
     {
         if (btn.getScene() == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
         btn.getScene().getAccelerators().put(cmb, new Runnable()

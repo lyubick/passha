@@ -209,6 +209,15 @@ public class Texts
         FORM_UPDATE_LABEL_RESTART(new String[]
         { "YOUR TEXT HERE", "YOUR TEXT HERE" }), // TODO
 
+        FORM_UPDATE_LABEL_UPDATE(new String[]
+        { "Update", "Обновить" }),
+
+        FORM_UPDATE_LABEL_SKIP(new String[]
+        { "Skip", "Пропустить" }),
+
+        FORM_UPDATE_MSG_UPDATE_AVAILABLE(new String[]
+        { "New version available.", "Доступна новая версия." }),
+
         /**************************************************************************************************************
          * MENU FORM
          *************************************************************************************************************/
@@ -233,6 +242,9 @@ public class Texts
 
         TRAY_MSG_TIME_LEFT(new String[]
         { "Time left", "Времени осталось" }),
+
+        TRAY_MSG_FAILED_TO_UPDATE(new String[]
+        { "Update failed.", "Обновление не удалось." }),
 
         /**************************************************************************************************************
          * TEMPLATE
@@ -265,7 +277,7 @@ public class Texts
         }
     }
 
-    static private String version = "2.2";
+    static private String version = "1.2";
 
     public static String getVersion()
     {
