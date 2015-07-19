@@ -39,7 +39,8 @@ public class FormEditPwd extends AbstractForm
                     SpecialPassword sp =
                             PasswordCollection.getInstance().getPasswordByShortcut(
                                     ef_Shortcut.getText());
-                    if (sp == null)
+                    if (sp == null || ef_Shortcut.getText().equals("")
+                            || sp.getName().equals(pwd.getName()))
                     {
                         pwd.setShortcut(ef_Shortcut.getText());
                         PasswordCollection.getInstance().replacePasword(pwd);
