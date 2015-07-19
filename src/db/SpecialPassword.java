@@ -134,6 +134,13 @@ public class SpecialPassword
         Logger.printDebug("SpecialPassword copy-constructor... DONE!");
     }
 
+    public void setAllOptionalFields(String comment, String url, String shortcut)
+    {
+        setComment(comment);
+        setUrl(url);
+        setShortcut(shortcut);
+    }
+
     public String getName()
     {
         return name;

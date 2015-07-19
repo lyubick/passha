@@ -26,16 +26,16 @@ public abstract class AbstractForm
         ALWAYS_ON_TOP,
     };
 
-    protected AbstractForm         parent = null;
-    protected Vector<AbstractForm> childs = null;
+    protected AbstractForm         parent  = null;
+    protected Vector<AbstractForm> childs  = null;
     protected WindowPriority       priority;
 
-    protected GridPane grid  = null;
-    protected VBox     group = null;
-    protected Scene    scene = null;
-    protected Stage    stage = null;
+    protected GridPane             grid    = null;
+    protected VBox                 group   = null;
+    protected Scene                scene   = null;
+    protected Stage                stage   = null;
 
-    protected MenuBar mb_Main = null;
+    protected MenuBar              mb_Main = null;
 
     protected static final class GAP
     {
@@ -59,10 +59,12 @@ public abstract class AbstractForm
 
     protected static final class TEXTFIELD_WIDTH
     {
-        public static final int S  = 50;
-        public static final int M  = 100;
-        public static final int L  = 200;
-        public static final int XL = 300;
+        public static final int XS  = 25;
+        public static final int S   = 50;
+        public static final int M   = 100;
+        public static final int L   = 200;
+        public static final int XL  = 300;
+        public static final int XXL = 350;
     }
 
     // Method will create reference to this instance in parent instance

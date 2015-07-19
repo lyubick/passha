@@ -14,8 +14,6 @@ import main.Terminator;
 
 public class FormEditPwd extends AbstractForm
 {
-    private final int TEXT_FIELDS_WIDTH = 350;
-
     private final class WINDOW
     {
         public static final int width  = 600;
@@ -38,8 +36,9 @@ public class FormEditPwd extends AbstractForm
             {
                 try
                 {
-                    SpecialPassword sp = PasswordCollection.getInstance()
-                            .getPasswordByShortcut(ef_Shortcut.getText());
+                    SpecialPassword sp =
+                            PasswordCollection.getInstance().getPasswordByShortcut(
+                                    ef_Shortcut.getText());
                     if (sp == null)
                     {
                         pwd.setShortcut(ef_Shortcut.getText());
@@ -62,20 +61,6 @@ public class FormEditPwd extends AbstractForm
         };
     }
 
-    private EventHandler<KeyEvent> getShortcutTFFiler()
-    {
-        return new EventHandler<KeyEvent>()
-        {
-            @Override
-            public void handle(KeyEvent keyEvent)
-            {
-                if ("0123456789".contains(keyEvent.getCharacter()))
-                    ef_Shortcut.setText(keyEvent.getCharacter());
-                keyEvent.consume();
-            }
-        };
-    }
-
     /* PUBLIC ROUTINE */
     public FormEditPwd(AbstractForm parent) throws Exceptions
     {
@@ -88,12 +73,13 @@ public class FormEditPwd extends AbstractForm
 
         pwd = PasswordCollection.getInstance().getSelected();
 
-        ef_PwdName = new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXT_FIELDS_WIDTH);
-        ef_Shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, 25);
+        ef_PwdName = new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXTFIELD_WIDTH.XXL);
+        ef_Shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, TEXTFIELD_WIDTH.XS);
         b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
 
         ef_PwdName.setEditable(false);
-        ef_Shortcut.addEventFilter(KeyEvent.KEY_TYPED, getShortcutTFFiler());
+        ef_Shortcut.addEventFilter(KeyEvent.KEY_TYPED,
+                CommonEventHandlers.getShortcutTFFiler(ef_Shortcut));
 
         ef_PwdName.setText(pwd.getName());
         ef_Shortcut.setText(pwd.getShortcut());
