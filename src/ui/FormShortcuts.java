@@ -1,7 +1,9 @@
 package ui;
 
 import java.util.Vector;
+
 import ui.elements.EntryField;
+import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import languages.Texts.TextID;
 import main.Exceptions;
@@ -48,8 +50,9 @@ public class FormShortcuts extends AbstractForm
             {
                 try
                 {
-                    PasswordCollection.getInstance().setSelected(PasswordCollection.getInstance()
-                            .getPasswordByShortcut(keyEvent.getText()));
+                    PasswordCollection.getInstance().setSelected(
+                            PasswordCollection.getInstance().getPasswordByShortcut(
+                                    keyEvent.getText()));
 
                     FormManagePwd.copyToClipboard();
 
@@ -76,13 +79,13 @@ public class FormShortcuts extends AbstractForm
         grid.setNextLine(1);
         for (SpecialPassword sp : tmp)
         {
-            EntryField ef = new EntryField(sp.getName(), 25);
+            EntryField ef = new EntryField(sp.getName(), TEXTFIELD.WIDTH.XS);
             ef.setEditable(false);
             ef.setText(sp.getShortcut());
             grid.addHElement(ef);
         }
 
-        stage.setHeight((tmp.size() + 1) * 40);
+        stage.setHeight((tmp.size() + 1) * TEXTFIELD.HEIGTH.M);
 
         grid.getChildren().get(0).requestFocus(); // remove focus from ef
     }
@@ -102,8 +105,8 @@ public class FormShortcuts extends AbstractForm
 
         stage.setWidth(WINDOW.width);
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(
-                primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() - stage.getWidth());
+        stage.setX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth()
+                - stage.getWidth());
         stage.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight()
                 - stage.getHeight());
 

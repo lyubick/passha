@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import ui.elements.Button;
 import ui.elements.EntryField;
+import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import languages.Texts.TextID;
 import main.Exceptions;
@@ -17,11 +18,13 @@ public class FormEditPwd extends AbstractForm
     private final class WINDOW
     {
         public static final int width  = 600;
-        public static final int height = 400;
+        public static final int height = 250;
     }
 
-    private EntryField      ef_PwdName   = null;
-    private EntryField      ef_Shortcut  = null;
+    private EntryField      ef_pwdName   = null;
+    private EntryField      ef_comment   = null;
+    private EntryField      ef_url       = null;
+    private EntryField      ef_shortcut  = null;
     private Button          b_OK         = null;
     private SpecialPassword pwd          = null;
     private final Label     l_errorLabel = new Label("");
@@ -38,11 +41,12 @@ public class FormEditPwd extends AbstractForm
                 {
                     SpecialPassword sp =
                             PasswordCollection.getInstance().getPasswordByShortcut(
-                                    ef_Shortcut.getText());
-                    if (sp == null || ef_Shortcut.getText().equals("")
+                                    ef_shortcut.getText());
+                    if (sp == null || ef_shortcut.getText().equals("")
                             || sp.getName().equals(pwd.getName()))
                     {
-                        pwd.setShortcut(ef_Shortcut.getText());
+                        pwd.setAllOptionalFields(ef_comment.getText(), ef_url.getText(),
+                                ef_shortcut.getText());
                         PasswordCollection.getInstance().replacePasword(pwd);
                         close();
                     }
@@ -74,26 +78,33 @@ public class FormEditPwd extends AbstractForm
 
         pwd = PasswordCollection.getInstance().getSelected();
 
-        ef_PwdName = new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXTFIELD_WIDTH.XXL);
-        ef_Shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, TEXTFIELD_WIDTH.XS);
+        ef_pwdName = new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXTFIELD.WIDTH.XXL);
+        ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
+        ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD.WIDTH.XXL);
+        ef_shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, TEXTFIELD.WIDTH.XS);
+
         b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
 
-        ef_PwdName.setEditable(false);
-        ef_Shortcut.addEventFilter(KeyEvent.KEY_TYPED,
-                CommonEventHandlers.getShortcutTFFiler(ef_Shortcut));
+        ef_pwdName.setEditable(false);
+        ef_shortcut.addEventFilter(KeyEvent.KEY_TYPED,
+                CommonEventHandlers.getShortcutTFFiler(ef_shortcut));
 
-        ef_PwdName.setText(pwd.getName());
-        ef_Shortcut.setText(pwd.getShortcut());
+        ef_pwdName.setText(pwd.getName());
+        ef_comment.setText(pwd.getComment());
+        ef_url.setText(pwd.getUrl());
+        ef_shortcut.setText(pwd.getShortcut());
 
-        grid.addHElement(ef_PwdName);
-        grid.addHElement(ef_Shortcut);
-        grid.add(l_errorLabel, 1, 2);
-        grid.add(b_OK, 1, 3);
+        grid.addHElement(ef_pwdName);
+        grid.addHElement(ef_comment);
+        grid.addHElement(ef_url);
+        grid.addHElement(ef_shortcut);
+        grid.addHElement(l_errorLabel, 1);
+        grid.addHElement(b_OK, 1);
 
         b_OK.setOnAction(getOnOKBtnAction());
 
         open();
-        ef_Shortcut.requestFocus();
+        ef_shortcut.requestFocus();
     }
 
     /* OVERRIDE */

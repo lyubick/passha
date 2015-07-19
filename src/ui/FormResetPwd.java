@@ -12,8 +12,10 @@ import main.Exceptions;
 import main.Terminator;
 import ui.elements.Button;
 import ui.elements.EntryField;
+import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.GridPane;
 import ui.elements.Label;
+import ui.elements.Label.LABEL;
 import db.PasswordCollection;
 import db.SpecialPassword;
 
@@ -29,16 +31,16 @@ public class FormResetPwd extends AbstractForm
         public static final int height = 250;
     }
 
-    private final int MAX_WARNING_WIDTH = EntryField.LABEL_WIDTH + TEXTFIELD_WIDTH.L;
+    private final int       MAX_WARNING_WIDTH  = LABEL.WIDTH.M + TEXTFIELD.WIDTH.L;
 
-    private Button     b_OK            = null;
-    private Button     b_Cancel        = null;
-    private Label      l_Warning       = null;
-    private Label      l_Header        = null;
-    private EntryField CurrentPassword = null;
-    private EntryField NewPassword     = null;
+    private Button          b_ok               = null;
+    private Button          b_cancel           = null;
+    private Label           l_warning          = null;
+    private Label           l_header           = null;
+    private EntryField      ef_currentPassword = null;
+    private EntryField      ef_newPassword     = null;
 
-    private SpecialPassword newSp = null;
+    private SpecialPassword newSp              = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
@@ -84,44 +86,45 @@ public class FormResetPwd extends AbstractForm
         stage.setHeight(WINDOW.height);
 
         // ========== LABELS ========== //
-        l_Warning = new Label(TextID.FORM_RESETPWD_MSG_WARNING.toString(), MAX_WARNING_WIDTH);
-        l_Warning.setTextAlignment(TextAlignment.CENTER);
-        GridPane.setHalignment(l_Warning, HPos.CENTER);
+        l_warning = new Label(TextID.FORM_RESETPWD_MSG_WARNING.toString(), MAX_WARNING_WIDTH);
+        l_warning.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setHalignment(l_warning, HPos.CENTER);
 
-        l_Warning.beError();
+        l_warning.beError();
 
-        l_Header = new Label(TextID.FORM_RESETPWD_NAME.toString());
-        GridPane.setHalignment(l_Header, HPos.CENTER);
+        l_header = new Label(TextID.FORM_RESETPWD_NAME.toString());
+        GridPane.setHalignment(l_header, HPos.CENTER);
 
         // ========== BUTTONS ========== //
 
-        b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
-        b_Cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
+        b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
+        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
 
-        GridPane.setHalignment(b_OK, HPos.LEFT);
-        GridPane.setHalignment(b_Cancel, HPos.RIGHT);
+        GridPane.setHalignment(b_ok, HPos.LEFT);
+        GridPane.setHalignment(b_cancel, HPos.RIGHT);
 
-        grid.add(l_Header, 0, 0);
+        grid.add(l_header, 0);
 
-        CurrentPassword = new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT, TEXTFIELD_WIDTH.L);
-        NewPassword = new EntryField(TextID.COMMON_LABEL_NEW, TEXTFIELD_WIDTH.L);
+        ef_currentPassword = new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT, TEXTFIELD.WIDTH.L);
+        ef_newPassword = new EntryField(TextID.COMMON_LABEL_NEW, TEXTFIELD.WIDTH.L);
 
-        CurrentPassword.setEditable(false);
-        NewPassword.setEditable(false);
+        ef_currentPassword.setEditable(false);
+        ef_newPassword.setEditable(false);
 
-        grid.addRow(1, CurrentPassword.getHBoxed());
-        grid.addRow(2, NewPassword.getHBoxed());
+        grid.addRow(1, ef_currentPassword.getHBoxed());
+        grid.addRow(2, ef_newPassword.getHBoxed());
 
-        grid.addRow(3, l_Warning);
-        grid.add(b_OK, 0, 4);
-        grid.add(b_Cancel, 0, 4);
+        grid.addRow(3, l_warning);
+        grid.add(b_ok, 0, 4);
+        grid.add(b_cancel, 0, 4);
 
-        b_OK.setOnAction(getOnOKBtnAction());
-        b_Cancel.setOnAction(getOnCancelBtnAction());
+        b_ok.setOnAction(getOnOKBtnAction());
+        b_cancel.setOnAction(getOnCancelBtnAction());
 
         try
         {
-            CurrentPassword.setText(PasswordCollection.getInstance().getSelected().getPassword());
+            ef_currentPassword
+                    .setText(PasswordCollection.getInstance().getSelected().getPassword());
             newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
         }
         catch (Exceptions e)
@@ -129,7 +132,7 @@ public class FormResetPwd extends AbstractForm
             Terminator.terminate(e);
         }
 
-        NewPassword.setText(newSp.getPassword());
+        ef_newPassword.setText(newSp.getPassword());
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);

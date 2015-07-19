@@ -157,15 +157,15 @@ public class FormLogin extends AbstractForm
 
         // ========== GRID ========== //
 
-        grid.add(l_Header, 0, gridRowCounter++);
+        grid.addHElement(l_Header);
 
-        grid.add(pf_Password, 0, gridRowCounter++);
-        grid.add(pf_PasswordConfirm, 0, gridRowCounter++);
+        grid.addHElement(pf_Password);
+        grid.addHElement(pf_PasswordConfirm);
 
-        grid.add(b_Register, 0, gridRowCounter);
-        grid.add(b_Login, 0, gridRowCounter++);
+        grid.add(b_Register, 0);
+        grid.addHElement(b_Login);
 
-        grid.add(l_Warning, 0, gridRowCounter++);
+        grid.addHElement(l_Warning);
 
         // ========== PROPERTIES ========== //
 

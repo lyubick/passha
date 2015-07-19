@@ -57,16 +57,6 @@ public abstract class AbstractForm
         public static final int height = 650;
     }
 
-    protected static final class TEXTFIELD_WIDTH
-    {
-        public static final int XS  = 25;
-        public static final int S   = 50;
-        public static final int M   = 100;
-        public static final int L   = 200;
-        public static final int XL  = 300;
-        public static final int XXL = 350;
-    }
-
     // Method will create reference to this instance in parent instance
     protected void open()
     {

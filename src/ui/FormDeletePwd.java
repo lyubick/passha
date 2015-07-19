@@ -90,8 +90,9 @@ public class FormDeletePwd extends AbstractForm
 
         confirmationText = new String("DELETE");
         l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
-        l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
-                WINDOW.width - 100);
+        l_note =
+                new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
+                        WINDOW.width - 100);
         l_note.setTextAlignment(TextAlignment.CENTER);
         b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
         l_note.beError();
@@ -109,8 +110,7 @@ public class FormDeletePwd extends AbstractForm
 
         b_Confirm.setOnAction(getOnConfirmBtnAction());
 
-        grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation,
-                b_Confirm);
+        grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation, b_Confirm);
 
         try
         {
@@ -122,6 +122,7 @@ public class FormDeletePwd extends AbstractForm
         }
 
         open();
+        tf_confirmation.requestFocus();
     }
 
     /* OVERRIDE */

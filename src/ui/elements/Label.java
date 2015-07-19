@@ -8,10 +8,21 @@ import javafx.scene.text.FontWeight;
 
 public class Label extends javafx.scene.control.Label
 {
+    public static final class LABEL
+    {
+        public static final class WIDTH
+        {
+            public static final int M = 100;
+            public static final int L = 120;
+        }
+    }
+
     // Magic number don't lose it!
     protected final int  LABEL_LENGTH_COEFICIENT = 8;
 
-    protected final Font FONT_PRIMARY            = Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
+    protected final Font FONT_PRIMARY            =
+                                                         Font.font("Comic Sans MS",
+                                                                 FontWeight.NORMAL, 12);
     protected final Font FONT_ERROR              = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
 
     private void setUp()
@@ -23,7 +34,8 @@ public class Label extends javafx.scene.control.Label
         this.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue)
             {
                 tmp.setMinWidth(newValue.length() * 7);
                 tmp.setMaxWidth(tmp.getMinWidth());

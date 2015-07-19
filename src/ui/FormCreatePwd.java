@@ -7,6 +7,7 @@ import languages.Texts.TextID;
 import main.Exceptions;
 import main.Exceptions.XC;
 import ui.elements.EntryField;
+import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import db.PasswordCollection;
 import db.SpecialPassword;
@@ -304,17 +305,17 @@ public class FormCreatePwd extends AbstractForm
 
         ef_name =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
-                        TEXTFIELD_WIDTH.XL);
-        ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD_WIDTH.XL);
-        ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD_WIDTH.XL);
+                        TEXTFIELD.WIDTH.XXL);
+        ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
+        ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD.WIDTH.XXL);
         ef_length =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
-                        TEXTFIELD_WIDTH.S);
+                        TEXTFIELD.WIDTH.S);
         ef_specialChars =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*",
-                        TEXTFIELD_WIDTH.XL);
-        ef_passwordPreview = new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD, TEXTFIELD_WIDTH.XL);
-        ef_shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, TEXTFIELD_WIDTH.XS);
+                        TEXTFIELD.WIDTH.XXL);
+        ef_passwordPreview = new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD, TEXTFIELD.WIDTH.XXL);
+        ef_shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, TEXTFIELD.WIDTH.XS);
 
         // ========== LABELS ========== //
 
@@ -330,7 +331,7 @@ public class FormCreatePwd extends AbstractForm
         // ========== TEXTS ========== //
 
         ef_specialChars.setText(SPECIAL_CHARACTERS_DEFAULT_SET);
-        ef_passwordPreview.setMinWidth(TEXTFIELD_WIDTH.XL);
+        ef_passwordPreview.setMinWidth(TEXTFIELD.WIDTH.XL);
         ef_passwordPreview.setEditable(false);
 
         // ========== GRID ========== //
@@ -340,17 +341,16 @@ public class FormCreatePwd extends AbstractForm
         grid.addHElement(ef_url);
         grid.addHElement(ef_length);
         grid.addHElement(ef_shortcut);
-        grid.add(cb_upperCaseChar, TEXT_FIELDS_COLUMN, grid.getNextLine());
-        grid.add(cb_specialChars, TEXT_FIELDS_COLUMN, grid.getNextLine() + 1);
-        grid.skipLines(2);
+        grid.addHElement(cb_upperCaseChar, TEXT_FIELDS_COLUMN);
+        grid.addHElement(cb_specialChars, TEXT_FIELDS_COLUMN);
         grid.addHElement(ef_specialChars);
-        grid.add(b_regeneratePassword, LABELS_COLUMN, grid.getNextLine());
-        grid.addHElement(ef_passwordPreview);
+        grid.add(b_regeneratePassword, LABELS_COLUMN);
+        grid.addHElement(ef_passwordPreview, TEXT_FIELDS_COLUMN);
 
         GridPane.setHalignment(b_regeneratePassword, HPos.RIGHT);
 
-        grid.add(buttonsBox, TEXT_FIELDS_COLUMN, grid.getNextLine());
-        grid.add(l_errorLabel, TEXT_FIELDS_COLUMN, grid.getNextLine() + 1);
+        grid.addHElement(buttonsBox, TEXT_FIELDS_COLUMN);
+        grid.addHElement(l_errorLabel, TEXT_FIELDS_COLUMN);
 
         // ========== LISTENERS ========== //
 

@@ -1,5 +1,7 @@
 package ui.elements;
 
+import javafx.scene.Node;
+
 public class GridPane extends javafx.scene.layout.GridPane
 {
     private int nextLine = 0;
@@ -17,6 +19,23 @@ public class GridPane extends javafx.scene.layout.GridPane
     public int getNextLine()
     {
         return nextLine;
+    }
+
+    public void add(Node child, int columnIndex)
+    {
+        super.add(child, columnIndex, nextLine);
+    }
+
+    public GridPane addHElement(Node child, int columnIdx)
+    {
+        this.add(child, columnIdx, nextLine);
+        nextLine++;
+        return this;
+    }
+
+    public GridPane addHElement(Node child)
+    {
+        return addHElement(child, 0);
     }
 
     public GridPane addHElement(EntryField fld)

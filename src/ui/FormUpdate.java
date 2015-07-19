@@ -38,7 +38,7 @@ public class FormUpdate extends AbstractForm
         public static final int height = 150;
     }
 
-    ProgressBar          pb_Progress               = null;
+    ProgressBar          pb_progress               = null;
 
     private String       currentVersion            = null;
     private String       latestVersion             = null;
@@ -103,7 +103,7 @@ public class FormUpdate extends AbstractForm
                 tsk_downloadLatestVersion.setOnSucceeded(getOnDownloadSucceeded());
                 tsk_downloadLatestVersion.setOnFailed(getOnUpdateTaskFailed());
 
-                pb_Progress.rebind(tsk_downloadLatestVersion.progressProperty(),
+                pb_progress.rebind(tsk_downloadLatestVersion.progressProperty(),
                         tsk_downloadLatestVersion.messageProperty());
 
                 new Thread(tsk_downloadLatestVersion).start();
@@ -118,7 +118,7 @@ public class FormUpdate extends AbstractForm
             @Override
             public void handle(WorkerStateEvent event)
             {
-                pb_Progress.unbind();
+                pb_progress.unbind();
                 close();
 
                 // Install latest
@@ -328,7 +328,7 @@ public class FormUpdate extends AbstractForm
                 tsk_LatestVersion.setOnSucceeded(getOnLatestVersionSucceded());
                 tsk_LatestVersion.setOnFailed(getOnUpdateTaskFailed());
 
-                pb_Progress.rebind(tsk_LatestVersion.progressProperty(),
+                pb_progress.rebind(tsk_LatestVersion.progressProperty(),
                         tsk_LatestVersion.messageProperty());
 
                 new Thread(tsk_LatestVersion).start();
@@ -347,9 +347,9 @@ public class FormUpdate extends AbstractForm
         stage.setWidth(WINDOW.width);
         stage.setHeight(WINDOW.height);
 
-        pb_Progress = new ProgressBar("");
+        pb_progress = new ProgressBar("");
 
-        grid.addVElement(pb_Progress, 0);
+        grid.addVElement(pb_progress, 0);
 
         stage.setOnShown(getOnShown());
 

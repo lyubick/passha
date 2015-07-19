@@ -9,7 +9,9 @@ import main.Exceptions.XC;
 import main.Settings;
 import main.Terminator;
 import ui.elements.EntryField;
+import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
+import ui.elements.Label.LABEL;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,17 +29,17 @@ import javafx.scene.text.TextAlignment;
  */
 public class FormSettings extends AbstractForm
 {
-    private EntryField f_Clipboard = null;
+    private EntryField             ef_clipboard = null;
 
-    private HBox             hb_Language = null;
-    private Label            l_Language  = null;
-    private ComboBox<String> cb_Language = null;
+    private HBox                   hb_language  = null;
+    private Label                  l_language   = null;
+    private ComboBox<String>       cb_language  = null;
 
-    private Label l_Header = null;
+    private Label                  l_header     = null;
 
-    private ObservableList<String> langOptions = null;
+    private ObservableList<String> langOptions  = null;
 
-    private Button b_OK = null;
+    private Button                 b_ok         = null;
 
     private final class WINDOW
     {
@@ -56,8 +58,8 @@ public class FormSettings extends AbstractForm
 
                 try
                 {
-                    Settings.getInstance().setLanguage(cb_Language.getValue());
-                    Settings.getInstance().setClipboardLiveTime(f_Clipboard.getText());
+                    Settings.getInstance().setLanguage(cb_language.getValue());
+                    Settings.getInstance().setClipboardLiveTime(ef_clipboard.getText());
                     Settings.getInstance().saveSettings();
 
                     if (Settings.getInstance().isRestartRequired())
@@ -83,50 +85,52 @@ public class FormSettings extends AbstractForm
 
         priority = WindowPriority.ALWAYS_ON_TOP;
 
-        l_Header = new Label(TextID.FORM_SETTINGS_NAME.toString());
-        l_Header.setTextAlignment(TextAlignment.CENTER);
-        GridPane.setHalignment(l_Header, HPos.CENTER);
+        l_header = new Label(TextID.FORM_SETTINGS_NAME.toString());
+        l_header.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setHalignment(l_header, HPos.CENTER);
 
-        langOptions = FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
-                Settings.LANGUAGE.RUSSIAN.name());
+        langOptions =
+                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
+                        Settings.LANGUAGE.RUSSIAN.name());
 
-        l_Language = new Label(TextID.FORM_SETTINGS_LABEL_LANGUAGE.toString());
-        l_Language.setMinWidth(EntryField.LABEL_WIDTH);
+        l_language = new Label(TextID.FORM_SETTINGS_LABEL_LANGUAGE.toString());
+        l_language.setMinWidth(LABEL.WIDTH.M);
 
-        cb_Language = new ComboBox<String>(langOptions);
+        cb_language = new ComboBox<String>(langOptions);
 
         try
         {
-            cb_Language.setValue(langOptions.get(Settings.getInstance().getLanguage()));
+            cb_language.setValue(langOptions.get(Settings.getInstance().getLanguage()));
         }
         catch (Exceptions e)
         {
             Terminator.terminate(e);
         }
 
-        hb_Language = new HBox();
-        hb_Language.getChildren().addAll(l_Language, cb_Language);
+        hb_language = new HBox();
+        hb_language.getChildren().addAll(l_language, cb_language);
 
-        f_Clipboard = new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
-                + TextID.COMMON_LABEL_SECONDS.toString(), TEXTFIELD_WIDTH.S);
+        ef_clipboard =
+                new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
+                        + TextID.COMMON_LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
         try
         {
-            f_Clipboard.setText(
-                    Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+            ef_clipboard.setText(Integer
+                    .toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
         {
             Terminator.terminate(e);
         }
 
-        b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
+        b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
 
-        grid.add(l_Header, 0, 0);
-        grid.add(f_Clipboard.getHBoxed(), 0, 1);
-        grid.add(hb_Language, 0, 2);
-        grid.add(b_OK, 0, 3);
+        grid.addHElement(l_header, 0);
+        grid.addHElement(ef_clipboard.getHBoxed(), 0);
+        grid.addHElement(hb_language, 0);
+        grid.addHElement(b_ok, 0);
 
-        b_OK.setOnAction(getOnOKBtnAction());
+        b_ok.setOnAction(getOnOKBtnAction());
 
         open();
     }
