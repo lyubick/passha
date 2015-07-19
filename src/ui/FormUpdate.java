@@ -38,24 +38,24 @@ public class FormUpdate extends AbstractForm
         public static final int height = 150;
     }
 
-    ProgressBar pb_Progress = null;
+    ProgressBar          pb_Progress               = null;
 
-    private String currentVersion = null;
-    private String latestVersion  = null;
+    private String       currentVersion            = null;
+    private String       latestVersion             = null;
 
-    private File downloaded = null;
-    private File executable = null;
+    private File         downloaded                = null;
+    private File         executable                = null;
 
-    private final String GITHUB_RELEASE_URL = "https://github.com/lyubick/passha/releases";
-    private final String GITHUB_ARCHIVE_URL = "https://github.com/lyubick/passha/archive/";
+    private final String GITHUB_RELEASE_URL        = "https://github.com/lyubick/passha/releases";
+    private final String GITHUB_ARCHIVE_URL        = "https://github.com/lyubick/passha/archive/";
 
-    private final String RELEASE_VERSION_PREFIX   = "/lyubick/passha/tree/";
-    private final String RELEASE_VERSION_TEMPLATE = "v0.0.000";
+    private final String RELEASE_VERSION_PREFIX    = "/lyubick/passha/tree/";
+    private final String RELEASE_VERSION_TEMPLATE  = "v0.0.000";
 
     private final String RELEASE_ARCHIVE_EXTENSION = ".zip";
     private final String RELEASE_EXECUTABLE_NAME   = "pasSHA.jar";
 
-    private int BUFFER_SIZE = 4096;
+    private int          BUFFER_SIZE               = 4096;
 
     // ***** GET LATEST VERSION ROUTINE *****//
     private EventHandler<WorkerStateEvent> getOnUpdateTaskFailed()
@@ -95,6 +95,7 @@ public class FormUpdate extends AbstractForm
                 {
                     new FormLogin();
                     close();
+                    return;
                 }
 
                 // Download latest
@@ -160,10 +161,12 @@ public class FormUpdate extends AbstractForm
 
                         if (latestVersion.contains(RELEASE_VERSION_PREFIX))
                         {
-                            int idx = latestVersion.indexOf(RELEASE_VERSION_PREFIX)
-                                    + RELEASE_VERSION_PREFIX.length();
-                            latestVersion = latestVersion.substring(idx,
-                                    idx + RELEASE_VERSION_TEMPLATE.length());
+                            int idx =
+                                    latestVersion.indexOf(RELEASE_VERSION_PREFIX)
+                                            + RELEASE_VERSION_PREFIX.length();
+                            latestVersion =
+                                    latestVersion.substring(idx,
+                                            idx + RELEASE_VERSION_TEMPLATE.length());
                             // Latest version should be on top always
                             break;
                         }
@@ -263,8 +266,9 @@ public class FormUpdate extends AbstractForm
             @Override
             protected Void call() throws Exception
             {
-                executable = new File(FormUpdate.class.getProtectionDomain().getCodeSource()
-                        .getLocation().toURI().getPath());
+                executable =
+                        new File(FormUpdate.class.getProtectionDomain().getCodeSource()
+                                .getLocation().toURI().getPath());
 
                 try
                 {
@@ -275,8 +279,9 @@ public class FormUpdate extends AbstractForm
                     ZipEntry entry = null;
 
                     // Find executable in archive
-                    while (enu.hasMoreElements() && !(entry = (ZipEntry) enu.nextElement())
-                            .toString().contains(RELEASE_EXECUTABLE_NAME))
+                    while (enu.hasMoreElements()
+                            && !(entry = (ZipEntry) enu.nextElement()).toString().contains(
+                                    RELEASE_EXECUTABLE_NAME))
                         ;
 
                     InputStream is = zip.getInputStream(entry);
