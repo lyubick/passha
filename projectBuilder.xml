@@ -3,7 +3,7 @@
 
 <project name="pasSHA" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant" default="all">
 
-	<buildnumber file="resources\build.version"/>
+	<buildnumber file="dist_resources\build.version"/>
 
 	<!-- Detect correct Operating system and set PATH variables -->
 	<condition property="JDKLIB" value="${java.home}/../jdk${java.version}/lib" else="${java.home}/../lib" >
@@ -14,7 +14,7 @@
 	</condition>
 	
 	<!-- Default build target -->
-	<target name="all">
+	<target name="all" depends="cleanall">
 
 	<path id="fxant">
 		<filelist>
@@ -52,8 +52,9 @@
 		</fx:jar>
 
 		<!-- Release -->
-		<copy file="resources/README.txt" tofile="dist/RESOURCES.txt" />
-		<copy file="resources/GNUGPLv3.txt" tofile="dist/GNUGPLv3.txt" />
+		<copy file="dist_resources/README.txt" tofile="dist/README.txt" />
+		<copy file="dist_resources/GNUGPLv3.txt" tofile="dist/GNUGPLv3.txt" />
+		<copy file="dist_resources/updater.bat" tofile="dist/updater.bat" />
 	</target>
 	
 	<target name="cleanall">
