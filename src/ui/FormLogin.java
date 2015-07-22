@@ -26,12 +26,6 @@ import ui.FormManagePwd;
  */
 public class FormLogin extends AbstractForm
 {
-    private final class WINDOW
-    {
-        public static final int width  = 350;
-        public static final int height = 200;
-    }
-
     private Label         l_Header           = null;
     private Label         l_Warning          = null;
     private PasswordField pf_Password        = null;
@@ -133,9 +127,6 @@ public class FormLogin extends AbstractForm
         super(null, TextID.FORM_LOGIN_NAME.toString()); // Login doesn't have
                                                         // parents :(
 
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
         // ========== LABELS ========== //
 
         l_Header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ":");
@@ -167,7 +158,7 @@ public class FormLogin extends AbstractForm
 
         // ========== PROPERTIES ========== //
 
-        pf_Password.setMinWidth(WINDOW.width - 50);
+        pf_Password.setMinWidth(300); // FIXME
         pf_Password.setPromptText(TextID.FORM_LOGIN_LABEL_PASSWORD.toString());
 
         pf_PasswordConfirm.setPromptText(TextID.FORM_LOGIN_LABEL_RETYPE.toString());
@@ -185,6 +176,8 @@ public class FormLogin extends AbstractForm
         b_Login.setOnAction(getOnLoginBtnAction());
 
         b_Register.setOnAction(getOnRegisterBtnAction());
+
+        autoSize();
 
         open();
     }

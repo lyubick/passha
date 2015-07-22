@@ -25,22 +25,16 @@ import db.SpecialPassword;
  */
 public class FormResetPwd extends AbstractForm
 {
-    private final class WINDOW
-    {
-        public static final int width  = 350;
-        public static final int height = 250;
-    }
+    private final int MAX_WARNING_WIDTH = LABEL.WIDTH.M + TEXTFIELD.WIDTH.L;
 
-    private final int       MAX_WARNING_WIDTH  = LABEL.WIDTH.M + TEXTFIELD.WIDTH.L;
+    private Button     b_ok               = null;
+    private Button     b_cancel           = null;
+    private Label      l_warning          = null;
+    private Label      l_header           = null;
+    private EntryField ef_currentPassword = null;
+    private EntryField ef_newPassword     = null;
 
-    private Button          b_ok               = null;
-    private Button          b_cancel           = null;
-    private Label           l_warning          = null;
-    private Label           l_header           = null;
-    private EntryField      ef_currentPassword = null;
-    private EntryField      ef_newPassword     = null;
-
-    private SpecialPassword newSp              = null;
+    private SpecialPassword newSp = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
@@ -81,9 +75,6 @@ public class FormResetPwd extends AbstractForm
     {
         super(parent, TextID.FORM_RESETPWD_NAME.toString());
         priority = WindowPriority.ALWAYS_ON_TOP;
-
-        stage.setWidth(WINDOW.width);
-        stage.setHeight(WINDOW.height);
 
         // ========== LABELS ========== //
         l_warning = new Label(TextID.FORM_RESETPWD_MSG_WARNING.toString(), MAX_WARNING_WIDTH);
@@ -134,9 +125,7 @@ public class FormResetPwd extends AbstractForm
 
         ef_newPassword.setText(newSp.getPassword());
 
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
+        autoSize();
         open();
     }
 

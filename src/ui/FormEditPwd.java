@@ -15,12 +15,6 @@ import main.Terminator;
 
 public class FormEditPwd extends AbstractForm
 {
-    private final class WINDOW
-    {
-        public static final int width  = 600;
-        public static final int height = 250;
-    }
-
     private EntryField      ef_pwdName   = null;
     private EntryField      ef_comment   = null;
     private EntryField      ef_url       = null;
@@ -39,9 +33,8 @@ public class FormEditPwd extends AbstractForm
             {
                 try
                 {
-                    SpecialPassword sp =
-                            PasswordCollection.getInstance().getPasswordByShortcut(
-                                    ef_shortcut.getText());
+                    SpecialPassword sp = PasswordCollection.getInstance()
+                            .getPasswordByShortcut(ef_shortcut.getText());
                     if (sp == null || ef_shortcut.getText().equals("")
                             || sp.getName().equals(pwd.getName()))
                     {
@@ -73,9 +66,6 @@ public class FormEditPwd extends AbstractForm
 
         priority = WindowPriority.ALWAYS_ON_TOP;
 
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
         pwd = PasswordCollection.getInstance().getSelected();
 
         ef_pwdName = new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXTFIELD.WIDTH.XXL);
@@ -103,6 +93,7 @@ public class FormEditPwd extends AbstractForm
 
         b_OK.setOnAction(getOnOKBtnAction());
 
+        autoSize();
         open();
         ef_shortcut.requestFocus();
     }

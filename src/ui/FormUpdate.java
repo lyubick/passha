@@ -36,13 +36,6 @@ import ui.elements.ProgressBar;
 public class FormUpdate extends AbstractForm
 {
 
-    // TODO make WINDOW private when override
-    private static final class WINDOW
-    {
-        public static final int width  = 350;
-        public static final int height = 150;
-    }
-
     ProgressBar pb_progress = null;
 
     private String currentVersion = null;
@@ -425,10 +418,7 @@ public class FormUpdate extends AbstractForm
         stage.initStyle(StageStyle.UNIFIED);
         stage.centerOnScreen();
 
-        stage.setWidth(WINDOW.width);
-        stage.setHeight(WINDOW.height);
-
-        pb_progress.setMinSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height * 0.2);
+        pb_progress.setMinSize(300 - PADDING.left - PADDING.right, 150 * 0.2);
 
         grid.addVElement(pb_progress, 0);
         grid.add(b_skip, 0);
@@ -439,6 +429,7 @@ public class FormUpdate extends AbstractForm
         b_update.setOnAction(getOnUpdateBtnAction());
         b_skip.setOnAction(getOnSkipBtnAction());
 
+        autoSize();
         stage.show();
     }
 

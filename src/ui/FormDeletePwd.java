@@ -18,12 +18,6 @@ import main.Terminator;
 
 public class FormDeletePwd extends AbstractForm
 {
-    private final class WINDOW
-    {
-        public static final int width  = 350;
-        public static final int height = 250;
-    }
-
     private Button     b_Confirm        = null;
     private Label      l_note           = null;
     private Label      l_Header         = null;
@@ -85,20 +79,16 @@ public class FormDeletePwd extends AbstractForm
         super(parent, TextID.FORM_DELETEPWD_NAME.toString());
         priority = WindowPriority.ALWAYS_ON_TOP;
 
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
         confirmationText = new String("DELETE");
         l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
-        l_note =
-                new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
-                        WINDOW.width - 100);
+        l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
+                300); // FIXME
         l_note.setTextAlignment(TextAlignment.CENTER);
         b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
         l_note.beError();
         tf_confirmation = new TextField();
-        tf_confirmation.setMaxWidth(WINDOW.width - 100);
-        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, WINDOW.width - 200);
+        tf_confirmation.setMaxWidth(300); // FIXME
+        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, 200); // FIXME
         ef_passwordName.setEditable(false);
 
         GridPane.setHalignment(l_Header, HPos.CENTER);
@@ -110,7 +100,8 @@ public class FormDeletePwd extends AbstractForm
 
         b_Confirm.setOnAction(getOnConfirmBtnAction());
 
-        grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation, b_Confirm);
+        grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation,
+                b_Confirm);
 
         try
         {
@@ -121,6 +112,7 @@ public class FormDeletePwd extends AbstractForm
             Terminator.terminate(e);
         }
 
+        autoSize();
         open();
         tf_confirmation.requestFocus();
     }

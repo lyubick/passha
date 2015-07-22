@@ -22,11 +22,6 @@ import main.Terminator;
 public class FormShortcuts extends AbstractForm
 {
 
-    private final class WINDOW
-    {
-        public static final int width = 200;
-    }
-
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private ChangeListener<Boolean> getFocusedPropertyListner()
     {
@@ -50,9 +45,8 @@ public class FormShortcuts extends AbstractForm
             {
                 try
                 {
-                    PasswordCollection.getInstance().setSelected(
-                            PasswordCollection.getInstance().getPasswordByShortcut(
-                                    keyEvent.getText()));
+                    PasswordCollection.getInstance().setSelected(PasswordCollection.getInstance()
+                            .getPasswordByShortcut(keyEvent.getText()));
 
                     FormManagePwd.copyToClipboard();
 
@@ -85,8 +79,6 @@ public class FormShortcuts extends AbstractForm
             grid.addHElement(ef);
         }
 
-        stage.setHeight((tmp.size() + 1) * TEXTFIELD.HEIGTH.M);
-
         grid.getChildren().get(0).requestFocus(); // remove focus from ef
     }
 
@@ -103,10 +95,11 @@ public class FormShortcuts extends AbstractForm
 
         fillFormWithPwds();
 
-        stage.setWidth(WINDOW.width);
+        autoSize();
+
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth()
-                - stage.getWidth());
+        stage.setX(
+                primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() - stage.getWidth());
         stage.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight()
                 - stage.getHeight());
 

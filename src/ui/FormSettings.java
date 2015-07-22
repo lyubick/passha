@@ -29,23 +29,17 @@ import javafx.scene.text.TextAlignment;
  */
 public class FormSettings extends AbstractForm
 {
-    private EntryField             ef_clipboard = null;
+    private EntryField ef_clipboard = null;
 
-    private HBox                   hb_language  = null;
-    private Label                  l_language   = null;
-    private ComboBox<String>       cb_language  = null;
+    private HBox             hb_language = null;
+    private Label            l_language  = null;
+    private ComboBox<String> cb_language = null;
 
-    private Label                  l_header     = null;
+    private Label l_header = null;
 
-    private ObservableList<String> langOptions  = null;
+    private ObservableList<String> langOptions = null;
 
-    private Button                 b_ok         = null;
-
-    private final class WINDOW
-    {
-        public static final int width  = 300;
-        public static final int height = 200;
-    }
+    private Button b_ok = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
@@ -80,18 +74,14 @@ public class FormSettings extends AbstractForm
     {
         super(parent, TextID.FORM_SETTINGS_NAME.toString());
 
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
         priority = WindowPriority.ALWAYS_ON_TOP;
 
         l_header = new Label(TextID.FORM_SETTINGS_NAME.toString());
         l_header.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_header, HPos.CENTER);
 
-        langOptions =
-                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
-                        Settings.LANGUAGE.RUSSIAN.name());
+        langOptions = FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
+                Settings.LANGUAGE.RUSSIAN.name());
 
         l_language = new Label(TextID.FORM_SETTINGS_LABEL_LANGUAGE.toString());
         l_language.setMinWidth(LABEL.WIDTH.M);
@@ -110,13 +100,12 @@ public class FormSettings extends AbstractForm
         hb_language = new HBox();
         hb_language.getChildren().addAll(l_language, cb_language);
 
-        ef_clipboard =
-                new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
-                        + TextID.COMMON_LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
+        ef_clipboard = new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
+                + TextID.COMMON_LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
         try
         {
-            ef_clipboard.setText(Integer
-                    .toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+            ef_clipboard.setText(
+                    Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
         {
@@ -132,6 +121,7 @@ public class FormSettings extends AbstractForm
 
         b_ok.setOnAction(getOnOKBtnAction());
 
+        autoSize();
         open();
     }
 
