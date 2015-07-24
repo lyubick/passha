@@ -6,6 +6,7 @@ package ui;
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Exceptions.XC;
+import ui.elements.Button;
 import ui.elements.EntryField;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
@@ -17,7 +18,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -45,9 +45,9 @@ public class FormCreatePwd extends AbstractForm
 
     private final Label l_errorLabel = new Label("");
 
-    private Button b_OK                 = null;
-    private Button b_cancel             = null;
-    private Button b_regeneratePassword = null;
+    private Button                      b_OK                 = null;
+    private Button                      b_cancel             = null;
+    private javafx.scene.control.Button b_regeneratePassword = null; // FIXME
 
     private CheckBox cb_specialChars  = null;
     private CheckBox cb_upperCaseChar = null;
@@ -276,7 +276,7 @@ public class FormCreatePwd extends AbstractForm
         ImageView imgView = new ImageView(
                 new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
         imgView.setStyle("-fx-background-color:transparent");
-        b_regeneratePassword = new Button("", imgView);
+        b_regeneratePassword = new javafx.scene.control.Button("", imgView);
         b_regeneratePassword.setMaxSize(27, 24);
 
         buttonsBox = new HBox();

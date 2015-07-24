@@ -28,11 +28,7 @@ public class EntryField extends javafx.scene.control.TextField
 
     public EntryField(TextID label, int maxLength)
     {
-        this.label = new Label(label.toString());
-        this.label.setMinWidth(LABEL.WIDTH.L);
-
-        this.setMaxWidth(maxLength);
-        this.setMinWidth(maxLength);
+        this(label.toString(), maxLength);
     }
 
     public EntryField(String label, int maxLength)
@@ -42,6 +38,8 @@ public class EntryField extends javafx.scene.control.TextField
 
         this.setMaxWidth(maxLength);
         this.setMinWidth(maxLength);
+        this.setMinHeight(LABEL.HEIGHT.M);
+        this.setMaxHeight(LABEL.HEIGHT.M);
     }
 
     public Label getLabel()
@@ -51,7 +49,14 @@ public class EntryField extends javafx.scene.control.TextField
 
     public HBox getHBoxed()
     {
-        return new HBox(label, this);
+        HBox hBox = new HBox(label, this);
+
+        hBox.setMinWidth(label.getMinWidth() + this.getMinWidth());
+        hBox.setMinHeight(LABEL.HEIGHT.M);
+        hBox.setMaxWidth(label.getMaxWidth() + this.getMaxWidth());
+        hBox.setMaxHeight(LABEL.HEIGHT.M);
+
+        return hBox;
     }
 
     public void beError()

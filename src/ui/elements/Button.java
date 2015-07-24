@@ -7,22 +7,30 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.util.Duration;
 import main.Exceptions;
 import main.Exceptions.XC;
+import ui.elements.Button.BUTTON.SIZE;
 
 public class Button extends javafx.scene.control.Button
 {
-    private final class BUTTON
+    public static final class BUTTON
     {
-        public final class WIDTH
+        public static final class WIDTH
         {
             public final static int S = 40;
             public final static int M = 80;
             public final static int L = 125;
         }
 
-        public final class HEIGHT
+        public static final class HEIGHT
         {
             public final static int S = 20;
             public final static int M = 30;
+        }
+
+        public enum SIZE
+        {
+            S,
+            M,
+            L
         }
 
         public static final int holdTime = 300;
@@ -30,29 +38,49 @@ public class Button extends javafx.scene.control.Button
 
     public Button(String name)
     {
-        this(name, false);
+        this(name, BUTTON.WIDTH.M, BUTTON.HEIGHT.M);
     }
 
-    public Button(String name, boolean isSmall)
+    public Button(String name, SIZE size)
     {
         super(name);
-        if (isSmall)
+
+        double height = 0, width = 0;
+
+        switch (size)
         {
-            setMinWidth(BUTTON.WIDTH.S);
-            setMinHeight(BUTTON.HEIGHT.S);
-            if (getWidth() != BUTTON.WIDTH.S) setMinWidth(BUTTON.WIDTH.M);
-        }
-        else
-        {
-            setMinWidth(BUTTON.WIDTH.M);
-            setMinHeight(BUTTON.HEIGHT.M);
-            if (getWidth() != BUTTON.WIDTH.M) setMinWidth(BUTTON.WIDTH.L);
+            case S:
+                width = BUTTON.WIDTH.S;
+                height = BUTTON.HEIGHT.S;
+                break;
+            case M:
+                width = BUTTON.WIDTH.M;
+                height = BUTTON.HEIGHT.M;
+                break;
+            case L:
+                width = BUTTON.WIDTH.L;
+                height = BUTTON.HEIGHT.M;
+            default:
+                break;
         }
 
+        setMinWidth(width);
+        setMinHeight(height);
+        setMaxWidth(width);
+        setMaxHeight(height);
     }
 
-    public static void setButtonShortcut(final Button btn, KeyCodeCombination cmb)
-            throws Exceptions
+    public Button(String name, double width, double height)
+    {
+        super(name);
+
+        setMinWidth(width);
+        setMinHeight(height);
+        setMaxWidth(width);
+        setMaxHeight(height);
+    }
+
+    public static void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
     {
         if (btn.getScene() == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
         btn.getScene().getAccelerators().put(cmb, new Runnable()

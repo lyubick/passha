@@ -51,10 +51,10 @@ public abstract class AbstractForm
 
     protected static final class PADDING
     {
-        public static final int bottom = 10;
+        public static final int bottom = 20;
         public static final int top    = 10;
         public static final int right  = 20;
-        public static final int left   = 20;
+        public static final int left   = 10;
     };
 
     // Method will create reference to this instance in parent instance
@@ -254,11 +254,12 @@ public abstract class AbstractForm
 
             if (height < 0) height = 30; // default
 
-            hMap.put(vKey, width + hMap.getOrDefault(vKey, (double) 0));
-            vMap.put(hKey, height + vMap.getOrDefault(hKey, (double) 0));
+            hMap.put(vKey, hMap.getOrDefault(vKey, (double) 0) + width);
+            vMap.put(hKey, vMap.getOrDefault(hKey, (double) 0) + height);
 
-            Logger.printDebug("Examing " + child.getClass().getName() + ". On Row: " + vKey
-                    + " in Column: " + hKey + ". Width: " + width + " Height: " + height);
+            Logger.printDebug("ROW: " + vKey + " COL: " + hKey + ". EXAMING: "
+                    + child.getClass().getSimpleName() + "[" + child.getClass().getName() + "]."
+                    + ". WIDTH: " + width + " HEIGHT: " + height);
         }
 
         double hMax = 0, vMax = 0;
@@ -269,10 +270,21 @@ public abstract class AbstractForm
         for (double cur : vMap.values())
             vMax = Math.max(cur, vMax);
 
-        grid.setMinWidth(hMax + PADDING.left + PADDING.right);
+        int rowCount = 1;
+        for (int key : hMap.keySet())
+            rowCount = Math.max(rowCount, key);
+
+        int colCount = 1;
+        for (int key : vMap.keySet())
+            colCount = Math.max(colCount, key);
+
+        hMax += PADDING.left + PADDING.right + GAP.H * colCount;
+        vMax += PADDING.top + PADDING.bottom + GAP.V * rowCount;
+
+        grid.setMinWidth(hMax);
         grid.setMaxWidth(grid.getMinWidth());
 
-        grid.setMinHeight(vMax + PADDING.top + PADDING.bottom);
+        grid.setMinHeight(vMax);
         grid.setMaxHeight(grid.getMinHeight());
 
         stage.setWidth(grid.getMinWidth());
@@ -283,6 +295,7 @@ public abstract class AbstractForm
         stage.setMinHeight(stage.getHeight());
         stage.setMaxHeight(stage.getHeight());
 
-        Logger.printDebug("Autoresize completed. Width: " + hMax + ", Height: " + vMax + ".");
+        Logger.printDebug("Autoresize completed. Width: " + hMax + ", Height: " + vMax
+                + ". Form is: " + (colCount + 1) + "x" + (rowCount + 1));
     }
 }

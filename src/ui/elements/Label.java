@@ -15,19 +15,24 @@ public class Label extends javafx.scene.control.Label
             public static final int M = 100;
             public static final int L = 120;
         }
+
+        public static final class HEIGHT
+        {
+            public static final int M = 30;
+        }
     }
 
     // Magic number don't lose it!
-    protected final int  LABEL_LENGTH_COEFICIENT = 8;
+    protected final int LABEL_LENGTH_COEFICIENT = 8;
 
-    protected final Font FONT_PRIMARY            =
-                                                         Font.font("Comic Sans MS",
-                                                                 FontWeight.NORMAL, 12);
-    protected final Font FONT_ERROR              = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
+    protected final Font FONT_PRIMARY = Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
+    protected final Font FONT_ERROR   = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
 
     private void setUp()
     {
         this.beNormal();
+        this.setMinHeight(LABEL.HEIGHT.M);
+        this.setMaxHeight(LABEL.HEIGHT.M);
 
         Label tmp = this;
 

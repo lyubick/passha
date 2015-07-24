@@ -31,6 +31,7 @@ import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.elements.Button;
+import ui.elements.Button.BUTTON;
 import ui.elements.ProgressBar;
 
 public class FormUpdate extends AbstractForm
@@ -403,13 +404,15 @@ public class FormUpdate extends AbstractForm
     {
         super(parent, TextID.FORM_UPDATE_LABEL_UPDATE.toString());
 
-        b_update = new Button(TextID.FORM_UPDATE_LABEL_UPDATE.toString(), true);
-        b_skip = new Button(TextID.FORM_UPDATE_LABEL_SKIP.toString(), true);
+        b_update = new Button(TextID.FORM_UPDATE_LABEL_UPDATE.toString(), BUTTON.WIDTH.S,
+                BUTTON.HEIGHT.S);
+        b_skip = new Button(TextID.FORM_UPDATE_LABEL_SKIP.toString(), BUTTON.WIDTH.S,
+                BUTTON.HEIGHT.S);
         b_update.setDefaultButton(true);
         b_update.setVisible(false);
         b_skip.setVisible(false);
 
-        pb_progress = new ProgressBar("");
+        pb_progress = new ProgressBar("", 300, 30);
 
         grid.setAlignment(Pos.CENTER);
         GridPane.setHalignment(pb_progress, HPos.CENTER);
@@ -417,8 +420,6 @@ public class FormUpdate extends AbstractForm
 
         stage.initStyle(StageStyle.UNIFIED);
         stage.centerOnScreen();
-
-        pb_progress.setMinSize(300 - PADDING.left - PADDING.right, 150 * 0.2);
 
         grid.addVElement(pb_progress, 0);
         grid.add(b_skip, 0);
