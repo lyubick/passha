@@ -4,7 +4,6 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.scene.layout.VBox;
 import languages.Texts.TextID;
-import ui.elements.Label.LABEL;
 
 public class ProgressBar extends javafx.scene.control.ProgressBar
 {
@@ -18,9 +17,6 @@ public class ProgressBar extends javafx.scene.control.ProgressBar
     public ProgressBar(String label, double width, double height)
     {
         this.label = new Label(label);
-
-        this.label.setMinWidth(LABEL.WIDTH.M);
-        this.label.setMaxWidth(LABEL.WIDTH.M);
 
         this.setMinWidth(width);
         this.setMinHeight(height);

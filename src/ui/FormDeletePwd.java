@@ -22,6 +22,7 @@ public class FormDeletePwd extends AbstractForm
     private Button     b_Confirm        = null;
     private Label      l_note           = null;
     private Label      l_Header         = null;
+    private Label      l_deleteWord     = null;
     private TextField  tf_confirmation  = null;
     private boolean    confirmed        = false;
     private EntryField ef_passwordName  = null;
@@ -80,10 +81,14 @@ public class FormDeletePwd extends AbstractForm
         super(parent, TextID.FORM_DELETEPWD_NAME.toString());
         priority = WindowPriority.ALWAYS_ON_TOP;
 
-        confirmationText = new String("DELETE");
+        confirmationText = new String("DELETE"); // TODO complete this US
         l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
-        l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
-                TEXTFIELD.WIDTH.XL);
+
+        l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString());
+        l_deleteWord = new Label(confirmationText);
+
+        l_deleteWord.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setHalignment(l_deleteWord, HPos.CENTER);
 
         l_note.setTextAlignment(TextAlignment.CENTER); // FIXME
         GridPane.setHalignment(l_note, HPos.CENTER);

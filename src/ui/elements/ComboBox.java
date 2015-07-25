@@ -3,7 +3,7 @@ package ui.elements;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.HBox;
 import languages.Texts.TextID;
-import ui.elements.Label.LABEL;
+import ui.AbstractForm.STANDARD;
 
 public class ComboBox extends javafx.scene.control.ComboBox<String>
 {
@@ -18,13 +18,11 @@ public class ComboBox extends javafx.scene.control.ComboBox<String>
     {
         super(list);
         this.label = new Label(label);
-        this.label.setMinWidth(LABEL.WIDTH.L);
-        this.label.setMaxHeight(LABEL.WIDTH.L);
 
         this.setMaxWidth(maxLength);
         this.setMinWidth(maxLength);
-        this.setMinHeight(LABEL.HEIGHT.M);
-        this.setMaxHeight(LABEL.HEIGHT.M);
+        this.setMinHeight(STANDARD.SIZE.HEIGHT);
+        this.setMaxHeight(STANDARD.SIZE.HEIGHT);
     }
 
     public Label getLabel()
@@ -37,9 +35,9 @@ public class ComboBox extends javafx.scene.control.ComboBox<String>
         HBox hBox = new HBox(label, this);
 
         hBox.setMinWidth(label.getMinWidth() + this.getMinWidth());
-        hBox.setMinHeight(LABEL.HEIGHT.M);
+        hBox.setMinHeight(STANDARD.SIZE.HEIGHT);
         hBox.setMaxWidth(label.getMaxWidth() + this.getMaxWidth());
-        hBox.setMaxHeight(LABEL.HEIGHT.M);
+        hBox.setMaxHeight(STANDARD.SIZE.HEIGHT);
 
         return hBox;
     }

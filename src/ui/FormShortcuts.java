@@ -17,7 +17,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.geometry.VPos;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Screen;
 import javafx.stage.StageStyle;
@@ -71,13 +70,14 @@ public class FormShortcuts extends AbstractForm
         Vector<SpecialPassword> tmp = PasswordCollection.getInstance().getPasswordsWithShortcut();
         if (tmp.size() == 0) throw new Exceptions(XC.NO_SHORTCUTS_EXISTS);
 
-        grid.add(new Label(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString()), 0, 0);
-        grid.add(new Label(TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString()), 1, 0);
+        Label l_passwordName = new Label(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME);
+        Label l_shortcut = new Label(TextID.FORM_EDITPWD_LABEL_SHORTCUT);
 
-        GridPane.setHalignment(grid.getChildren().get(0), HPos.CENTER);
-        GridPane.setHalignment(grid.getChildren().get(1), HPos.CENTER);
+        GridPane.setHalignment(l_passwordName, HPos.CENTER);
+        GridPane.setHalignment(l_shortcut, HPos.CENTER);
 
-        grid.setNextLine(1);
+        grid.addHElements(0, l_passwordName, l_shortcut);
+
         for (SpecialPassword sp : tmp)
         {
             EntryField ef = new EntryField(sp.getName(), TEXTFIELD.WIDTH.XS);
@@ -86,9 +86,6 @@ public class FormShortcuts extends AbstractForm
             grid.addHElement(ef);
 
             ef.getLabel().setAlignment(Pos.CENTER);
-
-            GridPane.setHalignment(ef, HPos.CENTER);
-            GridPane.setValignment(ef, VPos.CENTER);
         }
 
         grid.getChildren().get(0).requestFocus(); // remove focus from ef
@@ -99,7 +96,7 @@ public class FormShortcuts extends AbstractForm
     {
         // TODO: background
         super(parent, "");
-        stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.UNIFIED);
 
         stage.focusedProperty().addListener(getFocusedPropertyListner());
 

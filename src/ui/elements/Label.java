@@ -5,37 +5,29 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import languages.Texts.TextID;
+import logger.Logger;
+import ui.AbstractForm.STANDARD;
 
 public class Label extends javafx.scene.control.Label
 {
-    public static final class LABEL
-    {
-        public static final class WIDTH
-        {
-            public static final int M = 100;
-            public static final int L = 120;
-        }
-
-        public static final class HEIGHT
-        {
-            public static final int M = 30; // FIXME
-        }
-    }
-
     // Magic number don't lose it!
     protected final static int LABEL_LENGTH_COEFICIENT = 8;
 
-    protected final Font FONT_PRIMARY = Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
-    protected final Font FONT_ERROR   = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
+    protected static final Font FONT_PRIMARY = Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
+    protected static final Font FONT_ERROR   = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
 
     private void setUp()
     {
         this.beNormal();
-        this.setMinWidth(LABEL.WIDTH.M);
-        this.setMaxWidth(LABEL.WIDTH.M);
-        this.setMinHeight(LABEL.HEIGHT.M);
-        this.setMaxHeight(LABEL.HEIGHT.M);
+
+        if (!this.getText().isEmpty())
+            this.setWidth(calcLength(this.getText()));
+        else
+            this.setWidth(STANDARD.SIZE.WIDTH);
+
+        this.setHeight(STANDARD.SIZE.HEIGHT);
 
         Label tmp = this;
 
@@ -45,8 +37,7 @@ public class Label extends javafx.scene.control.Label
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                     String newValue)
             {
-                tmp.setMinWidth(newValue.length() * 7);
-                tmp.setMaxWidth(tmp.getMinWidth());
+                tmp.setWidth(calcLength(newValue));
             }
         });
     }
@@ -57,13 +48,15 @@ public class Label extends javafx.scene.control.Label
         this.setUp();
     }
 
+    public Label(TextID name)
+    {
+        this(name.toString());
+    }
+
     public Label(String name)
     {
         super(name);
         this.setUp();
-
-        this.setMinWidth(name.length() * LABEL_LENGTH_COEFICIENT);
-        this.setMaxWidth(this.getMinWidth());
     }
 
     public Label(String name, int wrapped)
@@ -71,11 +64,8 @@ public class Label extends javafx.scene.control.Label
         super(name);
         this.setUp();
 
-        this.setMinWidth(wrapped);
-        this.setMaxWidth(this.getMinWidth());
-
-        this.setMinHeight(Math.ceil(calcLength(name) / wrapped) * (LABEL.HEIGHT.M - 10));
-        this.setMaxHeight(Math.ceil(calcLength(name) / wrapped) * (LABEL.HEIGHT.M - 10));
+        this.setWidth(wrapped);
+        this.setHeight(Math.ceil(calcLength(name) / wrapped) * STANDARD.SIZE.HEIGHT);
 
         this.setWrapText(true);
     }
@@ -99,6 +89,27 @@ public class Label extends javafx.scene.control.Label
 
     public static double calcLength(String name)
     {
-        return name.length() * LABEL_LENGTH_COEFICIENT;
+        Text tmp = new Text(name);
+        tmp.setFont(FONT_PRIMARY);
+
+        Logger.printDebug("CALCUALTING LENGTH: " + tmp.getLayoutBounds().getWidth());
+
+        return tmp.getLayoutBounds().getWidth();
+    }
+
+    @Override
+    public void setWidth(double width)
+    {
+        super.setWidth(width);
+        setMinWidth(width);
+        setMaxWidth(width);
+    }
+
+    @Override
+    public void setHeight(double height)
+    {
+        super.setHeight(height);
+        setMinHeight(height);
+        setMaxHeight(height);
     }
 }

@@ -10,7 +10,6 @@ import ui.elements.Button;
 import ui.elements.EntryField;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
-import ui.elements.Label.LABEL;
 import db.PasswordCollection;
 import db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
@@ -269,6 +268,10 @@ public class FormCreatePwd extends AbstractForm
 
         b_OK = new Button(TextID.FORM_CREATEPWD_LABEL_CREATE.toString());
         b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
+
+        GridPane.setHalignment(b_OK, HPos.LEFT);
+        GridPane.setHalignment(b_cancel, HPos.RIGHT);
+
         ImageView imgView = new ImageView(
                 new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
         imgView.setStyle("-fx-background-color:transparent");
@@ -302,15 +305,15 @@ public class FormCreatePwd extends AbstractForm
 
         double tmp = Label.calcLength(cb_specialChars.getText());
         cb_upperCaseChar.setMinWidth(tmp + 10);
-        cb_upperCaseChar.setMinHeight(LABEL.HEIGHT.M);
+        cb_upperCaseChar.setMinHeight(STANDARD.SIZE.HEIGHT);
         cb_upperCaseChar.setMaxWidth(tmp);
-        cb_upperCaseChar.setMaxHeight(LABEL.HEIGHT.M);
+        cb_upperCaseChar.setMaxHeight(STANDARD.SIZE.HEIGHT);
 
         tmp = Label.calcLength(cb_upperCaseChar.getText());
         cb_specialChars.setMinWidth(tmp + 10);
-        cb_specialChars.setMinHeight(LABEL.HEIGHT.M);
+        cb_specialChars.setMinHeight(STANDARD.SIZE.HEIGHT);
         cb_specialChars.setMaxWidth(tmp);
-        cb_specialChars.setMaxHeight(LABEL.HEIGHT.M);
+        cb_specialChars.setMaxHeight(STANDARD.SIZE.HEIGHT);
 
         // ========== TEXTS ========== //
 

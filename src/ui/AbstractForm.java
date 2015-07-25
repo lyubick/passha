@@ -56,6 +56,15 @@ public abstract class AbstractForm
         public static final int left   = 10;
     };
 
+    public static final class STANDARD
+    {
+        public static final class SIZE
+        {
+            public static final double WIDTH  = 300.0;
+            public static final double HEIGHT = 30.0;
+        }
+    };
+
     // Method will create reference to this instance in parent instance
     protected void open()
     {
@@ -306,6 +315,9 @@ public abstract class AbstractForm
 
         hMax += PADDING.left + PADDING.right + GAP.H * colCount - GAP.H;
         vMax += PADDING.top + PADDING.bottom + GAP.V * rowCount - GAP.V;
+
+        hMax = Math.ceil(hMax);
+        vMax = Math.ceil(vMax);
 
         grid.setMinWidth(hMax);
         grid.setMinHeight(vMax);

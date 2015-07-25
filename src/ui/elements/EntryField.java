@@ -1,8 +1,8 @@
 package ui.elements;
 
-import ui.elements.Label.LABEL;
 import javafx.scene.layout.HBox;
 import languages.Texts.TextID;
+import ui.AbstractForm.STANDARD;
 
 public class EntryField extends javafx.scene.control.TextField
 {
@@ -34,12 +34,11 @@ public class EntryField extends javafx.scene.control.TextField
     public EntryField(String label, int maxLength)
     {
         this.label = new Label(label);
-        this.label.setMinWidth(LABEL.WIDTH.L);
 
         this.setMaxWidth(maxLength);
         this.setMinWidth(maxLength);
-        this.setMinHeight(LABEL.HEIGHT.M);
-        this.setMaxHeight(LABEL.HEIGHT.M);
+        this.setMinHeight(STANDARD.SIZE.HEIGHT);
+        this.setMaxHeight(STANDARD.SIZE.HEIGHT);
     }
 
     public Label getLabel()
@@ -52,9 +51,9 @@ public class EntryField extends javafx.scene.control.TextField
         HBox hBox = new HBox(label, this);
 
         hBox.setMinWidth(label.getMinWidth() + this.getMinWidth());
-        hBox.setMinHeight(LABEL.HEIGHT.M);
+        hBox.setMinHeight(STANDARD.SIZE.HEIGHT);
         hBox.setMaxWidth(label.getMaxWidth() + this.getMaxWidth());
-        hBox.setMaxHeight(LABEL.HEIGHT.M);
+        hBox.setMaxHeight(STANDARD.SIZE.HEIGHT);
 
         return hBox;
     }

@@ -15,7 +15,6 @@ import ui.elements.EntryField;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.GridPane;
 import ui.elements.Label;
-import ui.elements.Label.LABEL;
 import db.PasswordCollection;
 import db.SpecialPassword;
 
@@ -25,8 +24,6 @@ import db.SpecialPassword;
  */
 public class FormResetPwd extends AbstractForm
 {
-    private final int MAX_WARNING_WIDTH = LABEL.WIDTH.M + TEXTFIELD.WIDTH.L;
-
     private Button     b_ok               = null;
     private Button     b_cancel           = null;
     private Label      l_warning          = null;
@@ -77,7 +74,7 @@ public class FormResetPwd extends AbstractForm
         priority = WindowPriority.ALWAYS_ON_TOP;
 
         // ========== LABELS ========== //
-        l_warning = new Label(TextID.FORM_RESETPWD_MSG_WARNING.toString(), MAX_WARNING_WIDTH);
+        l_warning = new Label(TextID.FORM_RESETPWD_MSG_WARNING.toString(), TEXTFIELD.WIDTH.XXL);
         l_warning.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_warning, HPos.CENTER);
 
