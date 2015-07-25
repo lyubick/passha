@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import ui.elements.EntryField;
 import ui.elements.GridPane;
+import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import languages.Texts.TextID;
@@ -48,8 +49,9 @@ public class FormShortcuts extends AbstractForm
             {
                 try
                 {
-                    PasswordCollection.getInstance().setSelected(PasswordCollection.getInstance()
-                            .getPasswordByShortcut(keyEvent.getText()));
+                    PasswordCollection.getInstance().setSelected(
+                            PasswordCollection.getInstance().getPasswordByShortcut(
+                                    keyEvent.getText()));
 
                     FormManagePwd.copyToClipboard();
 
@@ -83,7 +85,7 @@ public class FormShortcuts extends AbstractForm
             EntryField ef = new EntryField(sp.getName(), TEXTFIELD.WIDTH.XS);
             ef.setEditable(false);
             ef.setText(sp.getShortcut());
-            grid.addHElement(ef);
+            grid.addHElement((LabeledItem) ef);
 
             ef.getLabel().setAlignment(Pos.CENTER);
         }
@@ -96,7 +98,7 @@ public class FormShortcuts extends AbstractForm
     {
         // TODO: background
         super(parent, "");
-        stage.initStyle(StageStyle.UNIFIED);
+        stage.initStyle(StageStyle.UNDECORATED);
 
         stage.focusedProperty().addListener(getFocusedPropertyListner());
 

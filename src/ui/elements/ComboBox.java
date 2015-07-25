@@ -1,11 +1,10 @@
 package ui.elements;
 
 import javafx.collections.ObservableList;
-import javafx.scene.layout.HBox;
 import languages.Texts.TextID;
 import ui.AbstractForm.STANDARD;
 
-public class ComboBox extends javafx.scene.control.ComboBox<String>
+public class ComboBox extends javafx.scene.control.ComboBox<String> implements LabeledItem
 {
     private Label label = null;
 
@@ -30,15 +29,15 @@ public class ComboBox extends javafx.scene.control.ComboBox<String>
         return label;
     }
 
-    public HBox getHBoxed()
+    @Override
+    public void beError()
     {
-        HBox hBox = new HBox(label, this);
+        label.beError();
+    }
 
-        hBox.setMinWidth(label.getMinWidth() + this.getMinWidth());
-        hBox.setMinHeight(STANDARD.SIZE.HEIGHT);
-        hBox.setMaxWidth(label.getMaxWidth() + this.getMaxWidth());
-        hBox.setMaxHeight(STANDARD.SIZE.HEIGHT);
-
-        return hBox;
+    @Override
+    public void beNormal()
+    {
+        label.beNormal();
     }
 }

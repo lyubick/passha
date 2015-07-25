@@ -33,6 +33,13 @@ public class GridPane extends javafx.scene.layout.GridPane
         return this;
     }
 
+    public GridPane addHElement(Node child, int columnIdx, int columnSpawn)
+    {
+        this.add(child, columnIdx, nextLine, columnSpawn, 1);
+        nextLine++;
+        return this;
+    }
+
     public GridPane addHElement(Node child)
     {
         return addHElement(child, 0);
@@ -48,10 +55,10 @@ public class GridPane extends javafx.scene.layout.GridPane
         return this;
     }
 
-    public GridPane addHElement(EntryField fld)
+    public GridPane addHElement(LabeledItem fld)
     {
         this.add(fld.getLabel(), 0, nextLine);
-        this.add(fld, 1, nextLine);
+        this.add(fld.getSelf(), 1, nextLine);
         nextLine++;
         return this;
     }

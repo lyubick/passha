@@ -13,10 +13,12 @@ import ui.AbstractForm.STANDARD;
 public class Label extends javafx.scene.control.Label
 {
     // Magic number don't lose it!
-    protected final static int LABEL_LENGTH_COEFICIENT = 8;
+    protected final static int  LABEL_LENGTH_COEFICIENT = 8;
 
-    protected static final Font FONT_PRIMARY = Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
-    protected static final Font FONT_ERROR   = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
+    protected static final Font FONT_PRIMARY            = Font.font("Comic Sans MS",
+                                                                FontWeight.NORMAL, 12);
+    protected static final Font FONT_ERROR              = Font.font("Comic Sans MS",
+                                                                FontWeight.BOLD, 12);
 
     private void setUp()
     {
@@ -90,7 +92,7 @@ public class Label extends javafx.scene.control.Label
     public static double calcLength(String name)
     {
         Text tmp = new Text(name);
-        tmp.setFont(FONT_PRIMARY);
+        tmp.setFont(FONT_ERROR);
 
         Logger.printDebug("CALCUALTING LENGTH: " + tmp.getLayoutBounds().getWidth());
 

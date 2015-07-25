@@ -11,6 +11,7 @@ import main.Terminator;
 import ui.elements.Button;
 import ui.elements.ComboBox;
 import ui.elements.EntryField;
+import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import javafx.collections.FXCollections;
@@ -27,15 +28,12 @@ import javafx.scene.text.TextAlignment;
  */
 public class FormSettings extends AbstractForm
 {
-    private EntryField ef_clipboard = null;
+    private EntryField             ef_clipboard = null;
+    private ComboBox               cb_language  = null;
+    private Label                  l_header     = null;
+    private Button                 b_ok         = null;
 
-    private ComboBox cb_language = null;
-
-    private Label l_header = null;
-
-    private ObservableList<String> langOptions = null;
-
-    private Button b_ok = null;
+    private ObservableList<String> langOptions  = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
@@ -76,8 +74,9 @@ public class FormSettings extends AbstractForm
         l_header.setTextAlignment(TextAlignment.CENTER);
         GridPane.setHalignment(l_header, HPos.CENTER);
 
-        langOptions = FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
-                Settings.LANGUAGE.RUSSIAN.name());
+        langOptions =
+                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
+                        Settings.LANGUAGE.RUSSIAN.name());
 
         cb_language = new ComboBox(langOptions, TextID.FORM_SETTINGS_LABEL_LANGUAGE, 100); // FIXME
 
@@ -90,12 +89,13 @@ public class FormSettings extends AbstractForm
             Terminator.terminate(e);
         }
 
-        ef_clipboard = new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
-                + TextID.COMMON_LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
+        ef_clipboard =
+                new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
+                        + TextID.COMMON_LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
         try
         {
-            ef_clipboard.setText(
-                    Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+            ef_clipboard.setText(Integer
+                    .toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
         {
@@ -104,10 +104,10 @@ public class FormSettings extends AbstractForm
 
         b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
 
-        grid.addHElement(l_header, 0);
-        grid.addHElement(ef_clipboard.getHBoxed(), 0);
-        grid.addHElement(cb_language.getHBoxed(), 0);
-        grid.addHElement(b_ok, 0);
+        grid.addHElement(l_header, 0, 2);
+        grid.addHElement((LabeledItem) ef_clipboard);
+        grid.addHElement((LabeledItem) cb_language);
+        grid.addHElement(b_ok, 0, 2);
 
         b_ok.setOnAction(getOnOKBtnAction());
 

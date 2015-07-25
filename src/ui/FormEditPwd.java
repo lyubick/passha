@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import ui.elements.Button;
 import ui.elements.EntryField;
+import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import languages.Texts.TextID;
@@ -33,8 +34,9 @@ public class FormEditPwd extends AbstractForm
             {
                 try
                 {
-                    SpecialPassword sp = PasswordCollection.getInstance()
-                            .getPasswordByShortcut(ef_shortcut.getText());
+                    SpecialPassword sp =
+                            PasswordCollection.getInstance().getPasswordByShortcut(
+                                    ef_shortcut.getText());
                     if (sp == null || ef_shortcut.getText().equals("")
                             || sp.getName().equals(pwd.getName()))
                     {
@@ -85,10 +87,10 @@ public class FormEditPwd extends AbstractForm
         ef_url.setText(pwd.getUrl());
         ef_shortcut.setText(pwd.getShortcut());
 
-        grid.addHElement(ef_pwdName);
-        grid.addHElement(ef_comment);
-        grid.addHElement(ef_url);
-        grid.addHElement(ef_shortcut);
+        grid.addHElement((LabeledItem) ef_pwdName);
+        grid.addHElement((LabeledItem) ef_comment);
+        grid.addHElement((LabeledItem) ef_url);
+        grid.addHElement((LabeledItem) ef_shortcut);
         grid.addHElement(l_errorLabel, 1);
         grid.addHElement(b_OK, 1);
 

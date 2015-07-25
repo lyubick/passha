@@ -4,7 +4,7 @@ import javafx.scene.layout.HBox;
 import languages.Texts.TextID;
 import ui.AbstractForm.STANDARD;
 
-public class EntryField extends javafx.scene.control.TextField
+public class EntryField extends javafx.scene.control.TextField implements LabeledItem
 {
     public static final class TEXTFIELD
     {

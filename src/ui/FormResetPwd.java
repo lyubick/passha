@@ -12,6 +12,7 @@ import main.Exceptions;
 import main.Terminator;
 import ui.elements.Button;
 import ui.elements.EntryField;
+import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.GridPane;
 import ui.elements.Label;
@@ -24,14 +25,14 @@ import db.SpecialPassword;
  */
 public class FormResetPwd extends AbstractForm
 {
-    private Button     b_ok               = null;
-    private Button     b_cancel           = null;
-    private Label      l_warning          = null;
-    private Label      l_header           = null;
-    private EntryField ef_currentPassword = null;
-    private EntryField ef_newPassword     = null;
+    private Button          b_ok               = null;
+    private Button          b_cancel           = null;
+    private Label           l_warning          = null;
+    private Label           l_header           = null;
+    private EntryField      ef_currentPassword = null;
+    private EntryField      ef_newPassword     = null;
 
-    private SpecialPassword newSp = null;
+    private SpecialPassword newSp              = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
@@ -73,25 +74,10 @@ public class FormResetPwd extends AbstractForm
         super(parent, TextID.FORM_RESETPWD_NAME.toString());
         priority = WindowPriority.ALWAYS_ON_TOP;
 
-        // ========== LABELS ========== //
-        l_warning = new Label(TextID.FORM_RESETPWD_MSG_WARNING.toString(), TEXTFIELD.WIDTH.XXL);
-        l_warning.setTextAlignment(TextAlignment.CENTER);
-        GridPane.setHalignment(l_warning, HPos.CENTER);
-
-        l_warning.beError();
-
-        l_header = new Label(TextID.FORM_RESETPWD_NAME.toString());
-        GridPane.setHalignment(l_header, HPos.CENTER);
-
         // ========== BUTTONS ========== //
 
         b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
         b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
-
-        GridPane.setHalignment(b_ok, HPos.LEFT);
-        GridPane.setHalignment(b_cancel, HPos.RIGHT);
-
-        grid.add(l_header, 0);
 
         ef_currentPassword = new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT, TEXTFIELD.WIDTH.L);
         ef_newPassword = new EntryField(TextID.COMMON_LABEL_NEW, TEXTFIELD.WIDTH.L);
@@ -99,12 +85,25 @@ public class FormResetPwd extends AbstractForm
         ef_currentPassword.setEditable(false);
         ef_newPassword.setEditable(false);
 
-        grid.addRow(1, ef_currentPassword.getHBoxed());
-        grid.addRow(2, ef_newPassword.getHBoxed());
+        // ========== LABELS ========== //
+        l_warning = new Label(TextID.FORM_RESETPWD_MSG_WARNING.toString(), TEXTFIELD.WIDTH.XL);
+        l_warning.setTextAlignment(TextAlignment.CENTER);
+        l_warning.beError();
 
-        grid.addRow(3, l_warning);
-        grid.add(b_ok, 0, 4);
-        grid.add(b_cancel, 0, 4);
+        l_header = new Label(TextID.FORM_RESETPWD_NAME.toString());
+
+        GridPane.setHalignment(l_warning, HPos.CENTER);
+        GridPane.setHalignment(l_header, HPos.CENTER);
+        GridPane.setHalignment(ef_currentPassword, HPos.RIGHT);
+        GridPane.setHalignment(ef_newPassword, HPos.RIGHT);
+        GridPane.setHalignment(b_ok, HPos.LEFT);
+        GridPane.setHalignment(b_cancel, HPos.RIGHT);
+
+        grid.addHElement(l_header, 0, 2);
+        grid.addHElement((LabeledItem) ef_currentPassword);
+        grid.addHElement((LabeledItem) ef_newPassword);
+        grid.addHElement(l_warning, 0, 2);
+        grid.addHElements(0, b_ok, b_cancel);
 
         b_ok.setOnAction(getOnOKBtnAction());
         b_cancel.setOnAction(getOnCancelBtnAction());

@@ -5,6 +5,7 @@ import ui.elements.Button;
 import ui.elements.EntryField;
 import ui.elements.GridPane;
 import ui.elements.Label;
+import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -88,16 +89,16 @@ public class FormDeletePwd extends AbstractForm
         l_deleteWord = new Label(confirmationText);
 
         l_deleteWord.setTextAlignment(TextAlignment.CENTER);
-        GridPane.setHalignment(l_deleteWord, HPos.CENTER);
+        l_note.setTextAlignment(TextAlignment.CENTER);
 
-        l_note.setTextAlignment(TextAlignment.CENTER); // FIXME
-        GridPane.setHalignment(l_note, HPos.CENTER);
+        l_note.beError();
+        l_deleteWord.beError();
 
         b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
-        l_note.beError();
+
         tf_confirmation = new TextField();
-        tf_confirmation.setMaxWidth(TEXTFIELD.WIDTH.XL);
-        tf_confirmation.setMinWidth(TEXTFIELD.WIDTH.XL);
+        tf_confirmation.setMaxWidth(TEXTFIELD.WIDTH.L);
+        tf_confirmation.setMinWidth(TEXTFIELD.WIDTH.L);
         tf_confirmation.setMinHeight(TEXTFIELD.HEIGTH.M);
         tf_confirmation.setMaxHeight(TEXTFIELD.HEIGTH.M);
         ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, TEXTFIELD.WIDTH.L);
@@ -105,6 +106,7 @@ public class FormDeletePwd extends AbstractForm
 
         GridPane.setHalignment(l_Header, HPos.CENTER);
         GridPane.setHalignment(l_note, HPos.CENTER);
+        GridPane.setHalignment(l_deleteWord, HPos.CENTER);
         GridPane.setHalignment(b_Confirm, HPos.CENTER);
         GridPane.setHalignment(tf_confirmation, HPos.CENTER);
 
@@ -112,8 +114,12 @@ public class FormDeletePwd extends AbstractForm
 
         b_Confirm.setOnAction(getOnConfirmBtnAction());
 
-        grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation,
-                b_Confirm);
+        grid.addHElement(l_Header, 0, 2);
+        grid.addHElement((LabeledItem) ef_passwordName);
+        grid.addHElement(l_note, 0, 2);
+        grid.addHElement(l_deleteWord, 0, 2);
+        grid.addHElement(tf_confirmation, 0, 2);
+        grid.addHElement(b_Confirm, 0, 2);
 
         try
         {
