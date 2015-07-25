@@ -20,7 +20,7 @@ public class EntryField extends javafx.scene.control.TextField
 
         public static final class HEIGTH
         {
-            public static final int M = 40;
+            public static final int M = 30;
         }
     }
 

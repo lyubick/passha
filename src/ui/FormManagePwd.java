@@ -30,7 +30,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -44,7 +43,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.WindowEvent;
 
 /**
@@ -401,14 +399,9 @@ public class FormManagePwd extends AbstractForm
             }
         });
 
-        // ========== STATUS ========== //
-        HBox statusBar = new HBox();
-
-        statusBar.setAlignment(Pos.BOTTOM_RIGHT);
-
         // ========== REFRESH ========== //
         group.getChildren().remove(grid);
-        group.getChildren().addAll(mb_Main, grid, statusBar);
+        group.getChildren().addAll(mb_Main, grid);
 
         // ========== HRENJ ========== //
         pi_PWDLifeTime = new ProgressIndicator(0);

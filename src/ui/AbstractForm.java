@@ -15,7 +15,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -45,15 +44,15 @@ public abstract class AbstractForm
 
     protected static final class GAP
     {
-        public static final int H = 20;
+        public static final int H = 10;
         public static final int V = 10;
     };
 
     protected static final class PADDING
     {
-        public static final int bottom = 20;
+        public static final int bottom = 10;
         public static final int top    = 10;
-        public static final int right  = 20;
+        public static final int right  = 10;
         public static final int left   = 10;
     };
 
@@ -62,6 +61,11 @@ public abstract class AbstractForm
     {
         if (parent != null) parent.childs.add(this);
         stage.show();
+
+        Logger.printDebug("OPEN! Grid W: " + grid.getWidth() + " H: " + grid.getHeight());
+        Logger.printDebug("OPEN! Group W: " + group.getWidth() + " H: " + group.getHeight());
+        Logger.printDebug("OPEN! Scene W: " + scene.getWidth() + " H: " + scene.getHeight());
+        Logger.printDebug("OPEN! Stage W: " + stage.getWidth() + " H: " + stage.getHeight());
     }
 
     // Method will delete references to this from parent instance
@@ -203,15 +207,22 @@ public abstract class AbstractForm
         childs = new Vector<AbstractForm>();
 
         grid = new GridPane();
+
         grid.setHgap(GAP.H);
         grid.setVgap(GAP.V);
-        grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
+
         grid.setAlignment(Pos.CENTER);
+        grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
+
+        grid.setGridLinesVisible(true); // TODO: make it somehow automatically
 
         group = new VBox();
         group.getChildren().addAll(grid);
 
-        scene = new Scene(group, 0, 0);
+        group.setAlignment(Pos.CENTER);
+        group.setPadding(new Insets(0, 0, 0, 0));
+
+        scene = new Scene(group);
 
         stage = new Stage(StageStyle.UNIFIED);
         stage.setScene(scene);
@@ -224,6 +235,8 @@ public abstract class AbstractForm
         stage.setOnCloseRequest(getOnCloseRequest());
         stage.iconifiedProperty().addListener(getIconifiedPropertyListener());
         stage.focusedProperty().addListener(getFocusedPropertyListener());
+
+        stage.centerOnScreen();
     }
 
     protected void autoSize()
@@ -244,22 +257,35 @@ public abstract class AbstractForm
             }
             catch (java.lang.ClassCastException e)
             {
-                HBox ctrl = (HBox) child; // FIXME
-                width = Math.max(ctrl.getMinWidth(), ctrl.getMaxWidth());
-                height = Math.max(ctrl.getMinHeight(), ctrl.getMaxHeight());
+                javafx.scene.layout.Pane ctrl = null;
+
+                try
+                {
+                    ctrl = (javafx.scene.layout.Pane) child; // FIXME
+                    width = Math.max(ctrl.getMinWidth(), ctrl.getMaxWidth());
+                    height = Math.max(ctrl.getMinHeight(), ctrl.getMaxHeight());
+                }
+                catch (java.lang.ClassCastException e1)
+                {
+                    Logger.printError("Unknown Element: " + child.getClass().getName());
+                    continue;
+                }
+
             }
 
             int vKey = GridPane.getRowIndex((Node) child);
             int hKey = GridPane.getColumnIndex((Node) child);
 
-            if (height < 0) height = 30; // default
-
             hMap.put(vKey, hMap.getOrDefault(vKey, (double) 0) + width);
             vMap.put(hKey, vMap.getOrDefault(hKey, (double) 0) + height);
 
-            Logger.printDebug("ROW: " + vKey + " COL: " + hKey + ". EXAMING: "
-                    + child.getClass().getSimpleName() + "[" + child.getClass().getName() + "]."
-                    + ". WIDTH: " + width + " HEIGHT: " + height);
+            String log = "ROW: " + vKey + " COL: " + hKey + " EL: "
+                    + child.getClass().getSimpleName() + "[" + child.getClass().getName() + "]"
+                    + " W: " + width + " H: " + height;
+            if (Math.min(height, width) > 0)
+                Logger.printDebug(log);
+            else
+                Logger.printError(log);
         }
 
         double hMax = 0, vMax = 0;
@@ -278,22 +304,20 @@ public abstract class AbstractForm
         for (int key : vMap.keySet())
             colCount = Math.max(colCount, key);
 
-        hMax += PADDING.left + PADDING.right + GAP.H * colCount;
-        vMax += PADDING.top + PADDING.bottom + GAP.V * rowCount;
+        hMax += PADDING.left + PADDING.right + GAP.H * colCount - GAP.H;
+        vMax += PADDING.top + PADDING.bottom + GAP.V * rowCount - GAP.V;
 
         grid.setMinWidth(hMax);
-        grid.setMaxWidth(grid.getMinWidth());
-
         grid.setMinHeight(vMax);
-        grid.setMaxHeight(grid.getMinHeight());
+        grid.setMaxWidth(hMax);
+        grid.setMaxHeight(vMax);
 
-        stage.setWidth(grid.getMinWidth());
-        stage.setMinWidth(stage.getWidth());
-        stage.setMaxWidth(stage.getWidth());
+        group.setMinWidth(grid.getMinWidth());
+        group.setMinHeight(grid.getMinHeight());
+        group.setMaxWidth(grid.getMaxWidth());
+        group.setMaxHeight(grid.getMaxHeight());
 
-        stage.setHeight(grid.getMinHeight());
-        stage.setMinHeight(stage.getHeight());
-        stage.setMaxHeight(stage.getHeight());
+        stage.sizeToScene();
 
         Logger.printDebug("Autoresize completed. Width: " + hMax + ", Height: " + vMax
                 + ". Form is: " + (colCount + 1) + "x" + (rowCount + 1));

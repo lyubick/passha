@@ -3,6 +3,7 @@ package ui;
 import java.util.Vector;
 
 import ui.elements.EntryField;
+import ui.elements.GridPane;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import languages.Texts.TextID;
@@ -13,7 +14,10 @@ import db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.geometry.VPos;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Screen;
 import javafx.stage.StageStyle;
@@ -70,6 +74,9 @@ public class FormShortcuts extends AbstractForm
         grid.add(new Label(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString()), 0, 0);
         grid.add(new Label(TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString()), 1, 0);
 
+        GridPane.setHalignment(grid.getChildren().get(0), HPos.CENTER);
+        GridPane.setHalignment(grid.getChildren().get(1), HPos.CENTER);
+
         grid.setNextLine(1);
         for (SpecialPassword sp : tmp)
         {
@@ -77,6 +84,11 @@ public class FormShortcuts extends AbstractForm
             ef.setEditable(false);
             ef.setText(sp.getShortcut());
             grid.addHElement(ef);
+
+            ef.getLabel().setAlignment(Pos.CENTER);
+
+            GridPane.setHalignment(ef, HPos.CENTER);
+            GridPane.setValignment(ef, VPos.CENTER);
         }
 
         grid.getChildren().get(0).requestFocus(); // remove focus from ef
@@ -97,11 +109,10 @@ public class FormShortcuts extends AbstractForm
 
         autoSize();
 
-        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(
-                primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() - stage.getWidth());
-        stage.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight()
-                - stage.getHeight());
+        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+
+        stage.setX(screen.getMaxX() - grid.getMinWidth());
+        stage.setY(screen.getMaxY() - grid.getMinHeight());
 
         open();
 

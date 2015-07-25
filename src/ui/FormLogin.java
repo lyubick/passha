@@ -10,6 +10,7 @@ import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.elements.Button;
+import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import db.PasswordCollection;
 import javafx.event.ActionEvent;
@@ -130,12 +131,22 @@ public class FormLogin extends AbstractForm
         // ========== LABELS ========== //
 
         l_Header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ":");
-        l_Warning = new Label("");
+        l_Warning = new Label();
 
         // ========== TEXTS ========== //
 
         pf_Password = new PasswordField();
         pf_PasswordConfirm = new PasswordField();
+
+        pf_Password.setMinWidth(TEXTFIELD.WIDTH.XL);
+        pf_Password.setMaxWidth(TEXTFIELD.WIDTH.XL);
+        pf_Password.setMinHeight(TEXTFIELD.HEIGTH.M);
+        pf_Password.setMaxHeight(TEXTFIELD.HEIGTH.M);
+
+        pf_PasswordConfirm.setMinWidth(TEXTFIELD.WIDTH.XL);
+        pf_PasswordConfirm.setMaxWidth(TEXTFIELD.WIDTH.XL);
+        pf_PasswordConfirm.setMinHeight(TEXTFIELD.HEIGTH.M);
+        pf_PasswordConfirm.setMaxHeight(TEXTFIELD.HEIGTH.M);
 
         // ========== BUTTONS ========== //
 

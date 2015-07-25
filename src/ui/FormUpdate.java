@@ -20,9 +20,7 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
-import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import languages.Texts;
 import languages.Texts.TextID;
@@ -404,22 +402,16 @@ public class FormUpdate extends AbstractForm
     {
         super(parent, TextID.FORM_UPDATE_LABEL_UPDATE.toString());
 
-        b_update = new Button(TextID.FORM_UPDATE_LABEL_UPDATE.toString(), BUTTON.WIDTH.S,
-                BUTTON.HEIGHT.S);
-        b_skip = new Button(TextID.FORM_UPDATE_LABEL_SKIP.toString(), BUTTON.WIDTH.S,
-                BUTTON.HEIGHT.S);
+        b_update = new Button(TextID.FORM_UPDATE_LABEL_UPDATE.toString(), BUTTON.SIZE.S);
+        b_skip = new Button(TextID.FORM_UPDATE_LABEL_SKIP.toString(), BUTTON.SIZE.S);
         b_update.setDefaultButton(true);
         b_update.setVisible(false);
         b_skip.setVisible(false);
 
         pb_progress = new ProgressBar("", 300, 30);
 
-        grid.setAlignment(Pos.CENTER);
         GridPane.setHalignment(pb_progress, HPos.CENTER);
         GridPane.setHalignment(b_update, HPos.RIGHT);
-
-        stage.initStyle(StageStyle.UNIFIED);
-        stage.centerOnScreen();
 
         grid.addVElement(pb_progress, 0);
         grid.add(b_skip, 0);
@@ -431,7 +423,7 @@ public class FormUpdate extends AbstractForm
         b_skip.setOnAction(getOnSkipBtnAction());
 
         autoSize();
-        stage.show();
+        open();
     }
 
     protected void onUserCloseRequest()

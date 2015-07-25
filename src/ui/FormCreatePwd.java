@@ -10,6 +10,7 @@ import ui.elements.Button;
 import ui.elements.EntryField;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
+import ui.elements.Label.LABEL;
 import db.PasswordCollection;
 import db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
@@ -17,14 +18,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 
 /**
  * @author curious-odd-man
@@ -33,7 +31,7 @@ import javafx.scene.layout.Priority;
 public class FormCreatePwd extends AbstractForm
 {
     private final int LABELS_COLUMN      = 0;
-    private final int TEXT_FIELDS_COLUMN = 1;
+    private final int TEXT_FIELDS_COLUMN = LABELS_COLUMN + 1;
 
     private final String SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
 
@@ -51,8 +49,6 @@ public class FormCreatePwd extends AbstractForm
 
     private CheckBox cb_specialChars  = null;
     private CheckBox cb_upperCaseChar = null;
-
-    private HBox buttonsBox = null;
 
     private EntryField ef_name            = null;
     private EntryField ef_comment         = null;
@@ -279,17 +275,6 @@ public class FormCreatePwd extends AbstractForm
         b_regeneratePassword = new javafx.scene.control.Button("", imgView);
         b_regeneratePassword.setMaxSize(27, 24);
 
-        buttonsBox = new HBox();
-
-        buttonsBox.setSpacing(GAP.H);
-        buttonsBox.setAlignment(Pos.BASELINE_CENTER);
-        buttonsBox.getChildren().addAll(b_OK, b_cancel);
-
-        HBox.setHgrow(b_OK, Priority.ALWAYS);
-        HBox.setHgrow(b_cancel, Priority.ALWAYS);
-        b_OK.setMaxWidth(Double.MAX_VALUE);
-        b_cancel.setMaxWidth(Double.MAX_VALUE);
-
         // ========== ENTRY FIELDS ========== //
 
         ef_name = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
@@ -315,6 +300,18 @@ public class FormCreatePwd extends AbstractForm
         cb_specialChars.setSelected(true);
         cb_upperCaseChar.setSelected(true);
 
+        double tmp = Label.calcLength(cb_specialChars.getText());
+        cb_upperCaseChar.setMinWidth(tmp + 10);
+        cb_upperCaseChar.setMinHeight(LABEL.HEIGHT.M);
+        cb_upperCaseChar.setMaxWidth(tmp);
+        cb_upperCaseChar.setMaxHeight(LABEL.HEIGHT.M);
+
+        tmp = Label.calcLength(cb_upperCaseChar.getText());
+        cb_specialChars.setMinWidth(tmp + 10);
+        cb_specialChars.setMinHeight(LABEL.HEIGHT.M);
+        cb_specialChars.setMaxWidth(tmp);
+        cb_specialChars.setMaxHeight(LABEL.HEIGHT.M);
+
         // ========== TEXTS ========== //
 
         ef_specialChars.setText(SPECIAL_CHARACTERS_DEFAULT_SET);
@@ -336,7 +333,8 @@ public class FormCreatePwd extends AbstractForm
 
         GridPane.setHalignment(b_regeneratePassword, HPos.RIGHT);
 
-        grid.addHElement(buttonsBox, TEXT_FIELDS_COLUMN);
+        grid.add(b_OK, TEXT_FIELDS_COLUMN);
+        grid.addHElement(b_cancel, TEXT_FIELDS_COLUMN);
         grid.addHElement(l_errorLabel, TEXT_FIELDS_COLUMN);
 
         // ========== LISTENERS ========== //

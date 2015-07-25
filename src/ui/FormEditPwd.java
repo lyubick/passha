@@ -21,7 +21,7 @@ public class FormEditPwd extends AbstractForm
     private EntryField      ef_shortcut  = null;
     private Button          b_OK         = null;
     private SpecialPassword pwd          = null;
-    private final Label     l_errorLabel = new Label("");
+    private Label           l_errorLabel = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
@@ -64,6 +64,7 @@ public class FormEditPwd extends AbstractForm
     {
         super(parent, TextID.FORM_EDITPWD_NAME.toString());
 
+        l_errorLabel = new Label();
         priority = WindowPriority.ALWAYS_ON_TOP;
 
         pwd = PasswordCollection.getInstance().getSelected();

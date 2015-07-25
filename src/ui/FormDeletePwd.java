@@ -5,6 +5,7 @@ import ui.elements.Button;
 import ui.elements.EntryField;
 import ui.elements.GridPane;
 import ui.elements.Label;
+import ui.elements.EntryField.TEXTFIELD;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -82,13 +83,19 @@ public class FormDeletePwd extends AbstractForm
         confirmationText = new String("DELETE");
         l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
         l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
-                300); // FIXME
-        l_note.setTextAlignment(TextAlignment.CENTER);
+                TEXTFIELD.WIDTH.XL);
+
+        l_note.setTextAlignment(TextAlignment.CENTER); // FIXME
+        GridPane.setHalignment(l_note, HPos.CENTER);
+
         b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
         l_note.beError();
         tf_confirmation = new TextField();
-        tf_confirmation.setMaxWidth(300); // FIXME
-        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, 200); // FIXME
+        tf_confirmation.setMaxWidth(TEXTFIELD.WIDTH.XL);
+        tf_confirmation.setMinWidth(TEXTFIELD.WIDTH.XL);
+        tf_confirmation.setMinHeight(TEXTFIELD.HEIGTH.M);
+        tf_confirmation.setMaxHeight(TEXTFIELD.HEIGTH.M);
+        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, TEXTFIELD.WIDTH.L);
         ef_passwordName.setEditable(false);
 
         GridPane.setHalignment(l_Header, HPos.CENTER);
