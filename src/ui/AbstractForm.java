@@ -3,7 +3,10 @@ package ui;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+
 import ui.elements.GridPane;
+import utilities.BiHashMap;
+import utilities.Cell;
 import languages.Texts.TextID;
 import logger.Logger;
 import javafx.beans.value.ChangeListener;
@@ -19,7 +22,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-
 import javafx.scene.control.Control;
 
 public abstract class AbstractForm
@@ -31,16 +33,16 @@ public abstract class AbstractForm
         ALWAYS_ON_TOP,
     };
 
-    protected AbstractForm         parent = null;
-    protected Vector<AbstractForm> childs = null;
+    protected AbstractForm         parent  = null;
+    protected Vector<AbstractForm> childs  = null;
     protected WindowPriority       priority;
 
-    protected GridPane grid  = null;
-    protected VBox     group = null;
-    protected Scene    scene = null;
-    protected Stage    stage = null;
+    protected GridPane             grid    = null;
+    protected VBox                 group   = null;
+    protected Scene                scene   = null;
+    protected Stage                stage   = null;
 
-    protected MenuBar mb_Main = null;
+    protected MenuBar              mb_Main = null;
 
     protected static final class GAP
     {
@@ -250,8 +252,7 @@ public abstract class AbstractForm
 
     protected void autoSize()
     {
-        Map<Integer, Double> hMap = new HashMap<Integer, Double>();
-        Map<Integer, Double> vMap = new HashMap<Integer, Double>();
+        BiHashMap<Integer, Integer, Cell> cells = new BiHashMap<Integer, Integer, Cell>();
 
         for (Object child : grid.getChildren())
         {
@@ -284,13 +285,37 @@ public abstract class AbstractForm
 
             int vKey = GridPane.getRowIndex((Node) child);
             int hKey = GridPane.getColumnIndex((Node) child);
+            Integer vSpan = GridPane.getRowSpan((Node) child);
+            Integer hSpan = GridPane.getColumnSpan((Node) child);
 
-            hMap.put(vKey, hMap.getOrDefault(vKey, (double) 0) + width);
-            vMap.put(hKey, vMap.getOrDefault(hKey, (double) 0) + height);
+            if (vSpan == null)
+            {
+                vSpan = 1;
+            }
 
-            String log = "ROW: " + vKey + " COL: " + hKey + " EL: "
-                    + child.getClass().getSimpleName() + "[" + child.getClass().getName() + "]"
-                    + " W: " + width + " H: " + height;
+            if (hSpan == null)
+            {
+                hSpan = 1;
+            }
+
+            height = (height - (vSpan - 1) * GAP.V) / vSpan;
+            width = (width - (hSpan - 1) * GAP.H) / hSpan;
+
+            Cell cell = new Cell(width, height);
+            Cell dfltCell = new Cell(0, 0);
+
+            for (int i = vKey; i < vKey + vSpan; i++)
+            {
+                for (int j = hKey; j < hKey + hSpan; j++)
+                {
+                    cells.put(j, i, cell.grow(cells.getOrDefault(j, i, dfltCell)));
+                }
+            }
+
+            String log =
+                    "ROW: " + vKey + " COL: " + hKey + " EL: " + child.getClass().getSimpleName()
+                            + "[" + child.getClass().getName() + "]" + " W: " + width + " Wspan: "
+                            + vSpan + " H: " + height + " Hspan: " + hSpan;
             if (Math.min(height, width) > 0)
                 Logger.printDebug(log);
             else
@@ -299,22 +324,39 @@ public abstract class AbstractForm
 
         double hMax = 0, vMax = 0;
 
-        for (double cur : hMap.values())
-            hMax = Math.max(cur, hMax);
+        Cell mapDimensions = cells.getDimensions();
+        Cell dfltCell = new Cell(0, 0);
+        Map<Integer, Double> columnWidths = new HashMap<Integer, Double>();
+        Map<Integer, Double> rowHights = new HashMap<Integer, Double>();
 
-        for (double cur : vMap.values())
-            vMax = Math.max(cur, vMax);
+        for (int i = 0; i < mapDimensions.getHeight(); i++)
+        {
+            for (int j = 0; j < mapDimensions.getWidth(); j++)
+            {
+                columnWidths.put(
+                        j,
+                        Math.max(columnWidths.getOrDefault(j, (double) 0),
+                                cells.getOrDefault(j, i, dfltCell).getWidth()));
 
-        int rowCount = 1;
-        for (int key : hMap.keySet())
-            rowCount = Math.max(rowCount, key);
+                rowHights.put(
+                        i,
+                        Math.max(rowHights.getOrDefault(i, (double) 0),
+                                cells.getOrDefault(j, i, dfltCell).getHeight()));
+            }
+        }
 
-        int colCount = 1;
-        for (int key : vMap.keySet())
-            colCount = Math.max(colCount, key);
+        for (double w : columnWidths.values())
+        {
+            hMax += w;
+        }
 
-        hMax += PADDING.left + PADDING.right + GAP.H * colCount - GAP.H;
-        vMax += PADDING.top + PADDING.bottom + GAP.V * rowCount - GAP.V;
+        for (double h : rowHights.values())
+        {
+            vMax += h;
+        }
+
+        hMax += PADDING.left + PADDING.right + GAP.H * mapDimensions.getWidth() - GAP.H;
+        vMax += PADDING.top + PADDING.bottom + GAP.V * mapDimensions.getHeight() - GAP.V;
 
         hMax = Math.ceil(hMax);
         vMax = Math.ceil(vMax);
@@ -332,6 +374,6 @@ public abstract class AbstractForm
         stage.sizeToScene();
 
         Logger.printDebug("Autoresize completed. Width: " + hMax + ", Height: " + vMax
-                + ". Form is: " + (colCount + 1) + "x" + (rowCount + 1));
+                + ". Form is: " + mapDimensions.getWidth() + "x" + mapDimensions.getHeight());
     }
 }
