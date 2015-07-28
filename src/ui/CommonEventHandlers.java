@@ -13,8 +13,11 @@ public final class CommonEventHandlers
             @Override
             public void handle(KeyEvent keyEvent)
             {
-                if ("0123456789".contains(keyEvent.getCharacter()))
+                if (Character.isLetterOrDigit(keyEvent.getCharacter().charAt(0)))
+                {
                     ef.setText(keyEvent.getCharacter());
+                }
+
                 keyEvent.consume();
             }
         };
