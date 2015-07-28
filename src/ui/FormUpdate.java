@@ -35,28 +35,27 @@ import ui.elements.ProgressBar;
 public class FormUpdate extends AbstractForm
 {
 
-    ProgressBar pb_progress = null;
+    ProgressBar          pb_progress               = null;
 
-    private String currentVersion = null;
-    private String latestVersion  = null;
+    private String       currentVersion            = null;
+    private String       latestVersion             = null;
 
-    private File downloaded    = null;
-    private File executable    = null;
-    private File newExecutable = null;
+    private File         downloaded                = null;
+    private File         newExecutable             = null;
 
-    private final String GITHUB_RELEASE_URL = "https://github.com/lyubick/passha/releases";
-    private final String GITHUB_ARCHIVE_URL = "https://github.com/lyubick/passha/archive/";
+    private final String GITHUB_RELEASE_URL        = "https://github.com/lyubick/passha/releases";
+    private final String GITHUB_ARCHIVE_URL        = "https://github.com/lyubick/passha/archive/";
 
-    private final String RELEASE_VERSION_PREFIX   = "/lyubick/passha/tree/";
-    private final String RELEASE_VERSION_TEMPLATE = "v0.0.000";
+    private final String RELEASE_VERSION_PREFIX    = "/lyubick/passha/tree/";
+    private final String RELEASE_VERSION_TEMPLATE  = "v0.0.000";
 
     private final String RELEASE_ARCHIVE_EXTENSION = ".zip";
     private final String RELEASE_EXECUTABLE_NAME   = "pasSHA.jar";
 
-    private int BUFFER_SIZE = 4096;
+    private int          BUFFER_SIZE               = 4096;
 
-    private Button b_update = null;
-    private Button b_skip   = null;
+    private Button       b_update                  = null;
+    private Button       b_skip                    = null;
 
     // ***** GET LATEST VERSION ROUTINE *****//
     private void skipUpdate()
@@ -194,10 +193,12 @@ public class FormUpdate extends AbstractForm
 
                         if (latestVersion.contains(RELEASE_VERSION_PREFIX))
                         {
-                            int idx = latestVersion.indexOf(RELEASE_VERSION_PREFIX)
-                                    + RELEASE_VERSION_PREFIX.length();
-                            latestVersion = latestVersion.substring(idx,
-                                    idx + RELEASE_VERSION_TEMPLATE.length());
+                            int idx =
+                                    latestVersion.indexOf(RELEASE_VERSION_PREFIX)
+                                            + RELEASE_VERSION_PREFIX.length();
+                            latestVersion =
+                                    latestVersion.substring(idx,
+                                            idx + RELEASE_VERSION_TEMPLATE.length());
                             // Latest version should be on top always
                             break;
                         }
@@ -294,8 +295,10 @@ public class FormUpdate extends AbstractForm
                 try
                 {
                     Logger.printDebug("Unzipping...");
-                    newExecutable = new File(FormUpdate.class.getProtectionDomain().getCodeSource()
-                            .getLocation().toURI().getPath() + "~");
+                    newExecutable =
+                            new File(FormUpdate.class.getProtectionDomain().getCodeSource()
+                                    .getLocation().toURI().getPath()
+                                    + "~");
 
                     ZipFile zip = new ZipFile(downloaded);
 
@@ -304,8 +307,9 @@ public class FormUpdate extends AbstractForm
                     ZipEntry entry = null;
 
                     // Find executable in archive
-                    while (enu.hasMoreElements() && !(entry = (ZipEntry) enu.nextElement())
-                            .toString().contains(RELEASE_EXECUTABLE_NAME))
+                    while (enu.hasMoreElements()
+                            && !(entry = (ZipEntry) enu.nextElement()).toString().contains(
+                                    RELEASE_EXECUTABLE_NAME))
                         ;
 
                     InputStream is = zip.getInputStream(entry);
@@ -350,11 +354,13 @@ public class FormUpdate extends AbstractForm
             @Override
             protected Void call() throws Exception
             {
-                executable = new File(FormUpdate.class.getProtectionDomain().getCodeSource()
-                        .getLocation().toURI().getPath());
+                new File(FormUpdate.class.getProtectionDomain().getCodeSource().getLocation()
+                        .toURI().getPath());
 
-                newExecutable = new File(FormUpdate.class.getProtectionDomain().getCodeSource()
-                        .getLocation().toURI().getPath() + "~");
+                newExecutable =
+                        new File(FormUpdate.class.getProtectionDomain().getCodeSource()
+                                .getLocation().toURI().getPath()
+                                + "~");
 
                 Runtime.getRuntime().exec("updater.bat");
 
@@ -394,8 +400,9 @@ public class FormUpdate extends AbstractForm
         pb_progress.requestFocus();
         pb_progress.unbind();
 
-        pb_progress.getLabel().setText(TextID.FORM_UPDATE_MSG_UPDATE_AVAILABLE.toString() + " "
-                + TextID.FORM_UPDATE_LABEL_UPDATE.toString() + " to " + newVersion + " ?");
+        pb_progress.getLabel().setText(
+                TextID.FORM_UPDATE_MSG_UPDATE_AVAILABLE.toString() + " "
+                        + TextID.FORM_UPDATE_LABEL_UPDATE.toString() + " to " + newVersion + " ?");
     }
 
     public FormUpdate(AbstractForm parent)
@@ -422,7 +429,6 @@ public class FormUpdate extends AbstractForm
         b_update.setOnAction(getOnUpdateBtnAction());
         b_skip.setOnAction(getOnSkipBtnAction());
 
-        autoSize();
         open();
     }
 

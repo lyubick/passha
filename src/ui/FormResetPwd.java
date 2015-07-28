@@ -121,7 +121,6 @@ public class FormResetPwd extends AbstractForm
 
         ef_newPassword.setText(newSp.getPassword());
 
-        autoSize();
         open();
     }
 

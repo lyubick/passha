@@ -1,12 +1,8 @@
 package ui;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 import ui.elements.GridPane;
-import utilities.BiHashMap;
-import utilities.Cell;
 import languages.Texts.TextID;
 import logger.Logger;
 import javafx.beans.value.ChangeListener;
@@ -14,7 +10,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
@@ -22,7 +17,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import javafx.scene.control.Control;
 
 public abstract class AbstractForm
 {
@@ -248,132 +242,5 @@ public abstract class AbstractForm
         stage.focusedProperty().addListener(getFocusedPropertyListener());
 
         stage.centerOnScreen();
-    }
-
-    protected void autoSize()
-    {
-        BiHashMap<Integer, Integer, Cell> cells = new BiHashMap<Integer, Integer, Cell>();
-
-        for (Object child : grid.getChildren())
-        {
-            double width = 0;
-            double height = 0;
-
-            try
-            {
-                Control ctrl = (Control) child;
-                width = Math.max(ctrl.getMinWidth(), ctrl.getMaxWidth());
-                height = Math.max(ctrl.getMinHeight(), ctrl.getMaxHeight());
-            }
-            catch (java.lang.ClassCastException e)
-            {
-                javafx.scene.layout.Pane ctrl = null;
-
-                try
-                {
-                    ctrl = (javafx.scene.layout.Pane) child; // FIXME
-                    width = Math.max(ctrl.getMinWidth(), ctrl.getMaxWidth());
-                    height = Math.max(ctrl.getMinHeight(), ctrl.getMaxHeight());
-                }
-                catch (java.lang.ClassCastException e1)
-                {
-                    Logger.printError("Unknown Element: " + child.getClass().getName());
-                    continue;
-                }
-
-            }
-
-            int vKey = GridPane.getRowIndex((Node) child);
-            int hKey = GridPane.getColumnIndex((Node) child);
-            Integer vSpan = GridPane.getRowSpan((Node) child);
-            Integer hSpan = GridPane.getColumnSpan((Node) child);
-
-            if (vSpan == null)
-            {
-                vSpan = 1;
-            }
-
-            if (hSpan == null)
-            {
-                hSpan = 1;
-            }
-
-            height = (height - (vSpan - 1) * GAP.V) / vSpan;
-            width = (width - (hSpan - 1) * GAP.H) / hSpan;
-
-            Cell cell = new Cell(width, height);
-            Cell dfltCell = new Cell(0, 0);
-
-            for (int i = vKey; i < vKey + vSpan; i++)
-            {
-                for (int j = hKey; j < hKey + hSpan; j++)
-                {
-                    cells.put(j, i, cell.grow(cells.getOrDefault(j, i, dfltCell)));
-                }
-            }
-
-            String log =
-                    "ROW: " + vKey + " COL: " + hKey + " EL: " + child.getClass().getSimpleName()
-                            + "[" + child.getClass().getName() + "]" + " W: " + width + " Wspan: "
-                            + vSpan + " H: " + height + " Hspan: " + hSpan;
-            if (Math.min(height, width) > 0)
-                Logger.printDebug(log);
-            else
-                Logger.printError(log);
-        }
-
-        double hMax = 0, vMax = 0;
-
-        Cell mapDimensions = cells.getDimensions();
-        Cell dfltCell = new Cell(0, 0);
-        Map<Integer, Double> columnWidths = new HashMap<Integer, Double>();
-        Map<Integer, Double> rowHights = new HashMap<Integer, Double>();
-
-        for (int i = 0; i < mapDimensions.getHeight(); i++)
-        {
-            for (int j = 0; j < mapDimensions.getWidth(); j++)
-            {
-                columnWidths.put(
-                        j,
-                        Math.max(columnWidths.getOrDefault(j, (double) 0),
-                                cells.getOrDefault(j, i, dfltCell).getWidth()));
-
-                rowHights.put(
-                        i,
-                        Math.max(rowHights.getOrDefault(i, (double) 0),
-                                cells.getOrDefault(j, i, dfltCell).getHeight()));
-            }
-        }
-
-        for (double w : columnWidths.values())
-        {
-            hMax += w;
-        }
-
-        for (double h : rowHights.values())
-        {
-            vMax += h;
-        }
-
-        hMax += PADDING.left + PADDING.right + GAP.H * mapDimensions.getWidth() - GAP.H;
-        vMax += PADDING.top + PADDING.bottom + GAP.V * mapDimensions.getHeight() - GAP.V;
-
-        hMax = Math.ceil(hMax);
-        vMax = Math.ceil(vMax);
-
-        grid.setMinWidth(hMax);
-        grid.setMinHeight(vMax);
-        grid.setMaxWidth(hMax);
-        grid.setMaxHeight(vMax);
-
-        group.setMinWidth(grid.getMinWidth());
-        group.setMinHeight(grid.getMinHeight());
-        group.setMaxWidth(grid.getMaxWidth());
-        group.setMaxHeight(grid.getMaxHeight());
-
-        stage.sizeToScene();
-
-        Logger.printDebug("Autoresize completed. Width: " + hMax + ", Height: " + vMax
-                + ". Form is: " + mapDimensions.getWidth() + "x" + mapDimensions.getHeight());
     }
 }

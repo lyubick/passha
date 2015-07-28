@@ -188,8 +188,6 @@ public class FormLogin extends AbstractForm
 
         b_Register.setOnAction(getOnRegisterBtnAction());
 
-        autoSize();
-
         open();
     }
 

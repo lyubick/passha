@@ -8,6 +8,7 @@ import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import languages.Texts.TextID;
+import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
 import db.PasswordCollection;
@@ -85,6 +86,7 @@ public class FormShortcuts extends AbstractForm
             EntryField ef = new EntryField(sp.getName(), TEXTFIELD.WIDTH.XS);
             ef.setEditable(false);
             ef.setText(sp.getShortcut());
+            GridPane.setHalignment(ef, HPos.CENTER);
             grid.addHElement((LabeledItem) ef);
 
             ef.getLabel().setAlignment(Pos.CENTER);
@@ -106,14 +108,13 @@ public class FormShortcuts extends AbstractForm
 
         fillFormWithPwds();
 
-        autoSize();
-
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 
-        stage.setX(screen.getMaxX() - grid.getMinWidth());
-        stage.setY(screen.getMaxY() - grid.getMinHeight());
-
         open();
+        Logger.printDebug("X: " + screen.getMaxX() + " Y: " + screen.getMaxY());
+        Logger.printDebug("W: " + stage.getWidth() + " H: " + stage.getHeight());
+        stage.setX(screen.getMaxX() - stage.getWidth());
+        stage.setY(screen.getMaxY() - stage.getHeight());
 
         stage.requestFocus();
         stage.setAlwaysOnTop(true);

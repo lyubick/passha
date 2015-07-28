@@ -111,7 +111,6 @@ public class FormSettings extends AbstractForm
 
         b_ok.setOnAction(getOnOKBtnAction());
 
-        autoSize();
         open();
     }
 

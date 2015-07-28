@@ -94,14 +94,16 @@ public class FormDeletePwd extends AbstractForm
         l_note.beError();
         l_deleteWord.beError();
 
-        b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
+        b_Confirm =
+                new Button(TextID.COMMON_LABEL_CANCEL.toString(),
+                        TextID.FORM_DELETEPWD_NAME.toString());
 
         tf_confirmation = new TextField();
         tf_confirmation.setMaxWidth(TEXTFIELD.WIDTH.L);
         tf_confirmation.setMinWidth(TEXTFIELD.WIDTH.L);
         tf_confirmation.setMinHeight(TEXTFIELD.HEIGTH.M);
         tf_confirmation.setMaxHeight(TEXTFIELD.HEIGTH.M);
-        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, TEXTFIELD.WIDTH.L);
+        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, TEXTFIELD.WIDTH.XL);
         ef_passwordName.setEditable(false);
 
         GridPane.setHalignment(l_Header, HPos.CENTER);
@@ -109,6 +111,7 @@ public class FormDeletePwd extends AbstractForm
         GridPane.setHalignment(l_deleteWord, HPos.CENTER);
         GridPane.setHalignment(b_Confirm, HPos.CENTER);
         GridPane.setHalignment(tf_confirmation, HPos.CENTER);
+        GridPane.setHalignment(ef_passwordName, HPos.RIGHT);
 
         tf_confirmation.textProperty().addListener(getConfirmationTFListener());
 
@@ -130,7 +133,6 @@ public class FormDeletePwd extends AbstractForm
             Terminator.terminate(e);
         }
 
-        autoSize();
         open();
         tf_confirmation.requestFocus();
     }

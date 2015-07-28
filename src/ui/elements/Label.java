@@ -99,6 +99,18 @@ public class Label extends javafx.scene.control.Label
         return tmp.getLayoutBounds().getWidth();
     }
 
+    public static double calcMaxLength(String... names)
+    {
+        double maxWidth = 0;
+
+        for (String n : names)
+        {
+            maxWidth = Math.max(maxWidth, Label.calcLength(n));
+        }
+        Logger.printDebug("MAX LENGTH is : " + maxWidth);
+        return maxWidth;
+    }
+
     @Override
     public void setWidth(double width)
     {

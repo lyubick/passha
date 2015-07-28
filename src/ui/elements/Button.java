@@ -15,9 +15,10 @@ public class Button extends javafx.scene.control.Button
     {
         public static final class WIDTH
         {
-            public final static int S = 40;
-            public final static int M = 80;
-            public final static int L = 125;
+            public final static int RESERVE = 20;
+            public final static int S       = 40;
+            public final static int M       = 80;
+            public final static int L       = 125;
         }
 
         public static final class HEIGHT
@@ -80,7 +81,14 @@ public class Button extends javafx.scene.control.Button
         setMaxHeight(height);
     }
 
-    public static void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
+    public Button(String name, String... names)
+    {
+        this(name, Math.max(Label.calcLength(name), Label.calcMaxLength(names))
+                + BUTTON.WIDTH.RESERVE, BUTTON.HEIGHT.M);
+    }
+
+    public static void setButtonShortcut(final Button btn, KeyCodeCombination cmb)
+            throws Exceptions
     {
         if (btn.getScene() == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
         btn.getScene().getAccelerators().put(cmb, new Runnable()

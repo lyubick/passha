@@ -341,10 +341,11 @@ public class FormCreatePwd extends AbstractForm
         grid.addHElement(ef_passwordPreview, TEXT_FIELDS_COLUMN);
 
         GridPane.setHalignment(b_regeneratePassword, HPos.RIGHT);
+        GridPane.setHalignment(l_errorLabel, HPos.CENTER);
 
         grid.add(b_OK, TEXT_FIELDS_COLUMN);
         grid.addHElement(b_cancel, TEXT_FIELDS_COLUMN);
-        grid.addHElement(l_errorLabel, TEXT_FIELDS_COLUMN);
+        grid.addHElement(l_errorLabel, LABELS_COLUMN, 2);
 
         // ========== LISTENERS ========== //
 
@@ -370,7 +371,6 @@ public class FormCreatePwd extends AbstractForm
         b_OK.setDisable(true);
         ef_length.setText(Integer.toString(DEFAULT_PASSWORD_LENGTH));
 
-        autoSize();
         open();
     }
 

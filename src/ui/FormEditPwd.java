@@ -96,7 +96,6 @@ public class FormEditPwd extends AbstractForm
 
         b_OK.setOnAction(getOnOKBtnAction());
 
-        autoSize();
         open();
         ef_shortcut.requestFocus();
     }
