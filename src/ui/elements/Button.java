@@ -3,8 +3,10 @@ package ui.elements;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.util.Duration;
+import languages.Texts.TextID;
 import main.Exceptions;
 import main.Exceptions.XC;
 import ui.elements.Button.BUTTON.SIZE;
@@ -40,6 +42,18 @@ public class Button extends javafx.scene.control.Button
     public Button(String name)
     {
         this(name, BUTTON.WIDTH.M, BUTTON.HEIGHT.M);
+    }
+
+    public Button(TextID name)
+    {
+        this(name.toString());
+    }
+
+    public Button(String name, Node graphic)
+    {
+        super(name, graphic);
+        this.setMinSize(27, 24);
+        this.setMaxSize(27, 24);
     }
 
     public Button(String name, SIZE size)

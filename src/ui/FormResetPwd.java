@@ -27,6 +27,7 @@ public class FormResetPwd extends AbstractForm
 {
     private Button          b_ok               = null;
     private Button          b_cancel           = null;
+    private Button          b_regenerate       = null;
     private Label           l_warning          = null;
     private Label           l_header           = null;
     private EntryField      ef_currentPassword = null;
@@ -68,6 +69,34 @@ public class FormResetPwd extends AbstractForm
         };
     }
 
+    private EventHandler<ActionEvent> getOnRegenerateBtnAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                showPassword();
+            }
+        };
+    }
+
+    private void showPassword()
+    {
+        try
+        {
+            ef_currentPassword
+                    .setText(PasswordCollection.getInstance().getSelected().getPassword());
+            newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
+        }
+        catch (Exceptions e)
+        {
+            Terminator.terminate(e);
+        }
+
+        ef_newPassword.setText(newSp.getPassword());
+    }
+
     /* PUBLIC ROUTINE */
     public FormResetPwd(AbstractForm parent)
     {
@@ -76,8 +105,9 @@ public class FormResetPwd extends AbstractForm
 
         // ========== BUTTONS ========== //
 
-        b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
-        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
+        b_ok = new Button(TextID.COMMON_LABEL_OK);
+        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL);
+        b_regenerate = new Button("", Common.getRegenerateImage());
 
         ef_currentPassword = new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT, TEXTFIELD.WIDTH.L);
         ef_newPassword = new EntryField(TextID.COMMON_LABEL_NEW, TEXTFIELD.WIDTH.L);
@@ -98,28 +128,20 @@ public class FormResetPwd extends AbstractForm
         GridPane.setHalignment(ef_newPassword, HPos.RIGHT);
         GridPane.setHalignment(b_ok, HPos.LEFT);
         GridPane.setHalignment(b_cancel, HPos.RIGHT);
+        GridPane.setHalignment(b_regenerate, HPos.RIGHT);
 
         grid.addHElement(l_header, 0, 2);
         grid.addHElement((LabeledItem) ef_currentPassword);
+        grid.add(b_regenerate, 0);
         grid.addHElement((LabeledItem) ef_newPassword);
         grid.addHElement(l_warning, 0, 2);
         grid.addHElements(0, b_ok, b_cancel);
 
         b_ok.setOnAction(getOnOKBtnAction());
         b_cancel.setOnAction(getOnCancelBtnAction());
+        b_regenerate.setOnAction(getOnRegenerateBtnAction());
 
-        try
-        {
-            ef_currentPassword
-                    .setText(PasswordCollection.getInstance().getSelected().getPassword());
-            newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
-
-        ef_newPassword.setText(newSp.getPassword());
+        showPassword();
 
         open();
     }

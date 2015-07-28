@@ -80,7 +80,7 @@ public class FormEditPwd extends AbstractForm
 
         ef_pwdName.setEditable(false);
         ef_shortcut.addEventFilter(KeyEvent.KEY_TYPED,
-                CommonEventHandlers.getShortcutTFFiler(ef_shortcut));
+                Common.getShortcutTFFiler(ef_shortcut));
 
         ef_pwdName.setText(pwd.getName());
         ef_comment.setText(pwd.getComment());

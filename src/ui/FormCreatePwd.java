@@ -19,8 +19,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.control.CheckBox;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
@@ -30,34 +28,33 @@ import javafx.scene.layout.GridPane;
  */
 public class FormCreatePwd extends AbstractForm
 {
-    private final int                   LABELS_COLUMN                  = 0;
-    private final int                   TEXT_FIELDS_COLUMN             = LABELS_COLUMN + 1;
+    private final int       LABELS_COLUMN                  = 0;
+    private final int       TEXT_FIELDS_COLUMN             = LABELS_COLUMN + 1;
 
-    private final String                SPECIAL_CHARACTERS_DEFAULT_SET =
-                                                                               "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
+    private final String    SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
 
-    private final int                   MAX_PASSWORD_LENGTH            = 64;
-    private final int                   MIN_PASSWORD_LENGTH            = 8;
-    private final int                   DEFAULT_PASSWORD_LENGTH        = 16;
+    private final int       MAX_PASSWORD_LENGTH            = 64;
+    private final int       MIN_PASSWORD_LENGTH            = 8;
+    private final int       DEFAULT_PASSWORD_LENGTH        = 16;
 
-    private SpecialPassword             password                       = null;
+    private SpecialPassword password                       = null;
 
-    private final Label                 l_errorLabel                   = new Label("");
+    private final Label     l_errorLabel                   = new Label("");
 
-    private Button                      b_OK                           = null;
-    private Button                      b_cancel                       = null;
-    private javafx.scene.control.Button b_regeneratePassword           = null;                                        // FIXME
+    private Button          b_OK                           = null;
+    private Button          b_cancel                       = null;
+    private Button          b_regeneratePassword           = null;                                  // FIXME
 
-    private CheckBox                    cb_specialChars                = null;
-    private CheckBox                    cb_upperCaseChar               = null;
+    private CheckBox        cb_specialChars                = null;
+    private CheckBox        cb_upperCaseChar               = null;
 
-    private EntryField                  ef_name                        = null;
-    private EntryField                  ef_comment                     = null;
-    private EntryField                  ef_url                         = null;
-    private EntryField                  ef_length                      = null;
-    private EntryField                  ef_specialChars                = null;
-    private EntryField                  ef_passwordPreview             = null;
-    private EntryField                  ef_shortcut                    = null;
+    private EntryField      ef_name                        = null;
+    private EntryField      ef_comment                     = null;
+    private EntryField      ef_url                         = null;
+    private EntryField      ef_length                      = null;
+    private EntryField      ef_specialChars                = null;
+    private EntryField      ef_passwordPreview             = null;
+    private EntryField      ef_shortcut                    = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<KeyEvent> getLengthTFFilter()
@@ -224,7 +221,8 @@ public class FormCreatePwd extends AbstractForm
     {
         try
         {
-            if (ef_length.getText().length() > 0
+            if (ef_length.getText().length() > 0 // TODO: move inside
+                                                 // SpecialPassword constructor
                     && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
@@ -269,18 +267,13 @@ public class FormCreatePwd extends AbstractForm
         priority = WindowPriority.ONLY_ONE_OPENED;
         // ========== BUTTONS ========== //
 
-        b_OK = new Button(TextID.FORM_CREATEPWD_LABEL_CREATE.toString());
-        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
+        b_OK = new Button(TextID.FORM_CREATEPWD_LABEL_CREATE);
+        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL);
 
         GridPane.setHalignment(b_OK, HPos.LEFT);
         GridPane.setHalignment(b_cancel, HPos.RIGHT);
 
-        ImageView imgView =
-                new ImageView(
-                        new Image(getClass().getResourceAsStream("/resources/regenerate.png")));
-        imgView.setStyle("-fx-background-color:transparent");
-        b_regeneratePassword = new javafx.scene.control.Button("", imgView);
-        b_regeneratePassword.setMaxSize(27, 24);
+        b_regeneratePassword = new Button("", Common.getRegenerateImage());
 
         // ========== ENTRY FIELDS ========== //
 
@@ -349,8 +342,7 @@ public class FormCreatePwd extends AbstractForm
 
         // ========== LISTENERS ========== //
 
-        ef_shortcut.addEventFilter(KeyEvent.KEY_TYPED,
-                CommonEventHandlers.getShortcutTFFiler(ef_shortcut));
+        ef_shortcut.addEventFilter(KeyEvent.KEY_TYPED, Common.getShortcutTFFiler(ef_shortcut));
 
         ef_name.textProperty().addListener(getPasswordParameterListener());
 
