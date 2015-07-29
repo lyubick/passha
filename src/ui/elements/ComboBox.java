@@ -22,6 +22,7 @@ public class ComboBox extends javafx.scene.control.ComboBox<String> implements L
         this.setMinWidth(maxLength);
         this.setMinHeight(STANDARD.SIZE.HEIGHT);
         this.setMaxHeight(STANDARD.SIZE.HEIGHT);
+
     }
 
     public Label getLabel()

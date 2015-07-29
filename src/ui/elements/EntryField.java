@@ -1,5 +1,7 @@
 package ui.elements;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.HBox;
 import languages.Texts.TextID;
 import ui.AbstractForm.STANDARD;
@@ -26,6 +28,19 @@ public class EntryField extends javafx.scene.control.TextField implements Labele
 
     private Label label = null;
 
+    private ChangeListener<Boolean> getOnTFVisiblePropertyChanged()
+    {
+        return new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue)
+            {
+                label.setVisible(newValue);
+            }
+        };
+    }
+
     public EntryField(TextID label, int maxLength)
     {
         this(label.toString(), maxLength);
@@ -34,6 +49,8 @@ public class EntryField extends javafx.scene.control.TextField implements Labele
     public EntryField(String label, int maxLength)
     {
         this.label = new Label(label);
+
+        this.visibleProperty().addListener(getOnTFVisiblePropertyChanged());
 
         this.setMaxWidth(maxLength);
         this.setMinWidth(maxLength);

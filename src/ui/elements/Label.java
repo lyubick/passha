@@ -44,6 +44,14 @@ public class Label extends javafx.scene.control.Label
         });
     }
 
+    private void setUpWrap(String name, int maxWidth)
+    {
+        this.setWidth(maxWidth);
+        this.setHeight(Math.ceil(calcLength(name) / maxWidth) * STANDARD.SIZE.HEIGHT);
+
+        this.setWrapText(true);
+    }
+
     public Label()
     {
         super();
@@ -61,15 +69,16 @@ public class Label extends javafx.scene.control.Label
         this.setUp();
     }
 
-    public Label(String name, int wrapped)
+    public Label(String name, int maxWidth)
     {
         super(name);
         this.setUp();
+        setUpWrap(name, maxWidth);
+    }
 
-        this.setWidth(wrapped);
-        this.setHeight(Math.ceil(calcLength(name) / wrapped) * STANDARD.SIZE.HEIGHT);
-
-        this.setWrapText(true);
+    public void wrap(int maxWidth)
+    {
+        setUpWrap(super.getText(), maxWidth);
     }
 
     public void beError()
