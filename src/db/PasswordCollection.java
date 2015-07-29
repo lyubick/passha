@@ -3,6 +3,7 @@ package db;
 import java.util.Vector;
 
 import utilities.Utilities;
+import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
@@ -56,9 +57,10 @@ public class PasswordCollection
 
     // ==========
 
-    public SpecialPassword getSelected()
+    public SpecialPassword getSelected() throws Exceptions
     {
-        return selectedPassword;
+        if (selectedPassword == null) return null;
+        return new SpecialPassword(selectedPassword);
     }
 
     public void setSelected(SpecialPassword pwd)
@@ -73,6 +75,13 @@ public class PasswordCollection
         for (SpecialPassword existing : db.getDecrypted())
             if (existing.getName().equals(entry.getName()))
                 throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
+
+        if (!entry.getShortcut().equals(""))
+        {
+            SpecialPassword sp = getPasswordByShortcut(entry.getShortcut());
+            if (sp != null)
+                throw new Exceptions(XC.PASSWORD_SHORTCUT_ALREADY_IN_USE).setText(sp.getName());
+        }
 
         db.addEntry(entry);
 
@@ -89,6 +98,17 @@ public class PasswordCollection
 
     public void replacePasword(SpecialPassword newEntry) throws Exceptions
     {
+        SpecialPassword sp = getPasswordByShortcut(newEntry.getShortcut());
+        Logger.printDebug("sp is " + (sp == null ? "null" : "not null"));
+        if (sp != null)
+        {
+            Logger.printDebug("newEntry: shortcut [" + newEntry.getShortcut() + "] name "
+                    + newEntry.getName());
+            Logger.printDebug("SP: shortcut [" + sp.getShortcut() + "] name " + sp.getName());
+            if (!newEntry.getShortcut().equals("") && !sp.getName().equals(newEntry.getName()))
+                throw new Exceptions(XC.PASSWORD_SHORTCUT_ALREADY_IN_USE).setText(sp.getName());
+        }
+
         db.replaceEntry(newEntry, selectedPassword);
 
         UserFileIO.getInstance().sync(); // Save to file

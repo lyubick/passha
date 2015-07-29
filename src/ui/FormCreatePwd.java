@@ -185,6 +185,8 @@ public class FormCreatePwd extends AbstractForm
                 {
                     if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS)
                         l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_NAME_EXISTS.toString());
+                    else if (e.getCode() == XC.PASSWORD_SHORTCUT_ALREADY_IN_USE)
+                        l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_SHORTCUT_IN_USE.toString());
 
                     b_OK.setDisable(false);
                 }

@@ -92,6 +92,10 @@ public class Texts
         { TextID.COMMON_LABEL_ERROR.toString() + " Name already taken!",
                 TextID.COMMON_LABEL_ERROR.toString() + " Имя уже занято!" }),
 
+        FORM_CREATEPWD_MSG_SHORTCUT_IN_USE(new String[]
+        { TextID.COMMON_LABEL_ERROR.toString() + " Shortcut is in use!",
+                TextID.COMMON_LABEL_ERROR.toString() + " Горячая клавиша занята!" }),
+
         FORM_CREATEPWD_NAME(new String[]
         { "Create new password", "Создать новый пароль" }),
 

@@ -88,6 +88,7 @@ public class FormResetPwd extends AbstractForm
             ef_currentPassword
                     .setText(PasswordCollection.getInstance().getSelected().getPassword());
             newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
+            newSp.changeCycles();
         }
         catch (Exceptions e)
         {

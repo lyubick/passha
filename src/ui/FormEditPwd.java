@@ -12,6 +12,7 @@ import ui.elements.EntryField.TEXTFIELD;
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
+import main.Exceptions.XC;
 
 public class FormEditPwd extends AbstractForm
 {
@@ -33,25 +34,19 @@ public class FormEditPwd extends AbstractForm
             {
                 try
                 {
-                    SpecialPassword sp =
-                            PasswordCollection.getInstance().getPasswordByShortcut(
-                                    ef_shortcut.getText());
-                    if (sp == null || ef_shortcut.getText().equals("")
-                            || sp.getName().equals(pwd.getName()))
-                    {
-                        pwd.setAllOptionalFields(ef_comment.getText(), ef_url.getText(),
-                                ef_shortcut.getText());
-                        PasswordCollection.getInstance().replacePasword(pwd);
-                        close();
-                    }
-                    else
-                    {
-                        ef_errorLabel.setVisible(true);
-                        ef_errorLabel.setText(sp.getName());
-                    }
+                    pwd.setAllOptionalFields(ef_comment.getText(), ef_url.getText(),
+                            ef_shortcut.getText());
+                    PasswordCollection.getInstance().replacePasword(pwd);
+                    close();
                 }
                 catch (Exceptions e)
                 {
+                    if (e.getCode() == XC.PASSWORD_SHORTCUT_ALREADY_IN_USE)
+                    {
+                        ef_errorLabel.setVisible(true);
+                        ef_errorLabel.setText(e.getText());
+                        return;
+                    }
                     Terminator.terminate(e);
                 }
 
