@@ -15,7 +15,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 public abstract class AbstractForm
@@ -229,7 +228,7 @@ public abstract class AbstractForm
 
         scene = new Scene(group);
 
-        stage = new Stage(StageStyle.UNIFIED);
+        stage = new Stage(Common.STAGE_STYLE.UNIFIED);
         stage.setScene(scene);
 
         stage.getIcons().add(new Image("resources/tray_icon.png"));

@@ -1,20 +1,20 @@
 package ui;
 
 import java.io.File;
+
 import db.PasswordCollection;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import main.Exceptions;
 import main.Terminator;
 
-public class DlgExport extends AbstractForm
+public class DlgExport
 {
 
     protected DlgExport(AbstractForm parent)
     {
-        super(parent, ""); // FIXME
-
         FileChooser fc = new FileChooser();
-        File outFile = fc.showSaveDialog(stage);
+        File outFile = fc.showSaveDialog(new Stage(Common.STAGE_STYLE.UNIFIED));
 
         if (outFile != null)
         {

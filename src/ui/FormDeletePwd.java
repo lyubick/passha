@@ -82,7 +82,7 @@ public class FormDeletePwd extends AbstractForm
         super(parent, TextID.FORM_DELETEPWD_NAME.toString());
         priority = WindowPriority.ALWAYS_ON_TOP;
 
-        confirmationText = new String("DELETE"); // TODO complete this US
+        confirmationText = new String(TextID.FORM_DELETEPWD_MSG_CONFIRMATION.toString());
         l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
 
         l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString());

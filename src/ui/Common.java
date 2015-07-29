@@ -6,9 +6,12 @@ import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.StageStyle;
 
 public final class Common
 {
+    public static final StageStyle STAGE_STYLE = StageStyle.UNIFIED;
+
     public static EventHandler<KeyEvent> getShortcutTFFiler(EntryField ef)
     {
         return new EventHandler<KeyEvent>()

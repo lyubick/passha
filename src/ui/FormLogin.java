@@ -130,7 +130,7 @@ public class FormLogin extends AbstractForm
 
         // ========== LABELS ========== //
 
-        l_Header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ":");
+        l_Header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString());
         l_Warning = new Label();
 
         // ========== TEXTS ========== //
@@ -169,7 +169,7 @@ public class FormLogin extends AbstractForm
 
         // ========== PROPERTIES ========== //
 
-        pf_Password.setMinWidth(300); // FIXME
+        pf_Password.setMinWidth(TEXTFIELD.WIDTH.XL);
         pf_Password.setPromptText(TextID.FORM_LOGIN_LABEL_PASSWORD.toString());
 
         pf_PasswordConfirm.setPromptText(TextID.FORM_LOGIN_LABEL_RETYPE.toString());
@@ -195,7 +195,7 @@ public class FormLogin extends AbstractForm
     @Override
     protected void onUserCloseRequest()
     {
-        close(); // FIXME maybe we should minimize
+        close();
         Terminator.terminate(new Exceptions(XC.END));
     }
 

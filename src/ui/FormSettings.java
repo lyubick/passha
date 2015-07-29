@@ -5,7 +5,6 @@ package ui;
 
 import languages.Texts.TextID;
 import main.Exceptions;
-import main.Exceptions.XC;
 import main.Settings;
 import main.Terminator;
 import ui.elements.Button;
@@ -50,10 +49,9 @@ public class FormSettings extends AbstractForm
                     Settings.getInstance().setClipboardLiveTime(ef_clipboard.getText());
                     Settings.getInstance().saveSettings();
 
-                    if (Settings.getInstance().isRestartRequired())
-                        Terminator.terminate(new Exceptions(XC.RESTART));
-                    else
-                        close();
+                    close();
+                    if (Settings.getInstance().isRestartRequired()) FormManagePwd.reload();
+
                 }
                 catch (Exceptions e)
                 {
@@ -78,7 +76,8 @@ public class FormSettings extends AbstractForm
                 FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
                         Settings.LANGUAGE.RUSSIAN.name());
 
-        cb_language = new ComboBox(langOptions, TextID.FORM_SETTINGS_LABEL_LANGUAGE, 100); // FIXME
+        cb_language =
+                new ComboBox(langOptions, TextID.FORM_SETTINGS_LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
 
         try
         {

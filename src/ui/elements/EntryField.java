@@ -77,13 +77,15 @@ public class EntryField extends javafx.scene.control.TextField implements Labele
 
     public void beError()
     {
-        // TODO text field highlight
         label.beError();
+        this.setFont(Label.FONT_ERROR);
+        this.setStyle("-fx-text-fill: red; -fx-text-box-border: red;");
     }
 
     public void beNormal()
     {
-        // TODO text field highlight
         label.beNormal();
+        this.setFont(Label.FONT_PRIMARY);
+        this.setStyle("-fx-text-fill: black; -fx-text-box-border: black;");
     }
 }

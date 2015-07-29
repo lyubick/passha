@@ -43,7 +43,7 @@ public class FormCreatePwd extends AbstractForm
 
     private Button          b_OK                           = null;
     private Button          b_cancel                       = null;
-    private Button          b_regeneratePassword           = null;                                  // FIXME
+    private Button          b_regeneratePassword           = null;
 
     private CheckBox        cb_specialChars                = null;
     private CheckBox        cb_upperCaseChar               = null;
@@ -146,10 +146,9 @@ public class FormCreatePwd extends AbstractForm
                     b_OK.setDisable(false);
                     if (ef_length.getText().length() == 0)
                         ef_length.setText(Integer.toString(DEFAULT_PASSWORD_LENGTH));
-                    if (Integer.parseInt(ef_length.getText()) > MAX_PASSWORD_LENGTH)
+                    else if (Integer.parseInt(ef_length.getText()) > MAX_PASSWORD_LENGTH)
                         ef_length.setText(Integer.toString(MAX_PASSWORD_LENGTH));
-
-                    if (Integer.parseInt(ef_length.getText()) < MIN_PASSWORD_LENGTH)
+                    else if (Integer.parseInt(ef_length.getText()) < MIN_PASSWORD_LENGTH)
                         ef_length.setText(Integer.toString(MIN_PASSWORD_LENGTH));
                 }
             }
@@ -223,8 +222,7 @@ public class FormCreatePwd extends AbstractForm
     {
         try
         {
-            if (ef_length.getText().length() > 0 // TODO: move inside
-                                                 // SpecialPassword constructor
+            if (ef_length.getText().length() > 0
                     && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
@@ -236,7 +234,6 @@ public class FormCreatePwd extends AbstractForm
                 ef_passwordPreview.setText(password.getPassword());
                 l_errorLabel.setText("");
                 ef_name.beNormal();
-                ef_length.beNormal();
                 ef_specialChars.beNormal();
                 b_OK.setDisable(false);
             }
@@ -252,9 +249,15 @@ public class FormCreatePwd extends AbstractForm
             {
                 l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_MISSING_PARAM.toString());
 
-                ef_name.beError();
-                ef_specialChars.beError();
-                ef_length.beError();
+                if (ef_name.getText().length() == 0)
+                {
+                    ef_name.beError();
+                }
+
+                if (cb_specialChars.isSelected() && ef_specialChars.getText().length() == 0)
+                {
+                    ef_specialChars.beError();
+                }
             }
             b_OK.setDisable(true);
             password = null;
