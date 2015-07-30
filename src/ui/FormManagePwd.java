@@ -63,21 +63,20 @@ public class FormManagePwd extends AbstractForm
 
     private TableView<iSpecialPassword> table           = null;
     private TextField                   tf_pass         = null;
-    private Button                      b_New           = null;
-    private Button                      b_Delete        = null;
-    private Button                      b_Reset         = null;
-    private Button                      b_Copy          = null;
-    private Button                      b_Export        = null;
-    private Button                      b_Edit          = null;
+    private Button                      b_new           = null;
+    private Button                      b_delete        = null;
+    private Button                      b_reset         = null;
+    private Button                      b_copy          = null;
+    private Button                      b_export        = null;
+    private Button                      b_edit          = null;
 
-    static Task<Void>                   tsk_PWDLifeTime = null;
+    static Task<Void>                   tsk_pwdLifeTime = null;
 
-    private static ProgressIndicator    pi_PWDLifeTime  = null;
+    private static ProgressIndicator    pi_pwdLifeTime  = null;
 
-    private MenuBar                     mb_Main         = null;
-    private Menu                        m_File          = null;
-    private MenuItem                    mi_Exit         = null;
-    private MenuItem                    mi_Settings     = null;
+    private Menu                        m_file          = null;
+    private MenuItem                    mi_exit         = null;
+    private MenuItem                    mi_settings     = null;
 
     private static AbstractForm         This            = null;
 
@@ -203,9 +202,9 @@ public class FormManagePwd extends AbstractForm
                     Terminator.terminate(e);
                 }
 
-                b_Copy.setDisable(true);
+                b_copy.setDisable(true);
                 tf_pass.setText(table.getSelectionModel().getSelectedItem().getPassword());
-                b_Copy.setDisable(false);
+                b_copy.setDisable(false);
             }
         };
     }
@@ -259,9 +258,9 @@ public class FormManagePwd extends AbstractForm
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(new StringSelection(pwd), null);
 
-        if (tsk_PWDLifeTime != null) tsk_PWDLifeTime.cancel();
+        if (tsk_pwdLifeTime != null) tsk_pwdLifeTime.cancel();
 
-        tsk_PWDLifeTime = new Task<Void>()
+        tsk_pwdLifeTime = new Task<Void>()
         {
             @Override
             protected Void call() throws Exception
@@ -310,12 +309,12 @@ public class FormManagePwd extends AbstractForm
             }
         };
 
-        pi_PWDLifeTime.progressProperty().bind(tsk_PWDLifeTime.progressProperty());
+        pi_pwdLifeTime.progressProperty().bind(tsk_pwdLifeTime.progressProperty());
 
-        tsk_PWDLifeTime.setOnSucceeded(EventHandler -> {
-            pi_PWDLifeTime.progressProperty().unbind();
+        tsk_pwdLifeTime.setOnSucceeded(EventHandler -> {
+            pi_pwdLifeTime.progressProperty().unbind();
             Logger.printDebug("PWDCLIP -> Successfully finished.");
-            pi_PWDLifeTime.setVisible(false);
+            pi_pwdLifeTime.setVisible(false);
             try
             {
                 TrayAgent.getInstance()
@@ -337,15 +336,15 @@ public class FormManagePwd extends AbstractForm
             }
         });
 
-        tsk_PWDLifeTime.setOnCancelled(EventHandler -> {
+        tsk_pwdLifeTime.setOnCancelled(EventHandler -> {
             Logger.printDebug("PWDCLIP -> Cancelled finished");
-            pi_PWDLifeTime.setVisible(false);
+            pi_pwdLifeTime.setVisible(false);
         });
-        Thread calculatePasswordThread = new Thread(tsk_PWDLifeTime);
+        Thread calculatePasswordThread = new Thread(tsk_pwdLifeTime);
         calculatePasswordThread.setDaemon(false);
         calculatePasswordThread.start();
 
-        pi_PWDLifeTime.setVisible(true);
+        pi_pwdLifeTime.setVisible(true);
     }
 
     public static FormManagePwd getInstance() throws Exceptions
@@ -380,16 +379,16 @@ public class FormManagePwd extends AbstractForm
 
         // ========== MENU ========== //
         // TODO: create class for menu
-        mb_Main = new MenuBar();
-        m_File = new Menu(TextID.MENU_LABEL_FILE.toString());
+        mb_main = new MenuBar();
+        m_file = new Menu(TextID.MENU_LABEL_FILE.toString());
 
-        mi_Settings = new MenuItem(TextID.FORM_SETTINGS_NAME.toString());
-        mi_Exit = new MenuItem(TextID.MENU_LABEL_EXIT.toString());
+        mi_settings = new MenuItem(TextID.FORM_SETTINGS_NAME.toString());
+        mi_exit = new MenuItem(TextID.MENU_LABEL_EXIT.toString());
 
-        m_File.getItems().addAll(mi_Settings, mi_Exit);
-        mb_Main.getMenus().add(m_File);
+        m_file.getItems().addAll(mi_settings, mi_exit);
+        mb_main.getMenus().add(m_file);
 
-        mi_Settings.setOnAction(new EventHandler<ActionEvent>()
+        mi_settings.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
             public void handle(ActionEvent event)
@@ -398,7 +397,7 @@ public class FormManagePwd extends AbstractForm
             }
         });
 
-        mi_Exit.setOnAction(new EventHandler<ActionEvent>()
+        mi_exit.setOnAction(new EventHandler<ActionEvent>()
         {
 
             @Override
@@ -410,25 +409,25 @@ public class FormManagePwd extends AbstractForm
 
         // ========== REFRESH ========== //
         group.getChildren().remove(grid);
-        group.getChildren().addAll(mb_Main, grid);
+        group.getChildren().addAll(mb_main, grid);
 
         // ========== HRENJ ========== //
-        pi_PWDLifeTime = new ProgressIndicator(0);
-        pi_PWDLifeTime.setId("pi_css");
-        pi_PWDLifeTime.setMinSize(50, 50);
-        pi_PWDLifeTime.setMaxSize(50, 50);
-        pi_PWDLifeTime.setVisible(false);
+        pi_pwdLifeTime = new ProgressIndicator(0);
+        pi_pwdLifeTime.setId("pi_css");
+        pi_pwdLifeTime.setMinSize(50, 50);
+        pi_pwdLifeTime.setMaxSize(50, 50);
+        pi_pwdLifeTime.setVisible(false);
 
-        GridPane.setMargin(pi_PWDLifeTime, new Insets(20, 0, 0, 210));
+        GridPane.setMargin(pi_pwdLifeTime, new Insets(20, 0, 0, 210));
 
         // ========== BUTTONS ========== //
         // FIXME LANG shortcuts
-        b_New = new Button("_" + TextID.COMMON_LABEL_NEW.toString(), SIZE.L);
-        b_Delete = new Button("_" + TextID.FORM_CREATEPWD_MANAGER_LABEL_DELETE.toString(), SIZE.L);
-        b_Copy = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD.toString(), SIZE.L);
-        b_Export = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_EXPORT.toString(), SIZE.L);
-        b_Reset = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_RESET.toString(), SIZE.L);
-        b_Edit = new Button("_" + TextID.FORM_MANAGEWD_LABEL_EDIT.toString(), SIZE.L);
+        b_new = new Button("_" + TextID.COMMON_LABEL_NEW.toString(), SIZE.L);
+        b_delete = new Button("_" + TextID.FORM_CREATEPWD_MANAGER_LABEL_DELETE.toString(), SIZE.L);
+        b_copy = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD.toString(), SIZE.L);
+        b_export = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_EXPORT.toString(), SIZE.L);
+        b_reset = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_RESET.toString(), SIZE.L);
+        b_edit = new Button("_" + TextID.FORM_MANAGEWD_LABEL_EDIT.toString(), SIZE.L);
 
         // ========== TABLE ========== //
         table = new TableView<iSpecialPassword>();
@@ -461,19 +460,19 @@ public class FormManagePwd extends AbstractForm
         table.setMinHeight(tableMinHeight);
         table.setMinWidth(tableMinWidth);
 
-        b_Export.setDisable(false);
-        b_Copy.setDisable(true);
-        b_Reset.setDisable(false);
+        b_export.setDisable(false);
+        b_copy.setDisable(true);
+        b_reset.setDisable(false);
 
-        GridPane.setValignment(b_New, VPos.TOP);
-        GridPane.setValignment(b_Delete, VPos.TOP);
-        GridPane.setHalignment(b_Copy, HPos.LEFT);
-        GridPane.setValignment(b_Export, VPos.BOTTOM);
-        GridPane.setValignment(b_Edit, VPos.TOP);
+        GridPane.setValignment(b_new, VPos.TOP);
+        GridPane.setValignment(b_delete, VPos.TOP);
+        GridPane.setHalignment(b_copy, HPos.LEFT);
+        GridPane.setValignment(b_export, VPos.BOTTOM);
+        GridPane.setValignment(b_edit, VPos.TOP);
 
-        GridPane.setMargin(b_Edit, new Insets(40, 0, 0, 0));
-        GridPane.setMargin(b_Delete, new Insets(80, 0, 0, 0));
-        GridPane.setMargin(b_Copy, new Insets(0, 0, 0, 270));
+        GridPane.setMargin(b_edit, new Insets(40, 0, 0, 0));
+        GridPane.setMargin(b_delete, new Insets(80, 0, 0, 0));
+        GridPane.setMargin(b_copy, new Insets(0, 0, 0, 270));
 
         // ========== TEXT FIELD ========== //
         tf_pass = new TextField();
@@ -483,27 +482,27 @@ public class FormManagePwd extends AbstractForm
         // ========== GRID ========== //
         grid.add(table, 0, 0);
 
-        grid.add(pi_PWDLifeTime, 0, 1);
+        grid.add(pi_pwdLifeTime, 0, 1);
         grid.add(tf_pass, 0, 1);
-        grid.add(b_Copy, 0, 1);
+        grid.add(b_copy, 0, 1);
 
-        grid.add(b_Export, 1, 0);
-        grid.add(b_New, 1, 0);
-        grid.add(b_Edit, 1, 0);
-        grid.add(b_Delete, 1, 0);
-        grid.add(b_Reset, 1, 0);
+        grid.add(b_export, 1, 0);
+        grid.add(b_new, 1, 0);
+        grid.add(b_edit, 1, 0);
+        grid.add(b_delete, 1, 0);
+        grid.add(b_reset, 1, 0);
 
         try
         {
-            Button.setButtonShortcut(b_New, new KeyCodeCombination(KeyCode.N,
+            Button.setButtonShortcut(b_new, new KeyCodeCombination(KeyCode.N,
                     KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_Delete, new KeyCodeCombination(KeyCode.D,
+            Button.setButtonShortcut(b_delete, new KeyCodeCombination(KeyCode.D,
                     KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_Copy, new KeyCodeCombination(KeyCode.C,
+            Button.setButtonShortcut(b_copy, new KeyCodeCombination(KeyCode.C,
                     KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_Export, new KeyCodeCombination(KeyCode.E,
+            Button.setButtonShortcut(b_export, new KeyCodeCombination(KeyCode.E,
                     KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_Reset, new KeyCodeCombination(KeyCode.R,
+            Button.setButtonShortcut(b_reset, new KeyCodeCombination(KeyCode.R,
                     KeyCombination.SHORTCUT_DOWN));
         }
         catch (Exceptions e)
@@ -511,12 +510,12 @@ public class FormManagePwd extends AbstractForm
             Terminator.terminate(e);
         }
 
-        b_New.setOnAction(getOnNewBtnAction());
-        b_Edit.setOnAction(getOnEditBtnAction());
-        b_Delete.setOnAction(getOnDeleteBtnAction());
-        b_Reset.setOnAction(getOnResetBtnAction());
-        b_Export.setOnAction(getOnExportBtnAction());
-        b_Copy.setOnAction(getOnCopyToClipboardBtnAction());
+        b_new.setOnAction(getOnNewBtnAction());
+        b_edit.setOnAction(getOnEditBtnAction());
+        b_delete.setOnAction(getOnDeleteBtnAction());
+        b_reset.setOnAction(getOnResetBtnAction());
+        b_export.setOnAction(getOnExportBtnAction());
+        b_copy.setOnAction(getOnCopyToClipboardBtnAction());
 
         table.getSelectionModel().selectedItemProperty()
                 .addListener(getSelectedItemPropertyListener());

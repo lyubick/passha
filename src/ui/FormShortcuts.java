@@ -52,7 +52,7 @@ public class FormShortcuts extends AbstractForm
                 {
                     PasswordCollection.getInstance().setSelected(
                             PasswordCollection.getInstance().getPasswordByShortcut(
-                                    keyEvent.getText()));
+                                    keyEvent.getText().toLowerCase()));
 
                     FormManagePwd.copyToClipboard();
 

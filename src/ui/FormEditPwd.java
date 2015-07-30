@@ -4,9 +4,12 @@ import db.PasswordCollection;
 import db.SpecialPassword;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import ui.elements.Button;
 import ui.elements.EntryField;
+import ui.elements.Label;
 import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import languages.Texts.TextID;
@@ -23,6 +26,7 @@ public class FormEditPwd extends AbstractForm
     private Button          b_OK          = null;
     private SpecialPassword pwd           = null;
     private EntryField      ef_errorLabel = null;
+    private Label           l_header      = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
@@ -61,6 +65,8 @@ public class FormEditPwd extends AbstractForm
 
         priority = WindowPriority.ALWAYS_ON_TOP;
 
+        l_header = new Label(TextID.FORM_EDITPWD_LABEL_HEADER);
+        l_header.beHeader();
         pwd = PasswordCollection.getInstance().getSelected();
 
         ef_pwdName = new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXTFIELD.WIDTH.XXL);
@@ -83,12 +89,15 @@ public class FormEditPwd extends AbstractForm
         ef_url.setText(pwd.getUrl());
         ef_shortcut.setText(pwd.getShortcut());
 
+        grid.addHElement(l_header, 0, 2);
         grid.addHElement((LabeledItem) ef_pwdName);
         grid.addHElement((LabeledItem) ef_comment);
         grid.addHElement((LabeledItem) ef_url);
         grid.addHElement((LabeledItem) ef_shortcut);
         grid.addHElement((LabeledItem) ef_errorLabel);
         grid.addHElement(b_OK, 1);
+
+        GridPane.setHalignment(l_header, HPos.CENTER);
 
         b_OK.setOnAction(getOnOKBtnAction());
 

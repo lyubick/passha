@@ -35,7 +35,7 @@ public abstract class AbstractForm
     protected Scene                scene   = null;
     protected Stage                stage   = null;
 
-    protected MenuBar              mb_Main = null;
+    protected MenuBar              mb_main = null;
 
     protected static final class GAP
     {

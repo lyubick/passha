@@ -40,6 +40,7 @@ public class FormCreatePwd extends AbstractForm
     private SpecialPassword password                       = null;
 
     private final Label     l_errorLabel                   = new Label("");
+    private Label           l_header                       = null;
 
     private Button          b_OK                           = null;
     private Button          b_cancel                       = null;
@@ -282,6 +283,9 @@ public class FormCreatePwd extends AbstractForm
 
         // ========== ENTRY FIELDS ========== //
 
+        l_header = new Label(TextID.FORM_CREATEPWD_LABEL_HEADER);
+        l_header.beHeader();
+
         ef_name =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
                         TEXTFIELD.WIDTH.XXL);
@@ -327,6 +331,7 @@ public class FormCreatePwd extends AbstractForm
 
         // ========== GRID ========== //
 
+        grid.addHElement(l_header, 0, 2);
         grid.addHElement((LabeledItem) ef_name);
         grid.addHElement((LabeledItem) ef_comment);
         grid.addHElement((LabeledItem) ef_url);
@@ -338,6 +343,7 @@ public class FormCreatePwd extends AbstractForm
         grid.add(b_regeneratePassword, LABELS_COLUMN);
         grid.addHElement(ef_passwordPreview, TEXT_FIELDS_COLUMN);
 
+        GridPane.setHalignment(l_header, HPos.CENTER);
         GridPane.setHalignment(b_regeneratePassword, HPos.RIGHT);
         GridPane.setHalignment(l_errorLabel, HPos.CENTER);
 

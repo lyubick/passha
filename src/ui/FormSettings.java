@@ -70,6 +70,7 @@ public class FormSettings extends AbstractForm
 
         l_header = new Label(TextID.FORM_SETTINGS_NAME.toString());
         l_header.setTextAlignment(TextAlignment.CENTER);
+        l_header.beHeader();
         GridPane.setHalignment(l_header, HPos.CENTER);
 
         langOptions =

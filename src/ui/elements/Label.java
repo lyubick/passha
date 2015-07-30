@@ -19,6 +19,8 @@ public class Label extends javafx.scene.control.Label
                                                                FontWeight.NORMAL, 12);
     public static final Font   FONT_ERROR              = Font.font("Comic Sans MS",
                                                                FontWeight.BOLD, 12);
+    public static final Font   FONT_HEADER             = Font.font("Comic Sans MS",
+                                                               FontWeight.BOLD, 14);
 
     private void setUp()
     {
@@ -93,19 +95,32 @@ public class Label extends javafx.scene.control.Label
         this.setFont(FONT_PRIMARY);
     }
 
+    public Label beHeader()
+    {
+        this.setTextFill(Color.DARKBLUE);
+        this.setFont(FONT_HEADER);
+        this.setWidth(calcLength(this.getText(), FONT_HEADER));
+        return this;
+    }
+
     public static double calcLength(TextID name)
     {
         return calcLength(name.toString());
     }
 
-    public static double calcLength(String name)
+    public static double calcLength(String name, Font font)
     {
         Text tmp = new Text(name);
-        tmp.setFont(FONT_ERROR);
+        tmp.setFont(font);
 
         Logger.printDebug("CALCUALTING LENGTH: " + tmp.getLayoutBounds().getWidth());
 
         return tmp.getLayoutBounds().getWidth();
+    }
+
+    public static double calcLength(String name)
+    {
+        return calcLength(name, FONT_ERROR);
     }
 
     public static double calcMaxLength(String... names)

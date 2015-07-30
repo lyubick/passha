@@ -122,6 +122,7 @@ public class FormResetPwd extends AbstractForm
         l_warning.beError();
 
         l_header = new Label(TextID.FORM_RESETPWD_NAME.toString());
+        l_header.beHeader();
 
         GridPane.setHalignment(l_warning, HPos.CENTER);
         GridPane.setHalignment(l_header, HPos.CENTER);

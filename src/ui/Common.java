@@ -21,7 +21,7 @@ public final class Common
             {
                 if (Character.isLetterOrDigit(keyEvent.getCharacter().charAt(0)))
                 {
-                    ef.setText(keyEvent.getCharacter());
+                    ef.setText(keyEvent.getCharacter().toLowerCase());
                 }
 
                 keyEvent.consume();

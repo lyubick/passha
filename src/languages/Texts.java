@@ -55,6 +55,9 @@ public class Texts
         /**************************************************************************************************************
          * CREATE PASSWORD FORM
          *************************************************************************************************************/
+        FORM_CREATEPWD_LABEL_HEADER(new String[]
+        { "Enter new password data", "Введите данные для нового пароля" }),
+
         FORM_CREATEPWD_LABEL_COMMENT(new String[]
         { "Comment", "Комментарий" }),
 
@@ -116,6 +119,9 @@ public class Texts
         /**************************************************************************************************************
          * EDIT PASSWORD FORM
          *************************************************************************************************************/
+        FORM_EDITPWD_LABEL_HEADER(new String[]
+        { "Edit password data", "Редактируйте данные пароля" }),
+
         FORM_EDITPWD_LABEL_SHORTCUT(new String[]
         { "Shortcut", "Горячая клавиша" }),
 
@@ -180,8 +186,8 @@ public class Texts
         FORM_RESETPWD_MSG_WARNING(
                 new String[]
                 {
-                        "By pressing \'OK\' you will substitute current Password with the new Password.\n Thus current Password will be permanently lost!",
-                        "Нажав \'OK\' Вы замените текущий Пароль на Новый.\n В результатье текущий Пароль будет безвозвратно утерян!" }),
+                        "By pressing \'OK\' you will substitute current Password with the new Password.Thus current Password will be permanently lost!",
+                        "Нажав \'OK\' Вы замените текущий Пароль на Новый.В результатье текущий Пароль будет безвозвратно утерян!" }),
 
         FORM_RESETPWD_NAME(new String[]
         { "Reset password", "Обновить пароль" }),

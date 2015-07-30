@@ -20,9 +20,9 @@ import main.Terminator;
 
 public class FormDeletePwd extends AbstractForm
 {
-    private Button     b_Confirm        = null;
+    private Button     b_confirm        = null;
     private Label      l_note           = null;
-    private Label      l_Header         = null;
+    private Label      l_header         = null;
     private Label      l_deleteWord     = null;
     private TextField  tf_confirmation  = null;
     private boolean    confirmed        = false;
@@ -40,12 +40,12 @@ public class FormDeletePwd extends AbstractForm
             {
                 if (newValue.equals(confirmationText))
                 {
-                    b_Confirm.setText(TextID.FORM_DELETEPWD_NAME.toString());
+                    b_confirm.setText(TextID.FORM_DELETEPWD_NAME.toString());
                     confirmed = true;
                 }
                 else
                 {
-                    b_Confirm.setText(TextID.COMMON_LABEL_CANCEL.toString());
+                    b_confirm.setText(TextID.COMMON_LABEL_CANCEL.toString());
                     confirmed = false;
                 }
             }
@@ -83,7 +83,8 @@ public class FormDeletePwd extends AbstractForm
         priority = WindowPriority.ALWAYS_ON_TOP;
 
         confirmationText = new String(TextID.FORM_DELETEPWD_MSG_CONFIRMATION.toString());
-        l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
+        l_header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
+        l_header.beHeader();
 
         l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString());
         l_deleteWord = new Label(confirmationText);
@@ -94,7 +95,7 @@ public class FormDeletePwd extends AbstractForm
         l_note.beError();
         l_deleteWord.beError();
 
-        b_Confirm =
+        b_confirm =
                 new Button(TextID.COMMON_LABEL_CANCEL.toString(),
                         TextID.FORM_DELETEPWD_NAME.toString());
 
@@ -106,23 +107,23 @@ public class FormDeletePwd extends AbstractForm
         ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, TEXTFIELD.WIDTH.XL);
         ef_passwordName.setEditable(false);
 
-        GridPane.setHalignment(l_Header, HPos.CENTER);
+        GridPane.setHalignment(l_header, HPos.CENTER);
         GridPane.setHalignment(l_note, HPos.CENTER);
         GridPane.setHalignment(l_deleteWord, HPos.CENTER);
-        GridPane.setHalignment(b_Confirm, HPos.CENTER);
+        GridPane.setHalignment(b_confirm, HPos.CENTER);
         GridPane.setHalignment(tf_confirmation, HPos.CENTER);
         GridPane.setHalignment(ef_passwordName, HPos.RIGHT);
 
         tf_confirmation.textProperty().addListener(getConfirmationTFListener());
 
-        b_Confirm.setOnAction(getOnConfirmBtnAction());
+        b_confirm.setOnAction(getOnConfirmBtnAction());
 
-        grid.addHElement(l_Header, 0, 2);
+        grid.addHElement(l_header, 0, 2);
         grid.addHElement((LabeledItem) ef_passwordName);
         grid.addHElement(l_note, 0, 2);
         grid.addHElement(l_deleteWord, 0, 2);
         grid.addHElement(tf_confirmation, 0, 2);
-        grid.addHElement(b_Confirm, 0, 2);
+        grid.addHElement(b_confirm, 0, 2);
 
         try
         {
