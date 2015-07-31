@@ -75,6 +75,7 @@ public class FormManagePwd extends AbstractForm
     private static ProgressIndicator    pi_pwdLifeTime  = null;
 
     private Menu                        m_file          = null;
+    private MenuItem                    mi_about        = null;
     private MenuItem                    mi_exit         = null;
     private MenuItem                    mi_settings     = null;
 
@@ -384,8 +385,9 @@ public class FormManagePwd extends AbstractForm
 
         mi_settings = new MenuItem(TextID.FORM_SETTINGS_NAME.toString());
         mi_exit = new MenuItem(TextID.MENU_LABEL_EXIT.toString());
+        mi_about = new MenuItem(TextID.MENU_LABEL_ABOUT.toString());
 
-        m_file.getItems().addAll(mi_settings, mi_exit);
+        m_file.getItems().addAll(mi_settings, mi_about, mi_exit);
         mb_main.getMenus().add(m_file);
 
         mi_settings.setOnAction(new EventHandler<ActionEvent>()
@@ -399,11 +401,19 @@ public class FormManagePwd extends AbstractForm
 
         mi_exit.setOnAction(new EventHandler<ActionEvent>()
         {
-
             @Override
             public void handle(ActionEvent event)
             {
                 Terminator.terminate(new Exceptions(XC.END));
+            }
+        });
+
+        mi_about.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                new FormAbout(This);
             }
         });
 

@@ -5,6 +5,7 @@ import java.util.Vector;
 import ui.elements.GridPane;
 import languages.Texts.TextID;
 import logger.Logger;
+import main.Properties;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -202,6 +203,11 @@ public abstract class AbstractForm
         };
     }
 
+    protected AbstractForm(AbstractForm parent, TextID title)
+    {
+        this(parent, title.toString());
+    }
+
     protected AbstractForm(AbstractForm parent, String title)
     {
         this.parent = parent;
@@ -232,7 +238,7 @@ public abstract class AbstractForm
         stage.setScene(scene);
 
         stage.getIcons().add(new Image("resources/tray_icon.png"));
-        stage.setTitle(title + " - " + TextID.COMMON_APPLICATION_NAME.toString() + " ("
+        stage.setTitle(title + " - " + Properties.SOFTWARE.NAME + " ("
                 + TextID.COMMON_LABEL_VERSION.toString() + ")");
         stage.setResizable(false);
 

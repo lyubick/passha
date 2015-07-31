@@ -22,10 +22,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
-import languages.Texts;
 import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions;
+import main.Properties;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.elements.Button;
@@ -378,7 +378,7 @@ public class FormUpdate extends AbstractForm
             @Override
             public void handle(WindowEvent event)
             {
-                currentVersion = "v" + Texts.getVersion() + ".000";
+                currentVersion = "v" + Properties.SOFTWARE.VERSION + ".000";
 
                 Task<Void> tsk_LatestVersion = getLatestVersion();
                 tsk_LatestVersion.setOnSucceeded(getOnLatestVersionSucceded());

@@ -26,6 +26,12 @@ public class GridPane extends javafx.scene.layout.GridPane
         super.add(child, columnIndex, nextLine);
     }
 
+    public void addAll(int columnIndex, Node... childs)
+    {
+        for (Node child : childs)
+            super.add(child, columnIndex, nextLine);
+    }
+
     public GridPane addHElement(Node child, int columnIdx)
     {
         this.add(child, columnIdx, nextLine);

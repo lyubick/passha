@@ -71,6 +71,11 @@ public class Label extends javafx.scene.control.Label
         this.setUp();
     }
 
+    public Label(TextID name, int maxWidth)
+    {
+        this(name.toString(), maxWidth);
+    }
+
     public Label(String name, int maxWidth)
     {
         super(name);
