@@ -27,16 +27,16 @@ public abstract class AbstractForm
         ALWAYS_ON_TOP,
     };
 
-    protected AbstractForm         parent  = null;
-    protected Vector<AbstractForm> childs  = null;
+    protected AbstractForm         parent = null;
+    protected Vector<AbstractForm> childs = null;
     protected WindowPriority       priority;
 
-    protected GridPane             grid    = null;
-    protected VBox                 group   = null;
-    protected Scene                scene   = null;
-    protected Stage                stage   = null;
+    protected GridPane grid  = null;
+    protected VBox     group = null;
+    protected Scene    scene = null;
+    protected Stage    stage = null;
 
-    protected MenuBar              mb_main = null;
+    protected MenuBar mb_main = null;
 
     protected static final class GAP
     {
@@ -224,7 +224,7 @@ public abstract class AbstractForm
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
 
-        grid.setGridLinesVisible(true); // TODO: make it somehow automatically
+        grid.setGridLinesVisible(false); // TODO: make it somehow automatically
 
         group = new VBox();
         group.getChildren().addAll(grid);

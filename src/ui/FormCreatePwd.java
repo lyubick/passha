@@ -28,34 +28,34 @@ import javafx.scene.layout.GridPane;
  */
 public class FormCreatePwd extends AbstractForm
 {
-    private final int       LABELS_COLUMN                  = 0;
-    private final int       TEXT_FIELDS_COLUMN             = LABELS_COLUMN + 1;
+    private final int LABELS_COLUMN      = 0;
+    private final int TEXT_FIELDS_COLUMN = LABELS_COLUMN + 1;
 
-    private final String    SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
+    private final String SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
 
-    private final int       MAX_PASSWORD_LENGTH            = 64;
-    private final int       MIN_PASSWORD_LENGTH            = 8;
-    private final int       DEFAULT_PASSWORD_LENGTH        = 16;
+    private final int MAX_PASSWORD_LENGTH     = 64;
+    private final int MIN_PASSWORD_LENGTH     = 8;
+    private final int DEFAULT_PASSWORD_LENGTH = 16;
 
-    private SpecialPassword password                       = null;
+    private SpecialPassword password = null;
 
-    private final Label     l_errorLabel                   = new Label("");
-    private Label           l_header                       = null;
+    private final Label l_errorLabel = new Label("");
+    private Label       l_header     = null;
 
-    private Button          b_OK                           = null;
-    private Button          b_cancel                       = null;
-    private Button          b_regeneratePassword           = null;
+    private Button b_OK                 = null;
+    private Button b_cancel             = null;
+    private Button b_regeneratePassword = null;
 
-    private CheckBox        cb_specialChars                = null;
-    private CheckBox        cb_upperCaseChar               = null;
+    private CheckBox cb_specialChars  = null;
+    private CheckBox cb_upperCaseChar = null;
 
-    private EntryField      ef_name                        = null;
-    private EntryField      ef_comment                     = null;
-    private EntryField      ef_url                         = null;
-    private EntryField      ef_length                      = null;
-    private EntryField      ef_specialChars                = null;
-    private EntryField      ef_passwordPreview             = null;
-    private EntryField      ef_shortcut                    = null;
+    private EntryField ef_name            = null;
+    private EntryField ef_comment         = null;
+    private EntryField ef_url             = null;
+    private EntryField ef_length          = null;
+    private EntryField ef_specialChars    = null;
+    private EntryField ef_passwordPreview = null;
+    private EntryField ef_shortcut        = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<KeyEvent> getLengthTFFilter()
@@ -174,10 +174,10 @@ public class FormCreatePwd extends AbstractForm
                         PasswordCollection.getInstance().addPassword(password);
                     }
                     else
-                        PasswordCollection.getInstance().addPassword(
-                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url
-                                        .getText(), ef_length.getText(), cb_specialChars
-                                        .isSelected(), cb_upperCaseChar.isSelected(),
+                        PasswordCollection.getInstance()
+                                .addPassword(new SpecialPassword(ef_name.getText(),
+                                        ef_comment.getText(), ef_url.getText(), ef_length.getText(),
+                                        cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
                                         ef_specialChars.getText(), ef_shortcut.getText()));
                     close();
                 }
@@ -223,19 +223,18 @@ public class FormCreatePwd extends AbstractForm
     {
         try
         {
+            ef_specialChars.beNormal();
+            ef_name.beNormal();
             if (ef_length.getText().length() > 0
                     && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
-                password =
-                        new SpecialPassword(ef_name.getText(), ef_comment.getText(),
-                                ef_url.getText(), ef_length.getText(),
-                                cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
-                                ef_specialChars.getText(), ef_shortcut.getText());
+                password = new SpecialPassword(ef_name.getText(), ef_comment.getText(),
+                        ef_url.getText(), ef_length.getText(), cb_specialChars.isSelected(),
+                        cb_upperCaseChar.isSelected(), ef_specialChars.getText(),
+                        ef_shortcut.getText());
                 ef_passwordPreview.setText(password.getPassword());
                 l_errorLabel.setText("");
-                ef_name.beNormal();
-                ef_specialChars.beNormal();
                 b_OK.setDisable(false);
             }
             else
@@ -286,14 +285,12 @@ public class FormCreatePwd extends AbstractForm
         l_header = new Label(TextID.FORM_CREATEPWD_LABEL_HEADER);
         l_header.beHeader();
 
-        ef_name =
-                new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
-                        TEXTFIELD.WIDTH.XXL);
+        ef_name = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
+                TEXTFIELD.WIDTH.XXL);
         ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
         ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD.WIDTH.XXL);
-        ef_length =
-                new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
-                        TEXTFIELD.WIDTH.S);
+        ef_length = new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
+                TEXTFIELD.WIDTH.S);
         ef_specialChars =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*",
                         TEXTFIELD.WIDTH.XXL);
