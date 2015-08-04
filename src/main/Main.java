@@ -16,6 +16,9 @@ public class Main extends Application
 
     public static void main(String[] args)
     {
+        /* 0. Linux Xlib problem workaround */
+        if (System.getProperty("os.name").equals("Linux")) System.loadLibrary("xx");
+
         String info = "";
         /* 1. Switch ON logs */
         try
@@ -50,8 +53,8 @@ public class Main extends Application
             TrayAgent.init();
 
             if (info.length() > 0)
-                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR.toString(),
-                        info, MessageType.ERROR);
+                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR.toString(), info,
+                        MessageType.ERROR);
         }
         catch (Exceptions e)
         {
