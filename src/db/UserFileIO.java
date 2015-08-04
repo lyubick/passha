@@ -19,13 +19,13 @@ import main.Exceptions.XC;
  */
 public final class UserFileIO
 {
-    private final String      USER_FILE_PATH = "user/";
-    private final String      USER_FILE_EXT  = ".cif";
+    private final String               USER_FILE_PATH = "user/";
+    private final String               USER_FILE_EXT  = ".cif";
 
-    private String            file           = "";
-    private static UserFileIO self           = null;
+    private String                     file           = "";
+    private volatile static UserFileIO self           = null;
 
-    Database                  db             = null;
+    Database                           db             = null;
 
     public enum Status
     {

@@ -42,12 +42,11 @@ public class SpecialPassword
 
         shaCycles = Long.parseLong(m.getOrDefault("shaCycles", "0"));
         name = m.getOrDefault("name", "");
-        comment = m.getOrDefault("comment", "");
-        url = m.getOrDefault("url", "");
+        setAllOptionalFields(m.getOrDefault("comment", ""), m.getOrDefault("url", ""),
+                m.getOrDefault("shortcut", ""));
         length = Integer.parseInt(m.getOrDefault("length", "0"));
         specialChars = m.getOrDefault("specialChars", "");
         paramsMask = Utilities.getBitSet(m.getOrDefault("paramsMask", ""));
-        shortcut = m.getOrDefault("shortcut", "");
 
         Logger.printDebug("SpecialPassword constructor from Map END");
     }
@@ -97,17 +96,12 @@ public class SpecialPassword
         }
 
         this.name = name;
-        this.comment = comment;
-        this.url = url;
+        setAllOptionalFields(comment, url, shortcut);
         this.length = Integer.parseInt(length);
         this.paramsMask = paramsMask;
         this.specialChars = specialChars;
-        this.shortcut = shortcut;
 
-        do
-        {
-            shaCycles = CryptoSystem.getInstance().randSHACycles();
-        } while (!isPasswordValid());
+        changeCycles();
 
         Logger.printDebug("SpecialPassword constructor... DONE!");
     }
@@ -119,19 +113,24 @@ public class SpecialPassword
         if (other == null) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
 
         this.name = other.name.toString();
-        this.comment = other.comment.toString();
-        this.url = other.url.toString();
         this.length = other.length;
         this.paramsMask = (BitSet) other.paramsMask.clone();
         this.specialChars = other.specialChars.toString();
-        this.shortcut = other.shortcut.toString();
 
+        setAllOptionalFields(other.comment.toString(), other.url.toString(),
+                other.shortcut.toString());
+
+        this.shaCycles = other.shaCycles;
+
+        Logger.printDebug("SpecialPassword copy-constructor... DONE!");
+    }
+
+    public void changeCycles() throws Exceptions
+    {
         do
         {
             shaCycles = CryptoSystem.getInstance().randSHACycles();
         } while (!isPasswordValid());
-
-        Logger.printDebug("SpecialPassword copy-constructor... DONE!");
     }
 
     public void setAllOptionalFields(String comment, String url, String shortcut)

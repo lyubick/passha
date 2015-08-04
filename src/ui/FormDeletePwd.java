@@ -5,6 +5,8 @@ import ui.elements.Button;
 import ui.elements.EntryField;
 import ui.elements.GridPane;
 import ui.elements.Label;
+import ui.elements.LabeledItem;
+import ui.elements.EntryField.TEXTFIELD;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -18,15 +20,10 @@ import main.Terminator;
 
 public class FormDeletePwd extends AbstractForm
 {
-    private final class WINDOW
-    {
-        public static final int width  = 350;
-        public static final int height = 250;
-    }
-
-    private Button     b_Confirm        = null;
+    private Button     b_confirm        = null;
     private Label      l_note           = null;
-    private Label      l_Header         = null;
+    private Label      l_header         = null;
+    private Label      l_deleteWord     = null;
     private TextField  tf_confirmation  = null;
     private boolean    confirmed        = false;
     private EntryField ef_passwordName  = null;
@@ -43,12 +40,12 @@ public class FormDeletePwd extends AbstractForm
             {
                 if (newValue.equals(confirmationText))
                 {
-                    b_Confirm.setText(TextID.FORM_DELETEPWD_NAME.toString());
+                    b_confirm.setText(TextID.FORM_DELETEPWD_NAME.toString());
                     confirmed = true;
                 }
                 else
                 {
-                    b_Confirm.setText(TextID.COMMON_LABEL_CANCEL.toString());
+                    b_confirm.setText(TextID.COMMON_LABEL_CANCEL.toString());
                     confirmed = false;
                 }
             }
@@ -85,32 +82,48 @@ public class FormDeletePwd extends AbstractForm
         super(parent, TextID.FORM_DELETEPWD_NAME.toString());
         priority = WindowPriority.ALWAYS_ON_TOP;
 
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
+        confirmationText = new String(TextID.FORM_DELETEPWD_MSG_CONFIRMATION.toString());
+        l_header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
+        l_header.beHeader();
 
-        confirmationText = new String("DELETE");
-        l_Header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
-        l_note =
-                new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString() + "\n" + confirmationText,
-                        WINDOW.width - 100);
+        l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString());
+        l_deleteWord = new Label(confirmationText);
+
+        l_deleteWord.setTextAlignment(TextAlignment.CENTER);
         l_note.setTextAlignment(TextAlignment.CENTER);
-        b_Confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString());
+
         l_note.beError();
+        l_deleteWord.beError();
+
+        b_confirm =
+                new Button(TextID.COMMON_LABEL_CANCEL.toString(),
+                        TextID.FORM_DELETEPWD_NAME.toString());
+
         tf_confirmation = new TextField();
-        tf_confirmation.setMaxWidth(WINDOW.width - 100);
-        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, WINDOW.width - 200);
+        tf_confirmation.setMaxWidth(TEXTFIELD.WIDTH.L);
+        tf_confirmation.setMinWidth(TEXTFIELD.WIDTH.L);
+        tf_confirmation.setMinHeight(TEXTFIELD.HEIGTH.M);
+        tf_confirmation.setMaxHeight(TEXTFIELD.HEIGTH.M);
+        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, TEXTFIELD.WIDTH.XL);
         ef_passwordName.setEditable(false);
 
-        GridPane.setHalignment(l_Header, HPos.CENTER);
+        GridPane.setHalignment(l_header, HPos.CENTER);
         GridPane.setHalignment(l_note, HPos.CENTER);
-        GridPane.setHalignment(b_Confirm, HPos.CENTER);
+        GridPane.setHalignment(l_deleteWord, HPos.CENTER);
+        GridPane.setHalignment(b_confirm, HPos.CENTER);
         GridPane.setHalignment(tf_confirmation, HPos.CENTER);
+        GridPane.setHalignment(ef_passwordName, HPos.RIGHT);
 
         tf_confirmation.textProperty().addListener(getConfirmationTFListener());
 
-        b_Confirm.setOnAction(getOnConfirmBtnAction());
+        b_confirm.setOnAction(getOnConfirmBtnAction());
 
-        grid.addColumn(0, l_Header, ef_passwordName.getHBoxed(), l_note, tf_confirmation, b_Confirm);
+        grid.addHElement(l_header, 0, 2);
+        grid.addHElement((LabeledItem) ef_passwordName);
+        grid.addHElement(l_note, 0, 2);
+        grid.addHElement(l_deleteWord, 0, 2);
+        grid.addHElement(tf_confirmation, 0, 2);
+        grid.addHElement(b_confirm, 0, 2);
 
         try
         {

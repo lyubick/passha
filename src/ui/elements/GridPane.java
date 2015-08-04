@@ -26,9 +26,22 @@ public class GridPane extends javafx.scene.layout.GridPane
         super.add(child, columnIndex, nextLine);
     }
 
+    public void addAll(int columnIndex, Node... childs)
+    {
+        for (Node child : childs)
+            super.add(child, columnIndex, nextLine);
+    }
+
     public GridPane addHElement(Node child, int columnIdx)
     {
         this.add(child, columnIdx, nextLine);
+        nextLine++;
+        return this;
+    }
+
+    public GridPane addHElement(Node child, int columnIdx, int columnSpawn)
+    {
+        this.add(child, columnIdx, nextLine, columnSpawn, 1);
         nextLine++;
         return this;
     }
@@ -38,10 +51,20 @@ public class GridPane extends javafx.scene.layout.GridPane
         return addHElement(child, 0);
     }
 
-    public GridPane addHElement(EntryField fld)
+    public GridPane addHElements(int columnIndex, Node... childs)
+    {
+        for (Node child : childs)
+            add(child, columnIndex++);
+
+        nextLine++;
+
+        return this;
+    }
+
+    public GridPane addHElement(LabeledItem fld)
     {
         this.add(fld.getLabel(), 0, nextLine);
-        this.add(fld, 1, nextLine);
+        this.add(fld.getSelf(), 1, nextLine);
         nextLine++;
         return this;
     }

@@ -10,6 +10,7 @@ import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.elements.Button;
+import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import db.PasswordCollection;
 import javafx.event.ActionEvent;
@@ -26,18 +27,12 @@ import ui.FormManagePwd;
  */
 public class FormLogin extends AbstractForm
 {
-    private final class WINDOW
-    {
-        public static final int width  = 350;
-        public static final int height = 200;
-    }
-
-    private Label         l_Header           = null;
-    private Label         l_Warning          = null;
-    private PasswordField pf_Password        = null;
-    private PasswordField pf_PasswordConfirm = null;
-    private Button        b_Login            = null;
-    private Button        b_Register         = null;
+    private Label         l_header           = null;
+    private Label         l_warning          = null;
+    private PasswordField pf_password        = null;
+    private PasswordField pf_passwordConfirm = null;
+    private Button        b_login            = null;
+    private Button        b_register         = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnLoginBtnAction()
@@ -47,23 +42,23 @@ public class FormLogin extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                if (pf_Password.getText().length() != 0)
+                if (pf_password.getText().length() != 0)
                 {
-                    if (!pf_PasswordConfirm.isVisible())
+                    if (!pf_passwordConfirm.isVisible())
                         try
                         {
-                            init(pf_Password.getText().toString(), false);
+                            init(pf_password.getText().toString(), false);
                         }
                         catch (Exceptions e)
                         {
                             if (e.getCode() == XC.USER_UNKNOWN)
                             {
-                                b_Register.setVisible(true);
+                                b_register.setVisible(true);
 
-                                pf_PasswordConfirm.setVisible(true);
-                                pf_Password.setDisable(true);
+                                pf_passwordConfirm.setVisible(true);
+                                pf_password.setDisable(true);
 
-                                l_Warning.setText(TextID.FORM_LOGIN_MSG_INCORRECT_PWD.toString());
+                                l_warning.setText(TextID.FORM_LOGIN_MSG_INCORRECT_PWD.toString());
                             }
                             else
                             {
@@ -90,12 +85,12 @@ public class FormLogin extends AbstractForm
 
                 try
                 {
-                    if (pf_Password.getText().equals(pf_PasswordConfirm.getText()))
-                        init(pf_PasswordConfirm.getText(), true);
+                    if (pf_password.getText().equals(pf_passwordConfirm.getText()))
+                        init(pf_passwordConfirm.getText(), true);
                     else
                     {
                         reset();
-                        l_Warning.setText(TextID.FORM_LOGIN_MSG_PWDS_DONT_MATCH.toString());
+                        l_warning.setText(TextID.FORM_LOGIN_MSG_PWDS_DONT_MATCH.toString());
                     }
                 }
                 catch (Exceptions e)
@@ -109,13 +104,13 @@ public class FormLogin extends AbstractForm
     /* PRIVATE ROUTINE */
     private void reset()
     {
-        pf_Password.clear();
-        pf_Password.setDisable(false);
-        pf_Password.requestFocus();
-        pf_PasswordConfirm.clear();
-        pf_PasswordConfirm.setVisible(false);
-        b_Register.setVisible(false);
-        l_Warning.setText("");
+        pf_password.clear();
+        pf_password.setDisable(false);
+        pf_password.requestFocus();
+        pf_passwordConfirm.clear();
+        pf_passwordConfirm.setVisible(false);
+        b_register.setVisible(false);
+        l_warning.setText("");
     }
 
     private void init(String password, boolean isNewUser) throws Exceptions
@@ -133,58 +128,68 @@ public class FormLogin extends AbstractForm
         super(null, TextID.FORM_LOGIN_NAME.toString()); // Login doesn't have
                                                         // parents :(
 
-        stage.setHeight(WINDOW.height);
-        stage.setWidth(WINDOW.width);
-
         // ========== LABELS ========== //
 
-        l_Header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ":");
-        l_Warning = new Label("");
+        l_header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString());
+        l_header.beHeader();
+        l_warning = new Label();
+        l_warning.beError();
 
         // ========== TEXTS ========== //
 
-        pf_Password = new PasswordField();
-        pf_PasswordConfirm = new PasswordField();
+        pf_password = new PasswordField();
+        pf_passwordConfirm = new PasswordField();
+
+        pf_password.setMinWidth(TEXTFIELD.WIDTH.XL);
+        pf_password.setMaxWidth(TEXTFIELD.WIDTH.XL);
+        pf_password.setMinHeight(TEXTFIELD.HEIGTH.M);
+        pf_password.setMaxHeight(TEXTFIELD.HEIGTH.M);
+
+        pf_passwordConfirm.setMinWidth(TEXTFIELD.WIDTH.XL);
+        pf_passwordConfirm.setMaxWidth(TEXTFIELD.WIDTH.XL);
+        pf_passwordConfirm.setMinHeight(TEXTFIELD.HEIGTH.M);
+        pf_passwordConfirm.setMaxHeight(TEXTFIELD.HEIGTH.M);
 
         // ========== BUTTONS ========== //
 
-        b_Login = new Button(TextID.FORM_LOGIN_LABEL_LOGIN.toString());
-        b_Register = new Button(TextID.FORM_LOGIN_LABEL_REGISTER.toString());
+        b_login = new Button(TextID.FORM_LOGIN_LABEL_LOGIN.toString());
+        b_register = new Button(TextID.FORM_LOGIN_LABEL_REGISTER.toString());
 
-        b_Login.setDefaultButton(true);
+        b_login.setDefaultButton(true);
 
         // ========== GRID ========== //
 
-        grid.addHElement(l_Header);
+        grid.addHElement(l_header);
 
-        grid.addHElement(pf_Password);
-        grid.addHElement(pf_PasswordConfirm);
+        grid.addHElement(pf_password);
+        grid.addHElement(pf_passwordConfirm);
 
-        grid.add(b_Register, 0);
-        grid.addHElement(b_Login);
+        grid.add(b_register, 0);
+        grid.addHElement(b_login);
 
-        grid.addHElement(l_Warning);
+        grid.addHElement(l_warning);
 
         // ========== PROPERTIES ========== //
 
-        pf_Password.setMinWidth(WINDOW.width - 50);
-        pf_Password.setPromptText(TextID.FORM_LOGIN_LABEL_PASSWORD.toString());
+        pf_password.setMinWidth(TEXTFIELD.WIDTH.XL);
+        pf_password.setPromptText(TextID.FORM_LOGIN_LABEL_PASSWORD.toString());
 
-        pf_PasswordConfirm.setPromptText(TextID.FORM_LOGIN_LABEL_RETYPE.toString());
-        pf_PasswordConfirm.setVisible(false);
+        pf_passwordConfirm.setPromptText(TextID.FORM_LOGIN_LABEL_RETYPE.toString());
+        pf_passwordConfirm.setVisible(false);
 
-        b_Register.setVisible(false);
+        b_register.setVisible(false);
 
         grid.setAlignment(Pos.CENTER);
 
-        GridPane.setHalignment(l_Header, HPos.CENTER);
-        GridPane.setHalignment(b_Login, HPos.RIGHT);
-        GridPane.setHalignment(b_Register, HPos.LEFT);
+        GridPane.setHalignment(l_header, HPos.CENTER);
+        GridPane.setHalignment(b_login, HPos.RIGHT);
+        GridPane.setHalignment(b_register, HPos.LEFT);
+        GridPane.setHalignment(l_warning, HPos.CENTER);
 
         // ========== LISTENERS ========== //
-        b_Login.setOnAction(getOnLoginBtnAction());
+        b_login.setOnAction(getOnLoginBtnAction());
 
-        b_Register.setOnAction(getOnRegisterBtnAction());
+        b_register.setOnAction(getOnRegisterBtnAction());
 
         open();
     }
@@ -193,7 +198,7 @@ public class FormLogin extends AbstractForm
     @Override
     protected void onUserCloseRequest()
     {
-        close(); // FIXME maybe we should minimize
+        close();
         Terminator.terminate(new Exceptions(XC.END));
     }
 

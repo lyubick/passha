@@ -1,9 +1,11 @@
 package ui;
 
 import java.util.Vector;
+
 import ui.elements.GridPane;
 import languages.Texts.TextID;
 import logger.Logger;
+import main.Properties;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -14,7 +16,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 public abstract class AbstractForm
@@ -26,20 +27,20 @@ public abstract class AbstractForm
         ALWAYS_ON_TOP,
     };
 
-    protected AbstractForm         parent  = null;
-    protected Vector<AbstractForm> childs  = null;
+    protected AbstractForm         parent = null;
+    protected Vector<AbstractForm> childs = null;
     protected WindowPriority       priority;
 
-    protected GridPane             grid    = null;
-    protected VBox                 group   = null;
-    protected Scene                scene   = null;
-    protected Stage                stage   = null;
+    protected GridPane grid  = null;
+    protected VBox     group = null;
+    protected Scene    scene = null;
+    protected Stage    stage = null;
 
-    protected MenuBar              mb_Main = null;
+    protected MenuBar mb_main = null;
 
     protected static final class GAP
     {
-        public static final int H = 20;
+        public static final int H = 10;
         public static final int V = 10;
     };
 
@@ -47,21 +48,29 @@ public abstract class AbstractForm
     {
         public static final int bottom = 10;
         public static final int top    = 10;
-        public static final int right  = 20;
-        public static final int left   = 20;
+        public static final int right  = 10;
+        public static final int left   = 10;
     };
 
-    protected static final class WINDOW
+    public static final class STANDARD
     {
-        public static final int width  = 1050;
-        public static final int height = 650;
-    }
+        public static final class SIZE
+        {
+            public static final double WIDTH  = 300.0;
+            public static final double HEIGHT = 30.0;
+        }
+    };
 
     // Method will create reference to this instance in parent instance
     protected void open()
     {
         if (parent != null) parent.childs.add(this);
         stage.show();
+
+        Logger.printDebug("OPEN! Grid W: " + grid.getWidth() + " H: " + grid.getHeight());
+        Logger.printDebug("OPEN! Group W: " + group.getWidth() + " H: " + group.getHeight());
+        Logger.printDebug("OPEN! Scene W: " + scene.getWidth() + " H: " + scene.getHeight());
+        Logger.printDebug("OPEN! Stage W: " + stage.getWidth() + " H: " + stage.getHeight());
     }
 
     // Method will delete references to this from parent instance
@@ -194,6 +203,11 @@ public abstract class AbstractForm
         };
     }
 
+    protected AbstractForm(AbstractForm parent, TextID title)
+    {
+        this(parent, title.toString());
+    }
+
     protected AbstractForm(AbstractForm parent, String title)
     {
         this.parent = parent;
@@ -203,26 +217,35 @@ public abstract class AbstractForm
         childs = new Vector<AbstractForm>();
 
         grid = new GridPane();
+
         grid.setHgap(GAP.H);
         grid.setVgap(GAP.V);
-        grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
+
         grid.setAlignment(Pos.CENTER);
+        grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
+
+        grid.setGridLinesVisible(false); // TODO: make it somehow automatically
 
         group = new VBox();
         group.getChildren().addAll(grid);
 
-        scene = new Scene(group, WINDOW.width, WINDOW.height);
+        group.setAlignment(Pos.CENTER);
+        group.setPadding(new Insets(0, 0, 0, 0));
 
-        stage = new Stage(StageStyle.UNIFIED);
+        scene = new Scene(group);
+
+        stage = new Stage(Common.STAGE_STYLE.UNIFIED);
         stage.setScene(scene);
 
         stage.getIcons().add(new Image("resources/tray_icon.png"));
-        stage.setTitle(title + " - " + TextID.COMMON_APPLICATION_NAME.toString() + " ("
+        stage.setTitle(title + " - " + Properties.SOFTWARE.NAME + " ("
                 + TextID.COMMON_LABEL_VERSION.toString() + ")");
         stage.setResizable(false);
 
         stage.setOnCloseRequest(getOnCloseRequest());
         stage.iconifiedProperty().addListener(getIconifiedPropertyListener());
         stage.focusedProperty().addListener(getFocusedPropertyListener());
+
+        stage.centerOnScreen();
     }
 }

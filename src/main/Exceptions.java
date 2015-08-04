@@ -14,7 +14,9 @@ public final class Exceptions extends Throwable
      */
     private static final long serialVersionUID = 1L;
 
-    private XC code;
+    private XC                code;
+
+    private String            text             = null;
 
     public static enum XC
     {
@@ -35,6 +37,8 @@ public final class Exceptions extends Throwable
         // ONLY New Password dialog exceptions
         MANDATORY_DATA_MISSING,
         PASSWORD_NAME_ALREADY_EXISTS,
+        PASSWORD_SHORTCUT_ALREADY_IN_USE, // this error code should contain
+                                          // conflicting password name in text;
 
         // Exception thrown ONLY on Login stage, indicating, that it could be
         // new user or Password is incorrect.
@@ -75,5 +79,17 @@ public final class Exceptions extends Throwable
     public Exceptions(XC code)
     {
         this.code = code;
+    }
+
+    public Exceptions setText(String text)
+    {
+        this.text = text;
+        return this;
+    }
+
+    public String getText()
+    {
+        if (text != null) return text;
+        return "";
     }
 }

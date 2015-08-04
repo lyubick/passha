@@ -3,9 +3,12 @@ package ui;
 import java.util.Vector;
 
 import ui.elements.EntryField;
+import ui.elements.GridPane;
+import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
 import languages.Texts.TextID;
+import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
 import db.PasswordCollection;
@@ -13,6 +16,8 @@ import db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Screen;
@@ -21,11 +26,6 @@ import main.Terminator;
 
 public class FormShortcuts extends AbstractForm
 {
-
-    private final class WINDOW
-    {
-        public static final int width = 200;
-    }
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private ChangeListener<Boolean> getFocusedPropertyListner()
@@ -52,7 +52,7 @@ public class FormShortcuts extends AbstractForm
                 {
                     PasswordCollection.getInstance().setSelected(
                             PasswordCollection.getInstance().getPasswordByShortcut(
-                                    keyEvent.getText()));
+                                    keyEvent.getText().toLowerCase()));
 
                     FormManagePwd.copyToClipboard();
 
@@ -73,19 +73,24 @@ public class FormShortcuts extends AbstractForm
         Vector<SpecialPassword> tmp = PasswordCollection.getInstance().getPasswordsWithShortcut();
         if (tmp.size() == 0) throw new Exceptions(XC.NO_SHORTCUTS_EXISTS);
 
-        grid.add(new Label(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString()), 0, 0);
-        grid.add(new Label(TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString()), 1, 0);
+        Label l_passwordName = new Label(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME);
+        Label l_shortcut = new Label(TextID.FORM_EDITPWD_LABEL_SHORTCUT);
 
-        grid.setNextLine(1);
+        GridPane.setHalignment(l_passwordName, HPos.CENTER);
+        GridPane.setHalignment(l_shortcut, HPos.CENTER);
+
+        grid.addHElements(0, l_passwordName, l_shortcut);
+
         for (SpecialPassword sp : tmp)
         {
             EntryField ef = new EntryField(sp.getName(), TEXTFIELD.WIDTH.XS);
             ef.setEditable(false);
             ef.setText(sp.getShortcut());
-            grid.addHElement(ef);
-        }
+            GridPane.setHalignment(ef, HPos.CENTER);
+            grid.addHElement((LabeledItem) ef);
 
-        stage.setHeight((tmp.size() + 1) * TEXTFIELD.HEIGTH.M);
+            ef.getLabel().setAlignment(Pos.CENTER);
+        }
 
         grid.getChildren().get(0).requestFocus(); // remove focus from ef
     }
@@ -103,14 +108,13 @@ public class FormShortcuts extends AbstractForm
 
         fillFormWithPwds();
 
-        stage.setWidth(WINDOW.width);
-        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth()
-                - stage.getWidth());
-        stage.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight()
-                - stage.getHeight());
+        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 
         open();
+        Logger.printDebug("X: " + screen.getMaxX() + " Y: " + screen.getMaxY());
+        Logger.printDebug("W: " + stage.getWidth() + " H: " + stage.getHeight());
+        stage.setX(screen.getMaxX() - stage.getWidth());
+        stage.setY(screen.getMaxY() - stage.getHeight());
 
         stage.requestFocus();
         stage.setAlwaysOnTop(true);

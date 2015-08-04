@@ -20,28 +20,20 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
-import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import languages.Texts;
 import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions;
+import main.Properties;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.elements.Button;
+import ui.elements.Button.BUTTON;
 import ui.elements.ProgressBar;
 
 public class FormUpdate extends AbstractForm
 {
-
-    // TODO make WINDOW private when override
-    private static final class WINDOW
-    {
-        public static final int width  = 350;
-        public static final int height = 150;
-    }
 
     ProgressBar          pb_progress               = null;
 
@@ -49,7 +41,6 @@ public class FormUpdate extends AbstractForm
     private String       latestVersion             = null;
 
     private File         downloaded                = null;
-    private File         executable                = null;
     private File         newExecutable             = null;
 
     private final String GITHUB_RELEASE_URL        = "https://github.com/lyubick/passha/releases";
@@ -169,8 +160,6 @@ public class FormUpdate extends AbstractForm
                 install.setDaemon(true);
                 Logger.printDebug("install.start();");
                 install.start();
-
-                Terminator.terminate(new Exceptions(XC.END));
             }
         };
     }
@@ -365,24 +354,17 @@ public class FormUpdate extends AbstractForm
             @Override
             protected Void call() throws Exception
             {
-                File executable =
-                        new File(FormUpdate.class.getProtectionDomain().getCodeSource()
-                                .getLocation().toURI().getPath());
+                new File(FormUpdate.class.getProtectionDomain().getCodeSource().getLocation()
+                        .toURI().getPath());
 
-                File newExecutable =
+                newExecutable =
                         new File(FormUpdate.class.getProtectionDomain().getCodeSource()
                                 .getLocation().toURI().getPath()
                                 + "~");
 
-                Thread.sleep(20);
+                Runtime.getRuntime().exec("updater.bat");
 
-                if (executable.delete())
-                {
-                    newExecutable.renameTo(executable);
-                    newExecutable.delete();
-                }
-
-                Terminator.terminate(new Exceptions(XC.RESTART));
+                Terminator.terminate(new Exceptions(XC.END));
 
                 return null;
             }
@@ -396,7 +378,7 @@ public class FormUpdate extends AbstractForm
             @Override
             public void handle(WindowEvent event)
             {
-                currentVersion = "v" + Texts.getVersion() + ".000";
+                currentVersion = "v" + Properties.SOFTWARE.VERSION + ".000";
 
                 Task<Void> tsk_LatestVersion = getLatestVersion();
                 tsk_LatestVersion.setOnSucceeded(getOnLatestVersionSucceded());
@@ -427,25 +409,16 @@ public class FormUpdate extends AbstractForm
     {
         super(parent, TextID.FORM_UPDATE_LABEL_UPDATE.toString());
 
-        b_update = new Button(TextID.FORM_UPDATE_LABEL_UPDATE.toString(), true);
-        b_skip = new Button(TextID.FORM_UPDATE_LABEL_SKIP.toString(), true);
+        b_update = new Button(TextID.FORM_UPDATE_LABEL_UPDATE.toString(), BUTTON.SIZE.S);
+        b_skip = new Button(TextID.FORM_UPDATE_LABEL_SKIP.toString(), BUTTON.SIZE.S);
         b_update.setDefaultButton(true);
         b_update.setVisible(false);
         b_skip.setVisible(false);
 
-        pb_progress = new ProgressBar("");
+        pb_progress = new ProgressBar("", 300, 30);
 
-        grid.setAlignment(Pos.CENTER);
         GridPane.setHalignment(pb_progress, HPos.CENTER);
         GridPane.setHalignment(b_update, HPos.RIGHT);
-
-        stage.initStyle(StageStyle.UNIFIED);
-        stage.centerOnScreen();
-
-        stage.setWidth(WINDOW.width);
-        stage.setHeight(WINDOW.height);
-
-        pb_progress.setMinSize(WINDOW.width - PADDING.left - PADDING.right, WINDOW.height * 0.2);
 
         grid.addVElement(pb_progress, 0);
         grid.add(b_skip, 0);
@@ -456,7 +429,7 @@ public class FormUpdate extends AbstractForm
         b_update.setOnAction(getOnUpdateBtnAction());
         b_skip.setOnAction(getOnSkipBtnAction());
 
-        stage.show();
+        open();
     }
 
     protected void onUserCloseRequest()

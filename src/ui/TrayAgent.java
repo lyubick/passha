@@ -18,6 +18,7 @@ import javafx.application.Platform;
 import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions;
+import main.Properties;
 import main.Terminator;
 import main.Exceptions.XC;
 
@@ -159,7 +160,7 @@ public class TrayAgent
         popup.add(itemExit);
 
         trayIcon =
-                new TrayIcon(image, TextID.COMMON_APPLICATION_NAME.toString() + " "
+                new TrayIcon(image, Properties.SOFTWARE.NAME + " "
                         + TextID.COMMON_LABEL_VERSION.toString(), popup);
 
         trayIcon.addMouseListener(lmbHandler());
