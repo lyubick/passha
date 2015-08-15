@@ -14,9 +14,9 @@ public final class Exceptions extends Throwable
      */
     private static final long serialVersionUID = 1L;
 
-    private XC                code;
+    private XC code;
 
-    private String            text             = null;
+    private String text = null;
 
     public static enum XC
     {
@@ -43,6 +43,14 @@ public final class Exceptions extends Throwable
         // Exception thrown ONLY on Login stage, indicating, that it could be
         // new user or Password is incorrect.
         USER_UNKNOWN,
+
+        // Autologin exceptions
+        UNABLE_TO_GET_PHYSICAL_ADDR,
+        UNABLE_TO_GET_USERNAME,
+        UNABLE_TO_ADD_ENTRY,
+        UNABLE_TO_DELETE_ENTRY,
+        UNABLE_TO_RETRIEVE_ENTRY,
+        ENTRY_NOT_FOUND,
 
         // ONLY for methods, that convert Object to Bytes and Bytes to Object
         OBJECT_SERIALIZATION_FAILED,

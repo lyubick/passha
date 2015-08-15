@@ -18,30 +18,33 @@ import db.UserFileIO;
 
 public final class CryptoSystem
 {
-    private static final int    SHA_ITERATION_MIN_COUNT = 10;
-    private static final int    SHA_ITERATION_MAX_COUNT = 255 - SHA_ITERATION_MIN_COUNT;
+    private static final int SHA_ITERATION_MIN_COUNT = 10;
+    private static final int SHA_ITERATION_MAX_COUNT = 255 - SHA_ITERATION_MIN_COUNT;
 
-    private static Random       randomizer              = null;
+    private static Random randomizer = null;
 
-    private SHA                 sha                     = null;
-    private RSA                 rsa                     = null;
+    private SHA sha = null;
+    private RSA rsa = null;
 
-    private static byte[]       masterHash              = null;
+    private byte[] masterHash = null;
+    private String masterPass = null;
 
-    static Clipboard            clipboard               = null;
-    static ClipboardContent     content                 = null;
+    static Clipboard        clipboard = null;
+    static ClipboardContent content   = null;
 
-    private static CryptoSystem self                    = null;
+    private static CryptoSystem self = null;
 
-    private static final String SALT_FILENAME           = "FILENAME";
-    private static final String SALT_P                  = "P";
-    private static final String SALT_Q                  = "Q";
-    private static final String SALT_E                  = "E";
+    private static final String SALT_FILENAME = "FILENAME";
+    private static final String SALT_P        = "P";
+    private static final String SALT_Q        = "Q";
+    private static final String SALT_E        = "E";
 
     // ========== PRIVATE:
 
     private CryptoSystem(String masterPassword, boolean isNewUser) throws Exceptions
     {
+        masterPass = masterPassword;
+
         Logger.printDebug("CryptoSystem constructor STARTS...");
 
         // ========== SHA initialization START:
@@ -57,10 +60,9 @@ public final class CryptoSystem
         // ========== RSA initialization START:
         Logger.printDebug("RSA init STARTS...");
 
-        rsa =
-                new RSA(Utilities.bytesToHex(sha.getHashBytes((masterPassword + SALT_P).getBytes())),
-                        Utilities.bytesToHex(sha.getHashBytes((masterPassword + SALT_Q).getBytes())),
-                        Utilities.bytesToHex(sha.getHashBytes((masterPassword + SALT_E).getBytes())));
+        rsa = new RSA(Utilities.bytesToHex(sha.getHashBytes((masterPassword + SALT_P).getBytes())),
+                Utilities.bytesToHex(sha.getHashBytes((masterPassword + SALT_Q).getBytes())),
+                Utilities.bytesToHex(sha.getHashBytes((masterPassword + SALT_E).getBytes())));
 
         Logger.printDebug("RSA init DONE!");
         // ========== RSA initialization END:
@@ -70,7 +72,9 @@ public final class CryptoSystem
         try
         {
             self = this; // UserFileIO want CS to be up
-            UserFileIO.init(sha.getHashString((Arrays.toString(masterHash) + SALT_FILENAME).getBytes()), isNewUser);
+            UserFileIO.init(
+                    sha.getHashString((Arrays.toString(masterHash) + SALT_FILENAME).getBytes()),
+                    isNewUser);
         }
         catch (Exceptions e)
         {
@@ -119,6 +123,10 @@ public final class CryptoSystem
     }
 
     // ========== PUBLIC:
+    public String getMasterPass()
+    {
+        return masterPass;
+    }
 
     public long randSHACycles()
     {
