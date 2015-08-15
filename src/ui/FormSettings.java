@@ -18,6 +18,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 
@@ -29,6 +30,7 @@ public class FormSettings extends AbstractForm
 {
     private EntryField             ef_clipboard = null;
     private ComboBox               cb_language  = null;
+    private CheckBox               cb_autologin = null;
     private Label                  l_header     = null;
     private Button                 b_ok         = null;
 
@@ -47,6 +49,7 @@ public class FormSettings extends AbstractForm
                 {
                     Settings.getInstance().setLanguage(cb_language.getValue());
                     Settings.getInstance().setClipboardLiveTime(ef_clipboard.getText());
+                    Settings.getInstance().setAutologin(cb_autologin.isSelected());
                     Settings.getInstance().saveSettings();
 
                     close();
@@ -71,29 +74,26 @@ public class FormSettings extends AbstractForm
         l_header = new Label(TextID.FORM_SETTINGS_NAME.toString());
         l_header.setTextAlignment(TextAlignment.CENTER);
         l_header.beHeader();
-        GridPane.setHalignment(l_header, HPos.CENTER);
 
         langOptions =
                 FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
-                        Settings.LANGUAGE.RUSSIAN.name());
+                        Settings.LANGUAGE.–”—— »….name());
 
         cb_language =
                 new ComboBox(langOptions, TextID.FORM_SETTINGS_LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
 
-        try
-        {
-            cb_language.setValue(langOptions.get(Settings.getInstance().getLanguage()));
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
+        cb_autologin = new CheckBox(TextID.FORM_SETTINGS_LABEL_AUTOLOGIN.toString());
 
         ef_clipboard =
                 new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
                         + TextID.COMMON_LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
+
+        b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
+
         try
         {
+            cb_autologin.setSelected(Settings.getInstance().isAutologinOn());
+            cb_language.setValue(langOptions.get(Settings.getInstance().getLanguage()));
             ef_clipboard.setText(Integer
                     .toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
@@ -102,11 +102,13 @@ public class FormSettings extends AbstractForm
             Terminator.terminate(e);
         }
 
-        b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
+        GridPane.setHalignment(l_header, HPos.CENTER);
+        GridPane.setHalignment(cb_autologin, HPos.CENTER);
 
         grid.addHElement(l_header, 0, 2);
         grid.addHElement((LabeledItem) ef_clipboard);
         grid.addHElement((LabeledItem) cb_language);
+        grid.addHElement(cb_autologin, 0, 2);
         grid.addHElement(b_ok, 0, 2);
 
         b_ok.setOnAction(getOnOKBtnAction());
