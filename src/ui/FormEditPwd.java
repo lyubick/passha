@@ -23,7 +23,8 @@ public class FormEditPwd extends AbstractForm
     private EntryField      ef_comment    = null;
     private EntryField      ef_url        = null;
     private EntryField      ef_shortcut   = null;
-    private Button          b_OK          = null;
+    private Button          b_ok          = null;
+    private Button          b_cancel      = null;
     private SpecialPassword pwd           = null;
     private EntryField      ef_errorLabel = null;
     private Label           l_header      = null;
@@ -58,6 +59,18 @@ public class FormEditPwd extends AbstractForm
         };
     }
 
+    private EventHandler<ActionEvent> getOnCancelBtnAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                close();
+            }
+        };
+    }
+
     /* PUBLIC ROUTINE */
     public FormEditPwd(AbstractForm parent) throws Exceptions
     {
@@ -79,7 +92,8 @@ public class FormEditPwd extends AbstractForm
         ef_errorLabel.beError();
         ef_errorLabel.setVisible(false);
 
-        b_OK = new Button(TextID.COMMON_LABEL_OK.toString());
+        b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
+        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
 
         ef_pwdName.setEditable(false);
         ef_shortcut.addEventFilter(KeyEvent.KEY_TYPED, Common.getShortcutTFFiler(ef_shortcut));
@@ -95,11 +109,13 @@ public class FormEditPwd extends AbstractForm
         grid.addHElement((LabeledItem) ef_url);
         grid.addHElement((LabeledItem) ef_shortcut);
         grid.addHElement((LabeledItem) ef_errorLabel);
-        grid.addHElement(b_OK, 1);
+        grid.addAll(1, b_ok, b_cancel);
 
         GridPane.setHalignment(l_header, HPos.CENTER);
+        GridPane.setHalignment(b_cancel, HPos.RIGHT);
 
-        b_OK.setOnAction(getOnOKBtnAction());
+        b_ok.setOnAction(getOnOKBtnAction());
+        b_cancel.setOnAction(getOnCancelBtnAction());
 
         open();
         ef_shortcut.requestFocus();

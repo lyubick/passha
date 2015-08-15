@@ -28,34 +28,34 @@ import javafx.scene.layout.GridPane;
  */
 public class FormCreatePwd extends AbstractForm
 {
-    private final int LABELS_COLUMN      = 0;
-    private final int TEXT_FIELDS_COLUMN = LABELS_COLUMN + 1;
+    private final int       LABELS_COLUMN                  = 0;
+    private final int       TEXT_FIELDS_COLUMN             = LABELS_COLUMN + 1;
 
-    private final String SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
+    private final String    SPECIAL_CHARACTERS_DEFAULT_SET = "` ~!@#$%^&*()_-+={}[]\\|:;\"\'<>,.?/";
 
-    private final int MAX_PASSWORD_LENGTH     = 64;
-    private final int MIN_PASSWORD_LENGTH     = 8;
-    private final int DEFAULT_PASSWORD_LENGTH = 16;
+    private final int       MAX_PASSWORD_LENGTH            = 64;
+    private final int       MIN_PASSWORD_LENGTH            = 8;
+    private final int       DEFAULT_PASSWORD_LENGTH        = 16;
 
-    private SpecialPassword password = null;
+    private SpecialPassword password                       = null;
 
-    private final Label l_errorLabel = new Label("");
-    private Label       l_header     = null;
+    private final Label     l_errorLabel                   = new Label("");
+    private Label           l_header                       = null;
 
-    private Button b_OK                 = null;
-    private Button b_cancel             = null;
-    private Button b_regeneratePassword = null;
+    private Button          b_ok                           = null;
+    private Button          b_cancel                       = null;
+    private Button          b_regeneratePassword           = null;
 
-    private CheckBox cb_specialChars  = null;
-    private CheckBox cb_upperCaseChar = null;
+    private CheckBox        cb_specialChars                = null;
+    private CheckBox        cb_upperCaseChar               = null;
 
-    private EntryField ef_name            = null;
-    private EntryField ef_comment         = null;
-    private EntryField ef_url             = null;
-    private EntryField ef_length          = null;
-    private EntryField ef_specialChars    = null;
-    private EntryField ef_passwordPreview = null;
-    private EntryField ef_shortcut        = null;
+    private EntryField      ef_name                        = null;
+    private EntryField      ef_comment                     = null;
+    private EntryField      ef_url                         = null;
+    private EntryField      ef_length                      = null;
+    private EntryField      ef_specialChars                = null;
+    private EntryField      ef_passwordPreview             = null;
+    private EntryField      ef_shortcut                    = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<KeyEvent> getLengthTFFilter()
@@ -140,11 +140,11 @@ public class FormCreatePwd extends AbstractForm
                 if (newValue)
                 {
                     ef_length.setText("");
-                    b_OK.setDisable(true);
+                    b_ok.setDisable(true);
                 }
                 else
                 {
-                    b_OK.setDisable(false);
+                    b_ok.setDisable(false);
                     if (ef_length.getText().length() == 0)
                         ef_length.setText(Integer.toString(DEFAULT_PASSWORD_LENGTH));
                     else if (Integer.parseInt(ef_length.getText()) > MAX_PASSWORD_LENGTH)
@@ -163,7 +163,7 @@ public class FormCreatePwd extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                b_OK.setDisable(true);
+                b_ok.setDisable(true);
 
                 try
                 {
@@ -174,10 +174,10 @@ public class FormCreatePwd extends AbstractForm
                         PasswordCollection.getInstance().addPassword(password);
                     }
                     else
-                        PasswordCollection.getInstance()
-                                .addPassword(new SpecialPassword(ef_name.getText(),
-                                        ef_comment.getText(), ef_url.getText(), ef_length.getText(),
-                                        cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
+                        PasswordCollection.getInstance().addPassword(
+                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url
+                                        .getText(), ef_length.getText(), cb_specialChars
+                                        .isSelected(), cb_upperCaseChar.isSelected(),
                                         ef_specialChars.getText(), ef_shortcut.getText()));
                     close();
                 }
@@ -188,20 +188,8 @@ public class FormCreatePwd extends AbstractForm
                     else if (e.getCode() == XC.PASSWORD_SHORTCUT_ALREADY_IN_USE)
                         l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_SHORTCUT_IN_USE.toString());
 
-                    b_OK.setDisable(false);
+                    b_ok.setDisable(false);
                 }
-            }
-        };
-    }
-
-    private EventHandler<ActionEvent> getOnCancelBtnAction()
-    {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                close();
             }
         };
     }
@@ -218,6 +206,18 @@ public class FormCreatePwd extends AbstractForm
         };
     }
 
+    private EventHandler<ActionEvent> getOnCancelBtnAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                close();
+            }
+        };
+    }
+
     /* PRIVATE ROUTINE */
     private void showPasswordPreview()
     {
@@ -229,17 +229,18 @@ public class FormCreatePwd extends AbstractForm
                     && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
-                password = new SpecialPassword(ef_name.getText(), ef_comment.getText(),
-                        ef_url.getText(), ef_length.getText(), cb_specialChars.isSelected(),
-                        cb_upperCaseChar.isSelected(), ef_specialChars.getText(),
-                        ef_shortcut.getText());
+                password =
+                        new SpecialPassword(ef_name.getText(), ef_comment.getText(),
+                                ef_url.getText(), ef_length.getText(),
+                                cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
+                                ef_specialChars.getText(), ef_shortcut.getText());
                 ef_passwordPreview.setText(password.getPassword());
                 l_errorLabel.setText("");
-                b_OK.setDisable(false);
+                b_ok.setDisable(false);
             }
             else
             {
-                b_OK.setDisable(true);
+                b_ok.setDisable(true);
                 password = null;
             }
         }
@@ -259,7 +260,7 @@ public class FormCreatePwd extends AbstractForm
                     ef_specialChars.beError();
                 }
             }
-            b_OK.setDisable(true);
+            b_ok.setDisable(true);
             password = null;
         }
     }
@@ -272,10 +273,10 @@ public class FormCreatePwd extends AbstractForm
         priority = WindowPriority.ONLY_ONE_OPENED;
         // ========== BUTTONS ========== //
 
-        b_OK = new Button(TextID.FORM_CREATEPWD_LABEL_CREATE);
+        b_ok = new Button(TextID.FORM_CREATEPWD_LABEL_CREATE);
         b_cancel = new Button(TextID.COMMON_LABEL_CANCEL);
 
-        GridPane.setHalignment(b_OK, HPos.LEFT);
+        GridPane.setHalignment(b_ok, HPos.LEFT);
         GridPane.setHalignment(b_cancel, HPos.RIGHT);
 
         b_regeneratePassword = new Button("", Common.getRegenerateImage());
@@ -285,12 +286,14 @@ public class FormCreatePwd extends AbstractForm
         l_header = new Label(TextID.FORM_CREATEPWD_LABEL_HEADER);
         l_header.beHeader();
 
-        ef_name = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
-                TEXTFIELD.WIDTH.XXL);
+        ef_name =
+                new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
+                        TEXTFIELD.WIDTH.XXL);
         ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
         ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD.WIDTH.XXL);
-        ef_length = new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
-                TEXTFIELD.WIDTH.S);
+        ef_length =
+                new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
+                        TEXTFIELD.WIDTH.S);
         ef_specialChars =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*",
                         TEXTFIELD.WIDTH.XXL);
@@ -344,7 +347,7 @@ public class FormCreatePwd extends AbstractForm
         GridPane.setHalignment(b_regeneratePassword, HPos.RIGHT);
         GridPane.setHalignment(l_errorLabel, HPos.CENTER);
 
-        grid.add(b_OK, TEXT_FIELDS_COLUMN);
+        grid.add(b_ok, TEXT_FIELDS_COLUMN);
         grid.addHElement(b_cancel, TEXT_FIELDS_COLUMN);
         grid.addHElement(l_errorLabel, LABELS_COLUMN, 2);
 
@@ -364,11 +367,11 @@ public class FormCreatePwd extends AbstractForm
         cb_specialChars.setOnAction(getOnSpecialCharactersCBChanged());
         cb_upperCaseChar.setOnAction(getOnUpperCaseCBChanged());
 
-        b_OK.setOnAction(getOnOKBtnAction());
+        b_ok.setOnAction(getOnOKBtnAction());
         b_cancel.setOnAction(getOnCancelBtnAction());
         b_regeneratePassword.setOnAction(getOnRegenerateBtnAction());
 
-        b_OK.setDisable(true);
+        b_ok.setDisable(true);
         ef_length.setText(Integer.toString(DEFAULT_PASSWORD_LENGTH));
 
         open();

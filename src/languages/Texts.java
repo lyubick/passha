@@ -176,6 +176,9 @@ public class Texts
         FORM_LOGIN_LABEL_ENTER_PWD(new String[]
         { "Enter Password", "Введите пароль" }),
 
+        FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME(new String[]
+        { "Unknown User", "Неизвестный пользователь" }),
+
         FORM_LOGIN_LABEL_LOGIN(new String[]
         { "Login", "Войти" }),
 

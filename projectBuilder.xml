@@ -3,8 +3,6 @@
 
 <project name="pasSHA" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant" default="all">
 
-	<buildnumber file="dist_resources\build.version"/>
-
 	<!-- Detect correct Operating system and set PATH variables -->
 	<condition property="JDKLIB" value="${java.home}/../jdk${java.version}/lib" else="${java.home}/../lib" >
 		<os family="windows" />

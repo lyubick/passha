@@ -29,7 +29,6 @@ import main.Properties;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.elements.Button;
-import ui.elements.Button.BUTTON;
 import ui.elements.ProgressBar;
 
 public class FormUpdate extends AbstractForm
@@ -409,8 +408,8 @@ public class FormUpdate extends AbstractForm
     {
         super(parent, TextID.FORM_UPDATE_LABEL_UPDATE.toString());
 
-        b_update = new Button(TextID.FORM_UPDATE_LABEL_UPDATE.toString(), BUTTON.SIZE.S);
-        b_skip = new Button(TextID.FORM_UPDATE_LABEL_SKIP.toString(), BUTTON.SIZE.S);
+        b_update = new Button(TextID.FORM_UPDATE_LABEL_UPDATE.toString());
+        b_skip = new Button(TextID.FORM_UPDATE_LABEL_SKIP.toString());
         b_update.setDefaultButton(true);
         b_update.setVisible(false);
         b_skip.setVisible(false);

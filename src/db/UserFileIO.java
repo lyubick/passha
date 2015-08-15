@@ -47,6 +47,14 @@ public final class UserFileIO
     {
         filename = USER_FILE_PATH + filename + USER_FILE_EXT;
 
+        File userFolder = new File(USER_FILE_PATH);
+
+        if (!userFolder.exists())
+        {
+            userFolder.mkdirs();
+            Logger.printDebug("Created user folder: " + userFolder.getAbsolutePath());
+        }
+
         File test = new File(filename);
 
         if (!test.exists())

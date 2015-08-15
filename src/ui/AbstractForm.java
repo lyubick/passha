@@ -31,12 +31,30 @@ public abstract class AbstractForm
     protected Vector<AbstractForm> childs = null;
     protected WindowPriority       priority;
 
-    protected GridPane grid  = null;
-    protected VBox     group = null;
-    protected Scene    scene = null;
-    protected Stage    stage = null;
+    protected static class Coords
+    {
+        private static double x;
+        private static double y;
 
-    protected MenuBar mb_main = null;
+        public static void remember(Stage stage)
+        {
+            x = stage.getX();
+            y = stage.getY();
+        }
+
+        public static void recall(Stage stage)
+        {
+            stage.setX(x);
+            stage.setY(y);
+        }
+    }
+
+    protected GridPane grid    = null;
+    protected VBox     group   = null;
+    protected Scene    scene   = null;
+    protected Stage    stage   = null;
+
+    protected MenuBar  mb_main = null;
 
     protected static final class GAP
     {
@@ -89,6 +107,7 @@ public abstract class AbstractForm
     {
         stage.show();
         stage.requestFocus();
+        Coords.recall(stage);
         if (childs != null)
         {
             for (AbstractForm child : childs)
@@ -103,6 +122,7 @@ public abstract class AbstractForm
             for (AbstractForm child : childs)
                 child.minimize();
         }
+        Coords.remember(stage);
         stage.hide();
         stage.setIconified(false);
     }

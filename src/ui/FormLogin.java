@@ -147,7 +147,11 @@ public class FormLogin extends AbstractForm
 
         // ========== LABELS ========== //
 
-        l_header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString());
+        l_header =
+                new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString()
+                        + ", "
+                        + System.getProperty("user.name",
+                                TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString()) + "!");
         l_header.beHeader();
         l_warning = new Label();
         l_warning.beError();

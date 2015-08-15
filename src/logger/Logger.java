@@ -3,6 +3,7 @@
  */
 package logger;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -80,8 +81,9 @@ public final class Logger
         methodNameWidth = Math.max(methodNameWidth, methodName.length());
 
         writeToFileAndToScreen(
-                String.format("[%1$s] %2$" + fileNameWidth + "s:%3$-" + lineWidth + "s %4$-" + methodNameWidth + "s ",
-                        getTime(), fileName, line, methodName) + lvl.name() + ": " + msg, lvl);
+                String.format("[%1$s] %2$" + fileNameWidth + "s:%3$-" + lineWidth + "s %4$-"
+                        + methodNameWidth + "s ", getTime(), fileName, line, methodName)
+                        + lvl.name() + ": " + msg, lvl);
     }
 
     private void writeToFileAndToScreen(String log, LOGLEVELS lvl)
@@ -103,6 +105,13 @@ public final class Logger
 
     private Logger() throws Exceptions
     {
+        File logsFolder = new File(LOG_PATH);
+        if (!logsFolder.exists())
+        {
+            logsFolder.mkdirs();
+            Logger.printDebug("Created logs folder: " + logsFolder.getAbsolutePath());
+        }
+
         try
         {
             int id = 0;
