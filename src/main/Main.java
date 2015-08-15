@@ -19,7 +19,7 @@ public class Main extends Application
         /* 0. Linux Xlib problem workaround */
         if (System.getProperty("os.name").equals("Linux")) System.loadLibrary("xx");
 
-        String info = "";
+        TextID info = null;
         /* 1. Switch ON logs */
         try
         {
@@ -39,7 +39,7 @@ public class Main extends Application
         {
             if (e.getCode().equals(XC.DEFAULT_SETTINGS_USED))
             {
-                info = TextID.TRAY_MSG_FAILED_LOAD_SETTINGS.toString();
+                info = TextID.TRAY_MSG_FAILED_LOAD_SETTINGS;
             }
             else
             {
@@ -52,8 +52,8 @@ public class Main extends Application
         {
             TrayAgent.init();
 
-            if (info.length() > 0)
-                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR.toString(), info,
+            if (info != null)
+                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR, info,
                         MessageType.ERROR);
         }
         catch (Exceptions e)

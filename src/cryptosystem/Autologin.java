@@ -15,21 +15,66 @@ import utilities.Utilities;
 
 public class Autologin
 {
-    private final String SALT_P = "P";
-    private final String SALT_Q = "Q";
-    private final String SALT_E = "E";
+    private final int    REGEDIT_READ_OUT_VALUE_OFFSET = 64;
 
-    private final String REG_PATH = "HKCU\\Software\\pasSHA";
+    private final String SALT_P                        = "P";
+    private final String SALT_Q                        = "Q";
+    private final String SALT_E                        = "E";
 
-    private RSA rsa = null;
-    private SHA sha = null;
+    private final String REG_PATH                      = "HKCU\\Software\\pasSHA";
+
+    private RSA          rsa                           = null;
+    private SHA          sha                           = null;
 
     public Autologin() throws Exceptions
     {
         sha = new SHA();
-        rsa = new RSA(sha.getHashString((getPhysicalAddress() + getUserName() + SALT_P).getBytes()),
-                sha.getHashString((getPhysicalAddress() + getUserName() + SALT_Q).getBytes()),
-                sha.getHashString((getPhysicalAddress() + getUserName() + SALT_E).getBytes()));
+        rsa =
+                new RSA(sha.getHashString((getPhysicalAddress() + getUserName() + SALT_P)
+                        .getBytes()),
+                        sha.getHashString((getPhysicalAddress() + getUserName() + SALT_Q)
+                                .getBytes()), sha.getHashString((getPhysicalAddress()
+                                + getUserName() + SALT_E).getBytes()));
+    }
+
+    private String regedit(String command) throws Exceptions
+    {
+        StringBuilder output;
+        try
+        {
+            Logger.printDebug("Exec command: " + command);
+
+            Process proc = Runtime.getRuntime().exec(command);
+            proc.waitFor();
+
+            if (proc.exitValue() != 0)
+            {
+                Logger.printError("RC: " + proc.exitValue());
+                throw new Exceptions(XC.UNABLE_TO_EDIT_REGISTRY);
+            }
+            else
+                Logger.printDebug("Entry added successfully. RC: " + proc.exitValue());
+
+            byte[] b = new byte[Utilities.DEFAULT_BUFFER_SIZE];
+
+            proc.getInputStream().read(b);
+
+            output = new StringBuilder();
+
+            for (int i = REGEDIT_READ_OUT_VALUE_OFFSET; i < Utilities.DEFAULT_BUFFER_SIZE
+                    && Character.isDigit((char) b[i]); i++)
+                output.append((char) b[i]);
+
+            Logger.printDebug("output: " + output.toString());
+
+        }
+        catch (IOException | InterruptedException e)
+        {
+            Logger.printError("Failed runtime exec: " + e.getMessage());
+            throw new Exceptions(XC.UNABLE_TO_EDIT_REGISTRY);
+        }
+
+        return output.toString();
     }
 
     // REGISTRY ROUTINES
@@ -37,60 +82,24 @@ public class Autologin
     {
         try
         {
-            Process proc = Runtime.getRuntime()
-                    .exec("reg add " + REG_PATH + " /f /v AUTOLOGIN /t REG_SZ /d " + data);
-
-            try
-            {
-                proc.waitFor();
-            }
-            catch (InterruptedException e)
-            {
-                // ignore
-            }
-
-            if (proc.exitValue() != 0)
-            {
-                Logger.printError("RC: " + proc.exitValue());
-                throw new Exceptions(XC.UNABLE_TO_ADD_ENTRY);
-            }
-            else
-                Logger.printDebug("Entry added successfully. RC: " + proc.exitValue());
-
+            regedit("reg add " + REG_PATH + " /f /v AUTOLOGIN /d " + data);
         }
-        catch (IOException e)
+        catch (Exceptions e)
         {
             throw new Exceptions(XC.UNABLE_TO_ADD_ENTRY);
         }
+
     }
 
     private void deleteFromRegistry() throws Exceptions
     {
         try
         {
-            Process proc = Runtime.getRuntime().exec("reg delete " + REG_PATH + " /f");
-
-            try
-            {
-                proc.waitFor();
-            }
-            catch (InterruptedException e)
-            {
-                // ignore
-            }
-
-            if (proc.exitValue() != 0)
-            {
-                Logger.printError("RC: " + proc.exitValue());
-                throw new Exceptions(XC.UNABLE_TO_DELETE_ENTRY);
-            }
-            else
-                Logger.printDebug("Entry deleted successfully. RC: " + proc.exitValue());
-
+            regedit("reg delete " + REG_PATH + " /f");
         }
-        catch (IOException e)
+        catch (Exceptions e)
         {
-            throw new Exceptions(XC.UNABLE_TO_ADD_ENTRY);
+            throw new Exceptions(XC.UNABLE_TO_DELETE_ENTRY);
         }
     }
 
@@ -98,50 +107,21 @@ public class Autologin
     {
         try
         {
-            Process proc = Runtime.getRuntime().exec("reg query " + REG_PATH);
-
-            try
-            {
-                proc.waitFor();
-            }
-            catch (InterruptedException e)
-            {
-                // ignore
-            }
-
-            if (proc.exitValue() != 0)
-            {
-                Logger.printError("RC: " + proc.exitValue());
-                throw new Exceptions(XC.UNABLE_TO_ADD_ENTRY);
-            }
-            else
-                Logger.printDebug("Entry read successfully. RC: " + proc.exitValue());
-
-            byte[] b = new byte[4096];
-
-            proc.getInputStream().read(b);
-
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 64; i < 4096 && b[i] >= '0' && b[i] <= '9'; i++)
-                sb.append((char) b[i]);
-
-            Logger.printDebug(sb.toString());
-
-            return sb.toString();
+            return regedit("reg query " + REG_PATH);
         }
-        catch (IOException e)
+        catch (Exceptions e)
         {
             throw new Exceptions(XC.UNABLE_TO_RETRIEVE_ENTRY);
         }
+
     }
 
     private String getPhysicalAddress() throws Exceptions
     {
         try
         {
-            return Utilities.bytesToHex(NetworkInterface
-                    .getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress());
+            return Utilities.bytesToHex(NetworkInterface.getByInetAddress(
+                    InetAddress.getLocalHost()).getHardwareAddress());
         }
         catch (SocketException e)
         {

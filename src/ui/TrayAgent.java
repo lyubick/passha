@@ -187,8 +187,14 @@ public class TrayAgent
             throw new Exceptions(XC.INIT_FAILURE);
     }
 
+    @Deprecated
     public void showNotification(String title, String msg, MessageType type)
     {
         trayIcon.displayMessage(title, msg, type);
+    }
+
+    public void showNotification(TextID title, TextID msg, MessageType type)
+    {
+        trayIcon.displayMessage(title.toString(), msg.toString(), type);
     }
 }

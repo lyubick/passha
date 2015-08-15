@@ -306,6 +306,9 @@ public class Texts
         TRAY_MSG_TIME_LEFT(new String[]
         { "Time left", "Времени осталось" }),
 
+        TRAY_MSG_FAILED_TO_AUTOLOGIN(new String[]
+        { "Autologin failed.", "Автоматический вход не удался." }),
+
         TRAY_MSG_FAILED_TO_UPDATE(new String[]
         { "Update failed.", "Обновление не удалось." }),
 

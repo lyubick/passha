@@ -3,6 +3,8 @@
  */
 package ui;
 
+import java.awt.TrayIcon.MessageType;
+
 import cryptosystem.Autologin;
 import cryptosystem.CryptoSystem;
 import languages.Texts.TextID;
@@ -142,7 +144,17 @@ public class FormLogin extends AbstractForm
         }
         catch (Exceptions e)
         {
-            // ignore, just continue login process
+            Logger.printError("Autologin failed: " + e.getCode());
+            try
+            {
+                Settings.getInstance().setAutologin(false);
+                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR,
+                        TextID.TRAY_MSG_FAILED_TO_AUTOLOGIN, MessageType.ERROR);
+            }
+            catch (Exceptions e1)
+            {
+                Terminator.terminate(e1);
+            }
         }
 
         // ========== LABELS ========== //

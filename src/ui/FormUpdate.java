@@ -14,7 +14,6 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -30,6 +29,7 @@ import main.Terminator;
 import main.Exceptions.XC;
 import ui.elements.Button;
 import ui.elements.ProgressBar;
+import utilities.Utilities;
 
 public class FormUpdate extends AbstractForm
 {
@@ -51,8 +51,6 @@ public class FormUpdate extends AbstractForm
     private final String RELEASE_ARCHIVE_EXTENSION = ".zip";
     private final String RELEASE_EXECUTABLE_NAME   = "pasSHA.jar";
 
-    private int          BUFFER_SIZE               = 4096;
-
     private Button       b_update                  = null;
     private Button       b_skip                    = null;
 
@@ -72,9 +70,8 @@ public class FormUpdate extends AbstractForm
             {
                 try
                 {
-                    TrayAgent.getInstance().showNotification(
-                            TextID.FORM_UPDATE_LABEL_UPDATE.toString(),
-                            TextID.TRAY_MSG_FAILED_TO_UPDATE.toString(), MessageType.WARNING);
+                    TrayAgent.getInstance().showNotification(TextID.FORM_UPDATE_LABEL_UPDATE,
+                            TextID.TRAY_MSG_FAILED_TO_UPDATE, MessageType.WARNING);
                     skipUpdate();
                 }
                 catch (Exceptions e)
@@ -259,7 +256,7 @@ public class FormUpdate extends AbstractForm
                     InputStream is = conn.getInputStream();
                     FileOutputStream fos = new FileOutputStream(downloaded.getCanonicalPath());
 
-                    byte[] buffer = new byte[BUFFER_SIZE];
+                    byte[] buffer = new byte[Utilities.DEFAULT_BUFFER_SIZE];
                     int len;
 
                     while ((len = is.read(buffer)) > 0)
@@ -317,7 +314,7 @@ public class FormUpdate extends AbstractForm
 
                     FileOutputStream fos = new FileOutputStream(newExecutable);
 
-                    byte[] buffer = new byte[BUFFER_SIZE];
+                    byte[] buffer = new byte[Utilities.DEFAULT_BUFFER_SIZE];
                     int len;
 
                     while ((len = is.read(buffer)) > 0)

@@ -23,6 +23,8 @@ import main.Exceptions.XC;
 
 public final class Utilities
 {
+    public static final int DEFAULT_BUFFER_SIZE = 4096;
+
     public static long load64(byte[] input, int indexFrom)
     {
         long value = 0;
@@ -92,8 +94,8 @@ public final class Utilities
 
         if (s.length() > 0 && s.charAt(0) == '{' && s.charAt(s.length() - 1) == '}')
         {
-            Arrays.stream(s.substring(1, s.length() - 1).split(",")).map(String::trim).mapToInt(Integer::parseInt)
-                    .forEach((int e) -> b.set(e));
+            Arrays.stream(s.substring(1, s.length() - 1).split(",")).map(String::trim)
+                    .mapToInt(Integer::parseInt).forEach((int e) -> b.set(e));
         }
 
         return b;
