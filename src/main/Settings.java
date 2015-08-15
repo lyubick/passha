@@ -29,7 +29,8 @@ public class Settings
     private enum PREFIX
     {
         LANGUAGE(new String("language=")),
-        CLIPBOARD_TIME(new String("clipboardLiveTime="))
+        CLIPBOARD_TIME(new String("clipboardLiveTime=")),
+        AUTOLOGIN(new String("autologin="))
 
         ;
 
@@ -50,7 +51,7 @@ public class Settings
     public enum LANGUAGE
     {
         ENGLISH,
-        RUSSIAN,
+        –”—— »…,
     }
 
     private HashMap<String, Object> settings = new HashMap<String, Object>();
@@ -75,6 +76,17 @@ public class Settings
         return self;
     }
 
+    // AUTOLOGIN
+    public boolean isAutologinOn()
+    {
+        return (boolean) settings.getOrDefault(PREFIX.AUTOLOGIN.toString(), false);
+    }
+
+    public void setAutologin(boolean on)
+    {
+        settings.put(PREFIX.AUTOLOGIN.toString(), on);
+    }
+
     // LANGUAGE
     public int getLanguage()
     {
@@ -83,7 +95,7 @@ public class Settings
 
     public void setLanguage(String newLang)
     {
-        if (!settings.get(PREFIX.LANGUAGE.toString()).equals(newLang)) restartRequired = true;
+        if (!settings.get(PREFIX.LANGUAGE.toString()).equals(newLang)) setRestartRequired(true);
 
         settings.put(PREFIX.LANGUAGE.toString(), newLang);
 
@@ -92,6 +104,11 @@ public class Settings
     public boolean isRestartRequired()
     {
         return restartRequired;
+    }
+
+    public void setRestartRequired(boolean required)
+    {
+        restartRequired = required;
     }
 
     // CLIPBOARD
@@ -117,7 +134,8 @@ public class Settings
         try
         {
             settings =
-                    (HashMap<String, Object>) Utilities.bytesToObject(Utilities.readBytesFromFile(SETTINGS_FILE_NAME));
+                    (HashMap<String, Object>) Utilities.bytesToObject(Utilities
+                            .readBytesFromFile(SETTINGS_FILE_NAME));
         }
         catch (Exceptions e)
         {
