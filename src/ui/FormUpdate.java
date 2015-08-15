@@ -89,10 +89,13 @@ public class FormUpdate extends AbstractForm
             @Override
             public void handle(WorkerStateEvent event)
             {
-                Logger.printDebug("Update found: " + latestVersion + " current " + currentVersion);
+                double current = Double.parseDouble(currentVersion.substring(1, 4));
+                double latest = Double.parseDouble(latestVersion.substring(1, 4));
 
-                // No update required continue
-                if (currentVersion.equals(latestVersion))
+                Logger.printDebug("Update found: " + latestVersion + ":" + latest + " current "
+                        + currentVersion + ":" + current);
+
+                if (current + 0.01 > latest)
                 {
                     skipUpdate();
                     return;
