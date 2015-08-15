@@ -3,12 +3,14 @@
  */
 package ui;
 
+import cryptosystem.Autologin;
 import cryptosystem.CryptoSystem;
 import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
+import main.Settings;
 import ui.elements.Button;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
@@ -125,8 +127,23 @@ public class FormLogin extends AbstractForm
     /* PUBLIC ROUTINE */
     public FormLogin()
     {
-        super(null, TextID.FORM_LOGIN_NAME.toString()); // Login doesn't have
-                                                        // parents :(
+        super(null, TextID.FORM_LOGIN_NAME.toString());
+
+        try
+        {
+            if (Settings.getInstance().isAutologinOn())
+            {
+                Autologin autologin = new Autologin();
+
+                this.init(autologin.getMasterPass(), false);
+
+                return;
+            }
+        }
+        catch (Exceptions e)
+        {
+            // ignore, just continue login process
+        }
 
         // ========== LABELS ========== //
 

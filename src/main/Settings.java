@@ -5,6 +5,8 @@ package main;
 
 import java.util.HashMap;
 
+import cryptosystem.Autologin;
+import logger.Logger;
 import main.Exceptions.XC;
 import utilities.Utilities;
 
@@ -14,9 +16,9 @@ import utilities.Utilities;
  */
 public class Settings
 {
-    private static Settings self            = null;
+    private static Settings self = null;
 
-    private boolean         restartRequired = false;
+    private boolean restartRequired = false;
 
     public static class ENV_VARS
     {
@@ -84,7 +86,23 @@ public class Settings
 
     public void setAutologin(boolean on)
     {
-        settings.put(PREFIX.AUTOLOGIN.toString(), on);
+        if (isAutologinOn() == on) return;
+
+        try
+        {
+            Autologin autologin = new Autologin();
+            settings.put(PREFIX.AUTOLOGIN.toString(), on);
+
+            if (on)
+                autologin.setAutologinON();
+            else
+                autologin.setAutologinOFF();
+        }
+        catch (Exceptions e)
+        {
+            Logger.printError("Autologin is not available! Reason: " + e.getCode());
+            settings.put(PREFIX.AUTOLOGIN.toString(), false);
+        }
     }
 
     // LANGUAGE
@@ -133,9 +151,8 @@ public class Settings
     {
         try
         {
-            settings =
-                    (HashMap<String, Object>) Utilities.bytesToObject(Utilities
-                            .readBytesFromFile(SETTINGS_FILE_NAME));
+            settings = (HashMap<String, Object>) Utilities
+                    .bytesToObject(Utilities.readBytesFromFile(SETTINGS_FILE_NAME));
         }
         catch (Exceptions e)
         {
