@@ -191,8 +191,18 @@ public class TrayAgent
         trayIcon.displayMessage(title, msg, type);
     }
 
+    public void showNotification(TextID title, MessageType type)
+    {
+        trayIcon.displayMessage(title.toString(), "", type);
+    }
+
     public void showNotification(TextID title, TextID msg, MessageType type)
     {
         trayIcon.displayMessage(title.toString(), msg.toString(), type);
+    }
+
+    public void showNotification(TextID title, TextID msg, String addition, MessageType type)
+    {
+        trayIcon.displayMessage(title.toString(), msg.toString() + addition, type);
     }
 }

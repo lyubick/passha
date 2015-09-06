@@ -283,12 +283,12 @@ public class FormManagePwd extends AbstractForm
 
                 try
                 {
-                    TrayAgent.getInstance().showNotification(
-                            TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD.toString(),
-                            TextID.TRAY_MSG_TIME_LEFT.toString() + ": "
-                                    + Settings.getInstance().getClipboardLiveTime() / 1000 + " "
-                                    + TextID.COMMON_LABEL_SECONDS.toString(),
-                            MessageType.INFO);
+                    TrayAgent.getInstance()
+                            .showNotification(TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD,
+                                    TextID.TRAY_MSG_TIME_LEFT,
+                                    ": " + Settings.getInstance().getClipboardLiveTime() / 1000
+                                            + " " + TextID.COMMON_LABEL_SECONDS.toString(),
+                                    MessageType.INFO);
                 }
                 catch (Exceptions e)
                 {
@@ -313,20 +313,14 @@ public class FormManagePwd extends AbstractForm
             pi_pwdLifeTime.setVisible(false);
             try
             {
-                TrayAgent.getInstance().showNotification(
-                        TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD.toString(), "",
-                        MessageType.INFO);
-            }
-            catch (Exceptions e)
-            {
-                Terminator.terminate(e);
-            }
-            try
-            {
                 if (pwd.equals(clipboard.getData(DataFlavor.stringFlavor)))
+                {
                     clipboard.setContents(new StringSelection(""), null);
+                    TrayAgent.getInstance().showNotification(
+                            TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD, MessageType.INFO);
+                }
             }
-            catch (UnsupportedFlavorException | IOException e)
+            catch (UnsupportedFlavorException | IOException | Exceptions e)
             {
                 Terminator.terminate(new Exceptions(XC.ERROR));
             }
