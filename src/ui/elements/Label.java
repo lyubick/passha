@@ -15,12 +15,9 @@ public class Label extends javafx.scene.control.Label
     // Magic number don't lose it!
     protected final static int LABEL_LENGTH_COEFICIENT = 8;
 
-    public static final Font   FONT_PRIMARY            = Font.font("Comic Sans MS",
-                                                               FontWeight.NORMAL, 12);
-    public static final Font   FONT_ERROR              = Font.font("Comic Sans MS",
-                                                               FontWeight.BOLD, 12);
-    public static final Font   FONT_HEADER             = Font.font("Comic Sans MS",
-                                                               FontWeight.BOLD, 14);
+    public static final Font FONT_PRIMARY = Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
+    public static final Font FONT_ERROR   = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
+    public static final Font FONT_HEADER  = Font.font("Comic Sans MS", FontWeight.BOLD, 14);
 
     private void setUp()
     {
@@ -117,8 +114,6 @@ public class Label extends javafx.scene.control.Label
     {
         Text tmp = new Text(name);
         tmp.setFont(font);
-
-        Logger.printDebug("CALCUALTING LENGTH: " + tmp.getLayoutBounds().getWidth());
 
         return tmp.getLayoutBounds().getWidth();
     }

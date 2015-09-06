@@ -31,9 +31,9 @@ public class TrayAgent
 
         public ClickListener()
         {
-            timer =
-                    new Timer((int) Toolkit.getDefaultToolkit().getDesktopProperty(
-                            "awt.multiClickInterval"), this);
+            timer = new Timer(
+                    (int) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval"),
+                    this);
         }
 
         public void mouseClicked(MouseEvent e)
@@ -151,17 +151,15 @@ public class TrayAgent
     {
         SystemTray sysTray = SystemTray.getSystemTray();
 
-        Image image =
-                Toolkit.getDefaultToolkit().getImage(
-                        ClassLoader.getSystemResource("resources/tray_icon.png"));
+        Image image = Toolkit.getDefaultToolkit()
+                .getImage(ClassLoader.getSystemResource("resources/tray_icon.png"));
         PopupMenu popup = new PopupMenu();
         MenuItem itemExit = new MenuItem(TextID.MENU_LABEL_EXIT.toString());
 
         popup.add(itemExit);
 
-        trayIcon =
-                new TrayIcon(image, Properties.SOFTWARE.NAME + " "
-                        + TextID.COMMON_LABEL_VERSION.toString(), popup);
+        trayIcon = new TrayIcon(image,
+                Properties.SOFTWARE.NAME + " " + TextID.COMMON_LABEL_VERSION.toString(), popup);
 
         trayIcon.addMouseListener(lmbHandler());
 

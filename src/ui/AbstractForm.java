@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import ui.elements.GridPane;
 import languages.Texts.TextID;
-import logger.Logger;
 import main.Properties;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -49,12 +48,12 @@ public abstract class AbstractForm
         }
     }
 
-    protected GridPane grid    = null;
-    protected VBox     group   = null;
-    protected Scene    scene   = null;
-    protected Stage    stage   = null;
+    protected GridPane grid  = null;
+    protected VBox     group = null;
+    protected Scene    scene = null;
+    protected Stage    stage = null;
 
-    protected MenuBar  mb_main = null;
+    protected MenuBar mb_main = null;
 
     protected static final class GAP
     {
@@ -84,11 +83,6 @@ public abstract class AbstractForm
     {
         if (parent != null) parent.childs.add(this);
         stage.show();
-
-        Logger.printDebug("OPEN! Grid W: " + grid.getWidth() + " H: " + grid.getHeight());
-        Logger.printDebug("OPEN! Group W: " + group.getWidth() + " H: " + group.getHeight());
-        Logger.printDebug("OPEN! Scene W: " + scene.getWidth() + " H: " + scene.getHeight());
-        Logger.printDebug("OPEN! Stage W: " + stage.getWidth() + " H: " + stage.getHeight());
     }
 
     // Method will delete references to this from parent instance
@@ -106,6 +100,7 @@ public abstract class AbstractForm
     public void maximize()
     {
         stage.show();
+        stage.setIconified(false);
         stage.requestFocus();
         Coords.recall(stage);
         if (childs != null)
@@ -124,7 +119,6 @@ public abstract class AbstractForm
         }
         Coords.remember(stage);
         stage.hide();
-        stage.setIconified(false);
     }
 
     // Method that is called when User try to close form, by pressing [X]
@@ -160,6 +154,8 @@ public abstract class AbstractForm
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule,
                     Boolean newValue)
             {
+                // Cancel minimization to avoid loss of stage coordinates
+                stage.setIconified(false);
                 if (newValue) onUserMinimizeRequest();
             }
         };
@@ -169,22 +165,13 @@ public abstract class AbstractForm
     {
         return new ChangeListener<Boolean>()
         {
-
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
                     Boolean newValue)
             {
-                if (!newValue && priority == WindowPriority.NORMAL)
-                {
-                    Logger.printDebug("Lost focus. Ignore. (NORMAL)");
-                    return;
-                }
+                if (!newValue && priority == WindowPriority.NORMAL) return;
 
-                if (newValue && priority == WindowPriority.ALWAYS_ON_TOP)
-                {
-                    Logger.printDebug("Gain focus. Ignore. (ALWAYS_ON_TOP)");
-                    return;
-                }
+                if (newValue && priority == WindowPriority.ALWAYS_ON_TOP) return;
 
                 // Check if we have Children with highest priorities
                 if (!childs.isEmpty())
@@ -194,9 +181,6 @@ public abstract class AbstractForm
                         if (child.priority.equals(WindowPriority.ALWAYS_ON_TOP))
                         {
                             child.stage.requestFocus();
-
-                            Logger.printDebug("Focus of window will be switched to "
-                                    + child.getClass().getName());
                             return;
                         }
                     }
@@ -210,9 +194,6 @@ public abstract class AbstractForm
                         if (child.priority.equals(WindowPriority.ALWAYS_ON_TOP))
                         {
                             child.stage.requestFocus();
-
-                            Logger.printDebug("Focus of window will be switched to "
-                                    + child.getClass().getName());
                             return;
                         }
                     }

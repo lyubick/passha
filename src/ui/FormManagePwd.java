@@ -58,29 +58,29 @@ public class FormManagePwd extends AbstractForm
         public static final int height = 500;
     }
 
-    private final int                   tableMinHeight  = WINDOW.height - 300;
-    private final int                   tableMinWidth   = WINDOW.width - 200;
+    private final int tableMinHeight = WINDOW.height - 300;
+    private final int tableMinWidth  = WINDOW.width - 200;
 
-    private TableView<iSpecialPassword> table           = null;
-    private TextField                   tf_pass         = null;
-    private Button                      b_new           = null;
-    private Button                      b_delete        = null;
-    private Button                      b_reset         = null;
-    private Button                      b_copy          = null;
-    private Button                      b_export        = null;
-    private Button                      b_edit          = null;
+    private TableView<iSpecialPassword> table    = null;
+    private TextField                   tf_pass  = null;
+    private Button                      b_new    = null;
+    private Button                      b_delete = null;
+    private Button                      b_reset  = null;
+    private Button                      b_copy   = null;
+    private Button                      b_export = null;
+    private Button                      b_edit   = null;
 
-    static Task<Void>                   tsk_pwdLifeTime = null;
+    static Task<Void> tsk_pwdLifeTime = null;
 
-    private static ProgressIndicator    pi_pwdLifeTime  = null;
+    private static ProgressIndicator pi_pwdLifeTime = null;
 
-    private Menu                        m_file          = null;
-    private Menu                        m_help          = null;
-    private MenuItem                    mi_about        = null;
-    private MenuItem                    mi_exit         = null;
-    private MenuItem                    mi_settings     = null;
+    private Menu     m_file      = null;
+    private Menu     m_help      = null;
+    private MenuItem mi_about    = null;
+    private MenuItem mi_exit     = null;
+    private MenuItem mi_settings = null;
 
-    private static AbstractForm         This            = null;
+    private static AbstractForm This = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnEditBtnAction()
@@ -196,8 +196,8 @@ public class FormManagePwd extends AbstractForm
                         return;
                     }
 
-                    PasswordCollection.getInstance().setSelected(
-                            table.getSelectionModel().getSelectedItem().getOrigin());
+                    PasswordCollection.getInstance()
+                            .setSelected(table.getSelectionModel().getSelectedItem().getOrigin());
                 }
                 catch (Exceptions e)
                 {
@@ -287,7 +287,8 @@ public class FormManagePwd extends AbstractForm
                             TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD.toString(),
                             TextID.TRAY_MSG_TIME_LEFT.toString() + ": "
                                     + Settings.getInstance().getClipboardLiveTime() / 1000 + " "
-                                    + TextID.COMMON_LABEL_SECONDS.toString(), MessageType.INFO);
+                                    + TextID.COMMON_LABEL_SECONDS.toString(),
+                            MessageType.INFO);
                 }
                 catch (Exceptions e)
                 {
@@ -312,9 +313,9 @@ public class FormManagePwd extends AbstractForm
             pi_pwdLifeTime.setVisible(false);
             try
             {
-                TrayAgent.getInstance()
-                        .showNotification(TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD.toString(),
-                                "", MessageType.INFO);
+                TrayAgent.getInstance().showNotification(
+                        TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD.toString(), "",
+                        MessageType.INFO);
             }
             catch (Exceptions e)
             {
@@ -447,19 +448,15 @@ public class FormManagePwd extends AbstractForm
         // ========== TABLE ========== //
         table = new TableView<iSpecialPassword>();
 
-        TableColumn<iSpecialPassword, String> cName =
-                new TableColumn<iSpecialPassword, String>(
-                        TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
-        TableColumn<iSpecialPassword, String> cComment =
-                new TableColumn<iSpecialPassword, String>(
-                        TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl =
-                new TableColumn<iSpecialPassword, String>(
-                        TextID.FORM_CREATEPWD_LABEL_URL.toString());
+        TableColumn<iSpecialPassword, String> cName = new TableColumn<iSpecialPassword, String>(
+                TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
+        TableColumn<iSpecialPassword, String> cComment = new TableColumn<iSpecialPassword, String>(
+                TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
+        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<iSpecialPassword, String>(
+                TextID.FORM_CREATEPWD_LABEL_URL.toString());
 
-        TableColumn<iSpecialPassword, String> cShortcut =
-                new TableColumn<iSpecialPassword, String>(
-                        TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
+        TableColumn<iSpecialPassword, String> cShortcut = new TableColumn<iSpecialPassword, String>(
+                TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
 
         table.getColumns().add(cName);
         table.getColumns().add(cComment);
@@ -469,8 +466,8 @@ public class FormManagePwd extends AbstractForm
         cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
         cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
         cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
-        cShortcut
-                .setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
+        cShortcut.setCellValueFactory(
+                new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
 
         table.setMinHeight(tableMinHeight);
         table.setMinWidth(tableMinWidth);
@@ -509,16 +506,16 @@ public class FormManagePwd extends AbstractForm
 
         try
         {
-            Button.setButtonShortcut(b_new, new KeyCodeCombination(KeyCode.N,
-                    KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_delete, new KeyCodeCombination(KeyCode.D,
-                    KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_copy, new KeyCodeCombination(KeyCode.C,
-                    KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_export, new KeyCodeCombination(KeyCode.E,
-                    KeyCombination.SHORTCUT_DOWN));
-            Button.setButtonShortcut(b_reset, new KeyCodeCombination(KeyCode.R,
-                    KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_new,
+                    new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_delete,
+                    new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_copy,
+                    new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_export,
+                    new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
+            Button.setButtonShortcut(b_reset,
+                    new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN));
         }
         catch (Exceptions e)
         {
