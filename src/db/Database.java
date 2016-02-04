@@ -1,58 +1,78 @@
-/**
- *
- */
 package db;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
 
 import main.Exceptions;
+import main.Exceptions.XC;
+import main.Properties;
+import rsa.RSA;
 import cryptosystem.CryptoSystem;
 import utilities.Utilities;
 import db.SpecialPassword;
+import javafx.concurrent.Task;
+import logger.Logger;
 
-/**
- * @author lyubick
- *
- */
 public class Database
 {
     private Vector<String>          encrypted = null;
     private Vector<SpecialPassword> decrypted = null;
 
-    @SuppressWarnings("unchecked")
-    public Database(Vector<String> encryptedDB, boolean encrypt) throws Exceptions
+    private File                    vaultFile = null;
+
+    private RSA                     rsa       = null;
+
+    public enum Status
     {
-        encrypted = new Vector<String>();
-        decrypted = new Vector<SpecialPassword>();
+        SYNCHRONIZED,
+        DESYNCHRONIZED,
+        SYNCHRONIZING,
+        SYNCHRONIZATION_FAILED
+    };
 
-        for (String entry : encryptedDB)
+    // FIXME Check this upon closing
+    private volatile Status status = null;
+
+    public Database(RSA myRSA, String filename, boolean newUser) throws Exceptions
+    {
+        // FIXME Redundant? Or move it to Vault of the Vaults :)
+        File vaultDir = new File(Properties.PATHS.VAULT);
+        if (vaultDir.mkdirs() != true)
         {
-            decrypted.add(new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(CryptoSystem
-                    .getInstance().rsaDecrypt(entry))));
-
-            // Change encryption or keep it ?
-            if (!encrypt)
-                encrypted.add(entry);
-            else
-            {
-                encrypted.add(CryptoSystem.getInstance().rsaEncrypt(
-                        Utilities.objectToBytes(decrypted.lastElement().getMap())));
-            }
-
+            Logger.printDebug("Failed to create/access " + vaultDir.getAbsolutePath());
+            throw new Exceptions(XC.DIR_DOES_NOT_EXIST);
         }
-    }
 
-    @Deprecated
-    public Database(Vector<SpecialPassword> decryptedDB) throws Exceptions
-    {
+        vaultFile = new File(Properties.PATHS.VAULT + filename + Properties.EXTENSIONS.VAULT);
+
+        if (!vaultFile.exists() && !newUser)
+        {
+            // FIXME If it doesn't work read about PrintWriter :)
+            try
+            {
+                vaultFile.createNewFile();
+            }
+            catch (IOException e)
+            {
+                Logger.printDebug("Failed to create/access " + vaultFile.getAbsolutePath());
+                throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
+            }
+        }
+        else
+            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
+
+        // RSA initialized and created by Vault, DB has only pointer
+        rsa = myRSA;
+
         encrypted = new Vector<String>();
         decrypted = new Vector<SpecialPassword>();
 
-        for (SpecialPassword entry : decryptedDB)
+        for (String entry : Utilities.readStringsFromFile(vaultFile.getAbsolutePath()))
         {
-            decrypted.add(entry);
-            encrypted.add(CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(entry)));
+            decrypted.add(new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(entry))));
+            encrypted.add(rsa.encrypt(Utilities.objectToBytes(decrypted.lastElement().getMap())));
         }
     }
 
@@ -60,6 +80,9 @@ public class Database
     {
         decrypted.addElement(entry);
         encrypted.addElement(CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(entry.getMap())));
+
+        status = Status.DESYNCHRONIZED;
+        sync();
     }
 
     public void deleteEntry(SpecialPassword entry)
@@ -67,6 +90,9 @@ public class Database
         int idx = decrypted.indexOf(entry);
         decrypted.remove(idx);
         encrypted.remove(idx);
+
+        status = Status.DESYNCHRONIZED;
+        sync();
     }
 
     public void replaceEntry(SpecialPassword newEntry, SpecialPassword oldEntry) throws Exceptions
@@ -76,16 +102,46 @@ public class Database
         encrypted.remove(idx);
         decrypted.add(idx, newEntry);
         encrypted.add(idx, CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(newEntry.getMap())));
-    }
 
-    public Vector<String> getEncrypted()
-    {
-        return encrypted;
+        status = Status.DESYNCHRONIZED;
+        sync();
     }
 
     public Vector<SpecialPassword> getDecrypted()
     {
-        return decrypted;
+        return (Vector<SpecialPassword>) decrypted.clone();
     }
 
+    private void sync()
+    {
+        Logger.printDebug("Saving Database to '" + vaultFile.getAbsolutePath() + "'...");
+
+        Task<Void> task = new Task<Void>()
+        {
+            @Override
+            protected Void call() throws Exception
+            {
+                try
+                {
+                    Utilities.writeToFile(vaultFile.getAbsolutePath(), encrypted);
+                    status = Status.SYNCHRONIZED;
+                    this.succeeded();
+                }
+                catch (Exceptions e)
+                {
+                    status = Status.SYNCHRONIZATION_FAILED;
+                    this.failed();
+                }
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(EventHandler -> {
+            Logger.printDebug("Saving Database to '" + vaultFile.getAbsolutePath() + "' DONE!");
+            Logger.printDebug("Database Synchronization returned status: " + status.toString());
+        });
+
+        Thread thread = new Thread(task);
+        thread.start();
+    }
 }

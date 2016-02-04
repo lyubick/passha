@@ -29,6 +29,7 @@ public final class Exceptions extends Throwable
 
         // ONLY FileIO class Exceptions
         FILE_DOES_NOT_EXISTS,
+        DIR_DOES_NOT_EXIST,
 
         FILE_WRITE_ERROR,
         FILE_READ_ERROR,
@@ -47,6 +48,7 @@ public final class Exceptions extends Throwable
         // Autologin exceptions
         UNABLE_TO_GET_PHYSICAL_ADDR,
         UNABLE_TO_GET_USERNAME,
+
         // main exception (thrown by regedit()), converted by caller to
         // specific.
         UNABLE_TO_EDIT_REGISTRY,
