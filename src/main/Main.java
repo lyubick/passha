@@ -1,15 +1,12 @@
 package main;
 
-import java.awt.TrayIcon.MessageType;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions.XC;
-import ui.FormUpdate;
-import ui.TrayAgent;
+import ui.FormVaultsManager;
 
 public class Main extends Application
 {
@@ -48,18 +45,14 @@ public class Main extends Application
         }
 
         /* 3. Wake up tray notifications */
-        try
-        {
-            TrayAgent.init();
-
-            if (info != null)
-                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR, info,
-                        MessageType.ERROR);
-        }
-        catch (Exceptions e)
-        {
-            Terminator.terminate(e);
-        }
+        /*
+         * try { TrayAgent.init();
+         *
+         * if (info != null)
+         * TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR,
+         * info, MessageType.ERROR); } catch (Exceptions e) {
+         * Terminator.terminate(e); }
+         */
 
         launch();
 
@@ -71,6 +64,8 @@ public class Main extends Application
     {
         Platform.setImplicitExit(false);
 
-        new FormUpdate(null);
+        // During implementation don't run update and autologin
+        // new FormUpdate(null);
+        new FormVaultsManager();
     }
 }

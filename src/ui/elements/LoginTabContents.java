@@ -1,28 +1,21 @@
-package ui;
+package ui.elements;
 
-import java.awt.TrayIcon.MessageType;
-
-import cryptosystem.Autologin;
-import cryptosystem.CryptoSystem;
-import languages.Texts.TextID;
-import logger.Logger;
-import main.Exceptions;
-import main.Terminator;
-import main.Exceptions.XC;
-import main.Settings;
-import ui.elements.Button;
-import ui.elements.EntryField.TEXTFIELD;
-import ui.elements.Label;
-import db.PasswordCollection;
+import core.Vault;
+import ui.elements.GridPane;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
-import javafx.scene.layout.GridPane;
-import ui.FormManagePwd;
+import javafx.scene.control.Tab;
+import languages.Texts.TextID;
+import logger.Logger;
+import main.Exceptions;
+import main.Terminator;
+import main.Exceptions.XC;
+import ui.elements.EntryField.TEXTFIELD;
 
-public class FormLogin extends AbstractForm
+public class LoginTabContents extends ui.elements.GridPane
 {
     private Label         l_header           = null;
     private Label         l_warning          = null;
@@ -30,6 +23,7 @@ public class FormLogin extends AbstractForm
     private PasswordField pf_passwordConfirm = null;
     private Button        b_login            = null;
     private Button        b_register         = null;
+    private Tab           t_ownTab           = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnLoginBtnAction()
@@ -112,48 +106,15 @@ public class FormLogin extends AbstractForm
 
     private void init(String password, boolean isNewUser) throws Exceptions
     {
-        CryptoSystem.init(password, isNewUser);
-        PasswordCollection.init();
-
-        new FormManagePwd();
-        close();
+        Logger.printDebug("init user");
+        // TODO: implement
+        t_ownTab.setContent(new VaultTabContent(new Vault(password, isNewUser)));
     }
 
     /* PUBLIC ROUTINE */
-    public FormLogin()
+    public LoginTabContents(Tab ownTab)
     {
-        super(null, TextID.FORM_LOGIN_NAME.toString());
-
-        try
-        {
-            if (Settings.getInstance().isAutologinOn())
-            {
-                Autologin autologin = new Autologin();
-
-                this.init(autologin.getMasterPass(), false);
-
-                FormManagePwd.getInstance().minimize();
-
-                return;
-            }
-        }
-        catch (Exceptions e)
-        {
-            Logger.printError("Autologin failed: " + e.getCode());
-            try
-            {
-                Settings.getInstance().setAutologin(false);
-                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR,
-                                                         TextID.TRAY_MSG_FAILED_TO_AUTOLOGIN, MessageType.ERROR);
-            }
-            catch (Exceptions e1)
-            {
-                Terminator.terminate(e1);
-            }
-        }
-
         // ========== LABELS ========== //
-
         l_header =
                 new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
                         + System.getProperty("user.name", TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString())
@@ -186,15 +147,15 @@ public class FormLogin extends AbstractForm
 
         // ========== GRID ========== //
 
-        grid.addHElement(l_header);
+        addHElement(l_header);
 
-        grid.addHElement(pf_password);
-        grid.addHElement(pf_passwordConfirm);
+        addHElement(pf_password);
+        addHElement(pf_passwordConfirm);
 
-        grid.add(b_register, 0);
-        grid.addHElement(b_login);
+        add(b_register, 0);
+        addHElement(b_login);
 
-        grid.addHElement(l_warning);
+        addHElement(l_warning);
 
         // ========== PROPERTIES ========== //
 
@@ -206,32 +167,18 @@ public class FormLogin extends AbstractForm
 
         b_register.setVisible(false);
 
-        grid.setAlignment(Pos.CENTER);
+        setAlignment(Pos.CENTER);
 
         GridPane.setHalignment(l_header, HPos.CENTER);
         GridPane.setHalignment(b_login, HPos.RIGHT);
         GridPane.setHalignment(b_register, HPos.LEFT);
         GridPane.setHalignment(l_warning, HPos.CENTER);
 
+        t_ownTab = ownTab;
+
         // ========== LISTENERS ========== //
         b_login.setOnAction(getOnLoginBtnAction());
 
         b_register.setOnAction(getOnRegisterBtnAction());
-
-        open();
-    }
-
-    /* OVERRIDE */
-    @Override
-    protected void onUserCloseRequest()
-    {
-        close();
-        Terminator.terminate(new Exceptions(XC.END));
-    }
-
-    @Override
-    protected void onUserMinimizeRequest()
-    {
-        // do nothing
     }
 }
