@@ -39,7 +39,8 @@ public class Database
     {
         // FIXME Redundant? Or move it to Vault of the Vaults :)
         File vaultDir = new File(Properties.PATHS.VAULT);
-        if (vaultDir.mkdirs() != true)
+
+        if (!vaultDir.exists() && vaultDir.mkdirs() != true)
         {
             Logger.printDebug("Failed to create/access " + vaultDir.getAbsolutePath());
             throw new Exceptions(XC.DIR_DOES_NOT_EXIST);
@@ -47,21 +48,28 @@ public class Database
 
         vaultFile = new File(Properties.PATHS.VAULT + filename + Properties.EXTENSIONS.VAULT);
 
-        if (!vaultFile.exists() && !newUser)
+        Logger.printDebug(vaultFile.getAbsolutePath());
+
+        if (!vaultFile.exists())
         {
-            // FIXME If it doesn't work read about PrintWriter :)
-            try
+            if (newUser)
             {
-                vaultFile.createNewFile();
+                try
+                {
+                    vaultFile.createNewFile();
+                }
+                catch (IOException e)
+                {
+                    Logger.printError("Failed to create file: " + vaultFile.getAbsolutePath());
+                    throw new Exceptions(XC.FILE_CREATE_ERROR);
+                }
             }
-            catch (IOException e)
+            else
             {
-                Logger.printDebug("Failed to create/access " + vaultFile.getAbsolutePath());
+                Logger.printDebug("Failed to open file: " + vaultFile.getAbsolutePath());
                 throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
             }
         }
-        else
-            throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
 
         // RSA initialized and created by Vault, DB has only pointer
         rsa = myRSA;

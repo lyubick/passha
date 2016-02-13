@@ -16,9 +16,9 @@ import utilities.Utilities;
  */
 public class Settings
 {
-    private static Settings self = null;
+    private static Settings self            = null;
 
-    private boolean restartRequired = false;
+    private boolean         restartRequired = false;
 
     public static class ENV_VARS
     {
@@ -53,7 +53,7 @@ public class Settings
     public enum LANGUAGE
     {
         ENGLISH,
-        –”—— »…,
+        RUSSIAN,
     }
 
     private HashMap<String, Object> settings = new HashMap<String, Object>();

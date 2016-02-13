@@ -18,4 +18,13 @@ public final class Properties
         // PVP = pasSHA Vault Passwords
         public static final String VAULT = ".pvp";
     }
+
+    public final class UI
+    {
+        public final class VAULT
+        {
+            public static final int MAX_COUNT = 10;
+        }
+
+    }
 }

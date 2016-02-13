@@ -1,7 +1,5 @@
 package ui;
 
-import java.util.Comparator;
-
 import db.iSpecialPassword;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -21,6 +19,7 @@ import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
+import main.Properties;
 import ui.elements.Button;
 import ui.elements.Button.BUTTON.SIZE;
 import ui.elements.EntryField.TEXTFIELD;
@@ -56,6 +55,8 @@ public class FormVaultsManager extends AbstractForm
     private MenuItem                    mi_settings      = null;
 
     private TabPane                     tp_vaults        = null;
+
+    static private int                  currentVaultIdx  = 1;
 
     public FormVaultsManager()
     {
@@ -148,8 +149,21 @@ public class FormVaultsManager extends AbstractForm
         tp_vaults.setMinHeight(tabpaneMinHeight);
         tp_vaults.setMinWidth(tabpaneMinWidth);
 
-        AddTab();
-        UserAddTab();
+        Tab t_newTabCreator = new Tab();
+
+        t_newTabCreator.setClosable(false);
+        t_newTabCreator.setText("+");
+        t_newTabCreator.setOnSelectionChanged(new EventHandler<Event>()
+        {
+            @Override
+            public void handle(Event event)
+            {
+                if (t_newTabCreator.isSelected()) AddTab();
+                event.consume();
+            }
+
+        });
+        tp_vaults.getTabs().add(t_newTabCreator);
 
         // ========== GRID ========== //
         grid.add(tp_vaults, 0, 0);
@@ -169,42 +183,30 @@ public class FormVaultsManager extends AbstractForm
     // called when user presses '+' tab or at the start when auto login is off
     private void AddTab()
     {
-        Tab tab = new Tab();
-        tab.setText("test");
-        tp_vaults.getTabs().add(tab);
-        tp_vaults.getSelectionModel().select(tab);
-        tab.setContent(new LoginTabContents(tab));
-        // tab with "+" should be the last tab
-        tp_vaults.getTabs().sort(new Comparator<Tab>()
-        {
-            @Override
-            public int compare(Tab o1, Tab o2)
-            {
-                if (o1.getText().equals("+")) return 1;
-                if (o2.getText().equals("+")) return -1;
-                return 0;
-            }
+        int vaultCount = tp_vaults.getTabs().size();
 
-        });
-    }
+        if (vaultCount > Properties.UI.VAULT.MAX_COUNT)
+            tp_vaults.getTabs().get(Properties.UI.VAULT.MAX_COUNT).setDisable(true);
 
-    // tab to allow user to add new tabs
-    private void UserAddTab()
-    {
         Tab tab = new Tab();
-        tab.setClosable(false);
-        tab.setText("+");
-        tab.setOnSelectionChanged(new EventHandler<Event>()
+        tab.setText("Vault " + currentVaultIdx++ + ": ");
+
+        tab.setOnClosed(new EventHandler<Event>()
         {
             @Override
             public void handle(Event event)
             {
-                if (tab.isSelected()) AddTab();
-                event.consume();
+                // TODO Auto-generated method stub
+                tp_vaults.getTabs().get(tp_vaults.getTabs().size() - 1).setDisable(false);
             }
-
         });
-        tp_vaults.getTabs().add(tab);
+
+        tp_vaults.getTabs().add(Math.max(0, vaultCount - 1), tab);
+
+        tp_vaults.getSelectionModel().select(tab);
+
+        tab.setContent(new LoginTabContents(tab));
+
     }
 
     public void refresh()
@@ -212,6 +214,8 @@ public class FormVaultsManager extends AbstractForm
         b_copy.setDisable(true);
         tf_pass.clear();
         table.getSelectionModel().clearSelection();
-        table.setItems(((VaultTabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).getIface());
+        table.setItems(
+                ((VaultTabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent())
+                        .getIface());
     }
 }

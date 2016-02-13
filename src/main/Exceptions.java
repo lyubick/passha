@@ -31,9 +31,12 @@ public final class Exceptions extends Throwable
         FILE_DOES_NOT_EXISTS,
         DIR_DOES_NOT_EXIST,
 
+        FILE_CREATE_ERROR,
         FILE_WRITE_ERROR,
         FILE_READ_ERROR,
         FILE_CLOSE_ERROR,
+
+        DIR_CREATE_ERROR,
 
         // ONLY New Password dialog exceptions
         MANDATORY_DATA_MISSING,

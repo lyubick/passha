@@ -48,12 +48,12 @@ public abstract class AbstractForm
         }
     }
 
-    protected GridPane grid  = null;
-    protected VBox     group = null;
-    protected Scene    scene = null;
-    protected Stage    stage = null;
+    protected GridPane grid    = null;
+    protected VBox     group   = null;
+    protected Scene    scene   = null;
+    protected Stage    stage   = null;
 
-    protected MenuBar mb_main = null;
+    protected MenuBar  mb_main = null;
 
     protected static final class GAP
     {

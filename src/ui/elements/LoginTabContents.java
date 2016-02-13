@@ -107,8 +107,15 @@ public class LoginTabContents extends ui.elements.GridPane
     private void init(String password, boolean isNewUser) throws Exceptions
     {
         Logger.printDebug("init user");
-        // TODO: implement
-        t_ownTab.setContent(new VaultTabContent(new Vault(password, isNewUser)));
+
+        try
+        {
+            t_ownTab.setContent(new VaultTabContent(new Vault(password, isNewUser)));
+        }
+        catch (Exceptions e)
+        {
+            if (e.getCode() == XC.FILE_DOES_NOT_EXISTS) throw new Exceptions(XC.USER_UNKNOWN);
+        }
     }
 
     /* PUBLIC ROUTINE */
@@ -116,8 +123,10 @@ public class LoginTabContents extends ui.elements.GridPane
     {
         // ========== LABELS ========== //
         l_header =
-                new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
-                        + System.getProperty("user.name", TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString())
+                new Label(
+                        TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
+                                + System.getProperty("user.name",
+                                        TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString())
                         + "!");
         l_header.beHeader();
         l_warning = new Label();
