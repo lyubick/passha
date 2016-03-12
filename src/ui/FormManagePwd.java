@@ -378,7 +378,7 @@ public class FormManagePwd extends AbstractForm
 
         // ========== MENU ========== //
         // TODO: create class for menu
-        mb_main = new MenuBar();
+        menuMain = new MenuBar();
         m_file = new Menu(TextID.MENU_LABEL_FILE.toString());
         m_help = new Menu(TextID.MENU_LABEL_HELP.toString());
 
@@ -388,7 +388,7 @@ public class FormManagePwd extends AbstractForm
 
         m_file.getItems().addAll(mi_settings, mi_exit);
         m_help.getItems().addAll(mi_about);
-        mb_main.getMenus().addAll(m_file, m_help);
+        menuMain.getMenus().addAll(m_file, m_help);
 
         mi_settings.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -419,7 +419,7 @@ public class FormManagePwd extends AbstractForm
 
         // ========== REFRESH ========== //
         group.getChildren().remove(grid);
-        group.getChildren().addAll(mb_main, grid);
+        group.getChildren().addAll(menuMain, grid);
 
         // ========== HRENJ ========== //
         pi_pwdLifeTime = new ProgressIndicator(0);

@@ -4,7 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.HBox;
 import languages.Texts.TextID;
-import ui.AbstractForm.STANDARD;
+import main.Properties;
 
 public class EntryField extends javafx.scene.control.TextField implements LabeledItem
 {
@@ -54,8 +54,8 @@ public class EntryField extends javafx.scene.control.TextField implements Labele
 
         this.setMaxWidth(maxLength);
         this.setMinWidth(maxLength);
-        this.setMinHeight(STANDARD.SIZE.HEIGHT);
-        this.setMaxHeight(STANDARD.SIZE.HEIGHT);
+        this.setMinHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
+        this.setMaxHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
     }
 
     public Label getLabel()
@@ -68,9 +68,9 @@ public class EntryField extends javafx.scene.control.TextField implements Labele
         HBox hBox = new HBox(label, this);
 
         hBox.setMinWidth(label.getMinWidth() + this.getMinWidth());
-        hBox.setMinHeight(STANDARD.SIZE.HEIGHT);
+        hBox.setMinHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
         hBox.setMaxWidth(label.getMaxWidth() + this.getMaxWidth());
-        hBox.setMaxHeight(STANDARD.SIZE.HEIGHT);
+        hBox.setMaxHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
 
         return hBox;
     }

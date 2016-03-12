@@ -25,6 +25,7 @@ import ui.elements.Button.BUTTON.SIZE;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.LoginTabContents;
 import ui.elements.VaultTabContent;
+import ui.elements.TabContent;
 
 public class FormVaultsManager extends AbstractForm
 {
@@ -72,7 +73,7 @@ public class FormVaultsManager extends AbstractForm
 
         // ========== MENU ========== //
         // TODO: create class for menu
-        mb_main = new MenuBar();
+        menuMain = new MenuBar();
         m_file = new Menu(TextID.MENU_LABEL_FILE.toString());
         m_help = new Menu(TextID.MENU_LABEL_HELP.toString());
 
@@ -82,7 +83,7 @@ public class FormVaultsManager extends AbstractForm
 
         m_file.getItems().addAll(mi_settings, mi_exit);
         m_help.getItems().addAll(mi_about);
-        mb_main.getMenus().addAll(m_file, m_help);
+        menuMain.getMenus().addAll(m_file, m_help);
 
         mi_settings.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -113,7 +114,7 @@ public class FormVaultsManager extends AbstractForm
 
         // ========== REFRESH ========== //
         group.getChildren().remove(grid);
-        group.getChildren().addAll(mb_main, grid);
+        group.getChildren().addAll(menuMain, grid);
 
         // ========== BUTTONS ========== //
         // FIXME LANG shortcuts
@@ -183,30 +184,37 @@ public class FormVaultsManager extends AbstractForm
     // called when user presses '+' tab or at the start when auto login is off
     private void AddTab()
     {
-        int vaultCount = tp_vaults.getTabs().size();
-
-        if (vaultCount > Properties.UI.VAULT.MAX_COUNT)
-            tp_vaults.getTabs().get(Properties.UI.VAULT.MAX_COUNT).setDisable(true);
-
         Tab tab = new Tab();
-        tab.setText("Vault " + currentVaultIdx++ + ": ");
+        tab.setText("Vault " + currentVaultIdx++ + ": "); // FIXME locale
 
         tab.setOnClosed(new EventHandler<Event>()
         {
             @Override
             public void handle(Event event)
             {
-                // TODO Auto-generated method stub
+                ((TabContent) tab.getContent()).closeTab();
                 tp_vaults.getTabs().get(tp_vaults.getTabs().size() - 1).setDisable(false);
             }
         });
 
-        tp_vaults.getTabs().add(Math.max(0, vaultCount - 1), tab);
+        tab.setOnSelectionChanged(new EventHandler<Event>()
+        {
+            @Override
+            public void handle(Event event)
+            {
+                if (tab.isSelected()) ((TabContent) tab.getContent()).activateTab();
+            }
+        });
 
-        tp_vaults.getSelectionModel().select(tab);
+        tp_vaults.getTabs().add(Math.max(0, tp_vaults.getTabs().size() - 1), tab);
 
         tab.setContent(new LoginTabContents(tab));
 
+        // Disable '+' tab, which is the last tab
+        if (tp_vaults.getTabs().size() > Properties.CORE.VAULT.MAX_COUNT)
+            tp_vaults.getTabs().get(tp_vaults.getTabs().size() - 1).setDisable(true);
+
+        tp_vaults.getSelectionModel().select(tab);
     }
 
     public void refresh()

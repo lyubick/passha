@@ -6,6 +6,7 @@ package ui;
 import languages.Texts.TextID;
 import main.Exceptions;
 import main.Exceptions.XC;
+import main.Properties;
 import ui.elements.Button;
 import ui.elements.EntryField;
 import ui.elements.LabeledItem;
@@ -174,10 +175,10 @@ public class FormCreatePwd extends AbstractForm
                         PasswordCollection.getInstance().addPassword(password);
                     }
                     else
-                        PasswordCollection.getInstance().addPassword(
-                                new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url
-                                        .getText(), ef_length.getText(), cb_specialChars
-                                        .isSelected(), cb_upperCaseChar.isSelected(),
+                        PasswordCollection.getInstance()
+                                .addPassword(new SpecialPassword(ef_name.getText(),
+                                        ef_comment.getText(), ef_url.getText(), ef_length.getText(),
+                                        cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
                                         ef_specialChars.getText(), ef_shortcut.getText()));
                     close();
                 }
@@ -229,11 +230,10 @@ public class FormCreatePwd extends AbstractForm
                     && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
-                password =
-                        new SpecialPassword(ef_name.getText(), ef_comment.getText(),
-                                ef_url.getText(), ef_length.getText(),
-                                cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
-                                ef_specialChars.getText(), ef_shortcut.getText());
+                password = new SpecialPassword(ef_name.getText(), ef_comment.getText(),
+                        ef_url.getText(), ef_length.getText(), cb_specialChars.isSelected(),
+                        cb_upperCaseChar.isSelected(), ef_specialChars.getText(),
+                        ef_shortcut.getText());
                 ef_passwordPreview.setText(password.getPassword());
                 l_errorLabel.setText("");
                 b_ok.setDisable(false);
@@ -286,14 +286,12 @@ public class FormCreatePwd extends AbstractForm
         l_header = new Label(TextID.FORM_CREATEPWD_LABEL_HEADER);
         l_header.beHeader();
 
-        ef_name =
-                new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
-                        TEXTFIELD.WIDTH.XXL);
+        ef_name = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
+                TEXTFIELD.WIDTH.XXL);
         ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
         ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD.WIDTH.XXL);
-        ef_length =
-                new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
-                        TEXTFIELD.WIDTH.S);
+        ef_length = new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
+                TEXTFIELD.WIDTH.S);
         ef_specialChars =
                 new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*",
                         TEXTFIELD.WIDTH.XXL);
@@ -313,15 +311,15 @@ public class FormCreatePwd extends AbstractForm
 
         double tmp = Label.calcLength(cb_specialChars.getText());
         cb_upperCaseChar.setMinWidth(tmp + 10);
-        cb_upperCaseChar.setMinHeight(STANDARD.SIZE.HEIGHT);
+        cb_upperCaseChar.setMinHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
         cb_upperCaseChar.setMaxWidth(tmp);
-        cb_upperCaseChar.setMaxHeight(STANDARD.SIZE.HEIGHT);
+        cb_upperCaseChar.setMaxHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
 
         tmp = Label.calcLength(cb_upperCaseChar.getText());
         cb_specialChars.setMinWidth(tmp + 10);
-        cb_specialChars.setMinHeight(STANDARD.SIZE.HEIGHT);
+        cb_specialChars.setMinHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
         cb_specialChars.setMaxWidth(tmp);
-        cb_specialChars.setMaxHeight(STANDARD.SIZE.HEIGHT);
+        cb_specialChars.setMaxHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
 
         // ========== TEXTS ========== //
 

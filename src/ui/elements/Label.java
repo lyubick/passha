@@ -8,16 +8,19 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import languages.Texts.TextID;
 import logger.Logger;
-import ui.AbstractForm.STANDARD;
+import main.Properties;
 
 public class Label extends javafx.scene.control.Label
 {
     // Magic number don't lose it!
     protected final static int LABEL_LENGTH_COEFICIENT = 8;
 
-    public static final Font FONT_PRIMARY = Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
-    public static final Font FONT_ERROR   = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
-    public static final Font FONT_HEADER  = Font.font("Comic Sans MS", FontWeight.BOLD, 14);
+    public static final Font   FONT_PRIMARY            =
+            Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
+    public static final Font   FONT_ERROR              =
+            Font.font("Comic Sans MS", FontWeight.BOLD, 12);
+    public static final Font   FONT_HEADER             =
+            Font.font("Comic Sans MS", FontWeight.BOLD, 14);
 
     private void setUp()
     {
@@ -26,9 +29,9 @@ public class Label extends javafx.scene.control.Label
         if (!this.getText().isEmpty())
             this.setWidth(calcLength(this.getText()));
         else
-            this.setWidth(STANDARD.SIZE.WIDTH);
+            this.setWidth(Properties.GUI.STANDARD.SIZE.WIDTH);
 
-        this.setHeight(STANDARD.SIZE.HEIGHT);
+        this.setHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
 
         Label tmp = this;
 
@@ -46,7 +49,8 @@ public class Label extends javafx.scene.control.Label
     private void setUpWrap(String name, int maxWidth)
     {
         this.setWidth(maxWidth);
-        this.setHeight(Math.ceil(calcLength(name) / maxWidth) * STANDARD.SIZE.HEIGHT);
+        this.setHeight(
+                Math.ceil(calcLength(name) / maxWidth) * Properties.GUI.STANDARD.SIZE.HEIGHT);
 
         this.setWrapText(true);
     }

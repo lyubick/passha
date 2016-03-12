@@ -4,7 +4,9 @@ import java.util.Vector;
 
 import ui.elements.GridPane;
 import languages.Texts.TextID;
+import main.Main;
 import main.Properties;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -15,6 +17,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 public abstract class AbstractForm
@@ -26,9 +29,9 @@ public abstract class AbstractForm
         ALWAYS_ON_TOP,
     };
 
-    protected AbstractForm         parent = null;
-    protected Vector<AbstractForm> childs = null;
-    protected WindowPriority       priority;
+    protected AbstractForm         parent   = null;
+    protected Vector<AbstractForm> childs   = null;
+    protected WindowPriority       priority = null;
 
     protected static class Coords
     {
@@ -48,35 +51,12 @@ public abstract class AbstractForm
         }
     }
 
-    protected GridPane grid    = null;
-    protected VBox     group   = null;
-    protected Scene    scene   = null;
-    protected Stage    stage   = null;
+    protected GridPane grid     = null;
+    protected VBox     group    = null;
+    protected Scene    scene    = null;
+    protected Stage    stage    = null;
 
-    protected MenuBar  mb_main = null;
-
-    protected static final class GAP
-    {
-        public static final int H = 10;
-        public static final int V = 10;
-    };
-
-    protected static final class PADDING
-    {
-        public static final int bottom = 10;
-        public static final int top    = 10;
-        public static final int right  = 10;
-        public static final int left   = 10;
-    };
-
-    public static final class STANDARD
-    {
-        public static final class SIZE
-        {
-            public static final double WIDTH  = 300.0;
-            public static final double HEIGHT = 30.0;
-        }
-    };
+    protected MenuBar  menuMain = null;
 
     // Method will create reference to this instance in parent instance
     protected void open()
@@ -127,7 +107,7 @@ public abstract class AbstractForm
         close(); // default
     }
 
-    // Method that is called when User try to minimize form, by pressing [_]
+    // Method that is called when User try to minimise form, by pressing [_]
     protected void onUserMinimizeRequest()
     {
         minimize(); // default
@@ -154,7 +134,7 @@ public abstract class AbstractForm
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule,
                     Boolean newValue)
             {
-                // Cancel minimization to avoid loss of stage coordinates
+                // Cancel minimisation to avoid loss of stage coordinates
                 stage.setIconified(false);
                 if (newValue) onUserMinimizeRequest();
             }
@@ -214,18 +194,19 @@ public abstract class AbstractForm
         this.parent = parent;
         priority = WindowPriority.NORMAL;
 
-        // initialize everything to avoid NullPointerExceptions
+        // Initialise everything to avoid NullPointerExceptions
         childs = new Vector<AbstractForm>();
 
         grid = new GridPane();
 
-        grid.setHgap(GAP.H);
-        grid.setVgap(GAP.V);
+        grid.setHgap(Properties.GUI.GAP.H);
+        grid.setVgap(Properties.GUI.GAP.V);
 
         grid.setAlignment(Pos.CENTER);
-        grid.setPadding(new Insets(PADDING.top, PADDING.right, PADDING.bottom, PADDING.left));
+        grid.setPadding(new Insets(Properties.GUI.PADDING.top, Properties.GUI.PADDING.right,
+                Properties.GUI.PADDING.bottom, Properties.GUI.PADDING.left));
 
-        grid.setGridLinesVisible(false); // TODO: make it somehow automatically
+        grid.setGridLinesVisible(Main.DEBUG ? true : false);
 
         group = new VBox();
         group.getChildren().addAll(grid);
@@ -235,13 +216,13 @@ public abstract class AbstractForm
 
         scene = new Scene(group);
 
-        stage = new Stage(Common.STAGE_STYLE.UNIFIED);
+        stage = new Stage(StageStyle.UNIFIED);
         stage.setScene(scene);
 
-        stage.getIcons().add(new Image("resources/tray_icon.png"));
+        stage.getIcons().add(new Image(Properties.PATHS.TRAY_ICON));
         stage.setTitle(title + " - " + Properties.SOFTWARE.NAME + " ("
                 + TextID.COMMON_LABEL_VERSION.toString() + ")");
-        stage.setResizable(false);
+        stage.setResizable(true);
 
         stage.setOnCloseRequest(getOnCloseRequest());
         stage.iconifiedProperty().addListener(getIconifiedPropertyListener());

@@ -1,6 +1,6 @@
 package ui.elements;
 
-import core.Vault;
+import core.VaultManager;
 import ui.elements.GridPane;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,7 +15,7 @@ import main.Terminator;
 import main.Exceptions.XC;
 import ui.elements.EntryField.TEXTFIELD;
 
-public class LoginTabContents extends ui.elements.GridPane
+public class LoginTabContents extends ui.elements.GridPane implements TabContent
 {
     private Label         l_header           = null;
     private Label         l_warning          = null;
@@ -110,7 +110,8 @@ public class LoginTabContents extends ui.elements.GridPane
 
         try
         {
-            t_ownTab.setContent(new VaultTabContent(new Vault(password, isNewUser)));
+            t_ownTab.setContent(
+                    new VaultTabContent(VaultManager.getInstance().addVault(password, isNewUser)));
         }
         catch (Exceptions e)
         {
@@ -127,7 +128,7 @@ public class LoginTabContents extends ui.elements.GridPane
                         TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
                                 + System.getProperty("user.name",
                                         TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString())
-                        + "!");
+                                + "!");
         l_header.beHeader();
         l_warning = new Label();
         l_warning.beError();
@@ -189,5 +190,27 @@ public class LoginTabContents extends ui.elements.GridPane
         b_login.setOnAction(getOnLoginBtnAction());
 
         b_register.setOnAction(getOnRegisterBtnAction());
+    }
+
+    @Override
+    public void closeTab()
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void activateTab()
+    {
+        // TODO Auto-generated method stub
+        try
+        {
+            VaultManager.getInstance().activateVault(null);
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

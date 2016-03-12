@@ -1,12 +1,11 @@
 package ui.elements;
 
 import core.Vault;
+import core.VaultManager;
 import db.PasswordCollection;
-import db.SpecialPassword;
 import db.iSpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,7 +14,7 @@ import languages.Texts.TextID;
 import main.Exceptions;
 import main.Terminator;
 
-public class VaultTabContent extends TableView<iSpecialPassword>
+public class VaultTabContent extends TableView<iSpecialPassword> implements TabContent
 {
     private Vault vault = null;
 
@@ -24,7 +23,8 @@ public class VaultTabContent extends TableView<iSpecialPassword>
         return new ChangeListener<Object>()
         {
             @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
+                    Object newValue)
             {
                 try
                 {
@@ -34,7 +34,8 @@ public class VaultTabContent extends TableView<iSpecialPassword>
                         return;
                     }
 
-                    PasswordCollection.getInstance().setSelected(getSelectionModel().getSelectedItem().getOrigin());
+                    PasswordCollection.getInstance()
+                            .setSelected(getSelectionModel().getSelectedItem().getOrigin());
                 }
                 catch (Exceptions e)
                 {
@@ -56,15 +57,15 @@ public class VaultTabContent extends TableView<iSpecialPassword>
     {
         this.vault = vault;
 
-        TableColumn<iSpecialPassword, String> cName =
-                new TableColumn<iSpecialPassword, String>(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
-        TableColumn<iSpecialPassword, String> cComment =
-                new TableColumn<iSpecialPassword, String>(TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl =
-                new TableColumn<iSpecialPassword, String>(TextID.FORM_CREATEPWD_LABEL_URL.toString());
+        TableColumn<iSpecialPassword, String> cName = new TableColumn<iSpecialPassword, String>(
+                TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
+        TableColumn<iSpecialPassword, String> cComment = new TableColumn<iSpecialPassword, String>(
+                TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
+        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<iSpecialPassword, String>(
+                TextID.FORM_CREATEPWD_LABEL_URL.toString());
 
-        TableColumn<iSpecialPassword, String> cShortcut =
-                new TableColumn<iSpecialPassword, String>(TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
+        TableColumn<iSpecialPassword, String> cShortcut = new TableColumn<iSpecialPassword, String>(
+                TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
 
         getColumns().add(cName);
         getColumns().add(cComment);
@@ -74,7 +75,8 @@ public class VaultTabContent extends TableView<iSpecialPassword>
         cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
         cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
         cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
-        cShortcut.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
+        cShortcut.setCellValueFactory(
+                new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
 
         getSelectionModel().selectedItemProperty().addListener(getSelectedItemPropertyListener());
     }
@@ -82,5 +84,33 @@ public class VaultTabContent extends TableView<iSpecialPassword>
     public ObservableList<iSpecialPassword> getIface()
     {
         return vault.getIface();
+    }
+
+    @Override
+    public void closeTab()
+    {
+        try
+        {
+            VaultManager.getInstance().removeVault();
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void activateTab()
+    {
+        try
+        {
+            VaultManager.getInstance().activateVault(vault);
+        }
+        catch (Exceptions e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

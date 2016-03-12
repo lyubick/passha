@@ -29,12 +29,9 @@ public class Autologin
     public Autologin() throws Exceptions
     {
         sha = new SHA();
-        rsa =
-                new RSA(sha.getHashString((getPhysicalAddress() + getUserName() + SALT_P)
-                        .getBytes()),
-                        sha.getHashString((getPhysicalAddress() + getUserName() + SALT_Q)
-                                .getBytes()), sha.getHashString((getPhysicalAddress()
-                                + getUserName() + SALT_E).getBytes()));
+        rsa = new RSA(sha.getHashString((getPhysicalAddress() + getUserName() + SALT_P).getBytes()),
+                sha.getHashString((getPhysicalAddress() + getUserName() + SALT_Q).getBytes()),
+                sha.getHashString((getPhysicalAddress() + getUserName() + SALT_E).getBytes()));
     }
 
     private String regedit(String command) throws Exceptions
@@ -120,8 +117,8 @@ public class Autologin
     {
         try
         {
-            return Utilities.bytesToHex(NetworkInterface.getByInetAddress(
-                    InetAddress.getLocalHost()).getHardwareAddress());
+            return Utilities.bytesToHex(NetworkInterface
+                    .getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress());
         }
         catch (SocketException e)
         {
@@ -144,7 +141,7 @@ public class Autologin
 
     public void setAutologinON() throws Exceptions
     {
-        addToRegistry(rsa.encrypt(CryptoSystem.getInstance().getMasterPass()));
+        // addToRegistry(rsa.encrypt(CryptoSystem.getInstance().getMasterPass()));
     }
 
     public void setAutologinOFF() throws Exceptions

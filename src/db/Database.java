@@ -9,7 +9,6 @@ import main.Exceptions;
 import main.Exceptions.XC;
 import main.Properties;
 import rsa.RSA;
-import cryptosystem.CryptoSystem;
 import utilities.Utilities;
 import db.SpecialPassword;
 import javafx.concurrent.Task;
@@ -79,7 +78,8 @@ public class Database
 
         for (String entry : Utilities.readStringsFromFile(vaultFile.getAbsolutePath()))
         {
-            decrypted.add(new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(entry))));
+            decrypted.add(new SpecialPassword(
+                    (HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(entry))));
             encrypted.add(rsa.encrypt(Utilities.objectToBytes(decrypted.lastElement().getMap())));
         }
     }
@@ -87,7 +87,7 @@ public class Database
     public void addEntry(SpecialPassword entry) throws Exceptions
     {
         decrypted.addElement(entry);
-        encrypted.addElement(CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(entry.getMap())));
+        encrypted.addElement(rsa.encrypt(Utilities.objectToBytes(entry.getMap())));
 
         status = Status.DESYNCHRONIZED;
         sync();
@@ -109,7 +109,7 @@ public class Database
         decrypted.remove(idx);
         encrypted.remove(idx);
         decrypted.add(idx, newEntry);
-        encrypted.add(idx, CryptoSystem.getInstance().rsaEncrypt(Utilities.objectToBytes(newEntry.getMap())));
+        encrypted.add(idx, rsa.encrypt(Utilities.objectToBytes(newEntry.getMap())));
 
         status = Status.DESYNCHRONIZED;
         sync();

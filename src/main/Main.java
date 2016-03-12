@@ -1,5 +1,6 @@
 package main;
 
+import core.VaultManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -10,9 +11,12 @@ import ui.FormVaultsManager;
 
 public class Main extends Application
 {
+    public static boolean DEBUG = false;
 
     public static void main(String[] args)
     {
+        if (args.length > 0 && args[0].equals("--debug")) DEBUG = true;
+
         /* 0. Linux Xlib problem workaround */
         if (System.getProperty("os.name").equals("Linux")) System.loadLibrary("xx");
 
@@ -66,6 +70,9 @@ public class Main extends Application
 
         // During implementation don't run update and autologin
         // new FormUpdate(null);
+
+        VaultManager.init();
+
         new FormVaultsManager();
     }
 }

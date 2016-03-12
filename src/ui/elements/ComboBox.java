@@ -2,7 +2,7 @@ package ui.elements;
 
 import javafx.collections.ObservableList;
 import languages.Texts.TextID;
-import ui.AbstractForm.STANDARD;
+import main.Properties;
 
 public class ComboBox extends javafx.scene.control.ComboBox<String> implements LabeledItem
 {
@@ -20,8 +20,8 @@ public class ComboBox extends javafx.scene.control.ComboBox<String> implements L
 
         this.setMaxWidth(maxLength);
         this.setMinWidth(maxLength);
-        this.setMinHeight(STANDARD.SIZE.HEIGHT);
-        this.setMaxHeight(STANDARD.SIZE.HEIGHT);
+        this.setMinHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
+        this.setMaxHeight(Properties.GUI.STANDARD.SIZE.HEIGHT);
 
     }
 
