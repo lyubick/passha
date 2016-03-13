@@ -7,13 +7,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.Tab;
 import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
 import ui.AbstractForm;
+import ui.FormVaultsManager;
 import ui.elements.EntryField.TEXTFIELD;
 
 public class LoginTabContents extends ui.elements.GridPane implements TabContent
@@ -26,7 +26,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     private Button        b_register         = null;
     private Tab           t_ownTab           = null;
 
-    private AbstractForm  parentForm         = null;
+    private AbstractForm  owner              = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnLoginBtnAction()
@@ -113,8 +113,9 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
 
         try
         {
-            t_ownTab.setContent(new VaultTabContent(VaultManager.getInstance().addVault(password, isNewUser),
-                    parentForm));
+            VaultTabContent newContent = new VaultTabContent(
+                    VaultManager.getInstance().addVault(password, isNewUser), owner);
+            t_ownTab.setContent_(newContent);
         }
         catch (Exceptions e)
         {
@@ -125,11 +126,15 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     /* PUBLIC ROUTINE */
     public LoginTabContents(Tab ownTab, AbstractForm parentForm)
     {
-        this.parentForm = parentForm;
+        this.owner = parentForm;
 
         // ========== LABELS ========== //
-        l_header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
-                + System.getProperty("user.name", TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString()) + "!");
+        l_header =
+                new Label(
+                        TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
+                                + System.getProperty("user.name",
+                                        TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString())
+                                + "!");
         l_header.beHeader();
         l_warning = new Label();
         l_warning.beError();
@@ -207,6 +212,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         try
         {
             VaultManager.getInstance().activateVault(null);
+            ((FormVaultsManager) owner).switchButtons(true);
         }
         catch (Exceptions e)
         {

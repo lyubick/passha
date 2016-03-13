@@ -17,16 +17,13 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.VPos;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions;
@@ -38,6 +35,7 @@ import ui.elements.Button;
 import ui.elements.Button.BUTTON.SIZE;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.LoginTabContents;
+import ui.elements.Tab;
 import ui.elements.TabContent;
 
 public class FormVaultsManager extends AbstractForm
@@ -52,6 +50,8 @@ public class FormVaultsManager extends AbstractForm
     private final int           tabpaneMinWidth  = WINDOW.width - 200;
 
     private static AbstractForm This             = null;
+
+    private VBox                vb_VaultButtons  = null;
 
     private TextField           tf_pass          = null;
     private Button              b_new            = null;
@@ -91,10 +91,13 @@ public class FormVaultsManager extends AbstractForm
         stage.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule,
+                    Boolean newValue)
             {
                 // FIXME: Create TabPane class
-                if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).refreshTab();
+                if (newValue)
+                    ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent())
+                            .refreshTab();
             }
         });
 
@@ -146,6 +149,8 @@ public class FormVaultsManager extends AbstractForm
         group.getChildren().addAll(menuMain, grid);
 
         // ========== BUTTONS ========== //
+        vb_VaultButtons = new VBox();
+
         // FIXME LANG shortcuts
         b_new = new Button("_" + TextID.COMMON_LABEL_NEW.toString(), SIZE.L);
         b_delete = new Button("_" + TextID.FORM_CREATEPWD_MANAGER_LABEL_DELETE.toString(), SIZE.L);
@@ -154,19 +159,31 @@ public class FormVaultsManager extends AbstractForm
         b_reset = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_RESET.toString(), SIZE.L);
         b_edit = new Button("_" + TextID.FORM_MANAGEWD_LABEL_EDIT.toString(), SIZE.L);
 
-        b_export.setDisable(false); // TODO: Request password on export
+        b_new.setOnAction(getOnNewAction());
+        b_edit.setOnAction(getOnEditAction());
+        b_delete.setOnAction(getOnDeleteBtnAction());
+        b_reset.setOnAction(getOnResetBtnAction());
+        b_export.setOnAction(getOnExportBtnAction());
+        b_copy.setOnAction(getOnCopyToClipboardBtnAction());
+
+        VBox.setMargin(b_new, new Insets(10, 10, 0, 10));
+        VBox.setMargin(b_edit, new Insets(10, 10, 0, 10));
+
+        VBox.setMargin(b_reset, new Insets(50, 10, 0, 10));
+
+        VBox.setMargin(b_delete, new Insets(50, 10, 0, 10));
+
+        VBox.setMargin(b_copy, new Insets(50, 10, 0, 10));
+        VBox.setMargin(b_export, new Insets(10, 10, 0, 10));
+
         b_copy.setDisable(true);
-        b_reset.setDisable(false);
 
-        GridPane.setValignment(b_new, VPos.TOP);
-        GridPane.setValignment(b_delete, VPos.TOP);
-        GridPane.setHalignment(b_copy, HPos.LEFT);
-        GridPane.setValignment(b_export, VPos.BOTTOM);
-        GridPane.setValignment(b_edit, VPos.TOP);
-
-        GridPane.setMargin(b_edit, new Insets(40, 0, 0, 0));
-        GridPane.setMargin(b_delete, new Insets(80, 0, 0, 0));
-        GridPane.setMargin(b_copy, new Insets(0, 0, 0, 270));
+        vb_VaultButtons.getChildren().add(b_new);
+        vb_VaultButtons.getChildren().add(b_edit);
+        vb_VaultButtons.getChildren().add(b_reset);
+        vb_VaultButtons.getChildren().add(b_delete);
+        vb_VaultButtons.getChildren().add(b_copy);
+        vb_VaultButtons.getChildren().add(b_export);
 
         // ========== TEXT FIELD ========== //
         tf_pass = new TextField();
@@ -199,15 +216,17 @@ public class FormVaultsManager extends AbstractForm
         grid.add(tp_vaults, 0, 0);
 
         grid.add(tf_pass, 0, 1);
-        grid.add(b_copy, 0, 1);
 
-        grid.add(b_export, 1, 0);
-        grid.add(b_new, 1, 0);
-        grid.add(b_edit, 1, 0);
-        grid.add(b_delete, 1, 0);
-        grid.add(b_reset, 1, 0);
+        grid.add(vb_VaultButtons, 1, 0);
 
         open();
+    }
+
+    // FIXME: Maybe here some type can be passed
+    public void switchButtons(boolean b)
+    {
+        vb_VaultButtons.setDisable(b);
+        b_copy.setDisable(b);
     }
 
     // called when user presses '+' tab or at the start when auto login is off
@@ -216,6 +235,15 @@ public class FormVaultsManager extends AbstractForm
         Tab tab = new Tab();
         tab.setText("Vault " + currentVaultIdx++ + ": "); // FIXME locale
 
+        tab.setOnSelectionChanged(new EventHandler<Event>()
+        {
+            @Override
+            public void handle(Event event)
+            {
+                if (tab.isSelected()) ((TabContent) tab.getContent()).activateTab();
+            }
+        });
+
         tab.setOnClosed(new EventHandler<Event>()
         {
             @Override
@@ -223,46 +251,6 @@ public class FormVaultsManager extends AbstractForm
             {
                 ((TabContent) tab.getContent()).closeTab();
                 tp_vaults.getTabs().get(tp_vaults.getTabs().size() - 1).setDisable(false);
-            }
-        });
-
-        tab.setOnSelectionChanged(new EventHandler<Event>()
-        {
-            @Override
-            public void handle(Event event)
-            {
-                if (tab.isSelected())
-                {
-                    TabContent tc = ((TabContent) tab.getContent());
-                    tc.activateTab();
-
-                    try
-                    {
-                        b_new.setOnAction(tc.getOnNewBtnAction());
-                        b_edit.setOnAction(tc.getOnEditBtnAction());
-                        b_delete.setOnAction(tc.getOnDeleteBtnAction());
-                        b_reset.setOnAction(tc.getOnResetBtnAction());
-                        b_export.setOnAction(tc.getOnExportBtnAction());
-                        b_copy.setOnAction(tc.getOnCopyToClipboardBtnAction());
-
-                        b_new.setDisable(false);
-                        b_edit.setDisable(false);
-                        b_delete.setDisable(false);
-                        b_reset.setDisable(false);
-                        b_export.setDisable(false);
-                        b_copy.setDisable(false);
-                    }
-                    catch (Exceptions e)
-                    {
-                        b_new.setDisable(true);
-                        b_edit.setDisable(true);
-                        b_delete.setDisable(true);
-                        b_reset.setDisable(true);
-                        b_export.setDisable(true);
-                        b_copy.setDisable(true);
-                    }
-
-                }
             }
         });
 
@@ -340,11 +328,12 @@ public class FormVaultsManager extends AbstractForm
 
                 try
                 {
-                    TrayAgent.getInstance().showNotification(TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD,
-                                                             TextID.TRAY_MSG_TIME_LEFT,
-                                                             ": " + Settings.getInstance().getClipboardLiveTime() / 1000
-                                                                     + " " + TextID.COMMON_LABEL_SECONDS.toString(),
-                                                             MessageType.INFO);
+                    TrayAgent.getInstance()
+                            .showNotification(TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD,
+                                    TextID.TRAY_MSG_TIME_LEFT,
+                                    ": " + Settings.getInstance().getClipboardLiveTime() / 1000
+                                            + " " + TextID.COMMON_LABEL_SECONDS.toString(),
+                                    MessageType.INFO);
                 }
                 catch (Exceptions e)
                 {
@@ -368,8 +357,8 @@ public class FormVaultsManager extends AbstractForm
                 if (pwd.equals(clipboard.getData(DataFlavor.stringFlavor)))
                 {
                     clipboard.setContents(new StringSelection(""), null);
-                    TrayAgent.getInstance().showNotification(TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD,
-                                                             MessageType.INFO);
+                    TrayAgent.getInstance().showNotification(
+                            TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD, MessageType.INFO);
                 }
             }
             catch (UnsupportedFlavorException | IOException | Exceptions e)
@@ -385,4 +374,111 @@ public class FormVaultsManager extends AbstractForm
         calculatePasswordThread.setDaemon(false);
         calculatePasswordThread.start();
     }
+
+    //
+    // TODO
+    //
+    public EventHandler<ActionEvent> getOnNewAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent ae)
+            {
+                new FormCreatePwd(This);
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnEditAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                try
+                {
+                    if (VaultManager.getSelectedPassword() == null) return;
+                    new FormEditPwd(This);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnCopyToClipboardBtnAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                Logger.printError("Feature is not implemented yet!!! PICHALJKA");
+                // parent.minimize();
+                // copyToClipboard(); // TODO: pass password to copy
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnDeleteBtnAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                try
+                {
+                    if (VaultManager.getSelectedPassword() == null) return;
+                    new FormDeletePwd(This);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnResetBtnAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                try
+                {
+                    if (VaultManager.getSelectedPassword() == null) return;
+                    new FormResetPwd(This);
+                }
+                catch (Exceptions e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnExportBtnAction()
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                new DlgExport(This);
+            }
+        };
+    }
+
 }
