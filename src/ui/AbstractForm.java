@@ -75,6 +75,7 @@ public abstract class AbstractForm
                 child.close();
         }
         stage.close();
+        if (parent != null) parent.stage.requestFocus();
     }
 
     public void maximize()
@@ -131,8 +132,7 @@ public abstract class AbstractForm
         return new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule,
-                    Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
             {
                 // Cancel minimisation to avoid loss of stage coordinates
                 stage.setIconified(false);
@@ -146,8 +146,7 @@ public abstract class AbstractForm
         return new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
             {
                 if (!newValue && priority == WindowPriority.NORMAL) return;
 
@@ -220,8 +219,7 @@ public abstract class AbstractForm
         stage.setScene(scene);
 
         stage.getIcons().add(new Image(Properties.PATHS.TRAY_ICON));
-        stage.setTitle(title + " - " + Properties.SOFTWARE.NAME + " ("
-                + TextID.COMMON_LABEL_VERSION.toString() + ")");
+        stage.setTitle(title + " - " + Properties.SOFTWARE.NAME + " (" + TextID.COMMON_LABEL_VERSION.toString() + ")");
         stage.setResizable(true);
 
         stage.setOnCloseRequest(getOnCloseRequest());

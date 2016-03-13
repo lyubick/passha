@@ -3,14 +3,15 @@ package db;
 import java.math.BigInteger;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.Random;
 
+import core.Vault;
 import sha.SHA;
 import utilities.Utilities;
-import cryptosystem.CryptoSystem;
 import logger.Logger;
 import main.Exceptions;
-import main.Terminator;
 import main.Exceptions.XC;
+import main.Properties;
 
 public class SpecialPassword
 {
@@ -25,25 +26,30 @@ public class SpecialPassword
         TOTAL_COUNT,
     }
 
-    private long   shaCycles             = 0;
-    private String name                  = null;
-    private String comment               = null;
-    private String url                   = null;
-    private int    length                = 0;
-    private String specialChars          = null;
-    private BitSet paramsMask            = null;
-    private String shortcut              = null;
+    private long          shaCycles             = 0;
+    private String        name                  = null;
+    private String        comment               = null;
+    private String        url                   = null;
+    private int           length                = 0;
+    private String        specialChars          = null;
+    private BitSet        paramsMask            = null;
+    private String        shortcut              = null;
 
-    private String SALT_SPECIAL_PASSWORD = "SPECIAL";
+    private static Random randomizer            = null;
 
-    public SpecialPassword(HashMap<String, String> m)
+    private Vault         own_vault             = null;
+
+    private String        SALT_SPECIAL_PASSWORD = "SPECIAL";
+
+    public SpecialPassword(HashMap<String, String> m, Vault parentVault)
     {
         Logger.printDebug("SpecialPassword constructor from Map STARTS...");
 
+        own_vault = parentVault;
+
         shaCycles = Long.parseLong(m.getOrDefault("shaCycles", "0"));
         name = m.getOrDefault("name", "");
-        setAllOptionalFields(m.getOrDefault("comment", ""), m.getOrDefault("url", ""),
-                m.getOrDefault("shortcut", ""));
+        setAllOptionalFields(m.getOrDefault("comment", ""), m.getOrDefault("url", ""), m.getOrDefault("shortcut", ""));
         length = Integer.parseInt(m.getOrDefault("length", "0"));
         specialChars = m.getOrDefault("specialChars", "");
         paramsMask = Utilities.getBitSet(m.getOrDefault("paramsMask", ""));
@@ -69,14 +75,14 @@ public class SpecialPassword
         return m;
     }
 
-    public SpecialPassword(String name, String comment, String url, String length,
-            boolean needSpecialChars, boolean needUpperCaseChar, String specialChars,
-            String shortcut) throws Exceptions
+    public SpecialPassword(String name, String comment, String url, String length, boolean needSpecialChars,
+            boolean needUpperCaseChar, String specialChars, String shortcut, Vault parentVault) throws Exceptions
     {
         Logger.printDebug("SpecialPassword constructor... START");
 
-        if (name.length() == 0 || length.length() == 0)
-            throw new Exceptions(XC.MANDATORY_DATA_MISSING);
+        own_vault = parentVault;
+
+        if (name.length() == 0 || length.length() == 0) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
 
         BitSet paramsMask = new BitSet(PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
         paramsMask.set(0, PARAMS_MASK_BITS.TOTAL_COUNT.ordinal());
@@ -112,25 +118,42 @@ public class SpecialPassword
 
         if (other == null) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
 
+        own_vault = other.own_vault;
+
         this.name = other.name.toString();
         this.length = other.length;
         this.paramsMask = (BitSet) other.paramsMask.clone();
         this.specialChars = other.specialChars.toString();
 
-        setAllOptionalFields(other.comment.toString(), other.url.toString(),
-                other.shortcut.toString());
+        setAllOptionalFields(other.comment.toString(), other.url.toString(), other.shortcut.toString());
 
         this.shaCycles = other.shaCycles;
 
         Logger.printDebug("SpecialPassword copy-constructor... DONE!");
     }
 
+    public void setParentVault(Vault vault)
+    {
+        this.own_vault = vault;
+    }
+
+    public void clearParentVault()
+    {
+        setParentVault(null);
+    }
+
     public void changeCycles() throws Exceptions
     {
         do
         {
-            shaCycles = CryptoSystem.getInstance().randSHACycles();
-        } while (!isPasswordValid());
+            if (randomizer == null)
+            {
+                randomizer = new Random(System.currentTimeMillis());
+            }
+            shaCycles = Properties.CORE.SHA.ITERATION_MIN_COUNT
+                    + randomizer.nextInt(Properties.CORE.SHA.ITERATION_MAX_COUNT);
+        }
+        while (!isPasswordValid());
     }
 
     public void setAllOptionalFields(String comment, String url, String shortcut)
@@ -222,8 +245,7 @@ public class SpecialPassword
 
         idx = (idx >= hash.length() - 1) ? idx % hash.length() - 1 : idx;
 
-        return Math
-                .abs(hexArray.indexOf(hash.charAt(idx)) * hexArray.indexOf(hash.charAt(idx + 1)));
+        return Math.abs(hexArray.indexOf(hash.charAt(idx)) * hexArray.indexOf(hash.charAt(idx + 1)));
     }
 
     /**
@@ -247,8 +269,7 @@ public class SpecialPassword
         {
             int currIdx = i * mapChunkLength;
 
-            password.append(ALPHABETA.charAt(Utilities
-                    .hexToInt(hash.substring(currIdx, currIdx + mapChunkLength))
+            password.append(ALPHABETA.charAt(Utilities.hexToInt(hash.substring(currIdx, currIdx + mapChunkLength))
                     .mod(new BigInteger(Integer.toString(ALPHABETA.length()))).intValue()));
         }
 
@@ -278,7 +299,8 @@ public class SpecialPassword
             do
             {
                 insertPosition = (getNumberFromHashAt(hash, idx++) % password.length());
-            } while (specialChars.indexOf(password.charAt(insertPosition)) != -1);
+            }
+            while (specialChars.indexOf(password.charAt(insertPosition)) != -1);
 
             specialCharacterPosition = (getNumberFromHashAt(hash, idx++) % specialChars.length());
 
@@ -331,16 +353,8 @@ public class SpecialPassword
 
         int modificationIdx = 0;
 
-        try
-        {
-            passwordHash = CryptoSystem.getInstance().getPassword(shaCycles, name);
-            specialHash = CryptoSystem.getInstance().getHash(passwordHash, SALT_SPECIAL_PASSWORD);
-        }
-        catch (Exceptions e)
-        {
-            // Core element is down, no sense in running application
-            Terminator.terminate(e);
-        }
+        passwordHash = own_vault.getHashForPassword(shaCycles, name);
+        specialHash = SHA.getHashString(passwordHash, SALT_SPECIAL_PASSWORD);
 
         /* STAGE 1 */
         Logger.printDebug("Password generation. STAGE 1. START");
@@ -383,8 +397,7 @@ public class SpecialPassword
             else if (specialChars.indexOf(pwd.charAt(i)) != -1)
             {
                 count--;
-                if (count == 0)
-                    currentMaskBitSet.set(PARAMS_MASK_BITS.HAS_SPECIAL_CHARACTERS.ordinal());
+                if (count == 0) currentMaskBitSet.set(PARAMS_MASK_BITS.HAS_SPECIAL_CHARACTERS.ordinal());
             }
             else
                 Logger.printError("Invalid character during validation.");
@@ -392,8 +405,8 @@ public class SpecialPassword
             if (currentMaskBitSet.equals(paramsMask)) return true;
         }
 
-        Logger.printError("Validation Failed! Current Mask: " + currentMaskBitSet.toString()
-                + " != Ethalon Mask" + paramsMask.toString());
+        Logger.printError("Validation Failed! Current Mask: " + currentMaskBitSet.toString() + " != Ethalon Mask"
+                + paramsMask.toString());
 
         return false;
     }

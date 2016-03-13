@@ -12,7 +12,8 @@ import ui.elements.EntryField;
 import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
-import db.PasswordCollection;
+import core.Vault;
+import core.VaultManager;
 import db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -67,8 +68,7 @@ public class FormCreatePwd extends AbstractForm
             public void handle(KeyEvent keyEvent)
             {
                 String lengthFieldText = ef_length.getText();
-                if (!"0123456789".contains(keyEvent.getCharacter())
-                        || lengthFieldText.length() >= 2)
+                if (!"0123456789".contains(keyEvent.getCharacter()) || lengthFieldText.length() >= 2)
                 {
                     keyEvent.consume();
                 }
@@ -97,8 +97,7 @@ public class FormCreatePwd extends AbstractForm
         return new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
             {
                 showPasswordPreview();
             }
@@ -135,8 +134,7 @@ public class FormCreatePwd extends AbstractForm
         return new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
             {
                 if (newValue)
                 {
@@ -168,18 +166,17 @@ public class FormCreatePwd extends AbstractForm
 
                 try
                 {
+                    Vault activeVault = VaultManager.getInstance().getActiveVault();
                     if (password != null)
                     {
-                        password.setAllOptionalFields(ef_comment.getText(), ef_url.getText(),
-                                ef_shortcut.getText());
-                        PasswordCollection.getInstance().addPassword(password);
+                        password.setAllOptionalFields(ef_comment.getText(), ef_url.getText(), ef_shortcut.getText());
+                        activeVault.addPassowrd(password);
                     }
                     else
-                        PasswordCollection.getInstance()
-                                .addPassword(new SpecialPassword(ef_name.getText(),
-                                        ef_comment.getText(), ef_url.getText(), ef_length.getText(),
-                                        cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
-                                        ef_specialChars.getText(), ef_shortcut.getText()));
+                        activeVault.addPassowrd(new SpecialPassword(ef_name.getText(), ef_comment.getText(),
+                                ef_url.getText(), ef_length.getText(), cb_specialChars.isSelected(),
+                                cb_upperCaseChar.isSelected(), ef_specialChars.getText(), ef_shortcut.getText(),
+                                activeVault));
                     close();
                 }
                 catch (Exceptions e)
@@ -226,14 +223,12 @@ public class FormCreatePwd extends AbstractForm
         {
             ef_specialChars.beNormal();
             ef_name.beNormal();
-            if (ef_length.getText().length() > 0
-                    && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
+            if (ef_length.getText().length() > 0 && Integer.parseInt(ef_length.getText()) >= MIN_PASSWORD_LENGTH
                     && Integer.parseInt(ef_length.getText()) <= MAX_PASSWORD_LENGTH)
             {
-                password = new SpecialPassword(ef_name.getText(), ef_comment.getText(),
-                        ef_url.getText(), ef_length.getText(), cb_specialChars.isSelected(),
-                        cb_upperCaseChar.isSelected(), ef_specialChars.getText(),
-                        ef_shortcut.getText());
+                password = new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
+                        ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
+                        ef_specialChars.getText(), ef_shortcut.getText(), VaultManager.getInstance().getActiveVault());
                 ef_passwordPreview.setText(password.getPassword());
                 l_errorLabel.setText("");
                 b_ok.setDisable(false);
@@ -286,15 +281,12 @@ public class FormCreatePwd extends AbstractForm
         l_header = new Label(TextID.FORM_CREATEPWD_LABEL_HEADER);
         l_header.beHeader();
 
-        ef_name = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*",
-                TEXTFIELD.WIDTH.XXL);
+        ef_name = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*", TEXTFIELD.WIDTH.XXL);
         ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
         ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD.WIDTH.XXL);
-        ef_length = new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*",
-                TEXTFIELD.WIDTH.S);
+        ef_length = new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*", TEXTFIELD.WIDTH.S);
         ef_specialChars =
-                new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*",
-                        TEXTFIELD.WIDTH.XXL);
+                new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*", TEXTFIELD.WIDTH.XXL);
         ef_passwordPreview = new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD, TEXTFIELD.WIDTH.XXL);
         ef_shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, TEXTFIELD.WIDTH.XS);
 

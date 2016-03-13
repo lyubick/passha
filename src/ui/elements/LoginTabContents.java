@@ -13,6 +13,7 @@ import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
+import ui.AbstractForm;
 import ui.elements.EntryField.TEXTFIELD;
 
 public class LoginTabContents extends ui.elements.GridPane implements TabContent
@@ -24,6 +25,8 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     private Button        b_login            = null;
     private Button        b_register         = null;
     private Tab           t_ownTab           = null;
+
+    private AbstractForm  parentForm         = null;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnLoginBtnAction()
@@ -110,8 +113,8 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
 
         try
         {
-            t_ownTab.setContent(
-                    new VaultTabContent(VaultManager.getInstance().addVault(password, isNewUser)));
+            t_ownTab.setContent(new VaultTabContent(VaultManager.getInstance().addVault(password, isNewUser),
+                    parentForm));
         }
         catch (Exceptions e)
         {
@@ -120,15 +123,13 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     }
 
     /* PUBLIC ROUTINE */
-    public LoginTabContents(Tab ownTab)
+    public LoginTabContents(Tab ownTab, AbstractForm parentForm)
     {
+        this.parentForm = parentForm;
+
         // ========== LABELS ========== //
-        l_header =
-                new Label(
-                        TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
-                                + System.getProperty("user.name",
-                                        TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString())
-                                + "!");
+        l_header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
+                + System.getProperty("user.name", TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString()) + "!");
         l_header.beHeader();
         l_warning = new Label();
         l_warning.beError();
@@ -212,5 +213,11 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void refreshTab()
+    {
+        // TODO Auto-generated method stub
     }
 }

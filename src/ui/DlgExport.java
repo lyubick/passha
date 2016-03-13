@@ -2,7 +2,7 @@ package ui;
 
 import java.io.File;
 
-import db.PasswordCollection;
+import core.VaultManager;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -12,7 +12,7 @@ import main.Terminator;
 public class DlgExport
 {
 
-    protected DlgExport(AbstractForm parent)
+    public DlgExport(AbstractForm parent)
     {
         FileChooser fc = new FileChooser();
         File outFile = fc.showSaveDialog(new Stage(StageStyle.UNIFIED));
@@ -21,7 +21,7 @@ public class DlgExport
         {
             try
             {
-                PasswordCollection.getInstance().export(outFile.getAbsolutePath());
+                VaultManager.getInstance().getActiveVault().export(outFile.getAbsolutePath());
             }
             catch (Exceptions e)
             {

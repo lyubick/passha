@@ -16,7 +16,7 @@ import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.GridPane;
 import ui.elements.Label;
-import db.PasswordCollection;
+import core.VaultManager;
 import db.SpecialPassword;
 
 /**
@@ -45,7 +45,7 @@ public class FormResetPwd extends AbstractForm
             {
                 try
                 {
-                    PasswordCollection.getInstance().replacePasword(newSp);
+                    VaultManager.getInstance().getActiveVault().replacePassword(newSp);
                     close();
                 }
                 catch (Exceptions e)
@@ -85,9 +85,9 @@ public class FormResetPwd extends AbstractForm
     {
         try
         {
-            ef_currentPassword
-                    .setText(PasswordCollection.getInstance().getSelected().getPassword());
-            newSp = new SpecialPassword(PasswordCollection.getInstance().getSelected());
+            SpecialPassword pwd = VaultManager.getSelectedPassword();
+            ef_currentPassword.setText(pwd.getPassword());
+            newSp = new SpecialPassword(pwd);
             newSp.changeCycles();
         }
         catch (Exceptions e)

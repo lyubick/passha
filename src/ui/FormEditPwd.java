@@ -1,6 +1,6 @@
 package ui;
 
-import db.PasswordCollection;
+import core.VaultManager;
 import db.SpecialPassword;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -39,9 +39,8 @@ public class FormEditPwd extends AbstractForm
             {
                 try
                 {
-                    pwd.setAllOptionalFields(ef_comment.getText(), ef_url.getText(),
-                            ef_shortcut.getText());
-                    PasswordCollection.getInstance().replacePasword(pwd);
+                    pwd.setAllOptionalFields(ef_comment.getText(), ef_url.getText(), ef_shortcut.getText());
+                    VaultManager.getInstance().getActiveVault().replacePassword(pwd);
                     close();
                 }
                 catch (Exceptions e)
@@ -80,14 +79,13 @@ public class FormEditPwd extends AbstractForm
 
         l_header = new Label(TextID.FORM_EDITPWD_LABEL_HEADER);
         l_header.beHeader();
-        pwd = PasswordCollection.getInstance().getSelected();
+        pwd = VaultManager.getSelectedPassword();
 
         ef_pwdName = new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXTFIELD.WIDTH.XXL);
         ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
         ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD.WIDTH.XXL);
         ef_shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, TEXTFIELD.WIDTH.XS);
-        ef_errorLabel =
-                new EntryField(TextID.FORM_EDITPWD_MSG_SHORTCUT_IN_USE, TEXTFIELD.WIDTH.XXL);
+        ef_errorLabel = new EntryField(TextID.FORM_EDITPWD_MSG_SHORTCUT_IN_USE, TEXTFIELD.WIDTH.XXL);
         ef_errorLabel.setEditable(false);
         ef_errorLabel.beError();
         ef_errorLabel.setVisible(false);

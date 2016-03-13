@@ -1,6 +1,6 @@
 package ui;
 
-import db.PasswordCollection;
+import core.VaultManager;
 import ui.elements.Button;
 import ui.elements.EntryField;
 import ui.elements.GridPane;
@@ -35,8 +35,7 @@ public class FormDeletePwd extends AbstractForm
         return new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
             {
                 if (newValue.equals(confirmationText))
                 {
@@ -63,7 +62,7 @@ public class FormDeletePwd extends AbstractForm
                 {
                     try
                     {
-                        PasswordCollection.getInstance().removePassword(null);
+                        VaultManager.getInstance().getActiveVault().removePassword(null);
                     }
                     catch (Exceptions e)
                     {
@@ -95,9 +94,7 @@ public class FormDeletePwd extends AbstractForm
         l_note.beError();
         l_deleteWord.beError();
 
-        b_confirm =
-                new Button(TextID.COMMON_LABEL_CANCEL.toString(),
-                        TextID.FORM_DELETEPWD_NAME.toString());
+        b_confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString(), TextID.FORM_DELETEPWD_NAME.toString());
 
         tf_confirmation = new TextField();
         tf_confirmation.setMaxWidth(TEXTFIELD.WIDTH.L);
@@ -127,7 +124,7 @@ public class FormDeletePwd extends AbstractForm
 
         try
         {
-            ef_passwordName.setText(PasswordCollection.getInstance().getSelected().getName());
+            ef_passwordName.setText(VaultManager.getSelectedPassword().getName());
         }
         catch (Exceptions e)
         {

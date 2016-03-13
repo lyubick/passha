@@ -2,6 +2,8 @@ package ui;
 
 import java.util.Vector;
 
+import core.Vault;
+import core.VaultManager;
 import ui.elements.EntryField;
 import ui.elements.GridPane;
 import ui.elements.LabeledItem;
@@ -11,7 +13,6 @@ import languages.Texts.TextID;
 import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
-import db.PasswordCollection;
 import db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,8 +34,7 @@ public class FormShortcuts extends AbstractForm
         return new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
             {
                 if (oldValue) close();
             }
@@ -50,11 +50,10 @@ public class FormShortcuts extends AbstractForm
             {
                 try
                 {
-                    PasswordCollection.getInstance().setSelected(
-                            PasswordCollection.getInstance().getPasswordByShortcut(
-                                    keyEvent.getText().toLowerCase()));
+                    Vault vault = VaultManager.getInstance().getActiveVault();
+                    vault.setSelected(vault.getPasswordByShortcut(keyEvent.getText().toLowerCase()));
 
-                    FormManagePwd.copyToClipboard();
+                    FormVaultsManager.copyToClipboard();
 
                 }
                 catch (Exceptions e)
@@ -70,7 +69,7 @@ public class FormShortcuts extends AbstractForm
     /* PRIVATE ROUTINE */
     private void fillFormWithPwds() throws Exceptions
     {
-        Vector<SpecialPassword> tmp = PasswordCollection.getInstance().getPasswordsWithShortcut();
+        Vector<SpecialPassword> tmp = VaultManager.getInstance().getActiveVault().getPasswordsWithShortcut();
         if (tmp.size() == 0) throw new Exceptions(XC.NO_SHORTCUTS_EXISTS);
 
         Label l_passwordName = new Label(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME);

@@ -2,6 +2,7 @@ package core;
 
 import java.util.Vector;
 
+import db.SpecialPassword;
 import main.Exceptions;
 import main.Exceptions.XC;
 import main.Properties;
@@ -40,6 +41,13 @@ public class VaultManager
         return newVault;
     }
 
+    // TODO: Maybe do the same for all other methods?
+    // like addPassword, replacePassword, removePassword???
+    static public SpecialPassword getSelectedPassword() throws Exceptions
+    {
+        return VaultManager.getInstance().getActiveVault().getSelected();
+    }
+
     public void removeVault()
     {
         vaults.remove(activeVault);
@@ -48,6 +56,11 @@ public class VaultManager
     public void activateVault(Vault vault)
     {
         activeVault = vault;
+    }
+
+    public Vault getActiveVault()
+    {
+        return activeVault;
     }
 
     public void deactivateVault()

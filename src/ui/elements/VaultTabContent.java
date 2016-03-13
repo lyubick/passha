@@ -2,46 +2,45 @@ package ui.elements;
 
 import core.Vault;
 import core.VaultManager;
-import db.PasswordCollection;
 import db.iSpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import languages.Texts.TextID;
+import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
+import ui.AbstractForm;
+import ui.DlgExport;
+import ui.FormCreatePwd;
+import ui.FormDeletePwd;
+import ui.FormEditPwd;
+import ui.FormResetPwd;
 
 public class VaultTabContent extends TableView<iSpecialPassword> implements TabContent
 {
-    private Vault vault = null;
+    private Vault        vault = null;
+    private AbstractForm owner = null; // TODO:
 
     private ChangeListener<Object> getSelectedItemPropertyListener()
     {
         return new ChangeListener<Object>()
         {
             @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
-                    Object newValue)
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
             {
-                try
-                {
-                    if (newValue == null)
-                    {
-                        PasswordCollection.getInstance().setSelected(null);
-                        return;
-                    }
 
-                    PasswordCollection.getInstance()
-                            .setSelected(getSelectionModel().getSelectedItem().getOrigin());
-                }
-                catch (Exceptions e)
+                if (newValue == null)
                 {
-                    Terminator.terminate(e);
+                    vault.setSelected(null);
+                    return;
                 }
 
+                vault.setSelected(getSelectionModel().getSelectedItem().getOrigin());
                 // TODO:
                 /*
                  * b_copy.setDisable(true);
@@ -53,19 +52,20 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         };
     }
 
-    public VaultTabContent(Vault vault)
+    public VaultTabContent(Vault vault, AbstractForm parent)
     {
         this.vault = vault;
+        this.owner = parent;
 
-        TableColumn<iSpecialPassword, String> cName = new TableColumn<iSpecialPassword, String>(
-                TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
-        TableColumn<iSpecialPassword, String> cComment = new TableColumn<iSpecialPassword, String>(
-                TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<iSpecialPassword, String>(
-                TextID.FORM_CREATEPWD_LABEL_URL.toString());
+        TableColumn<iSpecialPassword, String> cName =
+                new TableColumn<iSpecialPassword, String>(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
+        TableColumn<iSpecialPassword, String> cComment =
+                new TableColumn<iSpecialPassword, String>(TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
+        TableColumn<iSpecialPassword, String> cUrl =
+                new TableColumn<iSpecialPassword, String>(TextID.FORM_CREATEPWD_LABEL_URL.toString());
 
-        TableColumn<iSpecialPassword, String> cShortcut = new TableColumn<iSpecialPassword, String>(
-                TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
+        TableColumn<iSpecialPassword, String> cShortcut =
+                new TableColumn<iSpecialPassword, String>(TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
 
         getColumns().add(cName);
         getColumns().add(cComment);
@@ -75,15 +75,11 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
         cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
         cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
-        cShortcut.setCellValueFactory(
-                new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
+        cShortcut.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
 
         getSelectionModel().selectedItemProperty().addListener(getSelectedItemPropertyListener());
-    }
 
-    public ObservableList<iSpecialPassword> getIface()
-    {
-        return vault.getIface();
+        refreshTab();
     }
 
     @Override
@@ -113,4 +109,95 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
             e.printStackTrace();
         }
     }
+
+    public EventHandler<ActionEvent> getOnNewBtnAction() throws Exceptions
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent ae)
+            {
+                new FormCreatePwd(owner);
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnEditBtnAction() throws Exceptions
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                try
+                {
+                    if (vault.getSelected() == null) return;
+                    new FormEditPwd(owner);
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnCopyToClipboardBtnAction() throws Exceptions
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                Logger.printError("Feature is not implemented yet!!!");
+                // parent.minimize();
+                // copyToClipboard(); // TODO: pass password to copy
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnDeleteBtnAction() throws Exceptions
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                if (vault.getSelected() == null) return;
+                new FormDeletePwd(owner);
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnResetBtnAction() throws Exceptions
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent arg0)
+            {
+                if (vault.getSelected() == null) return;
+                new FormResetPwd(owner);
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnExportBtnAction() throws Exceptions
+    {
+        return new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                new DlgExport(owner);
+            }
+        };
+    }
+
+    public void refreshTab()
+    {
+        getSelectionModel().clearSelection();
+        setItems(vault.getIface());
+    }
+
 }

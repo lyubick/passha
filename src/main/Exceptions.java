@@ -38,6 +38,9 @@ public final class Exceptions extends Throwable
 
         DIR_CREATE_ERROR,
 
+        // ONLY Button handlers
+        HANDLER_DOES_NOT_EXIST,
+
         // ONLY New Password dialog exceptions
         MANDATORY_DATA_MISSING,
         PASSWORD_NAME_ALREADY_EXISTS,

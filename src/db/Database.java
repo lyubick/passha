@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
 
+import core.Vault;
 import main.Exceptions;
 import main.Exceptions.XC;
 import main.Properties;
@@ -16,12 +17,14 @@ import logger.Logger;
 
 public class Database
 {
-    private Vector<String>          encrypted = null;
-    private Vector<SpecialPassword> decrypted = null;
+    private Vector<String>          encrypted   = null;
+    private Vector<SpecialPassword> decrypted   = null;
 
-    private File                    vaultFile = null;
+    private File                    vaultFile   = null;
 
-    private RSA                     rsa       = null;
+    private RSA                     rsa         = null;
+
+    private Vault                   parentVault = null;
 
     public enum Status
     {
@@ -34,8 +37,9 @@ public class Database
     // FIXME Check this upon closing
     private volatile Status status = null;
 
-    public Database(RSA myRSA, String filename, boolean newUser) throws Exceptions
+    public Database(RSA myRSA, String filename, boolean newUser, Vault parentVault) throws Exceptions
     {
+        this.parentVault = parentVault;
         // FIXME Redundant? Or move it to Vault of the Vaults :)
         File vaultDir = new File(Properties.PATHS.VAULT);
 
@@ -78,8 +82,8 @@ public class Database
 
         for (String entry : Utilities.readStringsFromFile(vaultFile.getAbsolutePath()))
         {
-            decrypted.add(new SpecialPassword(
-                    (HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(entry))));
+            decrypted.add(new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(entry)),
+                    parentVault));
             encrypted.add(rsa.encrypt(Utilities.objectToBytes(decrypted.lastElement().getMap())));
         }
     }

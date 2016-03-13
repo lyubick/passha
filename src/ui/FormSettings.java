@@ -53,7 +53,7 @@ public class FormSettings extends AbstractForm
                     Settings.getInstance().saveSettings();
 
                     close();
-                    if (Settings.getInstance().isRestartRequired()) FormManagePwd.reload();
+                    if (Settings.getInstance().isRestartRequired()) FormVaultsManager.reload();
 
                 }
                 catch (Exceptions e)
@@ -75,16 +75,16 @@ public class FormSettings extends AbstractForm
         l_header.setTextAlignment(TextAlignment.CENTER);
         l_header.beHeader();
 
-        langOptions = FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(),
-                Settings.LANGUAGE.RUSSIAN.name());
+        langOptions =
+                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
 
-        cb_language =
-                new ComboBox(langOptions, TextID.FORM_SETTINGS_LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
+        cb_language = new ComboBox(langOptions, TextID.FORM_SETTINGS_LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
 
         cb_autologin = new CheckBox(TextID.FORM_SETTINGS_LABEL_AUTOLOGIN.toString());
 
-        ef_clipboard = new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " "
-                + TextID.COMMON_LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
+        ef_clipboard = new EntryField(
+                TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " " + TextID.COMMON_LABEL_SECONDS.toString(),
+                TEXTFIELD.WIDTH.S);
 
         b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
 
@@ -92,8 +92,7 @@ public class FormSettings extends AbstractForm
         {
             cb_autologin.setSelected(Settings.getInstance().isAutologinOn());
             cb_language.setValue(langOptions.get(Settings.getInstance().getLanguage()));
-            ef_clipboard.setText(
-                    Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
+            ef_clipboard.setText(Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
         {

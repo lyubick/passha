@@ -27,6 +27,12 @@ public final class Properties
             public static final int MAX_COUNT = 10;
         }
 
+        public final class SHA
+        {
+            public static final int ITERATION_MIN_COUNT = 10;
+            public static final int ITERATION_MAX_COUNT = 255 - ITERATION_MIN_COUNT;
+        }
+
     }
 
     public final class GUI
