@@ -18,6 +18,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -63,6 +64,8 @@ public class FormVaultsManager extends AbstractForm
     private Button              b_copy           = null;
     private Button              b_export         = null;
     private Button              b_edit           = null;
+
+    private ContextMenu         cm_vault         = null;
 
     private Menu                m_file           = null;
     private Menu                m_vault          = null;
@@ -164,6 +167,9 @@ public class FormVaultsManager extends AbstractForm
             }
         });
 
+        cm_vault = new ContextMenu();
+        cm_vault.getItems().addAll(mi_new, mi_edit, mi_reset, mi_delete);
+
         // ========== REFRESH ========== //
         group.getChildren().remove(grid);
         group.getChildren().addAll(menuMain, grid);
@@ -231,6 +237,8 @@ public class FormVaultsManager extends AbstractForm
             }
 
         });
+
+        tp_vaults.setContextMenu(cm_vault);
         tp_vaults.getTabs().add(t_newTabCreator);
 
         // ========== GRID ========== //
