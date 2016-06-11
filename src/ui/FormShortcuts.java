@@ -9,7 +9,7 @@ import ui.elements.GridPane;
 import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;

@@ -3,7 +3,7 @@ package ui;
 import java.util.Vector;
 
 import ui.elements.GridPane;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import main.Main;
 import main.Properties;
 

@@ -3,7 +3,7 @@ package ui.elements;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.scene.layout.VBox;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 
 public class ProgressBar extends javafx.scene.control.ProgressBar
 {

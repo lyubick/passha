@@ -8,7 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import main.Exceptions;
 import ui.AbstractForm;
 import ui.FormVaultsManager;
@@ -23,8 +23,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         return new ChangeListener<Object>()
         {
             @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue,
-                    Object newValue)
+            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
             {
 
                 if (newValue == null)
@@ -50,15 +49,15 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         this.vault = vault;
         this.owner = parent;
 
-        TableColumn<iSpecialPassword, String> cName = new TableColumn<iSpecialPassword, String>(
-                TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
-        TableColumn<iSpecialPassword, String> cComment = new TableColumn<iSpecialPassword, String>(
-                TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<iSpecialPassword, String>(
-                TextID.FORM_CREATEPWD_LABEL_URL.toString());
+        TableColumn<iSpecialPassword, String> cName =
+            new TableColumn<iSpecialPassword, String>(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
+        TableColumn<iSpecialPassword, String> cComment =
+            new TableColumn<iSpecialPassword, String>(TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
+        TableColumn<iSpecialPassword, String> cUrl =
+            new TableColumn<iSpecialPassword, String>(TextID.FORM_CREATEPWD_LABEL_URL.toString());
 
-        TableColumn<iSpecialPassword, String> cShortcut = new TableColumn<iSpecialPassword, String>(
-                TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
+        TableColumn<iSpecialPassword, String> cShortcut =
+            new TableColumn<iSpecialPassword, String>(TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
 
         getColumns().add(cName);
         getColumns().add(cComment);
@@ -68,8 +67,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
         cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
         cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
-        cShortcut.setCellValueFactory(
-                new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
+        cShortcut.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
 
         getSelectionModel().selectedItemProperty().addListener(getSelectedItemPropertyListener());
 
@@ -96,7 +94,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         try
         {
             VaultManager.getInstance().activateVault(vault);
-            ((FormVaultsManager) owner).switchButtons(false);
+            ((FormVaultsManager) owner).setVaultControlsDisabled(false);
         }
         catch (Exceptions e)
         {
@@ -111,4 +109,9 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         setItems(vault.getIface());
     }
 
+    public String getVaultName()
+    {
+        String name = vault.getName();
+        return name.isEmpty() ? "unnamed" : name;
+    }
 }

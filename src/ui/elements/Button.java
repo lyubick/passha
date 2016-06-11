@@ -6,7 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.util.Duration;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import main.Exceptions;
 import main.Exceptions.XC;
 import ui.elements.Button.BUTTON.SIZE;

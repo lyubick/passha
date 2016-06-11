@@ -4,7 +4,7 @@ import core.VaultManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import logger.Logger;
 import main.Exceptions.XC;
 import ui.FormVaultsManager;
@@ -18,9 +18,8 @@ public class Main extends Application
         if (args.length > 0 && args[0].equals("--debug")) DEBUG = true;
 
         /* 0. Linux Xlib problem workaround */
-        if (System.getProperty("os.name").equals("Linux")) System.loadLibrary("xx");
+        if (System.getProperty("os.name").equals("Linux")) System.loadLibrary("xx"); // FIXME: normal name
 
-        TextID info = null;
         /* 1. Switch ON logs */
         try
         {
@@ -30,6 +29,8 @@ public class Main extends Application
         {
             Terminator.terminate(e);
         }
+
+        TextID info = null;
 
         /* 2. Load settings */
         try
@@ -51,7 +52,6 @@ public class Main extends Application
         /* 3. Wake up tray notifications */
         /*
          * try { TrayAgent.init();
-         *
          * if (info != null)
          * TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR,
          * info, MessageType.ERROR); } catch (Exceptions e) {

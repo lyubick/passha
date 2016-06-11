@@ -24,13 +24,15 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import logger.Logger;
+
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
 import main.Properties;
 import main.Settings;
+
 import ui.elements.Button;
 import ui.elements.Button.BUTTON.SIZE;
 import ui.elements.EntryField.TEXTFIELD;
@@ -54,6 +56,7 @@ public class FormVaultsManager extends AbstractForm
     private VBox                vb_VaultButtons  = null;
 
     private TextField           tf_pass          = null;
+
     private Button              b_new            = null;
     private Button              b_delete         = null;
     private Button              b_reset          = null;
@@ -62,16 +65,21 @@ public class FormVaultsManager extends AbstractForm
     private Button              b_edit           = null;
 
     private Menu                m_file           = null;
+    private Menu                m_vault          = null;
+    private Menu                m_password       = null;
     private Menu                m_help           = null;
+
     private MenuItem            mi_about         = null;
     private MenuItem            mi_exit          = null;
+    private MenuItem            mi_new           = null;
+    private MenuItem            mi_edit          = null;
+    private MenuItem            mi_reset         = null;
+    private MenuItem            mi_delete        = null;
     private MenuItem            mi_settings      = null;
 
     private TabPane             tp_vaults        = null;
 
     static Task<Void>           tsk_pwdLifeTime  = null;
-
-    static private int          currentVaultIdx  = 1;
 
     public static FormVaultsManager getInstance() throws Exceptions
     {
@@ -91,13 +99,10 @@ public class FormVaultsManager extends AbstractForm
         stage.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule,
-                    Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
             {
                 // FIXME: Create TabPane class
-                if (newValue)
-                    ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent())
-                            .refreshTab();
+                if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).refreshTab();
             }
         });
 
@@ -107,15 +112,25 @@ public class FormVaultsManager extends AbstractForm
         // TODO: create class for menu
         menuMain = new MenuBar();
         m_file = new Menu(TextID.MENU_LABEL_FILE.toString());
+        m_vault = new Menu("Vault"); // FIXME: local
+        m_password = new Menu("Password"); // FIXME: local
         m_help = new Menu(TextID.MENU_LABEL_HELP.toString());
 
         mi_settings = new MenuItem(TextID.FORM_SETTINGS_NAME.toString());
         mi_exit = new MenuItem(TextID.MENU_LABEL_EXIT.toString());
+
+        mi_new = new MenuItem(TextID.COMMON_LABEL_NEW.toString());
+        mi_edit = new MenuItem(TextID.FORM_MANAGEWD_LABEL_EDIT.toString());
+        mi_reset = new MenuItem(TextID.FORM_MANAGEPWD_LABEL_RESET.toString());
+        mi_delete = new MenuItem(TextID.FORM_CREATEPWD_MANAGER_LABEL_DELETE.toString());
+
         mi_about = new MenuItem(TextID.MENU_LABEL_ABOUT.toString());
 
         m_file.getItems().addAll(mi_settings, mi_exit);
+        m_vault.getItems().addAll(m_password);
+        m_password.getItems().addAll(mi_new, mi_edit, mi_reset, mi_delete);
         m_help.getItems().addAll(mi_about);
-        menuMain.getMenus().addAll(m_file, m_help);
+        menuMain.getMenus().addAll(m_file, m_vault, m_help);
 
         mi_settings.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -134,6 +149,11 @@ public class FormVaultsManager extends AbstractForm
                 Terminator.terminate(new Exceptions(XC.END));
             }
         });
+
+        mi_new.setOnAction(getOnNewAction());
+        mi_edit.setOnAction(getOnEditAction());
+        mi_reset.setOnAction(getOnResetAction());
+        mi_delete.setOnAction(getOnDeleteAction());
 
         mi_about.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -161,10 +181,10 @@ public class FormVaultsManager extends AbstractForm
 
         b_new.setOnAction(getOnNewAction());
         b_edit.setOnAction(getOnEditAction());
-        b_delete.setOnAction(getOnDeleteBtnAction());
-        b_reset.setOnAction(getOnResetBtnAction());
-        b_export.setOnAction(getOnExportBtnAction());
-        b_copy.setOnAction(getOnCopyToClipboardBtnAction());
+        b_delete.setOnAction(getOnDeleteAction());
+        b_reset.setOnAction(getOnResetAction());
+        b_export.setOnAction(getOnExportAction());
+        b_copy.setOnAction(getOnCopyAction());
 
         VBox.setMargin(b_new, new Insets(10, 10, 0, 10));
         VBox.setMargin(b_edit, new Insets(10, 10, 0, 10));
@@ -199,7 +219,8 @@ public class FormVaultsManager extends AbstractForm
         Tab t_newTabCreator = new Tab();
 
         t_newTabCreator.setClosable(false);
-        t_newTabCreator.setText("+");
+        t_newTabCreator.setLabelText("+");
+        t_newTabCreator.setRenameEnabled(false);
         t_newTabCreator.setOnSelectionChanged(new EventHandler<Event>()
         {
             @Override
@@ -222,18 +243,17 @@ public class FormVaultsManager extends AbstractForm
         open();
     }
 
-    // FIXME: Maybe here some type can be passed
-    public void switchButtons(boolean b)
+    public void setVaultControlsDisabled(boolean value)
     {
-        vb_VaultButtons.setDisable(b);
-        b_copy.setDisable(b);
+        m_vault.setDisable(value);
+        vb_VaultButtons.setDisable(value);
+        b_copy.setDisable(value);
     }
 
     // called when user presses '+' tab or at the start when auto login is off
     private void AddTab()
     {
         Tab tab = new Tab();
-        tab.setText("Vault " + currentVaultIdx++ + ": "); // FIXME locale
 
         tab.setOnSelectionChanged(new EventHandler<Event>()
         {
@@ -244,13 +264,14 @@ public class FormVaultsManager extends AbstractForm
             }
         });
 
-        tab.setOnClosed(new EventHandler<Event>()
+        tab.setOnCloseRequest(new EventHandler<Event>()
         {
             @Override
             public void handle(Event event)
             {
                 ((TabContent) tab.getContent()).closeTab();
                 tp_vaults.getTabs().get(tp_vaults.getTabs().size() - 1).setDisable(false);
+
             }
         });
 
@@ -328,12 +349,10 @@ public class FormVaultsManager extends AbstractForm
 
                 try
                 {
-                    TrayAgent.getInstance()
-                            .showNotification(TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD,
-                                    TextID.TRAY_MSG_TIME_LEFT,
-                                    ": " + Settings.getInstance().getClipboardLiveTime() / 1000
-                                            + " " + TextID.COMMON_LABEL_SECONDS.toString(),
-                                    MessageType.INFO);
+                    TrayAgent.getInstance().showNotification(TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD,
+                        TextID.TRAY_MSG_TIME_LEFT, ": " + Settings.getInstance().getClipboardLiveTime() / 1000 + " "
+                            + TextID.COMMON_LABEL_SECONDS.toString(),
+                        MessageType.INFO);
                 }
                 catch (Exceptions e)
                 {
@@ -350,15 +369,16 @@ public class FormVaultsManager extends AbstractForm
             }
         };
 
-        tsk_pwdLifeTime.setOnSucceeded(EventHandler -> {
+        tsk_pwdLifeTime.setOnSucceeded(EventHandler ->
+        {
             Logger.printDebug("PWDCLIP -> Successfully finished.");
             try
             {
                 if (pwd.equals(clipboard.getData(DataFlavor.stringFlavor)))
                 {
                     clipboard.setContents(new StringSelection(""), null);
-                    TrayAgent.getInstance().showNotification(
-                            TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD, MessageType.INFO);
+                    TrayAgent.getInstance().showNotification(TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD,
+                        MessageType.INFO);
                 }
             }
             catch (UnsupportedFlavorException | IOException | Exceptions e)
@@ -367,7 +387,8 @@ public class FormVaultsManager extends AbstractForm
             }
         });
 
-        tsk_pwdLifeTime.setOnCancelled(EventHandler -> {
+        tsk_pwdLifeTime.setOnCancelled(EventHandler ->
+        {
             Logger.printDebug("PWDCLIP -> Cancelled finished");
         });
         Thread calculatePasswordThread = new Thread(tsk_pwdLifeTime);
@@ -375,9 +396,6 @@ public class FormVaultsManager extends AbstractForm
         calculatePasswordThread.start();
     }
 
-    //
-    // TODO
-    //
     public EventHandler<ActionEvent> getOnNewAction()
     {
         return new EventHandler<ActionEvent>()
@@ -411,7 +429,7 @@ public class FormVaultsManager extends AbstractForm
         };
     }
 
-    public EventHandler<ActionEvent> getOnCopyToClipboardBtnAction()
+    public EventHandler<ActionEvent> getOnCopyAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -425,7 +443,7 @@ public class FormVaultsManager extends AbstractForm
         };
     }
 
-    public EventHandler<ActionEvent> getOnDeleteBtnAction()
+    public EventHandler<ActionEvent> getOnDeleteAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -447,7 +465,7 @@ public class FormVaultsManager extends AbstractForm
         };
     }
 
-    public EventHandler<ActionEvent> getOnResetBtnAction()
+    public EventHandler<ActionEvent> getOnResetAction()
     {
         return new EventHandler<ActionEvent>()
         {
@@ -469,14 +487,15 @@ public class FormVaultsManager extends AbstractForm
         };
     }
 
-    public EventHandler<ActionEvent> getOnExportBtnAction()
+    public EventHandler<ActionEvent> getOnExportAction()
     {
         return new EventHandler<ActionEvent>()
         {
             @Override
             public void handle(ActionEvent event)
             {
-                new DlgExport(This);
+                Logger.printError("Feature is causing SEGV on ubuntu!!! PICHALJKA");
+                // new DlgExport(This);
             }
         };
     }

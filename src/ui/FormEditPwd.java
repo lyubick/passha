@@ -12,7 +12,7 @@ import ui.elements.EntryField;
 import ui.elements.Label;
 import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;

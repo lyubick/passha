@@ -37,9 +37,17 @@ public class Database
     // FIXME Check this upon closing
     private volatile Status status = null;
 
-    public Database(RSA myRSA, String filename, boolean newUser, Vault parentVault) throws Exceptions
+    // TODO: basically what we want is separate Thread for DB,
+    // to allow DB independently decide when to dump to file.
+    // TODO: on closing database MUST reassure that everything is synced.
+    public void requestSync()
     {
-        this.parentVault = parentVault;
+        sync();
+    }
+
+    public Database(RSA myRSA, String filename, boolean newUser, Vault vault) throws Exceptions
+    {
+        parentVault = vault;
         // FIXME Redundant? Or move it to Vault of the Vaults :)
         File vaultDir = new File(Properties.PATHS.VAULT);
 
@@ -82,8 +90,16 @@ public class Database
 
         for (String entry : Utilities.readStringsFromFile(vaultFile.getAbsolutePath()))
         {
-            decrypted.add(new SpecialPassword((HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(entry)),
-                    parentVault));
+            HashMap<String, String> decryptedEntry =
+                (HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(entry));
+
+            if (decryptedEntry.containsKey("vaultName"))
+            {
+                parentVault.setName(decryptedEntry.get("vaultName"));
+                continue;
+            }
+
+            decrypted.add(new SpecialPassword(decryptedEntry, vault));
             encrypted.add(rsa.encrypt(Utilities.objectToBytes(decrypted.lastElement().getMap())));
         }
     }
@@ -135,7 +151,12 @@ public class Database
             {
                 try
                 {
-                    Utilities.writeToFile(vaultFile.getAbsolutePath(), encrypted);
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put("vaultName", parentVault.getName());
+
+                    Utilities.writeToFile(vaultFile.getAbsolutePath(), encrypted,
+                        rsa.encrypt(Utilities.objectToBytes(map)));
+
                     status = Status.SYNCHRONIZED;
                     this.succeeded();
                 }
@@ -148,7 +169,8 @@ public class Database
             }
         };
 
-        task.setOnSucceeded(EventHandler -> {
+        task.setOnSucceeded(EventHandler ->
+        {
             Logger.printDebug("Saving Database to '" + vaultFile.getAbsolutePath() + "' DONE!");
             Logger.printDebug("Database Synchronization returned status: " + status.toString());
         });

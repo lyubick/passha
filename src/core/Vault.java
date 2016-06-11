@@ -6,6 +6,7 @@ import logger.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Vector;
 
 import db.Database;
@@ -26,17 +27,20 @@ public class Vault
     private final String    SALT_E           = "E";
 
     private byte[]          masterHash       = null;
+
     private Database        database         = null;
     private SpecialPassword selectedPassword = null;
 
-    public Vault(String password, boolean isNewUser) throws Exceptions
+    private String          name             = "";
+
+    public Vault(byte[] hash, boolean isNewUser) throws Exceptions
     {
         // Generate master hash
-        masterHash = SHA.getHashBytes(password.getBytes());
+        masterHash = hash;
 
         // Initialize RSA
         RSA rsa = new RSA(SHA.getHashString(masterHash, SALT_P), SHA.getHashString(masterHash, SALT_Q),
-                SHA.getHashString(masterHash, SALT_E));
+            SHA.getHashString(masterHash, SALT_E));
 
         // Initialize Database
         database = new Database(rsa, SHA.getHashString(masterHash, SALT_FILENAME), isNewUser, this);
@@ -178,5 +182,25 @@ public class Vault
             if (!sp.getShortcut().equals("")) pwds.add(sp);
 
         return pwds;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        if (this.name.equals(name)) return;
+
+        this.name = name;
+
+        // Most likely database is now setting name while creating
+        if (database != null) database.requestSync();
+    }
+
+    public boolean initializedFrom(byte[] hash)
+    {
+        return Arrays.equals(masterHash, hash);
     }
 }

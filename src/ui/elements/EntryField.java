@@ -3,7 +3,7 @@ package ui.elements;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.HBox;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import main.Properties;
 
 public class EntryField extends javafx.scene.control.TextField implements LabeledItem

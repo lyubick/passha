@@ -3,8 +3,10 @@ package core;
 import java.util.Vector;
 
 import db.SpecialPassword;
+import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
+import sha.SHA;
 import main.Properties;
 
 public class VaultManager
@@ -35,7 +37,13 @@ public class VaultManager
 
     public Vault addVault(String password, boolean isNewUser) throws Exceptions
     {
-        Vault newVault = new Vault(password, isNewUser);
+        byte[] newVaultHash = SHA.getHashBytes(password.getBytes());
+
+        for (Vault vault : vaults)
+            if (vault.initializedFrom(newVaultHash)) throw new Exceptions(XC.VAULT_ALREADY_OPEN);
+
+        Vault newVault = new Vault(newVaultHash, isNewUser);
+
         vaults.addElement(newVault);
 
         return newVault;
@@ -50,7 +58,10 @@ public class VaultManager
 
     public void removeVault()
     {
-        vaults.remove(activeVault);
+        if (activeVault != null)
+            vaults.remove(activeVault);
+        else
+            Logger.printError("Attempt to close null-vault...");
     }
 
     public void activateVault(Vault vault)

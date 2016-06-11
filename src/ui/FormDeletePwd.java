@@ -14,7 +14,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.control.TextField;
 import javafx.scene.text.TextAlignment;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import main.Exceptions;
 import main.Terminator;
 

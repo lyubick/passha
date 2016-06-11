@@ -94,8 +94,8 @@ public final class Utilities
 
         if (s.length() > 0 && s.charAt(0) == '{' && s.charAt(s.length() - 1) == '}')
         {
-            Arrays.stream(s.substring(1, s.length() - 1).split(",")).map(String::trim)
-                    .mapToInt(Integer::parseInt).forEach((int e) -> b.set(e));
+            Arrays.stream(s.substring(1, s.length() - 1).split(",")).map(String::trim).mapToInt(Integer::parseInt)
+                .forEach((int e) -> b.set(e));
         }
 
         return b;
@@ -147,10 +147,18 @@ public final class Utilities
         return new String(hexChars);
     }
 
-    public static void writeToFile(String fileName, String what) throws Exceptions
+    public static void writeToFile(String fileName, String... strings) throws Exceptions
     {
-        Vector<String> tmp = new Vector<String>();
-        tmp.add(what);
+        writeToFile(fileName, new Vector<String>(), strings);
+    }
+
+    public static void writeToFile(String fileName, Vector<String> outStrings, String... strings) throws Exceptions
+    {
+        Vector<String> tmp = new Vector<String>(outStrings);
+
+        for (String str : strings)
+            tmp.add(str);
+
         writeToFile(fileName, tmp);
     }
 
@@ -161,10 +169,10 @@ public final class Utilities
         try
         {
             PrintWriter writer = new PrintWriter(fileName);
-            for (int i = 0; i < outStrings.size(); ++i)
-            {
-                writer.println(outStrings.elementAt(i));
-            }
+
+            for (String s : outStrings)
+                writer.println(s);
+
             writer.flush();
             writer.close();
         }

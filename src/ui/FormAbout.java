@@ -14,7 +14,7 @@ import javafx.scene.control.Hyperlink;
 import ui.elements.Button;
 import ui.elements.GridPane;
 import ui.elements.Label;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import logger.Logger;
 import main.Properties;
 

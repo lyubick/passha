@@ -3,7 +3,7 @@
  */
 package ui;
 
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import main.Exceptions;
 import main.Settings;
 import main.Terminator;

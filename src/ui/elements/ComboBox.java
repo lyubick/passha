@@ -1,7 +1,7 @@
 package ui.elements;
 
 import javafx.collections.ObservableList;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import main.Properties;
 
 public class ComboBox extends javafx.scene.control.ComboBox<String> implements LabeledItem

@@ -15,7 +15,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.Timer;
 
 import javafx.application.Platform;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import logger.Logger;
 import main.Exceptions;
 import main.Properties;

@@ -12,8 +12,21 @@ import main.Terminator;
  * @author curious-odd-man
  *
  */
-public class Texts
+public class Local
 {
+    public class Labels
+    {
+        public class Common
+        {
+
+        }
+    }
+
+    public class Messages
+    {
+
+    }
+
     //@fmt:off
     /**************************************************************************************************************
      * SYNTAX
@@ -62,33 +75,20 @@ public class Texts
         FORM_ABOUT_LABEL_LINCENSE(new String[]
         { "License", "Лицензия" }),
 
-        FORM_ABOUT_MSG_LICENSE_DESCRIPTION(
-                new String[]
-                {
-                        "This program is a perfectly safe Password Manager and Generator, that will allow User, while remembering only one Password, maintain different Passwords for all the WEB and beyond.",
-                        "Эта программа является надёжным Генератором и Хранилищем паролей, которая позволяет пользователю помня только один Пароль иметь разные Пароли для разных ресурсов." }),
+        FORM_ABOUT_MSG_LICENSE_DESCRIPTION(new String[]
+        { "This program is a perfectly safe Password Manager and Generator, that will allow User, while remembering only one Password, maintain different Passwords for all the WEB and beyond.", "Эта программа является надёжным Генератором и Хранилищем паролей, которая позволяет пользователю помня только один Пароль иметь разные Пароли для разных ресурсов." }),
 
         FORM_ABOUT_MSG_LICENSE_COPYRIGHT(new String[]
-        { "Copyright (C) 2015  Andrejs Lubimovs, Vladislavs Varslavans",
-                "Copyright (C) 2015  Андрей Любимов, Владислав Варславанс" }),
+        { "Copyright (C) 2015  Andrejs Lubimovs, Vladislavs Varslavans", "Copyright (C) 2015  Андрей Любимов, Владислав Варславанс" }),
 
-        FORM_ABOUT_MSG_LICENSE_FREEWARE(
-                new String[]
-                {
-                        "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.",
-                        "Это программа является свободным программным обеспечением. Вы можете распространять и/или модифицировать её согласно условиям Стандартной Общественной Лицензии GNU, опубликованной Фондом Свободного Программного Обеспечения, версии 3 или, по Вашему желанию, любой более поздней версии." }),
+        FORM_ABOUT_MSG_LICENSE_FREEWARE(new String[]
+        { "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.", "Это программа является свободным программным обеспечением. Вы можете распространять и/или модифицировать её согласно условиям Стандартной Общественной Лицензии GNU, опубликованной Фондом Свободного Программного Обеспечения, версии 3 или, по Вашему желанию, любой более поздней версии." }),
 
-        FORM_ABOUT_MSG_LICENSE_WARRANTY(
-                new String[]
-                {
-                        "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.",
-                        "Эта программа распространяется в надежде, что она будет полезной, но БЕЗ ВСЯКИХ ГАРАНТИЙ, в том числе подразумеваемых гарантий ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ГОДНОСТИ ДЛЯ ОПРЕДЕЛЁННОГО ПРИМЕНЕНИЯ. Смотрите Стандартную Общественную Лицензию GNU для получения дополнительной информации." }),
+        FORM_ABOUT_MSG_LICENSE_WARRANTY(new String[]
+        { "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.", "Эта программа распространяется в надежде, что она будет полезной, но БЕЗ ВСЯКИХ ГАРАНТИЙ, в том числе подразумеваемых гарантий ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ГОДНОСТИ ДЛЯ ОПРЕДЕЛЁННОГО ПРИМЕНЕНИЯ. Смотрите Стандартную Общественную Лицензию GNU для получения дополнительной информации." }),
 
-        FORM_ABOUT_MSG_LICENSE_GNU_LICENCE(
-                new String[]
-                {
-                        "You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.",
-                        "Вы должны были получить копию Стандартной Общественной Лицензии GNU вместе с программой. В случае её отсутствия, посмотрите <http://www.gnu.org/licenses/>." }),
+        FORM_ABOUT_MSG_LICENSE_GNU_LICENCE(new String[]
+        { "You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.", "Вы должны были получить копию Стандартной Общественной Лицензии GNU вместе с программой. В случае её отсутствия, посмотрите <http://www.gnu.org/licenses/>." }),
 
         /**************************************************************************************************************
          * CREATE PASSWORD FORM
@@ -118,10 +118,7 @@ public class Texts
         { "Delete", "Удалить" }),
 
         FORM_CREATEPWD_MSG_MISSING_PARAM(new String[]
-        {
-                TextID.COMMON_LABEL_ERROR.toString() + "One or more mandatory fields are missing.",
-                TextID.COMMON_LABEL_ERROR.toString()
-                        + "Одно или более обязательных полей не заполнены." }),
+        { TextID.COMMON_LABEL_ERROR.toString() + "One or more mandatory fields are missing.", TextID.COMMON_LABEL_ERROR.toString() + "Одно или более обязательных полей не заполнены." }),
 
         FORM_CREATEPWD_MSG_MUST_HAVE_SPECIAL(new String[]
         { "Must contain special characters", "Обязан иметь специальные символы" }),
@@ -130,12 +127,10 @@ public class Texts
         { "Must have UPPER case character", "Обязан иметь ПРОПИСНЫЕ буквы" }),
 
         FORM_CREATEPWD_MSG_NAME_EXISTS(new String[]
-        { TextID.COMMON_LABEL_ERROR.toString() + " Name already taken!",
-                TextID.COMMON_LABEL_ERROR.toString() + " Имя уже занято!" }),
+        { TextID.COMMON_LABEL_ERROR.toString() + " Name already taken!", TextID.COMMON_LABEL_ERROR.toString() + " Имя уже занято!" }),
 
         FORM_CREATEPWD_MSG_SHORTCUT_IN_USE(new String[]
-        { TextID.COMMON_LABEL_ERROR.toString() + " Shortcut is in use!",
-                TextID.COMMON_LABEL_ERROR.toString() + " Горячая клавиша занята!" }),
+        { TextID.COMMON_LABEL_ERROR.toString() + " Shortcut is in use!", TextID.COMMON_LABEL_ERROR.toString() + " Горячая клавиша занята!" }),
 
         FORM_CREATEPWD_NAME(new String[]
         { "Create new password", "Создать новый пароль" }),
@@ -143,10 +138,8 @@ public class Texts
         /**************************************************************************************************************
          * DELETE PASSWORD FORM
          *************************************************************************************************************/
-        FORM_DELETEPWD_MSG_NOTE(
-                new String[]
-                { "Enter this text to confirm deletion:",
-                        "Введите этот текст, чтобы подтвердить удаление:" }),
+        FORM_DELETEPWD_MSG_NOTE(new String[]
+        { "Enter this text to confirm deletion:", "Введите этот текст, чтобы подтвердить удаление:" }),
 
         FORM_DELETEPWD_NAME(new String[]
         { "Delete password", "Удалить пароль" }),
@@ -167,8 +160,7 @@ public class Texts
         { "Edit Password", "Редактировать пароль" }),
 
         FORM_EDITPWD_MSG_SHORTCUT_IN_USE(new String[]
-        { TextID.COMMON_LABEL_ERROR.toString() + " Shortcut is in use by: ",
-                TextID.COMMON_LABEL_ERROR.toString() + " Горячая клавиша занята: " }),
+        { TextID.COMMON_LABEL_ERROR.toString() + " Shortcut is in use by: ", TextID.COMMON_LABEL_ERROR.toString() + " Горячая клавиша занята: " }),
 
         /**************************************************************************************************************
          * LOGIN FORM
@@ -224,11 +216,8 @@ public class Texts
         /**************************************************************************************************************
          * RESET PASSWORD FORM
          *************************************************************************************************************/
-        FORM_RESETPWD_MSG_WARNING(
-                new String[]
-                {
-                        "By pressing \'OK\' you will substitute current Password with the new Password.Thus current Password will be permanently lost!",
-                        "Нажав \'OK\' Вы замените текущий Пароль на Новый.В результатье текущий Пароль будет безвозвратно утерян!" }),
+        FORM_RESETPWD_MSG_WARNING(new String[]
+        { "By pressing \'OK\' you will substitute current Password with the new Password.Thus current Password will be permanently lost!", "Нажав \'OK\' Вы замените текущий Пароль на Новый.В результатье текущий Пароль будет безвозвратно утерян!" }),
 
         FORM_RESETPWD_NAME(new String[]
         { "Reset password", "Обновить пароль" }),
@@ -294,8 +283,7 @@ public class Texts
          * TRAY FORM
          *************************************************************************************************************/
         TRAY_MSG_FAILED_LOAD_SETTINGS(new String[]
-        { "FAILED to load settings. Using DEFAULTS!",
-                "Не удалось загрузить настройки. Используются настройки по-умлочанию!" }),
+        { "FAILED to load settings. Using DEFAULTS!", "Не удалось загрузить настройки. Используются настройки по-умлочанию!" }),
 
         TRAY_MSG_PWD_COPIED_TO_CLIPBOARD(new String[]
         { "Password copied to Clipboard", "Пароль помещён в буфер обмена" }),

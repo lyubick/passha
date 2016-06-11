@@ -7,7 +7,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
-import languages.Texts.TextID;
+import languages.Local.TextID;
 import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
@@ -53,6 +53,10 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
                                 pf_password.setDisable(true);
 
                                 l_warning.setText(TextID.FORM_LOGIN_MSG_INCORRECT_PWD.toString());
+                            }
+                            else if (e.getCode() == XC.VAULT_ALREADY_OPEN)
+                            {
+                                l_warning.setText("Vault already opened..."); // FIXME locale
                             }
                             else
                             {
@@ -113,13 +117,17 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
 
         try
         {
-            VaultTabContent newContent = new VaultTabContent(
-                    VaultManager.getInstance().addVault(password, isNewUser), owner);
+            VaultTabContent newContent =
+                new VaultTabContent(VaultManager.getInstance().addVault(password, isNewUser), owner);
             t_ownTab.setContent_(newContent);
+            t_ownTab.setVaultName(newContent.getVaultName());
         }
         catch (Exceptions e)
         {
-            if (e.getCode() == XC.FILE_DOES_NOT_EXISTS) throw new Exceptions(XC.USER_UNKNOWN);
+            if (e.getCode() == XC.FILE_DOES_NOT_EXISTS)
+                throw new Exceptions(XC.USER_UNKNOWN);
+            else
+                throw e;
         }
     }
 
@@ -129,12 +137,8 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         this.owner = parentForm;
 
         // ========== LABELS ========== //
-        l_header =
-                new Label(
-                        TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
-                                + System.getProperty("user.name",
-                                        TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString())
-                                + "!");
+        l_header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
+            + System.getProperty("user.name", TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString()) + "!");
         l_header.beHeader();
         l_warning = new Label();
         l_warning.beError();
@@ -211,8 +215,8 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         // TODO Auto-generated method stub
         try
         {
-            VaultManager.getInstance().activateVault(null);
-            ((FormVaultsManager) owner).switchButtons(true);
+            VaultManager.getInstance().deactivateVault();
+            ((FormVaultsManager) owner).setVaultControlsDisabled(true);
         }
         catch (Exceptions e)
         {

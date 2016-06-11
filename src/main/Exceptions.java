@@ -20,6 +20,9 @@ public final class Exceptions extends Throwable
 
     public static enum XC
     {
+        //
+        VAULT_ALREADY_OPEN,
+
         // ONLY Class initialization failure
         INIT_FAILURE,
 
