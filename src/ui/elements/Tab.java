@@ -46,7 +46,8 @@ public class Tab extends javafx.scene.control.Tab
 
         This = this;
 
-        l_label = new Label("Vault: "); // FIXME
+        l_label = new Label("Vault: NEW"); // FIXME
+        renameEnabled = false;
         tf_textField = new TextField();
 
         l_label.setOnMouseClicked(new EventHandler<MouseEvent>()
@@ -78,16 +79,7 @@ public class Tab extends javafx.scene.control.Tab
                 {
                     l_label.setText("Vault: " + tf_textField.getText()); // FIXME
                     This.setGraphic(l_label);
-
-                    try
-                    {
-                        VaultManager.getInstance().getActiveVault().setName(tf_textField.getText());
-                    }
-                    catch (Exceptions e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    ((VaultTabContent) This.getContent()).setName(tf_textField.getText());
                 }
             }
         });

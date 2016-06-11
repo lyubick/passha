@@ -118,7 +118,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         try
         {
             VaultTabContent newContent =
-                new VaultTabContent(VaultManager.getInstance().addVault(password, isNewUser), owner);
+                new VaultTabContent(t_ownTab, VaultManager.getInstance().addVault(password, isNewUser), owner);
             t_ownTab.setContent_(newContent);
             t_ownTab.setVaultName(newContent.getVaultName());
         }
@@ -135,6 +135,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     public LoginTabContents(Tab ownTab, AbstractForm parentForm)
     {
         this.owner = parentForm;
+        t_ownTab = ownTab;
 
         // ========== LABELS ========== //
         l_header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
@@ -194,8 +195,6 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         GridPane.setHalignment(b_register, HPos.LEFT);
         GridPane.setHalignment(l_warning, HPos.CENTER);
 
-        t_ownTab = ownTab;
-
         // ========== LISTENERS ========== //
         b_login.setOnAction(getOnLoginBtnAction());
 
@@ -229,5 +228,12 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     public void refreshTab()
     {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void setName(String name)
+    {
+        // TODO Auto-generated method stub
+
     }
 }

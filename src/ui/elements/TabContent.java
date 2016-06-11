@@ -7,4 +7,6 @@ public interface TabContent
     public void closeTab();
 
     public void refreshTab();
+
+    public void setName(String name);
 }

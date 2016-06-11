@@ -15,8 +15,9 @@ import ui.FormVaultsManager;
 
 public class VaultTabContent extends TableView<iSpecialPassword> implements TabContent
 {
-    private Vault        vault = null;
-    private AbstractForm owner = null; // TODO:
+    private Vault        vault    = null;
+    private AbstractForm parent   = null;
+    private Tab          t_ownTab = null;
 
     private ChangeListener<Object> getSelectedItemPropertyListener()
     {
@@ -44,10 +45,13 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         };
     }
 
-    public VaultTabContent(Vault vault, AbstractForm parent)
+    public VaultTabContent(Tab ownerTab, Vault vault, AbstractForm parent)
     {
         this.vault = vault;
-        this.owner = parent;
+        this.parent = parent;
+        t_ownTab = ownerTab;
+
+        t_ownTab.setRenameEnabled(true);
 
         TableColumn<iSpecialPassword, String> cName =
             new TableColumn<iSpecialPassword, String>(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
@@ -94,7 +98,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         try
         {
             VaultManager.getInstance().activateVault(vault);
-            ((FormVaultsManager) owner).setVaultControlsDisabled(false);
+            ((FormVaultsManager) parent).setVaultControlsDisabled(false);
         }
         catch (Exceptions e)
         {
@@ -114,4 +118,12 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         String name = vault.getName();
         return name.isEmpty() ? "unnamed" : name;
     }
+
+    @Override
+    public void setName(String name)
+    {
+        // TODO Auto-generated method stub
+        vault.setName(name);
+    }
+
 }
