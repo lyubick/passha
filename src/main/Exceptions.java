@@ -22,6 +22,7 @@ public final class Exceptions extends Throwable
     {
         //
         VAULT_ALREADY_OPEN,
+        FORM_ALREADY_OPEN,
 
         // ONLY Class initialization failure
         INIT_FAILURE,

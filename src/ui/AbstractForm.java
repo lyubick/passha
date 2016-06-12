@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import ui.elements.GridPane;
 import languages.Local.TextID;
+import main.Exceptions;
+import main.Exceptions.XC;
 import main.Main;
 import main.Properties;
 
@@ -11,10 +13,13 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -51,12 +56,14 @@ public abstract class AbstractForm
         }
     }
 
-    protected GridPane grid     = null;
-    protected VBox     group    = null;
-    protected Scene    scene    = null;
-    protected Stage    stage    = null;
+    protected GridPane   grid     = null;
+    protected VBox       group    = null;
+    protected Scene      scene    = null;
+    protected Stage      stage    = null;
 
-    protected MenuBar  menuMain = null;
+    protected MenuBar    menuMain = null;
+
+    protected AnchorPane ap_main  = null;
 
     // Method will create reference to this instance in parent instance
     protected void open()
@@ -183,17 +190,26 @@ public abstract class AbstractForm
         };
     }
 
-    protected AbstractForm(AbstractForm parent, TextID title)
-    {
-        this(parent, title.toString());
-    }
-
-    protected AbstractForm(AbstractForm parent, String title)
+    protected AbstractForm(AbstractForm parent, TextID titleTextId, WindowPriority priority) throws Exceptions
     {
         this.parent = parent;
-        priority = WindowPriority.NORMAL;
+        this.priority = priority;
 
-        // Initialise everything to avoid NullPointerExceptions
+        String title = titleTextId.toString();
+
+        if (this.priority == WindowPriority.ONLY_ONE_OPENED && this.parent != null)
+        {
+            for (AbstractForm brother : this.parent.childs)
+            {
+                if (brother.getClass().getName().equals(this.getClass().getName()))
+                {
+                    brother.stage.requestFocus();
+                    throw new Exceptions(XC.FORM_ALREADY_OPEN);
+                }
+            }
+        }
+
+        // Initialize everything to avoid NullPointerExceptions
         childs = new Vector<AbstractForm>();
 
         grid = new GridPane();
@@ -201,19 +217,48 @@ public abstract class AbstractForm
         grid.setHgap(Properties.GUI.GAP.H);
         grid.setVgap(Properties.GUI.GAP.V);
 
-        grid.setAlignment(Pos.CENTER);
+        // grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(Properties.GUI.PADDING.top, Properties.GUI.PADDING.right,
-                Properties.GUI.PADDING.bottom, Properties.GUI.PADDING.left));
+            Properties.GUI.PADDING.bottom, Properties.GUI.PADDING.left));
 
         grid.setGridLinesVisible(Main.DEBUG ? true : false);
 
         group = new VBox();
-        group.getChildren().addAll(grid);
 
-        group.setAlignment(Pos.CENTER);
+        ColumnConstraints c1 = new ColumnConstraints();
+        ColumnConstraints c2 = new ColumnConstraints();     // TODO: unused
+        c1.setHgrow(Priority.ALWAYS);
+        c2.setHgrow(Priority.SOMETIMES);
+
+        RowConstraints r1 = new RowConstraints();
+        RowConstraints r2 = new RowConstraints();           // TODO: unused
+        r1.setVgrow(Priority.ALWAYS);
+        r2.setVgrow(Priority.SOMETIMES);
+
+        grid.getColumnConstraints().addAll(c1, c2);
+        grid.getRowConstraints().addAll(r1, r2);
+
         group.setPadding(new Insets(0, 0, 0, 0));
+        // final Background focusBackground =
+        // new Background(new BackgroundFill(Color.web("#ABCDEF"), CornerRadii.EMPTY, Insets.EMPTY));
+        // group.setBackground(focusBackground);
 
-        scene = new Scene(group);
+        AnchorPane.setRightAnchor(group, 0.0);
+        AnchorPane.setBottomAnchor(group, 0.0);
+        AnchorPane.setLeftAnchor(group, 0.0);
+        AnchorPane.setTopAnchor(group, 0.0);
+
+        AnchorPane.setRightAnchor(grid, 0.0);
+        AnchorPane.setBottomAnchor(grid, 0.0);
+        AnchorPane.setLeftAnchor(grid, 0.0);
+        AnchorPane.setTopAnchor(grid, 0.0);
+
+        VBox.setVgrow(grid, Priority.ALWAYS);
+
+        ap_main = new AnchorPane();
+        ap_main.getChildren().addAll(group, grid);
+
+        scene = new Scene(ap_main);
 
         stage = new Stage(StageStyle.UNIFIED);
         stage.setScene(scene);

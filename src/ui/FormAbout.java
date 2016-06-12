@@ -16,6 +16,7 @@ import ui.elements.GridPane;
 import ui.elements.Label;
 import languages.Local.TextID;
 import logger.Logger;
+import main.Exceptions;
 import main.Properties;
 
 public class FormAbout extends AbstractForm
@@ -57,11 +58,9 @@ public class FormAbout extends AbstractForm
             {
                 try
                 {
-                    Logger.printDebug("URI" + System.getProperty("user.dir") + File.separator
-                            + "GNUGPLv3.txt");
-                    Desktop.getDesktop().edit(
-                            new File(System.getProperty("user.dir") + File.separator
-                                    + "GNUGPLv3.txt"));
+                    Logger.printDebug("URI" + System.getProperty("user.dir") + File.separator + "GNUGPLv3.txt");
+                    Desktop.getDesktop()
+                        .edit(new File(System.getProperty("user.dir") + File.separator + "GNUGPLv3.txt"));
                 }
                 catch (IOException e)
                 {
@@ -98,14 +97,11 @@ public class FormAbout extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                String subject =
-                        Properties.SOFTWARE.NAME + " v." + Properties.SOFTWARE.VERSION
-                                + "user report.";
+                String subject = Properties.SOFTWARE.NAME + " v." + Properties.SOFTWARE.VERSION + "user report.";
                 try
                 {
-                    Desktop.getDesktop().mail(
-                            URI.create("mailto:" + e_mail_a.getText() + ";" + e_mail_v.getText()
-                                    + "?subject=" + URLEncoder.encode(subject, "UTF-8")));
+                    Desktop.getDesktop().mail(URI.create("mailto:" + e_mail_a.getText() + ";" + e_mail_v.getText()
+                        + "?subject=" + URLEncoder.encode(subject, "UTF-8")));
                 }
                 catch (IOException e)
                 {
@@ -115,10 +111,9 @@ public class FormAbout extends AbstractForm
         };
     }
 
-    protected FormAbout(AbstractForm parent)
+    protected FormAbout(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.MENU_LABEL_ABOUT);
-        priority = WindowPriority.ALWAYS_ON_TOP;
+        super(parent, TextID.MENU_LABEL_ABOUT, WindowPriority.ALWAYS_ON_TOP);
 
         l_header = new Label(Properties.SOFTWARE.NAME + " v." + Properties.SOFTWARE.VERSION);
         l_header.beHeader();

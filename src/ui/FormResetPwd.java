@@ -99,10 +99,9 @@ public class FormResetPwd extends AbstractForm
     }
 
     /* PUBLIC ROUTINE */
-    public FormResetPwd(AbstractForm parent)
+    public FormResetPwd(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.FORM_RESETPWD_NAME.toString());
-        priority = WindowPriority.ALWAYS_ON_TOP;
+        super(parent, TextID.FORM_RESETPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
 
         // ========== BUTTONS ========== //
 

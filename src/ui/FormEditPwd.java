@@ -73,9 +73,7 @@ public class FormEditPwd extends AbstractForm
     /* PUBLIC ROUTINE */
     public FormEditPwd(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.FORM_EDITPWD_NAME.toString());
-
-        priority = WindowPriority.ALWAYS_ON_TOP;
+        super(parent, TextID.FORM_EDITPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
 
         l_header = new Label(TextID.FORM_EDITPWD_LABEL_HEADER);
         l_header.beHeader();

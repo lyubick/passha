@@ -65,25 +65,23 @@ public class FormSettings extends AbstractForm
     }
 
     /* PUBLIC ROUTINE */
-    public FormSettings(AbstractForm parent)
+    public FormSettings(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.FORM_SETTINGS_NAME.toString());
-
-        priority = WindowPriority.ALWAYS_ON_TOP;
+        super(parent, TextID.FORM_SETTINGS_NAME, WindowPriority.ALWAYS_ON_TOP);
 
         l_header = new Label(TextID.FORM_SETTINGS_NAME.toString());
         l_header.setTextAlignment(TextAlignment.CENTER);
         l_header.beHeader();
 
         langOptions =
-                FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
+            FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
 
         cb_language = new ComboBox(langOptions, TextID.FORM_SETTINGS_LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
 
         cb_autologin = new CheckBox(TextID.FORM_SETTINGS_LABEL_AUTOLOGIN.toString());
 
-        ef_clipboard = new EntryField(
-                TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " " + TextID.COMMON_LABEL_SECONDS.toString(),
+        ef_clipboard =
+            new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " " + TextID.COMMON_LABEL_SECONDS.toString(),
                 TEXTFIELD.WIDTH.S);
 
         b_ok = new Button(TextID.COMMON_LABEL_OK.toString());

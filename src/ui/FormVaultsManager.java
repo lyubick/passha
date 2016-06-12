@@ -9,6 +9,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.Optional;
 
 import db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
@@ -17,14 +18,13 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 import languages.Local.TextID;
 import logger.Logger;
 
@@ -34,8 +34,6 @@ import main.Exceptions.XC;
 import main.Properties;
 import main.Settings;
 
-import ui.elements.Button;
-import ui.elements.Button.BUTTON.SIZE;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.LoginTabContents;
 import ui.elements.Tab;
@@ -54,18 +52,10 @@ public class FormVaultsManager extends AbstractForm
 
     private static AbstractForm This             = null;
 
-    private VBox                vb_VaultButtons  = null;
-
     private TextField           tf_pass          = null;
 
-    private Button              b_new            = null;
-    private Button              b_delete         = null;
-    private Button              b_reset          = null;
-    private Button              b_copy           = null;
-    private Button              b_export         = null;
-    private Button              b_edit           = null;
-
     private ContextMenu         cm_vault         = null;
+    private ContextMenu         cm_default       = null;
 
     private Menu                m_file           = null;
     private Menu                m_vault          = null;
@@ -79,6 +69,8 @@ public class FormVaultsManager extends AbstractForm
     private MenuItem            mi_reset         = null;
     private MenuItem            mi_delete        = null;
     private MenuItem            mi_settings      = null;
+    private MenuItem            mi_copy          = null;
+    private MenuItem            mi_export        = null;
 
     private TabPane             tp_vaults        = null;
 
@@ -90,10 +82,10 @@ public class FormVaultsManager extends AbstractForm
         return (FormVaultsManager) This;
     }
 
-    public FormVaultsManager()
+    public FormVaultsManager() throws Exceptions
     {
-        super(null, TextID.FORM_MANAGEPWD_NAME.toString()); // No parents it
-        // is a main Form
+        // No parents it is a main Form
+        super(null, TextID.FORM_MANAGEPWD_NAME, WindowPriority.ONLY_ONE_OPENED);
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
@@ -126,12 +118,15 @@ public class FormVaultsManager extends AbstractForm
         mi_edit = new MenuItem(TextID.FORM_MANAGEWD_LABEL_EDIT.toString());
         mi_reset = new MenuItem(TextID.FORM_MANAGEPWD_LABEL_RESET.toString());
         mi_delete = new MenuItem(TextID.FORM_CREATEPWD_MANAGER_LABEL_DELETE.toString());
+        mi_copy = new MenuItem(TextID.FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD.toString());
+        mi_export = new MenuItem(TextID.FORM_MANAGEPWD_LABEL_EXPORT.toString());
 
         mi_about = new MenuItem(TextID.MENU_LABEL_ABOUT.toString());
 
-        m_file.getItems().addAll(mi_settings, mi_exit);
-        m_vault.getItems().addAll(m_password);
-        m_password.getItems().addAll(mi_new, mi_edit, mi_reset, mi_delete);
+        m_file.getItems().addAll(mi_settings, new SeparatorMenuItem(), mi_exit);
+        m_vault.getItems().addAll(m_password, mi_export);
+        m_password.getItems().addAll(mi_new, mi_edit, mi_delete, new SeparatorMenuItem(), mi_reset,
+            new SeparatorMenuItem(), mi_copy);
         m_help.getItems().addAll(mi_about);
         menuMain.getMenus().addAll(m_file, m_vault, m_help);
 
@@ -140,7 +135,17 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                new FormSettings(This);
+                try
+                {
+                    new FormSettings(This);
+                }
+                catch (Exceptions e)
+                {
+                    if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
+                        ; // Ignore
+                    else
+                        Logger.printError("Unhandled exception: " + e.getCode());
+                }
             }
         });
 
@@ -163,53 +168,26 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                new FormAbout(This);
+                try
+                {
+                    new FormAbout(This);
+                }
+                catch (Exceptions e)
+                {
+                    if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
+                        ; // Ignore
+                    else
+                        Logger.printError("Unhandled exception: " + e.getCode());
+                }
             }
         });
 
         cm_vault = new ContextMenu();
-        cm_vault.getItems().addAll(mi_new, mi_edit, mi_reset, mi_delete);
+        cm_vault.getItems().addAll(m_password.getItems());
 
         // ========== REFRESH ========== //
         group.getChildren().remove(grid);
         group.getChildren().addAll(menuMain, grid);
-
-        // ========== BUTTONS ========== //
-        vb_VaultButtons = new VBox();
-
-        // FIXME LANG shortcuts
-        b_new = new Button("_" + TextID.COMMON_LABEL_NEW.toString(), SIZE.L);
-        b_delete = new Button("_" + TextID.FORM_CREATEPWD_MANAGER_LABEL_DELETE.toString(), SIZE.L);
-        b_copy = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD.toString(), SIZE.L);
-        b_export = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_EXPORT.toString(), SIZE.L);
-        b_reset = new Button("_" + TextID.FORM_MANAGEPWD_LABEL_RESET.toString(), SIZE.L);
-        b_edit = new Button("_" + TextID.FORM_MANAGEWD_LABEL_EDIT.toString(), SIZE.L);
-
-        b_new.setOnAction(getOnNewAction());
-        b_edit.setOnAction(getOnEditAction());
-        b_delete.setOnAction(getOnDeleteAction());
-        b_reset.setOnAction(getOnResetAction());
-        b_export.setOnAction(getOnExportAction());
-        b_copy.setOnAction(getOnCopyAction());
-
-        VBox.setMargin(b_new, new Insets(10, 10, 0, 10));
-        VBox.setMargin(b_edit, new Insets(10, 10, 0, 10));
-
-        VBox.setMargin(b_reset, new Insets(50, 10, 0, 10));
-
-        VBox.setMargin(b_delete, new Insets(50, 10, 0, 10));
-
-        VBox.setMargin(b_copy, new Insets(50, 10, 0, 10));
-        VBox.setMargin(b_export, new Insets(10, 10, 0, 10));
-
-        b_copy.setDisable(true);
-
-        vb_VaultButtons.getChildren().add(b_new);
-        vb_VaultButtons.getChildren().add(b_edit);
-        vb_VaultButtons.getChildren().add(b_reset);
-        vb_VaultButtons.getChildren().add(b_delete);
-        vb_VaultButtons.getChildren().add(b_copy);
-        vb_VaultButtons.getChildren().add(b_export);
 
         // ========== TEXT FIELD ========== //
         tf_pass = new TextField();
@@ -235,27 +213,45 @@ public class FormVaultsManager extends AbstractForm
                 if (t_newTabCreator.isSelected()) AddTab();
                 event.consume();
             }
-
         });
 
-        tp_vaults.setContextMenu(cm_vault);
+        tp_vaults.setOnContextMenuRequested(new EventHandler<Event>()
+        {
+            @Override
+            public void handle(Event event)
+            {
+                Optional<AbstractForm> form =
+                    childs.stream().filter(p -> p.priority == WindowPriority.ALWAYS_ON_TOP).findFirst();
+
+                if (form.isPresent())
+                {
+                    // TODO: Seems like a bug in JavaFX: ContextMenuRequested event is propagated even after it is
+                    // consumed, and ContextMenu appears anyway
+
+                    stage.requestFocus();
+                }
+            }
+        });
+
         tp_vaults.getTabs().add(t_newTabCreator);
 
         // ========== GRID ========== //
         grid.add(tp_vaults, 0, 0);
 
         grid.add(tf_pass, 0, 1);
-
-        grid.add(vb_VaultButtons, 1, 0);
-
         open();
     }
 
     public void setVaultControlsDisabled(boolean value)
     {
-        m_vault.setDisable(value);
-        vb_VaultButtons.setDisable(value);
-        b_copy.setDisable(value);
+        m_password.setDisable(value);
+        mi_export.setDisable(value);
+        // TODO: Maybe TabContent should contain it's own ContextMenu
+        // Move all related setOn..Action to TabContent and then this form will request items for MainMenu
+        if (value)
+            tp_vaults.setContextMenu(cm_default);
+        else
+            tp_vaults.setContextMenu(cm_vault);
     }
 
     // called when user presses '+' tab or at the start when auto login is off
@@ -294,7 +290,7 @@ public class FormVaultsManager extends AbstractForm
         tp_vaults.getSelectionModel().select(tab);
     }
 
-    public static void reload()
+    public static void reload() throws Exceptions
     {
         try
         {
@@ -411,7 +407,17 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(ActionEvent ae)
             {
-                new FormCreatePwd(This);
+                try
+                {
+                    new FormCreatePwd(This);
+                }
+                catch (Exceptions e)
+                {
+                    if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
+                        ; // Ignore
+                    else
+                        Logger.printError("Unhandled exception: " + e.getCode());
+                }
             }
         };
     }

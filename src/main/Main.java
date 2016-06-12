@@ -73,6 +73,14 @@ public class Main extends Application
 
         VaultManager.init();
 
-        new FormVaultsManager();
+        try
+        {
+            new FormVaultsManager();
+        }
+        catch (Exceptions e)
+        {
+            Logger.printError("Unhandled exception: " + e.getCode());
+            Terminator.terminate(e);
+        }
     }
 }

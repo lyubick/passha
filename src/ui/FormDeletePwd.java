@@ -76,10 +76,9 @@ public class FormDeletePwd extends AbstractForm
     }
 
     /* PUBLIC ROUTINE */
-    public FormDeletePwd(AbstractForm parent)
+    public FormDeletePwd(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.FORM_DELETEPWD_NAME.toString());
-        priority = WindowPriority.ALWAYS_ON_TOP;
+        super(parent, TextID.FORM_DELETEPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
 
         confirmationText = new String(TextID.FORM_DELETEPWD_MSG_CONFIRMATION.toString());
         l_header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
