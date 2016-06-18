@@ -76,7 +76,7 @@ public class SpecialPassword
     }
 
     public SpecialPassword(String name, String comment, String url, String length, boolean needSpecialChars,
-            boolean needUpperCaseChar, String specialChars, String shortcut, Vault parentVault) throws Exceptions
+        boolean needUpperCaseChar, String specialChars, String shortcut, Vault parentVault) throws Exceptions
     {
         Logger.printDebug("SpecialPassword constructor... START");
 
@@ -132,11 +132,13 @@ public class SpecialPassword
         Logger.printDebug("SpecialPassword copy-constructor... DONE!");
     }
 
+    // Why do we need this?
     public void setParentVault(Vault vault)
     {
         this.own_vault = vault;
     }
 
+    // Why do we need this?
     public void clearParentVault()
     {
         setParentVault(null);
@@ -150,10 +152,9 @@ public class SpecialPassword
             {
                 randomizer = new Random(System.currentTimeMillis());
             }
-            shaCycles = Properties.CORE.SHA.ITERATION_MIN_COUNT
-                    + randomizer.nextInt(Properties.CORE.SHA.ITERATION_MAX_COUNT);
-        }
-        while (!isPasswordValid());
+            shaCycles =
+                Properties.CORE.SHA.ITERATION_MIN_COUNT + randomizer.nextInt(Properties.CORE.SHA.ITERATION_MAX_COUNT);
+        } while (!isPasswordValid());
     }
 
     public void setAllOptionalFields(String comment, String url, String shortcut)
@@ -270,7 +271,7 @@ public class SpecialPassword
             int currIdx = i * mapChunkLength;
 
             password.append(ALPHABETA.charAt(Utilities.hexToInt(hash.substring(currIdx, currIdx + mapChunkLength))
-                    .mod(new BigInteger(Integer.toString(ALPHABETA.length()))).intValue()));
+                .mod(new BigInteger(Integer.toString(ALPHABETA.length()))).intValue()));
         }
 
         return 0;
@@ -299,8 +300,7 @@ public class SpecialPassword
             do
             {
                 insertPosition = (getNumberFromHashAt(hash, idx++) % password.length());
-            }
-            while (specialChars.indexOf(password.charAt(insertPosition)) != -1);
+            } while (specialChars.indexOf(password.charAt(insertPosition)) != -1);
 
             specialCharacterPosition = (getNumberFromHashAt(hash, idx++) % specialChars.length());
 
@@ -406,7 +406,7 @@ public class SpecialPassword
         }
 
         Logger.printError("Validation Failed! Current Mask: " + currentMaskBitSet.toString() + " != Ethalon Mask"
-                + paramsMask.toString());
+            + paramsMask.toString());
 
         return false;
     }
