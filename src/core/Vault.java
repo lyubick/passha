@@ -85,16 +85,18 @@ public class Vault
                 throw new Exceptions(XC.PASSWORD_SHORTCUT_ALREADY_IN_USE).setText(sp.getName());
         }
 
-        database.replaceEntry(newEntry, selectedPassword);
         newEntry.setParentVault(this);
-        selectedPassword.clearParentVault();
+        database.replaceEntry(newEntry, selectedPassword);
+
+        selectedPassword = null;
     }
 
     public void removePassword(SpecialPassword entry) throws Exceptions
     {
         if (entry == null) entry = selectedPassword;
         database.deleteEntry(entry);
-        entry.clearParentVault();
+
+        entry = null;
     }
 
     public void setSelected(SpecialPassword password)

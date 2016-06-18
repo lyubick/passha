@@ -24,7 +24,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
 import languages.Local.TextID;
 import logger.Logger;
 
@@ -34,7 +33,6 @@ import main.Exceptions.XC;
 import main.Properties;
 import main.Settings;
 
-import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.LoginTabContents;
 import ui.elements.Tab;
 import ui.elements.TabContent;
@@ -51,8 +49,6 @@ public class FormVaultsManager extends AbstractForm
     private final int           tabpaneMinWidth  = WINDOW.width - 200;
 
     private static AbstractForm This             = null;
-
-    private TextField           tf_pass          = null;
 
     private ContextMenu         cm_vault         = null;
     private ContextMenu         cm_default       = null;
@@ -97,7 +93,7 @@ public class FormVaultsManager extends AbstractForm
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
             {
                 // FIXME: Create TabPane class
-                if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).refreshTab();
+                if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).reload();
             }
         });
 
@@ -189,11 +185,6 @@ public class FormVaultsManager extends AbstractForm
         group.getChildren().remove(grid);
         group.getChildren().addAll(menuMain, grid);
 
-        // ========== TEXT FIELD ========== //
-        tf_pass = new TextField();
-        tf_pass.setMaxWidth(TEXTFIELD.WIDTH.L);
-        tf_pass.setEditable(false);
-
         // ========== TAB pane =========== //
 
         tp_vaults = new TabPane();
@@ -238,7 +229,6 @@ public class FormVaultsManager extends AbstractForm
         // ========== GRID ========== //
         grid.add(tp_vaults, 0, 0);
 
-        grid.add(tf_pass, 0, 1);
         open();
     }
 

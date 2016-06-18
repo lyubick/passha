@@ -225,7 +225,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     }
 
     @Override
-    public void refreshTab()
+    public void reload()
     {
         // TODO Auto-generated method stub
     }

@@ -141,9 +141,8 @@ public abstract class AbstractForm
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
             {
-                // Cancel minimisation to avoid loss of stage coordinates
-                stage.setIconified(false);
                 if (newValue) onUserMinimizeRequest();
+                stage.setIconified(false);
             }
         };
     }

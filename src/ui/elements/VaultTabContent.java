@@ -26,6 +26,11 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
             @Override
             public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
             {
+                if (oldValue != null)
+                {
+                    ((iSpecialPassword) oldValue).setPasswordVisible(false);
+                    refresh();
+                }
 
                 if (newValue == null)
                 {
@@ -33,14 +38,8 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
                     return;
                 }
 
-                vault.setSelected(getSelectionModel().getSelectedItem().getOrigin());
-                // TODO:
-                /*
-                 * b_copy.setDisable(true);
-                 * tf_pass.setText(table.getSelectionModel
-                 * ().getSelectedItem().getPassword());
-                 * b_copy.setDisable(false);
-                 */
+                vault.setSelected(((iSpecialPassword) newValue).getOrigin());
+
             }
         };
     }
@@ -75,7 +74,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
 
         getSelectionModel().selectedItemProperty().addListener(getSelectedItemPropertyListener());
 
-        refreshTab();
+        reload();
 
         this.setOnMouseClicked(event ->
         {
@@ -90,6 +89,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
             this.getColumns().get(0).setVisible(false);
             this.getColumns().get(0).setVisible(true);
         });
+
     }
 
     @Override
@@ -121,10 +121,18 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         }
     }
 
-    public void refreshTab()
+    public void reload()
     {
         getSelectionModel().clearSelection();
         setItems(vault.getIface());
+    }
+
+    public void refresh()
+    {
+        if (getColumns().isEmpty()) return;
+
+        getColumns().get(0).setVisible(false);
+        getColumns().get(0).setVisible(true);
     }
 
     public String getVaultName()
