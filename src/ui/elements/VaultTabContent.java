@@ -63,19 +63,33 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         TableColumn<iSpecialPassword, String> cShortcut =
             new TableColumn<iSpecialPassword, String>(TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
 
-        getColumns().add(cName);
-        getColumns().add(cComment);
-        getColumns().add(cUrl);
-        getColumns().add(cShortcut);
+        TableColumn<iSpecialPassword, String> cPassword = new TableColumn<iSpecialPassword, String>("Password");
+
+        getColumns().addAll(cName, cShortcut, cComment, cUrl, cPassword);
 
         cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
         cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
         cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
         cShortcut.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
+        cPassword.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("password"));
 
         getSelectionModel().selectedItemProperty().addListener(getSelectedItemPropertyListener());
 
         refreshTab();
+
+        this.setOnMouseClicked(event ->
+        {
+            if (event.getClickCount() < 2)
+            {
+                event.consume();
+                return;
+            }
+
+            this.getSelectionModel().getSelectedItem().setPasswordVisible(true);
+
+            this.getColumns().get(0).setVisible(false);
+            this.getColumns().get(0).setVisible(true);
+        });
     }
 
     @Override

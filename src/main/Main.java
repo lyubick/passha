@@ -1,5 +1,7 @@
 package main;
 
+import java.awt.TrayIcon.MessageType;
+
 import core.VaultManager;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -8,6 +10,7 @@ import languages.Local.TextID;
 import logger.Logger;
 import main.Exceptions.XC;
 import ui.FormVaultsManager;
+import ui.TrayAgent;
 
 public class Main extends Application
 {
@@ -15,10 +18,14 @@ public class Main extends Application
 
     public static void main(String[] args)
     {
-        if (args.length > 0 && args[0].equals("--debug")) DEBUG = true;
-
-        /* 0. Linux Xlib problem workaround */
+        /* -1. Fix threading problem on LINUX - not working (TODO) */
         if (System.getProperty("os.name").equals("Linux")) System.loadLibrary("xx"); // FIXME: normal name
+
+        /* 0. Read incoming arguments */
+        for (String arg : args)
+        {
+            if (arg.equals("--debug")) DEBUG = true;
+        }
 
         /* 1. Switch ON logs */
         try
@@ -50,13 +57,18 @@ public class Main extends Application
         }
 
         /* 3. Wake up tray notifications */
-        /*
-         * try { TrayAgent.init();
-         * if (info != null)
-         * TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR,
-         * info, MessageType.ERROR); } catch (Exceptions e) {
-         * Terminator.terminate(e); }
-         */
+        try
+        {
+            TrayAgent.init();
+            if (info != null)
+                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR, info, MessageType.ERROR);
+        }
+        catch (Exceptions e)
+        {
+            Terminator.terminate(e);
+        }
+
+        /* 4. Start the application */
 
         launch();
 
@@ -66,10 +78,7 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage)
     {
-        Platform.setImplicitExit(false);
-
-        // During implementation don't run update and autologin
-        // new FormUpdate(null);
+        Platform.setImplicitExit(DEBUG);
 
         VaultManager.init();
 
