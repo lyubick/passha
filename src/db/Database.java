@@ -2,8 +2,11 @@ package db;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import core.Vault;
 import main.Exceptions;
@@ -17,14 +20,14 @@ import logger.Logger;
 
 public class Database
 {
-    private Vector<String>          encrypted   = null;
-    private Vector<SpecialPassword> decrypted   = null;
+    // Keys compared only by SpecialPassword::getName();
+    private TreeMap<SpecialPassword, String> db          = null;
 
-    private File                    vaultFile   = null;
+    private File                             vaultFile   = null;
 
-    private RSA                     rsa         = null;
+    private RSA                              rsa         = null;
 
-    private Vault                   parentVault = null;
+    private Vault                            parentVault = null;
 
     public enum Status
     {
@@ -85,8 +88,14 @@ public class Database
         // RSA initialized and created by Vault, DB has only pointer
         rsa = myRSA;
 
-        encrypted = new Vector<String>();
-        decrypted = new Vector<SpecialPassword>();
+        db = new TreeMap<SpecialPassword, String>(new Comparator<SpecialPassword>()
+        {
+            @Override
+            public int compare(SpecialPassword o1, SpecialPassword o2)
+            {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
         for (String entry : Utilities.readStringsFromFile(vaultFile.getAbsolutePath()))
         {
@@ -99,15 +108,16 @@ public class Database
                 continue;
             }
 
-            decrypted.add(new SpecialPassword(decryptedEntry, vault));
-            encrypted.add(rsa.encrypt(Utilities.objectToBytes(decrypted.lastElement().getMap())));
+            SpecialPassword pwd = new SpecialPassword(decryptedEntry, vault);
+            db.put(pwd, rsa.encrypt(Utilities.objectToBytes(pwd.getMap())));
         }
     }
 
     public void addEntry(SpecialPassword entry) throws Exceptions
     {
-        decrypted.addElement(entry);
-        encrypted.addElement(rsa.encrypt(Utilities.objectToBytes(entry.getMap())));
+        if (db.containsKey(entry)) throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
+
+        db.put(entry, rsa.encrypt(Utilities.objectToBytes(entry.getMap())));
 
         status = Status.DESYNCHRONIZED;
         sync();
@@ -115,9 +125,7 @@ public class Database
 
     public void deleteEntry(SpecialPassword entry)
     {
-        int idx = decrypted.indexOf(entry);
-        decrypted.remove(idx);
-        encrypted.remove(idx);
+        db.remove(entry);
 
         status = Status.DESYNCHRONIZED;
         sync();
@@ -125,11 +133,8 @@ public class Database
 
     public void replaceEntry(SpecialPassword newEntry, SpecialPassword oldEntry) throws Exceptions
     {
-        int idx = decrypted.indexOf(oldEntry);
-        decrypted.remove(idx);
-        encrypted.remove(idx);
-        decrypted.add(idx, newEntry);
-        encrypted.add(idx, rsa.encrypt(Utilities.objectToBytes(newEntry.getMap())));
+        db.remove(oldEntry);
+        db.put(newEntry, rsa.encrypt(Utilities.objectToBytes(newEntry.getMap())));
 
         status = Status.DESYNCHRONIZED;
         sync();
@@ -137,7 +142,7 @@ public class Database
 
     public Vector<SpecialPassword> getDecrypted()
     {
-        return (Vector<SpecialPassword>) decrypted.clone();
+        return db.keySet().stream().collect(Collectors.toCollection(() -> new Vector<SpecialPassword>()));
     }
 
     private void sync()
@@ -154,7 +159,8 @@ public class Database
                     HashMap<String, String> map = new HashMap<String, String>();
                     map.put("vaultName", parentVault.getName());
 
-                    Utilities.writeToFile(vaultFile.getAbsolutePath(), encrypted,
+                    Utilities.writeToFile(vaultFile.getAbsolutePath(),
+                        db.values().stream().collect(Collectors.toCollection(() -> new Vector<String>())),
                         rsa.encrypt(Utilities.objectToBytes(map)));
 
                     status = Status.SYNCHRONIZED;
