@@ -133,6 +133,10 @@ public class Database
 
     public void replaceEntry(SpecialPassword newEntry, SpecialPassword oldEntry) throws Exceptions
     {
+        // This check should be before anything else to avoid loosing oldEntry
+        // (either replace is completed fully, or not at all)
+        if (!oldEntry.getName().equals(newEntry.getName()) && db.containsKey(newEntry))
+            throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
         db.remove(oldEntry);
         db.put(newEntry, rsa.encrypt(Utilities.objectToBytes(newEntry.getMap())));
 
