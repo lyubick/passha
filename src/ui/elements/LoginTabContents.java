@@ -7,7 +7,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
-import languages.Local.TextID;
+import languages.Local;
+import languages.Local.Texts;
 import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
@@ -28,7 +29,6 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
 
     private AbstractForm  owner              = null;
 
-    /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnLoginBtnAction()
     {
         return new EventHandler<ActionEvent>()
@@ -52,11 +52,11 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
                                 pf_passwordConfirm.setVisible(true);
                                 pf_password.setDisable(true);
 
-                                l_warning.setText(TextID.FORM_LOGIN_MSG_INCORRECT_PWD.toString());
+                                l_warning.setText(Texts.FORM_LOGIN_MSG_INCORRECT_PWD.toString());
                             }
                             else if (e.getCode() == XC.VAULT_ALREADY_OPEN)
                             {
-                                l_warning.setText("Vault already opened..."); // FIXME locale
+                                l_warning.setText(Local.Texts.MSG_VAULT_ALREADY_OPENED.toString());
                             }
                             else
                             {
@@ -88,7 +88,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
                     else
                     {
                         reset();
-                        l_warning.setText(TextID.FORM_LOGIN_MSG_PWDS_DONT_MATCH.toString());
+                        l_warning.setText(Texts.FORM_LOGIN_MSG_PWDS_DONT_MATCH.toString());
                     }
                 }
                 catch (Exceptions e)
@@ -99,7 +99,6 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         };
     }
 
-    /* PRIVATE ROUTINE */
     private void reset()
     {
         pf_password.clear();
@@ -131,15 +130,14 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         }
     }
 
-    /* PUBLIC ROUTINE */
     public LoginTabContents(Tab ownTab, AbstractForm parentForm)
     {
         this.owner = parentForm;
         t_ownTab = ownTab;
 
         // ========== LABELS ========== //
-        l_header = new Label(TextID.FORM_LOGIN_LABEL_ENTER_PWD.toString() + ", "
-            + System.getProperty("user.name", TextID.FORM_LOGIN_LABEL_ALTERNATIVE_USER_NAME.toString()) + "!");
+        l_header = new Label(Texts.LABEL_ENTER_PASSWORD.toString() + ", "
+            + System.getProperty("user.name", Texts.LABEL_UNKNOWN_USER.toString()) + "!");
         l_header.beHeader();
         l_warning = new Label();
         l_warning.beError();
@@ -161,8 +159,8 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
 
         // ========== BUTTONS ========== //
 
-        b_login = new Button(TextID.FORM_LOGIN_LABEL_LOGIN.toString());
-        b_register = new Button(TextID.FORM_LOGIN_LABEL_REGISTER.toString());
+        b_login = new Button(Texts.LABEL_LOGIN.toString());
+        b_register = new Button(Texts.LABEL_REGISTER.toString());
 
         b_login.setDefaultButton(true);
 
@@ -181,9 +179,9 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         // ========== PROPERTIES ========== //
 
         pf_password.setMinWidth(TEXTFIELD.WIDTH.XL);
-        pf_password.setPromptText(TextID.FORM_LOGIN_LABEL_PASSWORD.toString());
+        pf_password.setPromptText(Texts.LABEL_PASSWORD.toString());
 
-        pf_passwordConfirm.setPromptText(TextID.FORM_LOGIN_LABEL_RETYPE.toString());
+        pf_passwordConfirm.setPromptText(Texts.LABEL_RETYPE.toString());
         pf_passwordConfirm.setVisible(false);
 
         b_register.setVisible(false);
@@ -211,7 +209,6 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     @Override
     public void activateTab()
     {
-        // TODO Auto-generated method stub
         try
         {
             VaultManager.getInstance().deactivateVault();
@@ -219,8 +216,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Terminator.terminate(e);
         }
     }
 

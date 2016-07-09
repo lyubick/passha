@@ -3,7 +3,7 @@
  */
 package ui;
 
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Exceptions;
 import main.Exceptions.XC;
 import main.Properties;
@@ -182,9 +182,9 @@ public class FormCreatePwd extends AbstractForm
                 catch (Exceptions e)
                 {
                     if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS)
-                        l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_NAME_EXISTS.toString());
+                        l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_NAME_EXISTS.toString());
                     else if (e.getCode() == XC.PASSWORD_SHORTCUT_ALREADY_IN_USE)
-                        l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_SHORTCUT_IN_USE.toString());
+                        l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_SHORTCUT_IN_USE.toString());
 
                     b_ok.setDisable(false);
                 }
@@ -243,7 +243,7 @@ public class FormCreatePwd extends AbstractForm
         {
             if (e.getCode() == XC.MANDATORY_DATA_MISSING)
             {
-                l_errorLabel.setText(TextID.FORM_CREATEPWD_MSG_MISSING_PARAM.toString());
+                l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_MISSING_PARAM.toString());
 
                 if (ef_name.getText().length() == 0)
                 {
@@ -263,12 +263,12 @@ public class FormCreatePwd extends AbstractForm
     /* PUBLIC ROUTINE */
     public FormCreatePwd(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.FORM_CREATEPWD_NAME, WindowPriority.ONLY_ONE_OPENED);
+        super(parent, Texts.FORM_CREATEPWD_NAME, WindowPriority.ONLY_ONE_OPENED);
 
         // ========== BUTTONS ========== //
 
-        b_ok = new Button(TextID.FORM_CREATEPWD_LABEL_CREATE);
-        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL);
+        b_ok = new Button(Texts.LABEL_CREATE);
+        b_cancel = new Button(Texts.LABEL_CANCEL);
 
         GridPane.setHalignment(b_ok, HPos.LEFT);
         GridPane.setHalignment(b_cancel, HPos.RIGHT);
@@ -277,17 +277,16 @@ public class FormCreatePwd extends AbstractForm
 
         // ========== ENTRY FIELDS ========== //
 
-        l_header = new Label(TextID.FORM_CREATEPWD_LABEL_HEADER);
+        l_header = new Label(Texts.FORM_CREATEPWD_LABEL_HEADER);
         l_header.beHeader();
 
-        ef_name = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME.toString() + "*", TEXTFIELD.WIDTH.XXL);
-        ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
-        ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD.WIDTH.XXL);
-        ef_length = new EntryField(TextID.FORM_CREATEPWD_LABEL_LENGTH.toString() + "*", TEXTFIELD.WIDTH.S);
-        ef_specialChars =
-            new EntryField(TextID.FORM_CREATEPWD_LABEL_SPECIAL_CHARACTERS.toString() + "*", TEXTFIELD.WIDTH.XXL);
-        ef_passwordPreview = new EntryField(TextID.FORM_LOGIN_LABEL_PASSWORD, TEXTFIELD.WIDTH.XXL);
-        ef_shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, TEXTFIELD.WIDTH.XS);
+        ef_name = new EntryField(Texts.LABEL_NAME.toString() + "*", TEXTFIELD.WIDTH.XXL);
+        ef_comment = new EntryField(Texts.LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
+        ef_url = new EntryField(Texts.LABEL_URL, TEXTFIELD.WIDTH.XXL);
+        ef_length = new EntryField(Texts.LABEL_LENGTH.toString() + "*", TEXTFIELD.WIDTH.S);
+        ef_specialChars = new EntryField(Texts.LABEL_SPECIAL_CHARACTERS.toString() + "*", TEXTFIELD.WIDTH.XXL);
+        ef_passwordPreview = new EntryField(Texts.LABEL_PASSWORD, TEXTFIELD.WIDTH.XXL);
+        ef_shortcut = new EntryField(Texts.LABEL_SHORTCUT, TEXTFIELD.WIDTH.XS);
 
         // ========== LABELS ========== //
 
@@ -295,8 +294,8 @@ public class FormCreatePwd extends AbstractForm
 
         // ========== CHECK BOXES ========== //
 
-        cb_specialChars = new CheckBox(TextID.FORM_CREATEPWD_MSG_MUST_HAVE_SPECIAL.toString());
-        cb_upperCaseChar = new CheckBox(TextID.FORM_CREATEPWD_MSG_MUST_HAVE_UPPER.toString());
+        cb_specialChars = new CheckBox(Texts.FORM_CREATEPWD_MSG_MUST_HAVE_SPECIAL.toString());
+        cb_upperCaseChar = new CheckBox(Texts.FORM_CREATEPWD_MSG_MUST_HAVE_UPPER.toString());
         cb_specialChars.setSelected(true);
         cb_upperCaseChar.setSelected(true);
 

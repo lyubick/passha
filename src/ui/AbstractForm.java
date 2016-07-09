@@ -3,7 +3,7 @@ package ui;
 import java.util.Vector;
 
 import ui.elements.GridPane;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Exceptions;
 import main.Exceptions.XC;
 import main.Main;
@@ -189,7 +189,7 @@ public abstract class AbstractForm
         };
     }
 
-    protected AbstractForm(AbstractForm parent, TextID titleTextId, WindowPriority priority) throws Exceptions
+    protected AbstractForm(AbstractForm parent, Texts titleTextId, WindowPriority priority) throws Exceptions
     {
         this.parent = parent;
         this.priority = priority;
@@ -263,7 +263,7 @@ public abstract class AbstractForm
         stage.setScene(scene);
 
         stage.getIcons().add(new Image(Properties.PATHS.TRAY_ICON));
-        stage.setTitle(title + " - " + Properties.SOFTWARE.NAME + " (" + TextID.COMMON_LABEL_VERSION.toString() + ")");
+        stage.setTitle(title + " - " + Properties.SOFTWARE.NAME + " (" + Texts.LABEL_VERSION.toString() + ")");
         stage.setResizable(true);
 
         stage.setOnCloseRequest(getOnCloseRequest());

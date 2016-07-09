@@ -24,7 +24,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TabPane;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import logger.Logger;
 
 import main.Exceptions;
@@ -81,7 +81,7 @@ public class FormVaultsManager extends AbstractForm
     public FormVaultsManager() throws Exceptions
     {
         // No parents it is a main Form
-        super(null, TextID.FORM_MANAGEPWD_NAME, WindowPriority.ONLY_ONE_OPENED);
+        super(null, Texts.FORM_MANAGEPWD_NAME, WindowPriority.ONLY_ONE_OPENED);
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);
@@ -102,22 +102,22 @@ public class FormVaultsManager extends AbstractForm
         // ========== MENU ========== //
         // TODO: create class for menu
         menuMain = new MenuBar();
-        m_file = new Menu(TextID.MENU_LABEL_FILE.toString());
-        m_vault = new Menu("Vault"); // FIXME: local
-        m_password = new Menu("Password"); // FIXME: local
-        m_help = new Menu(TextID.MENU_LABEL_HELP.toString());
+        m_file = new Menu(Texts.LABEL_FILE.toString());
+        m_vault = new Menu(Texts.LABEL_VAULT.toString());
+        m_password = new Menu(Texts.LABEL_PASSWORD.toString());
+        m_help = new Menu(Texts.LABEL_HELP.toString());
 
-        mi_settings = new MenuItem(TextID.FORM_SETTINGS_NAME.toString());
-        mi_exit = new MenuItem(TextID.MENU_LABEL_EXIT.toString());
+        mi_settings = new MenuItem(Texts.LABEL_SETTINGS.toString());
+        mi_exit = new MenuItem(Texts.LABEL_EXIT.toString());
 
-        mi_new = new MenuItem(TextID.COMMON_LABEL_NEW.toString());
-        mi_edit = new MenuItem(TextID.FORM_MANAGEWD_LABEL_EDIT.toString());
-        mi_reset = new MenuItem(TextID.FORM_MANAGEPWD_LABEL_RESET.toString());
-        mi_delete = new MenuItem(TextID.FORM_CREATEPWD_MANAGER_LABEL_DELETE.toString());
-        mi_copy = new MenuItem(TextID.FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD.toString());
-        mi_export = new MenuItem(TextID.FORM_MANAGEPWD_LABEL_EXPORT.toString());
+        mi_new = new MenuItem(Texts.LABEL_NEW.toString());
+        mi_edit = new MenuItem(Texts.LABEL_EDIT.toString());
+        mi_reset = new MenuItem(Texts.FORM_MANAGEPWD_LABEL_RESET.toString());
+        mi_delete = new MenuItem(Texts.LABEL_DELETE.toString());
+        mi_copy = new MenuItem(Texts.FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD.toString());
+        mi_export = new MenuItem(Texts.FORM_MANAGEPWD_LABEL_EXPORT.toString());
 
-        mi_about = new MenuItem(TextID.MENU_LABEL_ABOUT.toString());
+        mi_about = new MenuItem(Texts.LABEL_ABOUT.toString());
 
         m_file.getItems().addAll(mi_settings, new SeparatorMenuItem(), mi_exit);
         m_vault.getItems().addAll(m_password, mi_export);
@@ -343,9 +343,9 @@ public class FormVaultsManager extends AbstractForm
 
                 try
                 {
-                    TrayAgent.getInstance().showNotification(TextID.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD,
-                        TextID.TRAY_MSG_TIME_LEFT, ": " + Settings.getInstance().getClipboardLiveTime() / 1000 + " "
-                            + TextID.COMMON_LABEL_SECONDS.toString(),
+                    TrayAgent.getInstance().showNotification(Texts.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD,
+                        Texts.TRAY_MSG_TIME_LEFT, ": " + Settings.getInstance().getClipboardLiveTime() / 1000 + " "
+                            + Texts.LABEL_SECONDS.toString(),
                         MessageType.INFO);
                 }
                 catch (Exceptions e)
@@ -371,7 +371,7 @@ public class FormVaultsManager extends AbstractForm
                 if (pwd.equals(clipboard.getData(DataFlavor.stringFlavor)))
                 {
                     clipboard.setContents(new StringSelection(""), null);
-                    TrayAgent.getInstance().showNotification(TextID.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD,
+                    TrayAgent.getInstance().showNotification(Texts.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD,
                         MessageType.INFO);
                 }
             }
@@ -426,8 +426,7 @@ public class FormVaultsManager extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Terminator.terminate(e);
                 }
             }
         };
@@ -461,8 +460,7 @@ public class FormVaultsManager extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Terminator.terminate(e);
                 }
 
             }
@@ -483,8 +481,7 @@ public class FormVaultsManager extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Terminator.terminate(e);
                 }
 
             }

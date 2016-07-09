@@ -3,13 +3,13 @@ package ui.elements;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.scene.layout.VBox;
-import languages.Local.TextID;
+import languages.Local.Texts;
 
 public class ProgressBar extends javafx.scene.control.ProgressBar
 {
     private Label label = null;
 
-    public ProgressBar(TextID label, double width, double height)
+    public ProgressBar(Texts label, double width, double height)
     {
         this(label.toString(), width, height);
     }
@@ -46,7 +46,7 @@ public class ProgressBar extends javafx.scene.control.ProgressBar
         this.label.setText(label);
     }
 
-    public void setLabel(TextID label)
+    public void setLabel(Texts label)
     {
         setLabel(label.toString());
     }

@@ -12,7 +12,7 @@ import ui.elements.EntryField;
 import ui.elements.Label;
 import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
@@ -73,23 +73,23 @@ public class FormEditPwd extends AbstractForm
     /* PUBLIC ROUTINE */
     public FormEditPwd(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.FORM_EDITPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
+        super(parent, Texts.FORM_EDITPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
 
-        l_header = new Label(TextID.FORM_EDITPWD_LABEL_HEADER);
+        l_header = new Label(Texts.FORM_EDITPWD_LABEL_HEADER);
         l_header.beHeader();
         pwd = VaultManager.getSelectedPassword();
 
-        ef_pwdName = new EntryField(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXTFIELD.WIDTH.XXL);
-        ef_comment = new EntryField(TextID.FORM_CREATEPWD_LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
-        ef_url = new EntryField(TextID.FORM_CREATEPWD_LABEL_URL, TEXTFIELD.WIDTH.XXL);
-        ef_shortcut = new EntryField(TextID.FORM_EDITPWD_LABEL_SHORTCUT, TEXTFIELD.WIDTH.XS);
-        ef_errorLabel = new EntryField(TextID.FORM_EDITPWD_MSG_SHORTCUT_IN_USE, TEXTFIELD.WIDTH.XXL);
+        ef_pwdName = new EntryField(Texts.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXTFIELD.WIDTH.XXL);
+        ef_comment = new EntryField(Texts.LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
+        ef_url = new EntryField(Texts.LABEL_URL, TEXTFIELD.WIDTH.XXL);
+        ef_shortcut = new EntryField(Texts.LABEL_SHORTCUT, TEXTFIELD.WIDTH.XS);
+        ef_errorLabel = new EntryField(Texts.FORM_EDITPWD_MSG_SHORTCUT_IN_USE, TEXTFIELD.WIDTH.XXL);
         ef_errorLabel.setEditable(false);
         ef_errorLabel.beError();
         ef_errorLabel.setVisible(false);
 
-        b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
-        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL.toString());
+        b_ok = new Button(Texts.LABEL_OK.toString());
+        b_cancel = new Button(Texts.LABEL_CANCEL.toString());
 
         ef_pwdName.setEditable(false);
         ef_shortcut.addEventFilter(KeyEvent.KEY_TYPED, Common.getShortcutTFFiler(ef_shortcut));

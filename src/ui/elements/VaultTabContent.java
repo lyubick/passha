@@ -8,8 +8,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Exceptions;
+import main.Terminator;
 import ui.AbstractForm;
 import ui.FormVaultsManager;
 
@@ -52,17 +53,13 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
 
         t_ownTab.setRenameEnabled(true);
 
-        TableColumn<iSpecialPassword, String> cName =
-            new TableColumn<iSpecialPassword, String>(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
-        TableColumn<iSpecialPassword, String> cComment =
-            new TableColumn<iSpecialPassword, String>(TextID.FORM_CREATEPWD_LABEL_COMMENT.toString());
-        TableColumn<iSpecialPassword, String> cUrl =
-            new TableColumn<iSpecialPassword, String>(TextID.FORM_CREATEPWD_LABEL_URL.toString());
+        TableColumn<iSpecialPassword, String> cName = new TableColumn<>(Texts.FORM_MANAGEPWD_LABEL_PWD_NAME.toString());
+        TableColumn<iSpecialPassword, String> cComment = new TableColumn<>(Texts.LABEL_COMMENT.toString());
+        TableColumn<iSpecialPassword, String> cUrl = new TableColumn<>(Texts.LABEL_URL.toString());
 
-        TableColumn<iSpecialPassword, String> cShortcut =
-            new TableColumn<iSpecialPassword, String>(TextID.FORM_EDITPWD_LABEL_SHORTCUT.toString());
+        TableColumn<iSpecialPassword, String> cShortcut = new TableColumn<>(Texts.LABEL_SHORTCUT.toString());
 
-        TableColumn<iSpecialPassword, String> cPassword = new TableColumn<iSpecialPassword, String>("Password");
+        TableColumn<iSpecialPassword, String> cPassword = new TableColumn<>("Password");
 
         getColumns().addAll(cName, cShortcut, cComment, cUrl, cPassword);
 
@@ -101,8 +98,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Terminator.terminate(e);
         }
     }
 
@@ -116,8 +112,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         }
         catch (Exceptions e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Terminator.terminate(e);
         }
     }
 
@@ -144,7 +139,6 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
     @Override
     public void setName(String name)
     {
-        // TODO Auto-generated method stub
         vault.setName(name);
     }
 

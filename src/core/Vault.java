@@ -45,7 +45,8 @@ public class Vault
         // Initialize Database
         database = new Database(rsa, SHA.getHashString(masterHash, SALT_FILENAME), isNewUser, this);
 
-        // FIXME Call garbage collector on finish
+        // All initialized, let's clean-up a little
+        System.gc();
     }
 
     public ObservableList<iSpecialPassword> getIface()
@@ -144,7 +145,7 @@ public class Vault
         final String HASH_CODE_START_TAG = "<hash>";
         final String HASH_CODE_END_TAG = "</hash>";
 
-        Vector<String> exportStrings = new Vector<String>();
+        Vector<String> exportStrings = new Vector<>();
 
         exportStrings.add(FILE_START_TAG);
         for (SpecialPassword sp : database.getDecrypted())
@@ -177,7 +178,7 @@ public class Vault
 
     public Vector<SpecialPassword> getPasswordsWithShortcut()
     {
-        Vector<SpecialPassword> pwds = new Vector<SpecialPassword>();
+        Vector<SpecialPassword> pwds = new Vector<>();
 
         // TODO: java8 style
         for (SpecialPassword sp : database.getDecrypted())

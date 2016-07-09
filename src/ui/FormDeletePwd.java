@@ -14,7 +14,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.control.TextField;
 import javafx.scene.text.TextAlignment;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Exceptions;
 import main.Terminator;
 
@@ -39,12 +39,12 @@ public class FormDeletePwd extends AbstractForm
             {
                 if (newValue.equals(confirmationText))
                 {
-                    b_confirm.setText(TextID.FORM_DELETEPWD_NAME.toString());
+                    b_confirm.setText(Texts.LABEL_PASSWORD.toString());
                     confirmed = true;
                 }
                 else
                 {
-                    b_confirm.setText(TextID.COMMON_LABEL_CANCEL.toString());
+                    b_confirm.setText(Texts.LABEL_CANCEL.toString());
                     confirmed = false;
                 }
             }
@@ -78,13 +78,13 @@ public class FormDeletePwd extends AbstractForm
     /* PUBLIC ROUTINE */
     public FormDeletePwd(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.FORM_DELETEPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
+        super(parent, Texts.LABEL_PASSWORD, WindowPriority.ALWAYS_ON_TOP);
 
-        confirmationText = new String(TextID.FORM_DELETEPWD_MSG_CONFIRMATION.toString());
-        l_header = new Label(TextID.FORM_DELETEPWD_NAME.toString());
+        confirmationText = new String(Texts.FORM_DELETEPWD_MSG_CONFIRMATION.toString());
+        l_header = new Label(Texts.LABEL_PASSWORD.toString());
         l_header.beHeader();
 
-        l_note = new Label(TextID.FORM_DELETEPWD_MSG_NOTE.toString());
+        l_note = new Label(Texts.FORM_DELETEPWD_MSG_NOTE.toString());
         l_deleteWord = new Label(confirmationText);
 
         l_deleteWord.setTextAlignment(TextAlignment.CENTER);
@@ -93,14 +93,14 @@ public class FormDeletePwd extends AbstractForm
         l_note.beError();
         l_deleteWord.beError();
 
-        b_confirm = new Button(TextID.COMMON_LABEL_CANCEL.toString(), TextID.FORM_DELETEPWD_NAME.toString());
+        b_confirm = new Button(Texts.LABEL_CANCEL.toString(), Texts.LABEL_PASSWORD.toString());
 
         tf_confirmation = new TextField();
         tf_confirmation.setMaxWidth(TEXTFIELD.WIDTH.L);
         tf_confirmation.setMinWidth(TEXTFIELD.WIDTH.L);
         tf_confirmation.setMinHeight(TEXTFIELD.HEIGTH.M);
         tf_confirmation.setMaxHeight(TEXTFIELD.HEIGTH.M);
-        ef_passwordName = new EntryField(TextID.FORM_CREATEPWD_LABEL_NAME, TEXTFIELD.WIDTH.XL);
+        ef_passwordName = new EntryField(Texts.LABEL_NAME, TEXTFIELD.WIDTH.XL);
         ef_passwordName.setEditable(false);
 
         GridPane.setHalignment(l_header, HPos.CENTER);

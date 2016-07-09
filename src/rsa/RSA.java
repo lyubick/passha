@@ -1,7 +1,5 @@
 package rsa;
 
-// FIXME: finally someone should check situation with zeroes :)
-
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Random;
@@ -34,9 +32,8 @@ public final class RSA
         StringBuilder cipher = new StringBuilder("");
         Random r = new Random();
 
-        int messageBlockCount =
-                (message.length / RSA_BYTE_MESSAGE_BLOCK_LENGTH)
-                        + Math.min(message.length % RSA_BYTE_MESSAGE_BLOCK_LENGTH, 1);
+        int messageBlockCount = (message.length / RSA_BYTE_MESSAGE_BLOCK_LENGTH)
+            + Math.min(message.length % RSA_BYTE_MESSAGE_BLOCK_LENGTH, 1);
 
         for (int i = 0; i < messageBlockCount; i++)
         {
@@ -79,7 +76,7 @@ public final class RSA
         for (int i = 0; i < message.length(); i += RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)
         {
             BigInteger fDecipher =
-                    new BigInteger(message.substring(i, i + RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)).modPow(d, n);
+                new BigInteger(message.substring(i, i + RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH)).modPow(d, n);
 
             byte[] chunk = fDecipher.toByteArray();
 
@@ -97,7 +94,7 @@ public final class RSA
     {
         // SHA-512 from "Test hash for RSA" x2
         String alphabet =
-                "4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db94dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510adfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a";
+            "4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db94dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510adfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a";
         String cipher = "";
 
         cipher = encrypt(alphabet);

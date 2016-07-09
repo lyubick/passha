@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import logger.Logger;
 import main.Properties;
 
@@ -61,7 +61,7 @@ public class Label extends javafx.scene.control.Label
         this.setUp();
     }
 
-    public Label(TextID name)
+    public Label(Texts name)
     {
         this(name.toString());
     }
@@ -72,7 +72,7 @@ public class Label extends javafx.scene.control.Label
         this.setUp();
     }
 
-    public Label(TextID name, int maxWidth)
+    public Label(Texts name, int maxWidth)
     {
         this(name.toString(), maxWidth);
     }
@@ -109,7 +109,7 @@ public class Label extends javafx.scene.control.Label
         return this;
     }
 
-    public static double calcLength(TextID name)
+    public static double calcLength(Texts name)
     {
         return calcLength(name.toString());
     }

@@ -3,7 +3,7 @@
  */
 package ui;
 
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Exceptions;
 import main.Settings;
 import main.Terminator;
@@ -67,24 +67,24 @@ public class FormSettings extends AbstractForm
     /* PUBLIC ROUTINE */
     public FormSettings(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.FORM_SETTINGS_NAME, WindowPriority.ALWAYS_ON_TOP);
+        super(parent, Texts.LABEL_SETTINGS, WindowPriority.ALWAYS_ON_TOP);
 
-        l_header = new Label(TextID.FORM_SETTINGS_NAME.toString());
+        l_header = new Label(Texts.LABEL_SETTINGS.toString());
         l_header.setTextAlignment(TextAlignment.CENTER);
         l_header.beHeader();
 
         langOptions =
             FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
 
-        cb_language = new ComboBox(langOptions, TextID.FORM_SETTINGS_LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
+        cb_language = new ComboBox(langOptions, Texts.LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
 
-        cb_autologin = new CheckBox(TextID.FORM_SETTINGS_LABEL_AUTOLOGIN.toString());
+        cb_autologin = new CheckBox(Texts.LABEL_AUTOLOGIN.toString());
 
         ef_clipboard =
-            new EntryField(TextID.FORM_SETTINGS_LABEL_DELAY.toString() + " " + TextID.COMMON_LABEL_SECONDS.toString(),
+            new EntryField(Texts.LABEL_DELAY.toString() + " " + Texts.LABEL_SECONDS.toString(),
                 TEXTFIELD.WIDTH.S);
 
-        b_ok = new Button(TextID.COMMON_LABEL_OK.toString());
+        b_ok = new Button(Texts.LABEL_OK.toString());
 
         try
         {

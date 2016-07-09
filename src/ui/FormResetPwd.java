@@ -7,7 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.text.TextAlignment;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Exceptions;
 import main.Terminator;
 import ui.elements.Button;
@@ -101,26 +101,26 @@ public class FormResetPwd extends AbstractForm
     /* PUBLIC ROUTINE */
     public FormResetPwd(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.FORM_RESETPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
+        super(parent, Texts.FORM_RESETPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
 
         // ========== BUTTONS ========== //
 
-        b_ok = new Button(TextID.COMMON_LABEL_OK);
-        b_cancel = new Button(TextID.COMMON_LABEL_CANCEL);
+        b_ok = new Button(Texts.LABEL_OK);
+        b_cancel = new Button(Texts.LABEL_CANCEL);
         b_regenerate = new Button("", Common.getRegenerateImage());
 
-        ef_currentPassword = new EntryField(TextID.FORM_RESETWD_LABEL_CURRENT, TEXTFIELD.WIDTH.L);
-        ef_newPassword = new EntryField(TextID.COMMON_LABEL_NEW, TEXTFIELD.WIDTH.L);
+        ef_currentPassword = new EntryField(Texts.FORM_RESETWD_LABEL_CURRENT, TEXTFIELD.WIDTH.L);
+        ef_newPassword = new EntryField(Texts.LABEL_NEW, TEXTFIELD.WIDTH.L);
 
         ef_currentPassword.setEditable(false);
         ef_newPassword.setEditable(false);
 
         // ========== LABELS ========== //
-        l_warning = new Label(TextID.FORM_RESETPWD_MSG_WARNING.toString(), TEXTFIELD.WIDTH.XL);
+        l_warning = new Label(Texts.FORM_RESETPWD_MSG_WARNING.toString(), TEXTFIELD.WIDTH.XL);
         l_warning.setTextAlignment(TextAlignment.CENTER);
         l_warning.beError();
 
-        l_header = new Label(TextID.FORM_RESETPWD_NAME.toString());
+        l_header = new Label(Texts.FORM_RESETPWD_NAME.toString());
         l_header.beHeader();
 
         GridPane.setHalignment(l_warning, HPos.CENTER);

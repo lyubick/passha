@@ -9,7 +9,7 @@ import ui.elements.GridPane;
 import ui.elements.LabeledItem;
 import ui.elements.EntryField.TEXTFIELD;
 import ui.elements.Label;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
@@ -28,7 +28,6 @@ import main.Terminator;
 public class FormShortcuts extends AbstractForm
 {
 
-    /* EVENT HANDLERS & CHANGE LISTENERS */
     private ChangeListener<Boolean> getFocusedPropertyListner()
     {
         return new ChangeListener<Boolean>()
@@ -66,14 +65,13 @@ public class FormShortcuts extends AbstractForm
         };
     }
 
-    /* PRIVATE ROUTINE */
     private void fillFormWithPwds() throws Exceptions
     {
         Vector<SpecialPassword> tmp = VaultManager.getInstance().getActiveVault().getPasswordsWithShortcut();
         if (tmp.size() == 0) throw new Exceptions(XC.NO_SHORTCUTS_EXISTS);
 
-        Label l_passwordName = new Label(TextID.FORM_MANAGEPWD_LABEL_PWD_NAME);
-        Label l_shortcut = new Label(TextID.FORM_EDITPWD_LABEL_SHORTCUT);
+        Label l_passwordName = new Label(Texts.FORM_MANAGEPWD_LABEL_PWD_NAME);
+        Label l_shortcut = new Label(Texts.LABEL_SHORTCUT);
 
         GridPane.setHalignment(l_passwordName, HPos.CENTER);
         GridPane.setHalignment(l_shortcut, HPos.CENTER);
@@ -94,12 +92,9 @@ public class FormShortcuts extends AbstractForm
         grid.getChildren().get(0).requestFocus(); // remove focus from ef
     }
 
-    /* PUBLIC ROUTINE */
     public FormShortcuts(AbstractForm parent) throws Exceptions
     {
-        // TODO: background
-        // FIXME COMMON_LABEL_EMPTY_STRING
-        super(parent, TextID.COMMON_LABEL_EMPTY_STRING, WindowPriority.NORMAL);
+        super(parent, Texts.LABEL_EMPTY, WindowPriority.NORMAL);
         stage.initStyle(StageStyle.UNDECORATED);
 
         stage.focusedProperty().addListener(getFocusedPropertyListner());

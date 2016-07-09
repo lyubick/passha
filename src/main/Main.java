@@ -6,7 +6,7 @@ import core.VaultManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import logger.Logger;
 import main.Exceptions.XC;
 import ui.FormVaultsManager;
@@ -18,9 +18,6 @@ public class Main extends Application
 
     public static void main(String[] args)
     {
-        /* -1. Fix threading problem on LINUX - not working (TODO) */
-        if (System.getProperty("os.name").equals("Linux")) System.loadLibrary("xx"); // FIXME: normal name
-
         /* 0. Read incoming arguments */
         for (String arg : args)
         {
@@ -37,7 +34,7 @@ public class Main extends Application
             Terminator.terminate(e);
         }
 
-        TextID info = null;
+        Texts info = null;
 
         /* 2. Load settings */
         try
@@ -48,7 +45,7 @@ public class Main extends Application
         {
             if (e.getCode().equals(XC.DEFAULT_SETTINGS_USED))
             {
-                info = TextID.TRAY_MSG_FAILED_LOAD_SETTINGS;
+                info = Texts.TRAY_MSG_FAILED_LOAD_SETTINGS;
             }
             else
             {
@@ -60,8 +57,7 @@ public class Main extends Application
         try
         {
             TrayAgent.init();
-            if (info != null)
-                TrayAgent.getInstance().showNotification(TextID.COMMON_LABEL_ERROR, info, MessageType.ERROR);
+            if (info != null) TrayAgent.getInstance().showNotification(Texts.LABEL_ERROR, info, MessageType.ERROR);
         }
         catch (Exceptions e)
         {

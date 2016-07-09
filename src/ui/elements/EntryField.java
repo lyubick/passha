@@ -3,7 +3,7 @@ package ui.elements;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.HBox;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Properties;
 
 public class EntryField extends javafx.scene.control.TextField implements LabeledItem
@@ -41,7 +41,7 @@ public class EntryField extends javafx.scene.control.TextField implements Labele
         };
     }
 
-    public EntryField(TextID label, int maxLength)
+    public EntryField(Texts label, int maxLength)
     {
         this(label.toString(), maxLength);
     }

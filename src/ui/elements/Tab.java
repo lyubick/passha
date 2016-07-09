@@ -8,7 +8,9 @@ import javafx.event.EventHandler;
 
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import languages.Local;
 import main.Exceptions;
+import main.Terminator;
 
 public class Tab extends javafx.scene.control.Tab
 {
@@ -32,7 +34,7 @@ public class Tab extends javafx.scene.control.Tab
 
     public void setVaultName(String text)
     {
-        setLabelText("Vault: " + text);
+        setLabelText(Local.Texts.LABEL_VAULT_WITH_COLLS.toString() + text);
     }
 
     public void setRenameEnabled(boolean value)
@@ -46,7 +48,8 @@ public class Tab extends javafx.scene.control.Tab
 
         This = this;
 
-        l_label = new Label("Vault: NEW"); // FIXME
+        l_label =
+            new Label(Local.Texts.LABEL_VAULT_WITH_COLLS.toString() + Local.Texts.LABEL_NEW.toString().toUpperCase());
         renameEnabled = false;
         tf_textField = new TextField();
 
@@ -55,10 +58,10 @@ public class Tab extends javafx.scene.control.Tab
             @Override
             public void handle(MouseEvent event)
             {
-                // TODO Auto-generated method stub
                 if (event.getClickCount() >= 2 && renameEnabled)
                 {
-                    tf_textField.setText(l_label.getText().substring("Vault: ".length(), l_label.getText().length())); // FIXME
+                    tf_textField.setText(l_label.getText()
+                        .substring(Local.Texts.LABEL_VAULT_WITH_COLLS.toString().length(), l_label.getText().length()));
 
                     This.setGraphic(tf_textField);
                     tf_textField.requestFocus();
@@ -77,7 +80,7 @@ public class Tab extends javafx.scene.control.Tab
             {
                 if (newValue == false)
                 {
-                    l_label.setText("Vault: " + tf_textField.getText()); // FIXME
+                    l_label.setText(Local.Texts.LABEL_VAULT_WITH_COLLS.toString() + tf_textField.getText());
                     This.setGraphic(l_label);
                     ((VaultTabContent) This.getContent()).setName(tf_textField.getText());
                 }
@@ -89,7 +92,7 @@ public class Tab extends javafx.scene.control.Tab
             @Override
             public void handle(ActionEvent event)
             {
-                l_label.setText("Vault: " + tf_textField.getText()); // FIXME
+                l_label.setText(Local.Texts.LABEL_VAULT_WITH_COLLS.toString() + tf_textField.getText());
                 This.setGraphic(l_label);
 
                 try
@@ -98,8 +101,7 @@ public class Tab extends javafx.scene.control.Tab
                 }
                 catch (Exceptions e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Terminator.terminate(e);
                 }
             }
         });

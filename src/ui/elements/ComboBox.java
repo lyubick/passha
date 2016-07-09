@@ -1,14 +1,14 @@
 package ui.elements;
 
 import javafx.collections.ObservableList;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Properties;
 
 public class ComboBox extends javafx.scene.control.ComboBox<String> implements LabeledItem
 {
     private Label label = null;
 
-    public ComboBox(ObservableList<String> list, TextID label, double maxLength)
+    public ComboBox(ObservableList<String> list, Texts label, double maxLength)
     {
         this(list, label.toString(), maxLength);
     }

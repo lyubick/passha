@@ -15,7 +15,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.Timer;
 
 import javafx.application.Platform;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import logger.Logger;
 import main.Exceptions;
 import main.Properties;
@@ -151,11 +151,11 @@ public class TrayAgent
 
         Image image = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("resources/tray_icon.png"));
         PopupMenu popup = new PopupMenu();
-        MenuItem itemExit = new MenuItem(TextID.MENU_LABEL_EXIT.toString());
+        MenuItem itemExit = new MenuItem(Texts.LABEL_EXIT.toString());
 
         popup.add(itemExit);
 
-        trayIcon = new TrayIcon(image, Properties.SOFTWARE.NAME + " " + TextID.COMMON_LABEL_VERSION.toString(), popup);
+        trayIcon = new TrayIcon(image, Properties.SOFTWARE.NAME + " " + Texts.LABEL_VERSION.toString(), popup);
 
         trayIcon.addMouseListener(lmbHandler());
 
@@ -187,17 +187,17 @@ public class TrayAgent
         trayIcon.displayMessage(title, msg, type);
     }
 
-    public void showNotification(TextID title, MessageType type)
+    public void showNotification(Texts title, MessageType type)
     {
         trayIcon.displayMessage(title.toString(), "", type);
     }
 
-    public void showNotification(TextID title, TextID msg, MessageType type)
+    public void showNotification(Texts title, Texts msg, MessageType type)
     {
         trayIcon.displayMessage(title.toString(), msg.toString(), type);
     }
 
-    public void showNotification(TextID title, TextID msg, String addition, MessageType type)
+    public void showNotification(Texts title, Texts msg, String addition, MessageType type)
     {
         trayIcon.displayMessage(title.toString(), msg.toString() + addition, type);
     }

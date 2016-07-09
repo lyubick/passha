@@ -14,7 +14,7 @@ import javafx.scene.control.Hyperlink;
 import ui.elements.Button;
 import ui.elements.GridPane;
 import ui.elements.Label;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import logger.Logger;
 import main.Exceptions;
 import main.Properties;
@@ -113,21 +113,21 @@ public class FormAbout extends AbstractForm
 
     protected FormAbout(AbstractForm parent) throws Exceptions
     {
-        super(parent, TextID.MENU_LABEL_ABOUT, WindowPriority.ALWAYS_ON_TOP);
+        super(parent, Texts.LABEL_ABOUT, WindowPriority.ALWAYS_ON_TOP);
 
         l_header = new Label(Properties.SOFTWARE.NAME + " v." + Properties.SOFTWARE.VERSION);
         l_header.beHeader();
-        l_contacts = new Label(TextID.FORM_ABOUT_LABEL_CONTACTS, WRAP_WIDTH);
+        l_contacts = new Label(Texts.LABEL_CONTACTS, WRAP_WIDTH);
         l_contacts.beHeader();
-        l_licDescription = new Label(TextID.FORM_ABOUT_MSG_LICENSE_DESCRIPTION, WRAP_WIDTH);
-        l_licCopyright = new Label(TextID.FORM_ABOUT_MSG_LICENSE_COPYRIGHT, WRAP_WIDTH);
-        l_licFreeware = new Label(TextID.FORM_ABOUT_MSG_LICENSE_FREEWARE, WRAP_WIDTH);
-        l_licWarranty = new Label(TextID.FORM_ABOUT_MSG_LICENSE_WARRANTY, WRAP_WIDTH);
-        l_licGnuGpl = new Label(TextID.FORM_ABOUT_MSG_LICENSE_GNU_LICENCE, WRAP_WIDTH);
+        l_licDescription = new Label(Texts.MSG_PROGRAM_DESCRIPTION, WRAP_WIDTH);
+        l_licCopyright = new Label(Texts.MSG_COPYRIGHT, WRAP_WIDTH);
+        l_licFreeware = new Label(Texts.MSG_LICENSE_1, WRAP_WIDTH);
+        l_licWarranty = new Label(Texts.MSG_LICENSE_2, WRAP_WIDTH);
+        l_licGnuGpl = new Label(Texts.MSG_LICENSE_3, WRAP_WIDTH);
 
-        b_ok = new Button(TextID.COMMON_LABEL_OK);
-        b_license = new Button(TextID.FORM_ABOUT_LABEL_LINCENSE);
-        b_github = new Button(TextID.FORM_ABOUT_LABEL_GITHUB);
+        b_ok = new Button(Texts.LABEL_OK);
+        b_license = new Button(Texts.LABEL_LINCENSE);
+        b_github = new Button(Texts.LABEL_GITHUB);
 
         e_mail_v = new Hyperlink("vlad.varslavans@gmail.com");
         e_mail_a = new Hyperlink("andrejs.lubimovs@gmail.com");

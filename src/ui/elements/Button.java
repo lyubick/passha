@@ -6,7 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.util.Duration;
-import languages.Local.TextID;
+import languages.Local.Texts;
 import main.Exceptions;
 import main.Exceptions.XC;
 import ui.elements.Button.BUTTON.SIZE;
@@ -44,7 +44,7 @@ public class Button extends javafx.scene.control.Button
         this(name, BUTTON.WIDTH.M, BUTTON.HEIGHT.M);
     }
 
-    public Button(TextID name)
+    public Button(Texts name)
     {
         this(name.toString());
     }
