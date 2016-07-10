@@ -45,10 +45,10 @@ public class FormEditPwd extends AbstractForm
                 }
                 catch (Exceptions e)
                 {
-                    if (e.getCode() == XC.PASSWORD_SHORTCUT_ALREADY_IN_USE)
+                    if (e.getCode() == XC.PASSWORD_SHORTCUT_IN_USE)
                     {
                         ef_errorLabel.setVisible(true);
-                        ef_errorLabel.setText(e.getText());
+                        ef_errorLabel.setText(((SpecialPassword) e.getObject()).getName());
                         return;
                     }
                     Terminator.terminate(e);
@@ -77,7 +77,7 @@ public class FormEditPwd extends AbstractForm
 
         l_header = new Label(Texts.FORM_EDITPWD_LABEL_HEADER);
         l_header.beHeader();
-        pwd = VaultManager.getSelectedPassword();
+        pwd = new SpecialPassword(VaultManager.getSelectedPassword());
 
         ef_pwdName = new EntryField(Texts.FORM_MANAGEPWD_LABEL_PWD_NAME, TEXTFIELD.WIDTH.XXL);
         ef_comment = new EntryField(Texts.LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);

@@ -92,13 +92,11 @@ public class TrayAgent
                     {
                         try
                         {
-                            FormVaultsManager.getInstance();// TODO: whyyy???
                             new FormShortcuts(null);
-                            // FIXME unhandled exception
                         }
                         catch (Exceptions e)
                         {
-                            // do nothing
+                            // Do nothing
                         }
                     }
                 });

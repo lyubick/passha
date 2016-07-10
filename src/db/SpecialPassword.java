@@ -60,7 +60,7 @@ public class SpecialPassword
     public HashMap<String, String> getMap()
     {
 
-        HashMap<String, String> m = new HashMap<String, String>();
+        HashMap<String, String> m = new HashMap<>();
         m.put("shaCycles", "" + shaCycles);
         m.put("name", name);
         m.put("comment", comment);
@@ -116,7 +116,7 @@ public class SpecialPassword
     {
         Logger.printDebug("SpecialPassword copy-constructor... START");
 
-        if (other == null) throw new Exceptions(XC.MANDATORY_DATA_MISSING);
+        if (other == null) throw new Exceptions(XC.NULL);
 
         own_vault = other.own_vault;
 

@@ -209,7 +209,7 @@ public abstract class AbstractForm
         }
 
         // Initialize everything to avoid NullPointerExceptions
-        childs = new Vector<AbstractForm>();
+        childs = new Vector<>();
 
         grid = new GridPane();
 
@@ -225,12 +225,12 @@ public abstract class AbstractForm
         group = new VBox();
 
         ColumnConstraints c1 = new ColumnConstraints();
-        ColumnConstraints c2 = new ColumnConstraints();     // TODO: unused
+        ColumnConstraints c2 = new ColumnConstraints(); // NOTE: unused
         c1.setHgrow(Priority.ALWAYS);
         c2.setHgrow(Priority.SOMETIMES);
 
         RowConstraints r1 = new RowConstraints();
-        RowConstraints r2 = new RowConstraints();           // TODO: unused
+        RowConstraints r2 = new RowConstraints(); // NOTE: unused
         r1.setVgrow(Priority.ALWAYS);
         r2.setVgrow(Priority.SOMETIMES);
 

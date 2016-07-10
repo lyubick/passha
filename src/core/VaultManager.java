@@ -19,7 +19,7 @@ public class VaultManager
 
     private VaultManager()
     {
-        vaults = new Vector<Vault>();
+        vaults = new Vector<>();
         self = this;
     }
 
@@ -49,8 +49,6 @@ public class VaultManager
         return newVault;
     }
 
-    // TODO: Maybe do the same for all other methods?
-    // like addPassword, replacePassword, removePassword???
     static public SpecialPassword getSelectedPassword() throws Exceptions
     {
         return VaultManager.getInstance().getActiveVault().getSelected();

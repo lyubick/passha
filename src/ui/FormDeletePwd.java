@@ -39,7 +39,7 @@ public class FormDeletePwd extends AbstractForm
             {
                 if (newValue.equals(confirmationText))
                 {
-                    b_confirm.setText(Texts.LABEL_PASSWORD.toString());
+                    b_confirm.setText(Texts.LABEL_DELETE.toString());
                     confirmed = true;
                 }
                 else

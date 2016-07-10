@@ -92,7 +92,6 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
             {
-                // FIXME: Create TabPane class
                 if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).reload();
             }
         });
@@ -100,7 +99,6 @@ public class FormVaultsManager extends AbstractForm
         This = this;
 
         // ========== MENU ========== //
-        // TODO: create class for menu
         menuMain = new MenuBar();
         m_file = new Menu(Texts.LABEL_FILE.toString());
         m_vault = new Menu(Texts.LABEL_VAULT.toString());
@@ -216,9 +214,6 @@ public class FormVaultsManager extends AbstractForm
 
                 if (form.isPresent())
                 {
-                    // TODO: Seems like a bug in JavaFX: ContextMenuRequested event is propagated even after it is
-                    // consumed, and ContextMenu appears anyway
-
                     stage.requestFocus();
                 }
             }
@@ -236,8 +231,6 @@ public class FormVaultsManager extends AbstractForm
     {
         m_password.setDisable(value);
         mi_export.setDisable(value);
-        // TODO: Maybe TabContent should contain it's own ContextMenu
-        // Move all related setOn..Action to TabContent and then this form will request items for MainMenu
         if (value)
             tp_vaults.setContextMenu(cm_default);
         else
@@ -439,9 +432,10 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
+                // FIXME: enable copy to clipcoard
                 Logger.printError("Feature is not implemented yet!!! PICHALJKA");
                 // parent.minimize();
-                // copyToClipboard(); // TODO: pass password to copy
+                // copyToClipboard();
             }
         };
     }

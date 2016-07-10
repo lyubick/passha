@@ -123,7 +123,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         }
         catch (Exceptions e)
         {
-            if (e.getCode() == XC.FILE_DOES_NOT_EXISTS)
+            if (e.getCode() == XC.FILE_DOES_NOT_EXIST)
                 throw new Exceptions(XC.USER_UNKNOWN);
             else
                 throw e;
@@ -202,8 +202,6 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     @Override
     public void closeTab()
     {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -223,13 +221,10 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     @Override
     public void reload()
     {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void setName(String name)
     {
-        // TODO Auto-generated method stub
-
     }
 }

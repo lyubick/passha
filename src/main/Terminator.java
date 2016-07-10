@@ -28,8 +28,7 @@ public class Terminator
             Logger.getInstance().loggerOFF();
         }
         catch (Exceptions e1)
-        {
-        }
+        {}
 
         System.exit(e.getCode().ordinal());
     }
@@ -39,7 +38,7 @@ public class Terminator
         try
         {
             File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            final ArrayList<String> command = new ArrayList<String>();
+            final ArrayList<String> command = new ArrayList<>();
             command.add(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
             command.add("-jar");
             command.add(currentJar.getPath());
@@ -54,6 +53,7 @@ public class Terminator
         Terminator.exit(new Exceptions(XC.END));
     }
 
+    // FIXME: error-reporting, database save, restart, shutdown
     public static void terminate(Exceptions e)
     {
         if (e.getCode().equals(XC.RESTART)) restart();

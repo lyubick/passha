@@ -68,7 +68,7 @@ public class FormShortcuts extends AbstractForm
     private void fillFormWithPwds() throws Exceptions
     {
         Vector<SpecialPassword> tmp = VaultManager.getInstance().getActiveVault().getPasswordsWithShortcut();
-        if (tmp.size() == 0) throw new Exceptions(XC.NO_SHORTCUTS_EXISTS);
+        if (tmp.size() == 0) throw new Exceptions(XC.SHORTCUTS_NOT_FOUND);
 
         Label l_passwordName = new Label(Texts.FORM_MANAGEPWD_LABEL_PWD_NAME);
         Label l_shortcut = new Label(Texts.LABEL_SHORTCUT);

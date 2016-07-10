@@ -18,21 +18,23 @@ public final class Exceptions extends Throwable
 
     private String            text             = null;
 
+    private Object            object           = null;
+
     public static enum XC
     {
         //
         VAULT_ALREADY_OPEN,
         FORM_ALREADY_OPEN,
 
-        // ONLY Class initialization failure
+        // ONLY Initialisation failure
         INIT_FAILURE,
 
         // ONLY Singleton class Exceptions
         INSTANCE_ALREADY_EXISTS,
         INSTANCE_DOES_NOT_EXISTS,
 
-        // ONLY FileIO class Exceptions
-        FILE_DOES_NOT_EXISTS,
+        // ONLY File I/O Exceptions
+        FILE_DOES_NOT_EXIST,
         DIR_DOES_NOT_EXIST,
 
         FILE_CREATE_ERROR,
@@ -47,16 +49,15 @@ public final class Exceptions extends Throwable
 
         // ONLY New Password dialog exceptions
         MANDATORY_DATA_MISSING,
-        NO_PASSWORD_FOUND,
-        PASSWORD_NAME_ALREADY_EXISTS,
-        PASSWORD_SHORTCUT_ALREADY_IN_USE, // this error code should contain
-                                          // conflicting password name in text;
+        PASSWORD_NOT_FOUND,
+        PASSWORD_NAME_EXISTS,
+        PASSWORD_SHORTCUT_IN_USE,
 
         // Exception thrown ONLY on Login stage, indicating, that it could be
         // new user or Password is incorrect.
         USER_UNKNOWN,
 
-        // Autologin exceptions
+        // Automatic login Exceptions
         UNABLE_TO_GET_PHYSICAL_ADDR,
         UNABLE_TO_GET_USERNAME,
 
@@ -83,10 +84,11 @@ public final class Exceptions extends Throwable
         END,
 
         // Only Shortcuts form
-        NO_SHORTCUTS_EXISTS,
+        SHORTCUTS_NOT_FOUND,
 
         // General, can be used if error reasons are unknown
-        ERROR
+        ERROR,
+        NULL
     }
 
     public XC getCode()
@@ -97,6 +99,12 @@ public final class Exceptions extends Throwable
     public void setCode(XC code)
     {
         this.code = code;
+    }
+
+    public Exceptions(XC code, Object object)
+    {
+        this.code = code;
+        this.object = object;
     }
 
     public Exceptions(XC code)
@@ -114,5 +122,10 @@ public final class Exceptions extends Throwable
     {
         if (text != null) return text;
         return "";
+    }
+
+    public Object getObject()
+    {
+        return object;
     }
 }

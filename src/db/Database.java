@@ -18,6 +18,7 @@ import utilities.Utilities;
 import db.SpecialPassword;
 import javafx.concurrent.Task;
 import logger.Logger;
+import main.Terminator;
 
 public class Database
 {
@@ -38,21 +39,20 @@ public class Database
         SYNCHRONIZATION_FAILED
     };
 
-    // FIXME Check this upon closing
+    // FIXME: Check this upon closing
     private volatile Status status = null;
 
-    // TODO: basically what we want is separate Thread for DB,
-    // to allow DB independently decide when to dump to file.
-    // TODO: on closing database MUST reassure that everything is synced.
+    // FIXME: Separate thread
     public void requestSync()
     {
+        status = Status.DESYNCHRONIZED;
         sync();
     }
 
     public Database(RSA myRSA, String filename, boolean newUser, Vault vault) throws Exceptions
     {
         parentVault = vault;
-        // FIXME Redundant? Or move it to Vault of the Vaults :)
+
         File vaultDir = new File(Properties.PATHS.VAULT);
 
         if (!vaultDir.exists() && vaultDir.mkdirs() != true)
@@ -82,14 +82,14 @@ public class Database
             else
             {
                 Logger.printDebug("Failed to open file: " + vaultFile.getAbsolutePath());
-                throw new Exceptions(XC.FILE_DOES_NOT_EXISTS);
+                throw new Exceptions(XC.FILE_DOES_NOT_EXIST);
             }
         }
 
-        // RSA initialized and created by Vault, DB has only pointer
+        // RSA initialised and created by Vault, DB has only pointer
         rsa = myRSA;
 
-        db = new TreeMap<SpecialPassword, String>(new Comparator<SpecialPassword>()
+        db = new TreeMap<>(new Comparator<SpecialPassword>()
         {
             @Override
             public int compare(SpecialPassword o1, SpecialPassword o2)
@@ -114,26 +114,24 @@ public class Database
         }
     }
 
-    /*
-     * Method evaluates if password fits in database.
-     * It shall be called whenever new entry is added to database.
-     * Current rules:
-     * 1) password name must be unique
-     * 2) password shortcut must be empty or unique
-     * NOTE: Order of checks matters for replaceEntry();
-     */
-    private void validatePassword(SpecialPassword entry) throws Exceptions
+    private void validatePassword(SpecialPassword newEntry) throws Exceptions
     {
-        if (!entry.getShortcut().isEmpty())
+        validatePassword(newEntry, null);
+    }
+
+    private void validatePassword(SpecialPassword newEntry, SpecialPassword oldEntry) throws Exceptions
+    {
+        if (db.containsKey(newEntry) && (oldEntry == null || !newEntry.getName().equals(oldEntry.getName())))
+            throw new Exceptions(XC.PASSWORD_NAME_EXISTS);
+
+        if (!newEntry.getShortcut().isEmpty())
         {
             Optional<SpecialPassword> optSp =
-                db.keySet().stream().filter(sp -> sp.getShortcut().equals(entry.getShortcut())).findFirst();
-            if (optSp.isPresent())
-                throw new Exceptions(XC.PASSWORD_SHORTCUT_ALREADY_IN_USE).setText(optSp.get().getName());
-            // TODO: some smarter way to pass info through exceptions (maybe pass copy of whole SpecialPassword?)
-        }
+                db.keySet().stream().filter(sp -> sp.getShortcut().equals(newEntry.getShortcut())).findFirst();
 
-        if (db.containsKey(entry)) throw new Exceptions(XC.PASSWORD_NAME_ALREADY_EXISTS);
+            if (optSp.isPresent() && (oldEntry == null || !newEntry.getShortcut().equals(oldEntry.getShortcut())))
+                throw new Exceptions(XC.PASSWORD_SHORTCUT_IN_USE, optSp.get());
+        }
     }
 
     public void addEntry(SpecialPassword entry) throws Exceptions
@@ -142,17 +140,15 @@ public class Database
 
         db.put(entry, rsa.encrypt(Utilities.objectToBytes(entry.getMap())));
 
-        status = Status.DESYNCHRONIZED;
-        sync();
+        requestSync();
     }
 
     public void deleteEntry(SpecialPassword entry) throws Exceptions
     {
-        if (!db.containsKey(entry)) throw new Exceptions(XC.NO_PASSWORD_FOUND);
+        if (!db.containsKey(entry)) throw new Exceptions(XC.PASSWORD_NOT_FOUND);
         db.remove(entry);
 
-        status = Status.DESYNCHRONIZED;
-        sync();
+        requestSync();
     }
 
     public void replaceEntry(SpecialPassword newEntry, SpecialPassword oldEntry) throws Exceptions
@@ -160,33 +156,31 @@ public class Database
         // All checks should be before anything else to avoid loosing oldEntry
         // (either replace is completed fully, or not at all)
 
-        if (!db.containsKey(oldEntry)) throw new Exceptions(XC.NO_PASSWORD_FOUND);
+        if (!db.containsKey(oldEntry)) throw new Exceptions(XC.PASSWORD_NOT_FOUND);
 
-        try
-        {
-            validatePassword(newEntry);
-        }
-        catch (Exceptions e)
-        {
-            // Password may have existing name, if it will substitute password with this name
-            if (e.getCode() == XC.PASSWORD_NAME_ALREADY_EXISTS && oldEntry.getName().equals(newEntry.getName()))
-                Logger.printDebug("Replacing same SpecialPassword");        // Not an error
-            // Password may have conflicting shortcut with itself
-            else if (e.getCode() == XC.PASSWORD_SHORTCUT_ALREADY_IN_USE && e.getText().equals(newEntry.getName()))
-                Logger.printDebug("Didn't change shortcut for password");   // Not an error
-            else
-                throw e;        // Error
-        }
+        validatePassword(newEntry, oldEntry);
+
         db.remove(oldEntry);
         db.put(newEntry, rsa.encrypt(Utilities.objectToBytes(newEntry.getMap())));
 
-        status = Status.DESYNCHRONIZED;
-        sync();
+        requestSync();
     }
 
     public Vector<SpecialPassword> getDecrypted()
     {
-        return db.keySet().stream().collect(Collectors.toCollection(() -> new Vector<SpecialPassword>()));
+        return db.keySet().stream().map(sp ->
+        {
+            try
+            {
+                return new SpecialPassword(sp);
+            }
+            catch (Exceptions e)
+            {
+                if (e.getCode() == XC.NULL) Logger.printError("Database entry is null!");
+                Terminator.terminate(e);
+            }
+            return null;
+        }).filter(sp -> sp != null).collect(Collectors.toCollection(() -> new Vector<>()));
     }
 
     private void sync()
@@ -200,11 +194,11 @@ public class Database
             {
                 try
                 {
-                    HashMap<String, String> map = new HashMap<String, String>();
+                    HashMap<String, String> map = new HashMap<>();
                     map.put("vaultName", parentVault.getName());
 
                     Utilities.writeToFile(vaultFile.getAbsolutePath(),
-                        db.values().stream().collect(Collectors.toCollection(() -> new Vector<String>())),
+                        db.values().stream().collect(Collectors.toCollection(() -> new Vector<>())),
                         rsa.encrypt(Utilities.objectToBytes(map)));
 
                     status = Status.SYNCHRONIZED;

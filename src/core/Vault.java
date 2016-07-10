@@ -2,8 +2,6 @@ package core;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import logger.Logger;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -40,14 +38,14 @@ public class Vault
         // Generate master hash
         masterHash = hash;
 
-        // Initialize RSA
+        // Initialise RSA
         RSA rsa = new RSA(SHA.getHashString(masterHash, SALT_P), SHA.getHashString(masterHash, SALT_Q),
             SHA.getHashString(masterHash, SALT_E));
 
-        // Initialize Database
+        // Initialise Database
         database = new Database(rsa, SHA.getHashString(masterHash, SALT_FILENAME), isNewUser, this);
 
-        // All initialized, let's clean-up a little
+        // All initialised, let's clean-up a little
         System.gc();
     }
 
@@ -64,10 +62,9 @@ public class Vault
         Optional<SpecialPassword> pwd =
             database.getDecrypted().stream().filter(sp -> sp.getShortcut().equals(shortcut)).findFirst();
 
-        if (pwd.isPresent())
-            return pwd.get();
-        else
-            return null;
+        if (pwd.isPresent()) return pwd.get();
+
+        return null;
     }
 
     public void addPassowrd(SpecialPassword password) throws Exceptions
@@ -99,18 +96,7 @@ public class Vault
 
     public SpecialPassword getSelected()
     {
-        // all changes in database shall be performed via Database interfaces
-        // returning copy of object ensures that no changes will be made in SpecialPassword in database directly
-        try
-        {
-            return new SpecialPassword(selectedPassword);
-        }
-        catch (Exceptions e)
-        {
-            if (e.getCode() != XC.MANDATORY_DATA_MISSING)   // this is expected, if selectedPassword is null
-                Logger.printError("Unexpected exception catched!" + e.getCode());
-            return null;
-        }
+        return selectedPassword;
     }
 
     public String getHashForPassword(long cycles, String pwdName)
@@ -137,9 +123,9 @@ public class Vault
         return Utilities.bytesToHex(tmp);
     }
 
+    // FIXME: enable export features
     public void export(String fileName)
     {
-        // TODO: move to properties maybe???
         final String TAB = "\t";
         final String FILE_START_TAG = "<file_start>";
         final String FILE_END_TAG = "</file_end>";
@@ -182,7 +168,7 @@ public class Vault
     public Vector<SpecialPassword> getPasswordsWithShortcut()
     {
         return database.getDecrypted().stream().filter(sp -> !sp.getShortcut().isEmpty())
-            .collect(Collectors.toCollection(() -> new Vector<SpecialPassword>()));
+            .collect(Collectors.toCollection(() -> new Vector<>()));
     }
 
     public String getName()
