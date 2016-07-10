@@ -7,7 +7,9 @@ import logger.Logger;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import db.Database;
 import db.SpecialPassword;
@@ -52,20 +54,20 @@ public class Vault
     public ObservableList<iSpecialPassword> getIface()
     {
         ObservableList<iSpecialPassword> pSet = FXCollections.observableArrayList();
-
-        for (SpecialPassword sp : database.getDecrypted())
-        {
-            pSet.add(new iSpecialPassword(sp));
-        }
+        database.getDecrypted().stream().map(sp -> new iSpecialPassword(sp))
+            .collect(Collectors.toCollection(() -> pSet));
         return pSet;
     }
 
     public SpecialPassword getPasswordByShortcut(String shortcut)
     {
-        // TODO: use javafx8 features
-        for (SpecialPassword sp : database.getDecrypted())
-            if (sp.getShortcut().equals(shortcut)) return sp;
-        return null;
+        Optional<SpecialPassword> pwd =
+            database.getDecrypted().stream().filter(sp -> sp.getShortcut().equals(shortcut)).findFirst();
+
+        if (pwd.isPresent())
+            return pwd.get();
+        else
+            return null;
     }
 
     public void addPassowrd(SpecialPassword password) throws Exceptions
@@ -76,16 +78,6 @@ public class Vault
 
     public void replacePassword(SpecialPassword newEntry) throws Exceptions
     {
-        SpecialPassword sp = getPasswordByShortcut(newEntry.getShortcut());
-        Logger.printDebug("sp is " + (sp == null ? "null" : "not null"));
-        if (sp != null)
-        {
-            Logger.printDebug("newEntry: shortcut [" + newEntry.getShortcut() + "] name " + newEntry.getName());
-            Logger.printDebug("SP: shortcut [" + sp.getShortcut() + "] name " + sp.getName());
-            if (!newEntry.getShortcut().equals("") && !sp.getName().equals(newEntry.getName()))
-                throw new Exceptions(XC.PASSWORD_SHORTCUT_ALREADY_IN_USE).setText(sp.getName());
-        }
-
         newEntry.setParentVault(this);
         database.replaceEntry(newEntry, selectedPassword);
 
@@ -107,7 +99,18 @@ public class Vault
 
     public SpecialPassword getSelected()
     {
-        return selectedPassword;
+        // all changes in database shall be performed via Database interfaces
+        // returning copy of object ensures that no changes will be made in SpecialPassword in database directly
+        try
+        {
+            return new SpecialPassword(selectedPassword);
+        }
+        catch (Exceptions e)
+        {
+            if (e.getCode() != XC.MANDATORY_DATA_MISSING)   // this is expected, if selectedPassword is null
+                Logger.printError("Unexpected exception catched!" + e.getCode());
+            return null;
+        }
     }
 
     public String getHashForPassword(long cycles, String pwdName)
@@ -178,13 +181,8 @@ public class Vault
 
     public Vector<SpecialPassword> getPasswordsWithShortcut()
     {
-        Vector<SpecialPassword> pwds = new Vector<>();
-
-        // TODO: java8 style
-        for (SpecialPassword sp : database.getDecrypted())
-            if (!sp.getShortcut().equals("")) pwds.add(sp);
-
-        return pwds;
+        return database.getDecrypted().stream().filter(sp -> !sp.getShortcut().isEmpty())
+            .collect(Collectors.toCollection(() -> new Vector<SpecialPassword>()));
     }
 
     public String getName()

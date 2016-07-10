@@ -47,6 +47,7 @@ public final class Exceptions extends Throwable
 
         // ONLY New Password dialog exceptions
         MANDATORY_DATA_MISSING,
+        NO_PASSWORD_FOUND,
         PASSWORD_NAME_ALREADY_EXISTS,
         PASSWORD_SHORTCUT_ALREADY_IN_USE, // this error code should contain
                                           // conflicting password name in text;
