@@ -37,8 +37,6 @@ final public class SHA
 
     private final static long   TEN_LESS_SIGNIFICANT_BITS_MASK = 0x3FFFF;
 
-    private static SHA          self                           = null;;
-
     private static long ch(long x, long y, long z)
     {
         return ((x & y) ^ ((~x) & z));

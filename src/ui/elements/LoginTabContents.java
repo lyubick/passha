@@ -2,6 +2,7 @@ package ui.elements;
 
 import core.VaultManager;
 import ui.elements.GridPane;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -52,9 +53,9 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
                                 pf_passwordConfirm.setVisible(true);
                                 pf_password.setDisable(true);
 
-                                l_warning.setText(Texts.FORM_LOGIN_MSG_INCORRECT_PWD.toString());
+                                l_warning.setText(Texts.FORM_LOGIN_MSG_INCORRECT_PWD);
                             }
-                            else if (e.getCode() == XC.VAULT_ALREADY_OPEN)
+                            else if (e.getCode() == XC.VAULT_OPENED)
                             {
                                 l_warning.setText(Local.Texts.MSG_VAULT_ALREADY_OPENED.toString());
                             }
@@ -88,7 +89,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
                     else
                     {
                         reset();
-                        l_warning.setText(Texts.FORM_LOGIN_MSG_PWDS_DONT_MATCH.toString());
+                        l_warning.setText(Texts.FORM_LOGIN_MSG_PWDS_DONT_MATCH);
                     }
                 }
                 catch (Exceptions e)
@@ -103,7 +104,6 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     {
         pf_password.clear();
         pf_password.setDisable(false);
-        pf_password.requestFocus();
         pf_passwordConfirm.clear();
         pf_passwordConfirm.setVisible(false);
         b_register.setVisible(false);
@@ -207,10 +207,12 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     @Override
     public void activateTab()
     {
+        Logger.printDebug("activateTab called");
         try
         {
             VaultManager.getInstance().deactivateVault();
             ((FormVaultsManager) owner).setVaultControlsDisabled(true);
+            Platform.runLater(() -> pf_password.requestFocus());
         }
         catch (Exceptions e)
         {

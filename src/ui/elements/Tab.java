@@ -48,8 +48,8 @@ public class Tab extends javafx.scene.control.Tab
 
         This = this;
 
-        l_label =
-            new Label(Local.Texts.LABEL_VAULT_WITH_COLLS.toString() + Local.Texts.LABEL_NEW.toString().toUpperCase());
+        l_label = new Label(
+            Local.Texts.LABEL_VAULT_WITH_COLLS.toString() + Local.Texts.LABEL_UNNAMED.toString().toUpperCase());
         renameEnabled = false;
         tf_textField = new TextField();
 

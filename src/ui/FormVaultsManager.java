@@ -24,6 +24,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import languages.Local.Texts;
 import logger.Logger;
 
@@ -156,6 +159,9 @@ public class FormVaultsManager extends AbstractForm
         mi_edit.setOnAction(getOnEditAction());
         mi_reset.setOnAction(getOnResetAction());
         mi_delete.setOnAction(getOnDeleteAction());
+        mi_copy.setOnAction(getOnCopyAction());
+
+        mi_copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
 
         mi_about.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -188,6 +194,15 @@ public class FormVaultsManager extends AbstractForm
         tp_vaults = new TabPane();
         tp_vaults.setMinHeight(tabpaneMinHeight);
         tp_vaults.setMinWidth(tabpaneMinWidth);
+
+        tp_vaults.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+            {
+                if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).activateTab();
+            }
+        });
 
         Tab t_newTabCreator = new Tab();
 
@@ -247,7 +262,10 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(Event event)
             {
-                if (tab.isSelected()) ((TabContent) tab.getContent()).activateTab();
+                if (tab.isSelected())
+                {
+                    ((TabContent) tab.getContent()).activateTab();
+                }
             }
         });
 
@@ -258,7 +276,6 @@ public class FormVaultsManager extends AbstractForm
             {
                 ((TabContent) tab.getContent()).closeTab();
                 tp_vaults.getTabs().get(tp_vaults.getTabs().size() - 1).setDisable(false);
-
             }
         });
 
@@ -432,10 +449,8 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
-                // FIXME: enable copy to clipcoard
-                Logger.printError("Feature is not implemented yet!!! PICHALJKA");
-                // parent.minimize();
-                // copyToClipboard();
+                This.minimize();
+                copyToClipboard();
             }
         };
     }
@@ -494,5 +509,4 @@ public class FormVaultsManager extends AbstractForm
             }
         };
     }
-
 }

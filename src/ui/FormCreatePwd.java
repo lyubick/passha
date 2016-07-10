@@ -1,6 +1,3 @@
-/**
- *
- */
 package ui;
 
 import languages.Local.Texts;
@@ -24,10 +21,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
-/**
- * @author curious-odd-man
- *
- */
 public class FormCreatePwd extends AbstractForm
 {
     private final int       LABELS_COLUMN                  = 0;
@@ -59,7 +52,6 @@ public class FormCreatePwd extends AbstractForm
     private EntryField      ef_passwordPreview             = null;
     private EntryField      ef_shortcut                    = null;
 
-    /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<KeyEvent> getLengthTFFilter()
     {
         return new EventHandler<KeyEvent>()
@@ -182,9 +174,16 @@ public class FormCreatePwd extends AbstractForm
                 catch (Exceptions e)
                 {
                     if (e.getCode() == XC.PASSWORD_NAME_EXISTS)
-                        l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_NAME_EXISTS.toString());
+                    {
+                        l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_NAME_EXISTS);
+                        ef_name.beError();
+                    }
                     else if (e.getCode() == XC.PASSWORD_SHORTCUT_IN_USE)
-                        l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_SHORTCUT_IN_USE.toString());
+                    {
+                        l_errorLabel.setText(
+                            Texts.MSG_SHORTCUT_IN_USE_BY.toString() + ((SpecialPassword) e.getObject()).getName());
+                        ef_shortcut.beError();
+                    }
 
                     b_ok.setDisable(false);
                 }
@@ -216,7 +215,6 @@ public class FormCreatePwd extends AbstractForm
         };
     }
 
-    /* PRIVATE ROUTINE */
     private void showPasswordPreview()
     {
         try
@@ -243,7 +241,7 @@ public class FormCreatePwd extends AbstractForm
         {
             if (e.getCode() == XC.MANDATORY_DATA_MISSING)
             {
-                l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_MISSING_PARAM.toString());
+                l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_MISSING_PARAM);
 
                 if (ef_name.getText().length() == 0)
                 {
@@ -260,7 +258,6 @@ public class FormCreatePwd extends AbstractForm
         }
     }
 
-    /* PUBLIC ROUTINE */
     public FormCreatePwd(AbstractForm parent) throws Exceptions
     {
         super(parent, Texts.FORM_CREATEPWD_NAME, WindowPriority.ONLY_ONE_OPENED);
@@ -365,11 +362,9 @@ public class FormCreatePwd extends AbstractForm
         open();
     }
 
-    /* OVERRIDE */
     @Override
     protected void onUserMinimizeRequest()
     {
-        // do nothing
+        // Do nothing
     }
-
 }

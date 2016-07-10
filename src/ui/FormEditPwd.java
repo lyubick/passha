@@ -83,7 +83,7 @@ public class FormEditPwd extends AbstractForm
         ef_comment = new EntryField(Texts.LABEL_COMMENT, TEXTFIELD.WIDTH.XXL);
         ef_url = new EntryField(Texts.LABEL_URL, TEXTFIELD.WIDTH.XXL);
         ef_shortcut = new EntryField(Texts.LABEL_SHORTCUT, TEXTFIELD.WIDTH.XS);
-        ef_errorLabel = new EntryField(Texts.FORM_EDITPWD_MSG_SHORTCUT_IN_USE, TEXTFIELD.WIDTH.XXL);
+        ef_errorLabel = new EntryField(Texts.MSG_SHORTCUT_IN_USE_BY, TEXTFIELD.WIDTH.XXL);
         ef_errorLabel.setEditable(false);
         ef_errorLabel.beError();
         ef_errorLabel.setVisible(false);

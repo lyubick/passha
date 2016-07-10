@@ -85,7 +85,7 @@ public abstract class AbstractForm
         if (parent != null) parent.stage.requestFocus();
     }
 
-    public void maximize()
+    public void restore()
     {
         stage.show();
         stage.setIconified(false);
@@ -94,7 +94,7 @@ public abstract class AbstractForm
         if (childs != null)
         {
             for (AbstractForm child : childs)
-                child.maximize();
+                child.restore();
         }
     }
 
@@ -109,13 +109,19 @@ public abstract class AbstractForm
         stage.hide();
     }
 
-    // Method that is called when User try to close form, by pressing [X]
+    // Method that is called when User tries to close form, by pressing [X]
     protected void onUserCloseRequest()
     {
         close(); // default
     }
 
-    // Method that is called when User try to minimise form, by pressing [_]
+    // Method that called when User tries to restore form, by double-clicking tray icon
+    public void onUserRestoreRequest()
+    {
+        restore(); // default
+    }
+
+    // Method that is called when User tries to minimize form, by pressing [_]
     protected void onUserMinimizeRequest()
     {
         minimize(); // default

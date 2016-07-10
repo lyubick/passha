@@ -33,8 +33,7 @@ public class EntryField extends javafx.scene.control.TextField implements Labele
         return new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue)
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
             {
                 label.setVisible(newValue);
             }
@@ -44,11 +43,13 @@ public class EntryField extends javafx.scene.control.TextField implements Labele
     public EntryField(Texts label, int maxLength)
     {
         this(label.toString(), maxLength);
+        beNormal();
     }
 
     public EntryField(String label, int maxLength)
     {
         this.label = new Label(label);
+        beNormal();
 
         this.visibleProperty().addListener(getOnTFVisiblePropertyChanged());
 

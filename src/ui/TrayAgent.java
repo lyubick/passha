@@ -96,7 +96,11 @@ public class TrayAgent
                         }
                         catch (Exceptions e)
                         {
-                            // Do nothing
+                            if (e.getCode() == XC.VAULTS_NOT_FOUND)
+                                self.showNotification(Texts.MSG_VAULTS_MISSING, Texts.MSG_VAULTS_MISSING_ACTION,
+                                    MessageType.WARNING);
+                            else
+                                Terminator.terminate(e);
                         }
                     }
                 });
@@ -112,7 +116,7 @@ public class TrayAgent
                     {
                         try
                         {
-                            FormVaultsManager.getInstance().maximize();
+                            FormVaultsManager.getInstance().onUserRestoreRequest();
                         }
                         catch (Exceptions e)
                         {

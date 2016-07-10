@@ -101,6 +101,9 @@ public class Local
         LABEL_SPECIAL_CHARACTERS(new String[]
         { "Special characters", "Специальные символы" }),
 
+        LABEL_UNNAMED(new String[]
+        { "Unnamed", "Без имени" }),
+
         LABEL_UPDATE(new String[]
         { "Update", "Обновить" }),
 
@@ -145,8 +148,24 @@ public class Local
 
         // OTHER
 
+        MSG_SHORTCUT_IN_USE_BY(new String[]
+        { Texts.LABEL_ERROR.toString() + " Shortcut is in use by: ", Texts.LABEL_ERROR.toString() + " Горячая клавиша занята: " }),
+
+        MSG_SHORTCUTS_MISSING(new String[]
+        { "No shortcuts!", "Клавиши не определены!" }),
+
+        // NOTE: not used currently
+        MSG_SHORTCUTS_MISSING_ACTION(new String[]
+        { "To use 'shortcuts menu', it's necessary to bind at least one shortcut in a vault.", "Для доступа к 'меню быстрого выбора', необходимо определить хотя-бы одну клавишу быстрого доступа в данном хранилище." }),
+
         MSG_VAULT_ALREADY_OPENED(new String[]
         { "Vault already opened!", "Хранилище уже открыто!" }),
+
+        MSG_VAULTS_MISSING(new String[]
+        { "There is no open vaults!", "Нет откртых хранилищ!" }),
+
+        MSG_VAULTS_MISSING_ACTION(new String[]
+        { "To use 'shortcuts menu', it's necessary to login to at least one vault.", "Для доступа к 'меню быстрого выбора', необходимо войти хотя-бы в одно хранилище." }),
 
         /**************************************************************************************************************
          * CREATE PASSWORD FORM
@@ -165,9 +184,6 @@ public class Local
 
         FORM_CREATEPWD_MSG_NAME_EXISTS(new String[]
         { Texts.LABEL_ERROR.toString() + " Name already taken!", Texts.LABEL_ERROR.toString() + " Имя уже занято!" }),
-
-        FORM_CREATEPWD_MSG_SHORTCUT_IN_USE(new String[]
-        { Texts.LABEL_ERROR.toString() + " Shortcut is in use!", Texts.LABEL_ERROR.toString() + " Горячая клавиша занята!" }),
 
         FORM_CREATEPWD_NAME(new String[]
         { "Create new password", "Создать новый пароль" }),
@@ -192,9 +208,6 @@ public class Local
 
         FORM_EDITPWD_NAME(new String[]
         { "Edit Password", "Редактировать пароль" }),
-
-        FORM_EDITPWD_MSG_SHORTCUT_IN_USE(new String[]
-        { Texts.LABEL_ERROR.toString() + " Shortcut is in use by: ", Texts.LABEL_ERROR.toString() + " Горячая клавиша занята: " }),
 
         /**************************************************************************************************************
          * LOGIN FORM

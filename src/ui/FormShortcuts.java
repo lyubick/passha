@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.TrayIcon.MessageType;
 import java.util.Vector;
 
 import core.Vault;
@@ -47,10 +48,61 @@ public class FormShortcuts extends AbstractForm
             @Override
             public void handle(KeyEvent keyEvent)
             {
+                Logger.printDebug(
+                    "Key pressed: '" + keyEvent.getText().toLowerCase() + "' keyCode = " + keyEvent.getCode());
+
+                switch (keyEvent.getCode())
+                {
+                    case ESCAPE:
+                        close();
+                    break;
+
+                    case TAB:
+                        try
+                        {
+                            VaultManager.getInstance().activateNextVault();
+                            close();
+                            new FormShortcuts(parent);
+                        }
+                        catch (Exceptions e)
+                        {
+                            try
+                            {
+                                if (e.getCode() == XC.VAULTS_NOT_FOUND)
+                                    TrayAgent.getInstance().showNotification(Texts.MSG_VAULTS_MISSING,
+                                        Texts.MSG_VAULTS_MISSING_ACTION, MessageType.WARNING);
+                                else
+                                    Terminator.terminate(e);
+                            }
+                            catch (Exceptions e1)
+                            {
+                                Terminator.terminate(e1);
+                            }
+                        }
+                        return;
+
+                    default:
+                    break;
+                }
+
+                if (keyEvent.getText().isEmpty())
+                {
+                    keyEvent.consume();
+                    return;
+                }
+
                 try
                 {
                     Vault vault = VaultManager.getInstance().getActiveVault();
                     vault.setSelected(vault.getPasswordByShortcut(keyEvent.getText().toLowerCase()));
+
+                    if (vault.getSelected() == null)
+                    {
+                        Logger.printError("No password with this shortcut '" + keyEvent.getText().toLowerCase()
+                            + "' in " + vault.getName());
+                        keyEvent.consume();
+                        return;
+                    }
 
                     FormVaultsManager.copyToClipboard();
 
@@ -63,18 +115,37 @@ public class FormShortcuts extends AbstractForm
                 close();
             }
         };
+
     }
 
     private void fillFormWithPwds() throws Exceptions
     {
-        Vector<SpecialPassword> tmp = VaultManager.getInstance().getActiveVault().getPasswordsWithShortcut();
-        if (tmp.size() == 0) throw new Exceptions(XC.SHORTCUTS_NOT_FOUND);
+        Vault vault = VaultManager.getInstance().getActiveVault();
+        if (vault == null) vault = VaultManager.getInstance().activateNextVault();
+
+        String vaultName = VaultManager.getInstance().getActiveVault().getName();
+        if (vaultName.isEmpty()) vaultName = Texts.LABEL_UNNAMED.toString().toUpperCase();
+        Label l_vaultName = new Label(Texts.LABEL_VAULT_WITH_COLLS.toString() + vaultName);
+        l_vaultName.beHeader();
 
         Label l_passwordName = new Label(Texts.FORM_MANAGEPWD_LABEL_PWD_NAME);
         Label l_shortcut = new Label(Texts.LABEL_SHORTCUT);
 
+        GridPane.setHalignment(l_vaultName, HPos.CENTER);
         GridPane.setHalignment(l_passwordName, HPos.CENTER);
         GridPane.setHalignment(l_shortcut, HPos.CENTER);
+
+        grid.addHElement(l_vaultName, 0, 2);
+
+        Vector<SpecialPassword> tmp = vault.getPasswordsWithShortcut();
+        if (tmp.size() == 0)
+        {
+            Label l_error = new Label(Texts.MSG_SHORTCUTS_MISSING);
+            l_error.beError();
+            GridPane.setHalignment(l_error, HPos.CENTER);
+            grid.addHElement(l_error, 0, 2);
+            return;
+        }
 
         grid.addHElements(0, l_passwordName, l_shortcut);
 
@@ -89,7 +160,7 @@ public class FormShortcuts extends AbstractForm
             ef.getLabel().setAlignment(Pos.CENTER);
         }
 
-        grid.getChildren().get(0).requestFocus(); // remove focus from ef
+        grid.getChildren().get(0).requestFocus(); // Remove focus from EntryField
     }
 
     public FormShortcuts(AbstractForm parent) throws Exceptions

@@ -23,10 +23,11 @@ public final class Exceptions extends Throwable
     public static enum XC
     {
         //
-        VAULT_ALREADY_OPEN,
+        VAULT_OPENED,
+        VAULTS_NOT_FOUND,
         FORM_ALREADY_OPEN,
 
-        // ONLY Initialisation failure
+        // ONLY Initialization failure
         INIT_FAILURE,
 
         // ONLY Singleton class Exceptions
@@ -88,7 +89,7 @@ public final class Exceptions extends Throwable
 
         // General, can be used if error reasons are unknown
         ERROR,
-        NULL
+        NULL,
     }
 
     public XC getCode()

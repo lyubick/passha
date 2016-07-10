@@ -15,12 +15,9 @@ public class Label extends javafx.scene.control.Label
     // Magic number don't lose it!
     protected final static int LABEL_LENGTH_COEFICIENT = 8;
 
-    public static final Font   FONT_PRIMARY            =
-            Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
-    public static final Font   FONT_ERROR              =
-            Font.font("Comic Sans MS", FontWeight.BOLD, 12);
-    public static final Font   FONT_HEADER             =
-            Font.font("Comic Sans MS", FontWeight.BOLD, 14);
+    public static final Font   FONT_PRIMARY            = Font.font("Comic Sans MS", FontWeight.NORMAL, 12);
+    public static final Font   FONT_ERROR              = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
+    public static final Font   FONT_HEADER             = Font.font("Comic Sans MS", FontWeight.BOLD, 14);
 
     private void setUp()
     {
@@ -38,8 +35,7 @@ public class Label extends javafx.scene.control.Label
         this.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue)
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
             {
                 tmp.setWidth(calcLength(newValue));
             }
@@ -49,8 +45,7 @@ public class Label extends javafx.scene.control.Label
     private void setUpWrap(String name, int maxWidth)
     {
         this.setWidth(maxWidth);
-        this.setHeight(
-                Math.ceil(calcLength(name) / maxWidth) * Properties.GUI.STANDARD.SIZE.HEIGHT);
+        this.setHeight(Math.ceil(calcLength(name) / maxWidth) * Properties.GUI.STANDARD.SIZE.HEIGHT);
 
         this.setWrapText(true);
     }
@@ -87,6 +82,11 @@ public class Label extends javafx.scene.control.Label
     public void wrap(int maxWidth)
     {
         setUpWrap(super.getText(), maxWidth);
+    }
+
+    public void setText(Texts text)
+    {
+        super.setText(text.toString());
     }
 
     public void beError()

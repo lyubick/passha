@@ -40,7 +40,7 @@ public class VaultManager
         byte[] newVaultHash = SHA.getHashBytes(password.getBytes());
 
         for (Vault vault : vaults)
-            if (vault.initializedFrom(newVaultHash)) throw new Exceptions(XC.VAULT_ALREADY_OPEN);
+            if (vault.initializedFrom(newVaultHash)) throw new Exceptions(XC.VAULT_OPENED);
 
         Vault newVault = new Vault(newVaultHash, isNewUser);
 
@@ -85,5 +85,17 @@ public class VaultManager
     public int size()
     {
         return vaults.size();
+    }
+
+    public Vault activateNextVault() throws Exceptions
+    {
+        if (vaults.isEmpty()) throw new Exceptions(XC.VAULTS_NOT_FOUND);
+
+        if (activeVault == null)
+            activateVault(vaults.firstElement());
+        else
+            activateVault(vaults.get((vaults.indexOf(activeVault) + 1) % vaults.size()));
+
+        return activeVault;
     }
 }
