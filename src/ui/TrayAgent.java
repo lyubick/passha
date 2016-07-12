@@ -120,7 +120,7 @@ public class TrayAgent
                         }
                         catch (Exceptions e)
                         {
-                            Logger.printDebug("Manage Passwords not yet created");
+                            Logger.printFatal("Manage Passwords not yet created");
                         }
                     }
                 });

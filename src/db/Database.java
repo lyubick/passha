@@ -57,13 +57,13 @@ public class Database
 
         if (!vaultDir.exists() && vaultDir.mkdirs() != true)
         {
-            Logger.printDebug("Failed to create/access " + vaultDir.getAbsolutePath());
+            Logger.printError("Failed to create/access " + vaultDir.getAbsolutePath());
             throw new Exceptions(XC.DIR_DOES_NOT_EXIST);
         }
 
         vaultFile = new File(Properties.PATHS.VAULT + filename + Properties.EXTENSIONS.VAULT);
 
-        Logger.printDebug(vaultFile.getAbsolutePath());
+        Logger.printDebug("Accessing vault file: " + vaultFile.getAbsolutePath());
 
         if (!vaultFile.exists())
         {
@@ -81,7 +81,7 @@ public class Database
             }
             else
             {
-                Logger.printDebug("Failed to open file: " + vaultFile.getAbsolutePath());
+                Logger.printError("Failed to open file: " + vaultFile.getAbsolutePath());
                 throw new Exceptions(XC.FILE_DOES_NOT_EXIST);
             }
         }

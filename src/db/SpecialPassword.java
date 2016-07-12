@@ -43,7 +43,7 @@ public class SpecialPassword
 
     public SpecialPassword(HashMap<String, String> m, Vault parentVault)
     {
-        Logger.printDebug("SpecialPassword constructor from Map STARTS...");
+        Logger.printTrace("SpecialPassword constructor from Map STARTS...");
 
         own_vault = parentVault;
 
@@ -54,7 +54,7 @@ public class SpecialPassword
         specialChars = m.getOrDefault("specialChars", "");
         paramsMask = Utilities.getBitSet(m.getOrDefault("paramsMask", ""));
 
-        Logger.printDebug("SpecialPassword constructor from Map END");
+        Logger.printTrace("SpecialPassword constructor from Map END");
     }
 
     public HashMap<String, String> getMap()
@@ -78,7 +78,7 @@ public class SpecialPassword
     public SpecialPassword(String name, String comment, String url, String length, boolean needSpecialChars,
         boolean needUpperCaseChar, String specialChars, String shortcut, Vault parentVault) throws Exceptions
     {
-        Logger.printDebug("SpecialPassword constructor... START");
+        Logger.printTrace("SpecialPassword constructor... START");
 
         own_vault = parentVault;
 
@@ -109,12 +109,12 @@ public class SpecialPassword
 
         changeCycles();
 
-        Logger.printDebug("SpecialPassword constructor... DONE!");
+        Logger.printTrace("SpecialPassword constructor... DONE!");
     }
 
     public SpecialPassword(SpecialPassword other) throws Exceptions
     {
-        Logger.printDebug("SpecialPassword copy-constructor... START");
+        Logger.printTrace("SpecialPassword copy-constructor... START");
 
         if (other == null) throw new Exceptions(XC.NULL);
 
@@ -129,7 +129,7 @@ public class SpecialPassword
 
         this.shaCycles = other.shaCycles;
 
-        Logger.printDebug("SpecialPassword copy-constructor... DONE!");
+        Logger.printTrace("SpecialPassword copy-constructor... DONE!");
     }
 
     // Why do we need this?
@@ -357,25 +357,25 @@ public class SpecialPassword
         specialHash = SHA.getHashString(passwordHash, SALT_SPECIAL_PASSWORD);
 
         /* STAGE 1 */
-        Logger.printDebug("Password generation. STAGE 1. START");
+        Logger.printTrace("Password generation. STAGE 1. START");
         modificationIdx = getAlphaNumeric(password, passwordHash);
-        Logger.printDebug("Password generation. STAGE 1. DONE");
+        Logger.printTrace("Password generation. STAGE 1. DONE");
 
         /* STAGE 2 */
-        Logger.printDebug("Password generation. STAGE 2. START");
+        Logger.printTrace("Password generation. STAGE 2. START");
         if (paramsMask.get(PARAMS_MASK_BITS.HAS_SPECIAL_CHARACTERS.ordinal()))
         {
             modificationIdx = addSpecialCharacters(password, specialHash, modificationIdx);
         }
-        Logger.printDebug("Password generation. STAGE 2. DONE");
+        Logger.printTrace("Password generation. STAGE 2. DONE");
 
         /* STAGE 3 */
-        Logger.printDebug("Password generation. STAGE 3. START");
+        Logger.printTrace("Password generation. STAGE 3. START");
         if (paramsMask.get(PARAMS_MASK_BITS.HAS_CAPITALS.ordinal()))
         {
             modificationIdx = setCapitalCharacters(password, specialHash, modificationIdx);
         }
-        Logger.printDebug("Password generation. STAGE 3. DONE");
+        Logger.printTrace("Password generation. STAGE 3. DONE");
 
         return password.toString();
     }
@@ -405,7 +405,7 @@ public class SpecialPassword
             if (currentMaskBitSet.equals(paramsMask)) return true;
         }
 
-        Logger.printError("Validation Failed! Current Mask: " + currentMaskBitSet.toString() + " != Ethalon Mask"
+        Logger.printError("Validation Failed! Current Mask: " + currentMaskBitSet.toString() + " != Expected Mask"
             + paramsMask.toString());
 
         return false;

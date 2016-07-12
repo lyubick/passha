@@ -1,6 +1,3 @@
-/**
- *
- */
 package logger;
 
 import java.io.File;
@@ -12,10 +9,6 @@ import java.nio.file.Paths;
 import main.Exceptions;
 import main.Exceptions.XC;
 
-/**
- * @author lyubick
- *
- */
 public final class Logger
 {
     private final String  LOG_PATH        = "logs/";
@@ -30,16 +23,32 @@ public final class Logger
     private int           lineWidth       = 4;
     private int           methodNameWidth = 20;
 
-    public enum LOGLEVELS
+    private LOGLEVELS     minLogLevel     = LOGLEVELS.TRACE;
+
+    private enum LOGLEVELS
     {
-        SILENT,
-        DEBUG,
-        ERROR
+        TRACE,      // Mostly for checkpoints in code
+        DEBUG,      // Debug information ( Data dumps e.t.c )
+        ERROR,      // Error notifications
+        FATAL,      // Messages about abnormal termination of the program
+        SILENT      // Disable logging
     }
 
     private String getTime()
     {
         return Long.toString(System.currentTimeMillis());
+    }
+
+    public static void printFatal(String msg)
+    {
+        try
+        {
+            Logger.getInstance().prepareAndLog(LOGLEVELS.FATAL, msg);
+        }
+        catch (Exceptions e)
+        {
+            return;
+        }
     }
 
     public static void printError(String msg)
@@ -66,8 +75,22 @@ public final class Logger
         }
     }
 
+    public static void printTrace(String msg)
+    {
+        try
+        {
+            Logger.getInstance().prepareAndLog(LOGLEVELS.TRACE, msg);
+        }
+        catch (Exceptions e)
+        {
+            return;
+        }
+    }
+
     private void prepareAndLog(LOGLEVELS lvl, String msg)
     {
+        if (lvl.compareTo(minLogLevel) < 0) return;
+
         StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
         StackTraceElement e = stacktrace[3];
 
@@ -81,36 +104,36 @@ public final class Logger
         methodNameWidth = Math.max(methodNameWidth, methodName.length());
 
         writeToFileAndToScreen(
-                String.format("[%1$s] %2$" + fileNameWidth + "s:%3$-" + lineWidth + "s %4$-"
-                        + methodNameWidth + "s ", getTime(), fileName, line, methodName)
-                        + lvl.name() + ": " + msg, lvl);
+            String.format("[%1$s] %2$" + fileNameWidth + "s:%3$-" + lineWidth + "s %4$-" + methodNameWidth + "s ",
+                getTime(), fileName, line, methodName) + lvl.name() + ": " + msg,
+            lvl);
     }
 
     private void writeToFileAndToScreen(String log, LOGLEVELS lvl)
     {
         switch (lvl)
         {
+            case FATAL:
             case ERROR:
                 System.err.println(log);
-                break;
+            break;
+
+            case TRACE:
             case DEBUG:
                 System.out.println(log);
-                break;
+            break;
+
             default:
-                break;
+            break;
         }
 
         writer.println(log);
     }
 
-    private Logger() throws Exceptions
+    private Logger(String lvlString) throws Exceptions
     {
         File logsFolder = new File(LOG_PATH);
-        if (!logsFolder.exists())
-        {
-            logsFolder.mkdirs();
-            Logger.printDebug("Created logs folder: " + logsFolder.getAbsolutePath());
-        }
+        if (!logsFolder.exists()) logsFolder.mkdirs();
 
         try
         {
@@ -124,13 +147,42 @@ public final class Logger
         {
             throw new Exceptions(XC.INIT_FAILURE);
         }
+
+        // Treat missing cmd line argument as default value
+        if (lvlString == null) lvlString = "";
+
+        switch (lvlString.toUpperCase())
+        {
+            default:       // by default print all logs
+            case "ALL":
+            case "TRACE":
+                minLogLevel = LOGLEVELS.TRACE;
+            break;
+
+            case "DEBUG":
+                minLogLevel = LOGLEVELS.DEBUG;
+            break;
+
+            case "ERROR":
+                minLogLevel = LOGLEVELS.ERROR;
+            break;
+
+            case "FATAL":
+                minLogLevel = LOGLEVELS.FATAL;
+            break;
+
+            case "SILENT":
+            case "OFF":
+                minLogLevel = LOGLEVELS.SILENT;
+            break;
+        }
     }
 
-    public static void loggerON() throws Exceptions
+    public static void loggerON(String lvlString) throws Exceptions
     {
         if (self != null) throw new Exceptions(XC.INSTANCE_ALREADY_EXISTS);
 
-        self = new Logger();
+        self = new Logger(lvlString);
     }
 
     private void end()

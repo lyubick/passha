@@ -116,7 +116,7 @@
 // @Override
 // public void handle(ActionEvent event)
 // {
-// Logger.printDebug("Updating...");
+// Logger.printTrace("Updating...");
 // b_update.setDisable(true);
 // b_skip.setVisible(false);
 //
@@ -128,7 +128,7 @@
 // pb_progress.rebind(tsk_downloadLatestVersion.progressProperty(),
 // tsk_downloadLatestVersion.messageProperty());
 //
-// Logger.printDebug("Launching download thread...");
+// Logger.printTrace("Launching download thread...");
 // new Thread(tsk_downloadLatestVersion).start();
 // }
 // };
@@ -160,7 +160,7 @@
 // Task<Void> tsk_installLatestVersion = installLatestVersion();
 // Thread install = new Thread(tsk_installLatestVersion);
 // install.setDaemon(true);
-// Logger.printDebug("install.start();");
+// Logger.printTrace("install.start();");
 // install.start();
 // }
 // };
@@ -241,7 +241,7 @@
 // @Override
 // protected Void call() throws Exception
 // {
-// Logger.printDebug("Downloading...");
+// Logger.printTrace("Downloading...");
 // double maxSize = 0;
 // double curSize = 0;
 //
@@ -290,14 +290,14 @@
 // }
 //
 // updateProgress(1, 1);
-// Logger.printDebug("Download OK.");
+// Logger.printTrace("Download OK.");
 //
 // updateMessage(TextID.FORM_UPDATE_LABEL_INSTALL.toString());
 // updateProgress(0, 1);
 //
 // try
 // {
-// Logger.printDebug("Unzipping...");
+// Logger.printTrace("Unzipping...");
 // newExecutable =
 // new File(FormUpdate.class.getProtectionDomain().getCodeSource()
 // .getLocation().toURI().getPath()
@@ -344,7 +344,7 @@
 // }
 //
 // updateProgress(1, 1);
-// Logger.printDebug("Unzip OK.");
+// Logger.printTrace("Unzip OK.");
 //
 // return null;
 // }

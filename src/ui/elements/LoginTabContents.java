@@ -80,7 +80,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
             @Override
             public void handle(ActionEvent arg0)
             {
-                Logger.printDebug("b_Register button pressed");
+                Logger.printTrace("b_Register button pressed");
 
                 try
                 {
@@ -112,7 +112,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
 
     private void init(String password, boolean isNewUser) throws Exceptions
     {
-        Logger.printDebug("init user");
+        Logger.printTrace("init user");
 
         try
         {
@@ -207,7 +207,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     @Override
     public void activateTab()
     {
-        Logger.printDebug("activateTab called");
+        Logger.printTrace("activateTab called");
         try
         {
             VaultManager.getInstance().deactivateVault();

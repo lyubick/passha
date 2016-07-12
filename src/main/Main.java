@@ -14,20 +14,26 @@ import ui.TrayAgent;
 
 public class Main extends Application
 {
-    public static boolean DEBUG = false;
+    private static final String ARG_LOGLEVEL = "--loglevel=";
+    private static final String ARG_DEBUG    = "--debug";
+
+    public static boolean       DEBUG        = false;
 
     public static void main(String[] args)
     {
         /* 0. Read incoming arguments */
+        String logLevelString = null;
+
         for (String arg : args)
         {
-            if (arg.equals("--debug")) DEBUG = true;
+            if (arg.equals(ARG_DEBUG)) DEBUG = true;
+            if (arg.startsWith(ARG_LOGLEVEL)) logLevelString = arg.substring(ARG_LOGLEVEL.length());
         }
 
         /* 1. Switch ON logs */
         try
         {
-            Logger.loggerON();
+            Logger.loggerON(logLevelString);
         }
         catch (Exceptions e)
         {
@@ -84,7 +90,7 @@ public class Main extends Application
         }
         catch (Exceptions e)
         {
-            Logger.printError("Unhandled exception: " + e.getCode());
+            Logger.printFatal("Unhandled exception: " + e.getCode());
             Terminator.terminate(e);
         }
     }

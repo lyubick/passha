@@ -375,7 +375,7 @@ public class FormVaultsManager extends AbstractForm
 
         tsk_pwdLifeTime.setOnSucceeded(EventHandler ->
         {
-            Logger.printDebug("PWDCLIP -> Successfully finished.");
+            Logger.printTrace("PWDCLIP -> Successfully finished.");
             try
             {
                 if (pwd.equals(clipboard.getData(DataFlavor.stringFlavor)))
@@ -393,7 +393,7 @@ public class FormVaultsManager extends AbstractForm
 
         tsk_pwdLifeTime.setOnCancelled(EventHandler ->
         {
-            Logger.printDebug("PWDCLIP -> Cancelled finished");
+            Logger.printTrace("PWDCLIP -> Cancelled finished");
         });
         Thread calculatePasswordThread = new Thread(tsk_pwdLifeTime);
         calculatePasswordThread.setDaemon(false);
@@ -504,7 +504,7 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                Logger.printError("Feature is causing SEGV on ubuntu!!! PICHALJKA");
+                Logger.printFatal("Feature is causing SEGV on ubuntu!!! PICHALJKA");
                 // new DlgExport(This);
             }
         };

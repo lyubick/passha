@@ -1,6 +1,3 @@
-/**
- *
- */
 package main;
 
 import java.io.File;
@@ -13,15 +10,11 @@ import java.util.ArrayList;
 import logger.Logger;
 import main.Exceptions.XC;
 
-/**
- * @author lyubick
- *
- */
 public class Terminator
 {
     private static void exit(Exceptions e)
     {
-        Logger.printDebug("Bye!");
+        Logger.printTrace("Bye!");
 
         try
         {
@@ -60,21 +53,21 @@ public class Terminator
 
         if (e.getCode().equals(XC.END)) exit(e);
 
-        Logger.printError("TERMINATOR: FATAL ERROR OCCURED: " + e.getCode().name());
+        Logger.printFatal("TERMINATOR: FATAL ERROR OCCURED: " + e.getCode().name());
 
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         if (stackTrace.length >= 3)
         {
             StackTraceElement element = stackTrace[2];
-            Logger.printError("TERMINATOR: CLASS: " + element.getClassName() + " METHOD: " + element.getMethodName());
+            Logger.printFatal("TERMINATOR: CLASS: " + element.getClassName() + " METHOD: " + element.getMethodName());
         }
 
-        Logger.printError("TERMINATOR: STACK TRACE DUMP");
+        Logger.printFatal("TERMINATOR: STACK TRACE DUMP");
 
         StringWriter tracePrint = new StringWriter();
         e.printStackTrace(new PrintWriter(tracePrint));
 
-        Logger.printError(tracePrint.toString());
+        Logger.printFatal(tracePrint.toString());
 
         exit(e);
     }
