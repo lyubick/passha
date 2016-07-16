@@ -2,6 +2,7 @@ package core;
 
 import java.util.Vector;
 
+import cryptosystem.Autologin;
 import db.SpecialPassword;
 import logger.Logger;
 import main.Exceptions;
@@ -37,12 +38,15 @@ public class VaultManager
 
     public Vault addVault(String password, boolean isNewUser) throws Exceptions
     {
-        byte[] newVaultHash = SHA.getHashBytes(password.getBytes());
+        return addVault(SHA.getHashBytes(password.getBytes()), isNewUser);
+    }
 
+    public Vault addVault(byte[] hash, boolean isNewUser) throws Exceptions
+    {
         for (Vault vault : vaults)
-            if (vault.initializedFrom(newVaultHash)) throw new Exceptions(XC.VAULT_OPENED);
+            if (vault.initializedFrom(hash)) throw new Exceptions(XC.VAULT_OPENED);
 
-        Vault newVault = new Vault(newVaultHash, isNewUser);
+        Vault newVault = new Vault(hash, isNewUser);
 
         vaults.addElement(newVault);
 
@@ -101,5 +105,11 @@ public class VaultManager
         }
 
         return activeVault;
+    }
+
+    public void autologin() throws Exceptions
+    {
+        for (byte[] hash : Autologin.getInstance().getVaults())
+            addVault(hash, false);
     }
 }

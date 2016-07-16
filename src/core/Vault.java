@@ -179,4 +179,9 @@ public class Vault
     {
         return Arrays.equals(masterHash, hash);
     }
+
+    public String getMasterHash(RSA rsa)
+    {
+        return rsa.encrypt(masterHash);
+    }
 }

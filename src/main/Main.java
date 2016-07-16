@@ -3,6 +3,7 @@ package main;
 import java.awt.TrayIcon.MessageType;
 
 import core.VaultManager;
+import cryptosystem.Autologin;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -70,7 +71,17 @@ public class Main extends Application
             Terminator.terminate(e);
         }
 
-        /* 4. Start the application */
+        /* 4. Set up auto login */
+        try
+        {
+            Autologin.init();
+        }
+        catch (Exceptions e)
+        {
+            Terminator.terminate(e);
+        }
+
+        /* 5. Start the application */
 
         launch();
 
@@ -83,6 +94,14 @@ public class Main extends Application
         Platform.setImplicitExit(DEBUG);
 
         VaultManager.init();
+        try
+        {
+            VaultManager.getInstance().autologin();
+        }
+        catch (Exceptions e1)
+        {
+            Terminator.terminate(e1);
+        }
 
         try
         {

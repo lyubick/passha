@@ -5,8 +5,6 @@ package main;
 
 import java.util.HashMap;
 
-import cryptosystem.Autologin;
-import logger.Logger;
 import main.Exceptions.XC;
 import utilities.Utilities;
 
@@ -32,7 +30,6 @@ public class Settings
     {
         LANGUAGE(new String("language=")),
         CLIPBOARD_TIME(new String("clipboardLiveTime=")),
-        AUTOLOGIN(new String("autologin="))
 
         ;
 
@@ -76,33 +73,6 @@ public class Settings
         if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
 
         return self;
-    }
-
-    // AUTOLOGIN
-    public boolean isAutologinOn()
-    {
-        return (boolean) settings.getOrDefault(PREFIX.AUTOLOGIN.toString(), false);
-    }
-
-    public void setAutologin(boolean on)
-    {
-        if (isAutologinOn() == on) return;
-
-        try
-        {
-            Autologin autologin = new Autologin();
-            settings.put(PREFIX.AUTOLOGIN.toString(), on);
-
-            if (on)
-                autologin.setAutologinON();
-            else
-                autologin.setAutologinOFF();
-        }
-        catch (Exceptions e)
-        {
-            Logger.printError("Autologin is not available! Reason: " + e.getCode());
-            settings.put(PREFIX.AUTOLOGIN.toString(), false);
-        }
     }
 
     // LANGUAGE
@@ -151,8 +121,8 @@ public class Settings
     {
         try
         {
-            settings = (HashMap<String, Object>) Utilities
-                    .bytesToObject(Utilities.readBytesFromFile(SETTINGS_FILE_NAME));
+            settings =
+                (HashMap<String, Object>) Utilities.bytesToObject(Utilities.readBytesFromFile(SETTINGS_FILE_NAME));
         }
         catch (Exceptions e)
         {

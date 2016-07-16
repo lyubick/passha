@@ -1,40 +1,146 @@
 package cryptosystem;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.util.Vector;
+import java.util.stream.Collectors;
 
+import core.Vault;
+import javafx.beans.property.SimpleBooleanProperty;
 import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
+import main.Terminator;
 import rsa.RSA;
 import sha.SHA;
 import utilities.Utilities;
 
 public class Autologin
 {
-    private final int    REGEDIT_READ_OUT_VALUE_OFFSET = 64;
+    static private Autologin      self         = null;
 
-    private final String SALT_P                        = "P";
-    private final String SALT_Q                        = "Q";
-    private final String SALT_E                        = "E";
+    private final String          SALT_P       = "P";
+    private final String          SALT_Q       = "Q";
+    private final String          SALT_E       = "E";
 
-    private final String REG_PATH                      = "HKCU\\Software\\pasSHA";
+    private final String          RECORD_START = "START";
+    private final String          RECORD_END   = "END";
 
-    private RSA          rsa                           = null;
-    private SHA          sha                           = null;
+    private boolean               enabled      = false;
+    private RSA                   rsa          = null;
 
-    public Autologin() throws Exceptions
+    private SimpleBooleanProperty ON           = null;
+
+    private final String          REG_PATH     = "HKCU\\Software\\pasSHA\\Vault";
+
+    public static Autologin getInstance() throws Exceptions
     {
-        sha = new SHA();
-        rsa = new RSA(sha.getHashString((getPhysicalAddress() + getUserName() + SALT_P).getBytes()),
-                sha.getHashString((getPhysicalAddress() + getUserName() + SALT_Q).getBytes()),
-                sha.getHashString((getPhysicalAddress() + getUserName() + SALT_E).getBytes()));
+        if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
+
+        return self;
     }
 
-    private String regedit(String command) throws Exceptions
+    static public void init() throws Exceptions
+    {
+        if (self != null) throw new Exceptions(XC.INSTANCE_ALREADY_EXISTS);
+
+        self = new Autologin();
+    }
+
+    private Autologin()
+    {
+        try
+        {
+            rsa = new RSA(SHA.getHashString((executeCommand("wmic baseboard get serialnumber") + SALT_P).getBytes()),
+                SHA.getHashString((executeCommand("wmic diskdrive get serialnumber") + SALT_Q).getBytes()),
+                SHA.getHashString(SALT_E.getBytes()));
+            enabled = true;
+
+            ON = new SimpleBooleanProperty(false);
+
+            executeCommand("reg add " + REG_PATH + " /f");
+        }
+        catch (Exceptions e)
+        {
+            Logger.printError("Autologin init error: " + e.getCode().toString());
+            enabled = false;
+        }
+    }
+
+    public void setAutologinON(Vault vault)
+    {
+        if (vault == null || enabled == false) return;
+
+        try
+        {
+            addToRegistry(vault.getMasterHash(rsa));
+        }
+        catch (Exceptions e)
+        {
+            Logger
+                .printError("Failed to setup auto login for vault: " + vault.getName() + "; " + e.getCode().toString());
+        }
+        ON.set(true);
+    }
+
+    public void setAutologinOFF(Vault vault)
+    {
+        if (vault == null || enabled == false) return;
+
+        try
+        {
+            for (String cipher : readFromRegistry())
+            {
+                if (vault.initializedFrom(rsa.decrypt(cipher))) deleteFromRegistry(cipher);
+            }
+        }
+        catch (Exceptions e)
+        {
+            Logger.printError(
+                "Failed to delete auto login for vault: " + vault.getName() + "; " + e.getCode().toString());
+        }
+        ON.set(false);
+    }
+
+    public void check(Vault vault)
+    {
+        if (vault == null || enabled == false) return;
+
+        try
+        {
+            ON.set(true);
+            for (String cipher : readFromRegistry())
+                if (vault.initializedFrom(rsa.decrypt(cipher))) return;
+
+            ON.set(false);
+        }
+        catch (Exceptions e)
+        {
+            Logger.printError(
+                "Failed to delete auto login for vault: " + vault.getName() + "; " + e.getCode().toString());
+        }
+    }
+
+    public Vector<byte[]> getVaults()
+    {
+        try
+        {
+            return readFromRegistry().stream().map(val -> rsa.decrypt(val))
+                .collect(Collectors.toCollection(() -> new Vector<byte[]>()));
+        }
+        catch (Exceptions e)
+        {
+            Terminator.terminate(e);
+        }
+
+        return null;
+    }
+
+    public SimpleBooleanProperty onProperty()
+    {
+        return ON;
+    }
+
+    private String executeCommand(String command) throws Exceptions
     {
         StringBuilder output;
         try
@@ -58,11 +164,10 @@ public class Autologin
 
             output = new StringBuilder();
 
-            for (int i = REGEDIT_READ_OUT_VALUE_OFFSET; i < Utilities.DEFAULT_BUFFER_SIZE
-                    && Character.isDigit((char) b[i]); i++)
-                output.append((char) b[i]);
+            for (int i = 0; i < Utilities.DEFAULT_BUFFER_SIZE; i++)
+                if ((Character.isLetterOrDigit((char) b[i]))) output.append((char) b[i]);
 
-            Logger.printDebug("output: " + output.toString());
+            Logger.printDebug("output: '" + output.toString() + "'");
 
         }
         catch (IOException | InterruptedException e)
@@ -74,25 +179,23 @@ public class Autologin
         return output.toString();
     }
 
-    // REGISTRY ROUTINES
     private void addToRegistry(String data) throws Exceptions
     {
         try
         {
-            regedit("reg add " + REG_PATH + " /f /v AUTOLOGIN /d " + data);
+            executeCommand("reg add " + REG_PATH + " /v " + RECORD_START + data + RECORD_END + " /f");
         }
         catch (Exceptions e)
         {
             throw new Exceptions(XC.UNABLE_TO_ADD_ENTRY);
         }
-
     }
 
-    private void deleteFromRegistry() throws Exceptions
+    private void deleteFromRegistry(String data) throws Exceptions
     {
         try
         {
-            regedit("reg delete " + REG_PATH + " /f");
+            executeCommand("reg delete " + REG_PATH + " /v " + RECORD_START + data + RECORD_END + " /f");
         }
         catch (Exceptions e)
         {
@@ -100,58 +203,25 @@ public class Autologin
         }
     }
 
-    private String readFromRegistry() throws Exceptions
+    private Vector<String> readFromRegistry() throws Exceptions
     {
         try
         {
-            return regedit("reg query " + REG_PATH);
+            Vector<String> output = new Vector<String>();
+
+            for (String str : executeCommand("reg query " + REG_PATH).split(RECORD_END))
+            {
+                Logger.printDebug("Parsed string from registry: " + str);
+                final int recordStartIndex = str.indexOf(RECORD_START);
+                if (recordStartIndex == -1) continue;
+                output.add(str.substring(recordStartIndex + RECORD_START.length()));
+            }
+
+            return output;
         }
         catch (Exceptions e)
         {
             throw new Exceptions(XC.UNABLE_TO_RETRIEVE_ENTRY);
         }
-
     }
-
-    private String getPhysicalAddress() throws Exceptions
-    {
-        try
-        {
-            return Utilities.bytesToHex(NetworkInterface
-                    .getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress());
-        }
-        catch (SocketException e)
-        {
-            throw new Exceptions(XC.UNABLE_TO_GET_PHYSICAL_ADDR);
-        }
-        catch (UnknownHostException e)
-        {
-            throw new Exceptions(XC.UNABLE_TO_GET_PHYSICAL_ADDR);
-        }
-    }
-
-    private String getUserName() throws Exceptions
-    {
-        String username = System.getProperty("user.name");
-
-        if (username.isEmpty()) throw new Exceptions(XC.UNABLE_TO_GET_USERNAME);
-
-        return username;
-    }
-
-    public void setAutologinON() throws Exceptions
-    {
-        // addToRegistry(rsa.encrypt(CryptoSystem.getInstance().getMasterPass()));
-    }
-
-    public void setAutologinOFF() throws Exceptions
-    {
-        deleteFromRegistry();
-    }
-
-    public String getMasterPass() throws Exceptions
-    {
-        return rsa.decryptToString(readFromRegistry());
-    }
-
 }

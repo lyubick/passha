@@ -2,6 +2,7 @@ package ui;
 
 import core.Vault;
 import core.VaultManager;
+import cryptosystem.Autologin;
 
 import java.awt.Toolkit;
 import java.awt.TrayIcon.MessageType;
@@ -19,6 +20,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -73,6 +75,8 @@ public class FormVaultsManager extends AbstractForm
     private MenuItem            mi_copy          = null;
     private MenuItem            mi_export        = null;
 
+    private CheckMenuItem       cmi_autologin    = null;
+
     private TabPane             tp_vaults        = null;
     private Tab                 t_newTabCreator  = null;
 
@@ -123,14 +127,40 @@ public class FormVaultsManager extends AbstractForm
 
         mi_about = new MenuItem(Texts.LABEL_ABOUT.toString());
 
+        cmi_autologin = new CheckMenuItem(Texts.LABEL_AUTOLOGIN.toString());
+        cmi_autologin.selectedProperty().bindBidirectional(Autologin.getInstance().onProperty());
+
         m_file.getItems().addAll(mi_settings, new SeparatorMenuItem(), mi_exit);
-        m_vault.getItems().addAll(m_password, mi_export);
+        m_vault.getItems().addAll(m_password, mi_export, new SeparatorMenuItem(), cmi_autologin);
         m_password.getItems().addAll(mi_new, mi_edit, mi_delete, new SeparatorMenuItem(), mi_reset,
             new SeparatorMenuItem(), mi_copy);
         m_help.getItems().addAll(mi_about);
         menuMain.getMenus().addAll(m_file, m_vault, m_help);
 
         mi_export.setOnAction(getOnExportAction());
+
+        cmi_autologin.setOnAction(event ->
+        {
+            try
+            {
+                if (VaultManager.getInstance().getActiveVault() == null)
+                {
+                    Logger.printError("No active vault selected for autologin! Ignoring...");
+                    cmi_autologin.setSelected(false);
+                    event.consume();
+                    return;
+                }
+
+                if (cmi_autologin.isSelected())
+                    Autologin.getInstance().setAutologinON(VaultManager.getInstance().getActiveVault());
+                else
+                    Autologin.getInstance().setAutologinOFF(VaultManager.getInstance().getActiveVault());
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
+            }
+        });
 
         mi_settings.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -265,8 +295,7 @@ public class FormVaultsManager extends AbstractForm
 
     public void setVaultControlsDisabled(boolean value)
     {
-        m_password.setDisable(value);
-        mi_export.setDisable(value);
+        m_vault.setDisable(value);
         if (value)
             tp_vaults.setContextMenu(cm_default);
         else

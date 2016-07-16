@@ -2,6 +2,7 @@ package ui.elements;
 
 import core.Vault;
 import core.VaultManager;
+import cryptosystem.Autologin;
 import db.iSpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -109,6 +110,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         {
             VaultManager.getInstance().activateVault(vault);
             ((FormVaultsManager) parent).setVaultControlsDisabled(false);
+            Autologin.getInstance().check(vault);
         }
         catch (Exceptions e)
         {
