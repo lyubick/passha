@@ -72,6 +72,11 @@ public class PasswordEntryField extends PasswordField implements LabeledItem
             beNormal();
     }
 
+    public boolean isValid()
+    {
+        return isValid.get();
+    }
+
     public SimpleBooleanProperty isValidProperty()
     {
         return isValid;

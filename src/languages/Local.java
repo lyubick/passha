@@ -127,6 +127,12 @@ public class Local
         LABEL_ENTER_PASSWORD(new String[]
         { "Enter password", "Введите пароль" }),
 
+        LABEL_INVALID_PASSWORD(new String[]
+        { "Password is incorrect!", "Неправильный пароль!" }),
+
+        LABEL_INVALID_PATH(new String[]
+        { "Path is missing!", "Путь не указан!" }),
+
         LABEL_UNKNOWN_USER(new String[]
         { "Unknown user", "Неизвестный пользователь" }),
 

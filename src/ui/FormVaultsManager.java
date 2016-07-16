@@ -537,7 +537,7 @@ public class FormVaultsManager extends AbstractForm
             {
                 try
                 {
-                    new DlgExport(This);
+                    new FormExport(This);
                 }
                 catch (Exceptions e)
                 {

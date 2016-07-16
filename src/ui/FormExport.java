@@ -24,7 +24,7 @@ import ui.elements.LabeledItem;
 import ui.elements.PasswordEntryField;
 import ui.elements.EntryField.TEXTFIELD;
 
-public class DlgExport extends AbstractForm
+public class FormExport extends AbstractForm
 {
     private Button             b_ok               = null;
     private Button             b_cancel           = null;
@@ -35,7 +35,7 @@ public class DlgExport extends AbstractForm
     private PasswordEntryField pef_password       = null;
     private Vault              currentActiveVault = null;
 
-    public DlgExport(AbstractForm parent) throws Exceptions
+    public FormExport(AbstractForm parent) throws Exceptions
     {
         super(parent, Texts.FORM_EXPORT_LABEL_EXPORT, WindowPriority.ALWAYS_ON_TOP);
 
@@ -55,8 +55,10 @@ public class DlgExport extends AbstractForm
         ef_vaultName.setText(currentActiveVault.getName());
         ef_vaultName.setEditable(false);
         ef_path = new EntryField(Texts.LABEL_PATH, TEXTFIELD.WIDTH.XXL);
+        ef_path.setPromptText(Texts.LABEL_INVALID_PATH.toString());
         ef_path.beError();
         pef_password = new PasswordEntryField(Texts.LABEL_PASSWORD, TEXTFIELD.WIDTH.XXL);
+        pef_password.setPromptText(Texts.LABEL_INVALID_PASSWORD.toString());
 
         GridPane.setHalignment(l_header, HPos.CENTER);
         GridPane.setHalignment(b_cancel, HPos.RIGHT);
@@ -100,18 +102,22 @@ public class DlgExport extends AbstractForm
         });
 
         b_ok.disableProperty()
-            .bind(pef_password.isValidProperty().not()              // password must be valid
-                .or(ef_path.textProperty().isEmpty())               // path must be defined
-                .or(pef_password.focusedProperty()));               // focus must not be on password field
+            .bind(pef_password.isValidProperty().not()              // Password must be valid
+                .or(ef_path.textProperty().isEmpty())               // Path must be defined
+                .or(pef_password.focusedProperty()));               // Focus must not be on password field
 
         pef_password.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
             {
-                // on lost focus check if password is correct
-                if (newValue == false) pef_password
-                    .setValid(currentActiveVault.initializedFrom(SHA.getHashBytes(pef_password.getText().getBytes())));
+                // On lost focus check if password is correct
+                if (newValue == false)
+                {
+                    pef_password.setValid(
+                        currentActiveVault.initializedFrom(SHA.getHashBytes(pef_password.getText().getBytes())));
+                    if (!pef_password.isValid()) pef_password.clear();
+                }
             }
         });
 
