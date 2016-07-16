@@ -94,7 +94,11 @@ public class VaultManager
         if (activeVault == null)
             activateVault(vaults.firstElement());
         else
+        {
+            Logger.printDebug(
+                "Index of active vault: " + vaults.indexOf(activeVault) + "; Vault name: " + activeVault.getName());
             activateVault(vaults.get((vaults.indexOf(activeVault) + 1) % vaults.size()));
+        }
 
         return activeVault;
     }

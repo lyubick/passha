@@ -130,16 +130,16 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         getColumns().get(0).setVisible(true);
     }
 
-    public String getVaultName()
-    {
-        String name = vault.getName();
-        return name.isEmpty() ? Texts.LABEL_UNNAMED.toString().toUpperCase() : name;
-    }
-
     @Override
     public void setName(String name)
     {
         vault.setName(name);
     }
 
+    @Override
+    public String getName()
+    {
+        String name = vault.getName();
+        return name.isEmpty() ? Texts.LABEL_UNNAMED.toString().toUpperCase() : name;
+    }
 }

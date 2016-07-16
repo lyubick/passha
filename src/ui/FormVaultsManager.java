@@ -1,5 +1,6 @@
 package ui;
 
+import core.Vault;
 import core.VaultManager;
 
 import java.awt.Toolkit;
@@ -39,6 +40,7 @@ import main.Settings;
 import ui.elements.LoginTabContents;
 import ui.elements.Tab;
 import ui.elements.TabContent;
+import ui.elements.VaultTabContent;
 
 public class FormVaultsManager extends AbstractForm
 {
@@ -72,6 +74,7 @@ public class FormVaultsManager extends AbstractForm
     private MenuItem            mi_export        = null;
 
     private TabPane             tp_vaults        = null;
+    private Tab                 t_newTabCreator  = null;
 
     static Task<Void>           tsk_pwdLifeTime  = null;
 
@@ -206,7 +209,7 @@ public class FormVaultsManager extends AbstractForm
             }
         });
 
-        Tab t_newTabCreator = new Tab();
+        t_newTabCreator = new Tab();
 
         t_newTabCreator.setClosable(false);
         t_newTabCreator.setLabelText("+");
@@ -216,7 +219,7 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(Event event)
             {
-                if (t_newTabCreator.isSelected()) AddTab();
+                if (t_newTabCreator.isSelected()) AddLoginTab();
                 event.consume();
             }
         });
@@ -238,6 +241,22 @@ public class FormVaultsManager extends AbstractForm
 
         tp_vaults.getTabs().add(t_newTabCreator);
 
+        try
+        {
+            VaultManager.getInstance().deactivateVault();
+            for (int i = 0; i < VaultManager.getInstance().size(); ++i)
+            {
+                VaultManager.getInstance().activateNextVault();
+                AddVaultTab(VaultManager.getInstance().getActiveVault());
+            }
+
+            tp_vaults.getTabs().remove(0);
+        }
+        catch (Exceptions e)
+        {
+            if (e.getCode() != XC.VAULTS_NOT_FOUND) throw e;
+        }
+
         // ========== GRID ========== //
         grid.add(tp_vaults, 0, 0);
 
@@ -254,8 +273,22 @@ public class FormVaultsManager extends AbstractForm
             tp_vaults.setContextMenu(cm_vault);
     }
 
-    // called when user presses '+' tab or at the start when auto login is off
-    private void AddTab()
+    private void AddVaultTab(Vault vault)
+    {
+        Tab tab = AddTab();
+        tab.setTabContent(new VaultTabContent(tab, vault, This));
+        tp_vaults.getSelectionModel().select(tab);
+    }
+
+    // Called when user presses '+' tab or at the start when auto login is off
+    private void AddLoginTab()
+    {
+        Tab tab = AddTab();
+        tab.setTabContent(new LoginTabContents(tab, This));
+        tp_vaults.getSelectionModel().select(tab);
+    }
+
+    private Tab AddTab()
     {
         Tab tab = new Tab();
 
@@ -266,7 +299,7 @@ public class FormVaultsManager extends AbstractForm
             {
                 if (tab.isSelected())
                 {
-                    ((TabContent) tab.getContent()).activateTab();
+                    if (tab.getContent() != null) ((TabContent) tab.getContent()).activateTab();
                 }
             }
         });
@@ -281,15 +314,13 @@ public class FormVaultsManager extends AbstractForm
             }
         });
 
-        tp_vaults.getTabs().add(Math.max(0, tp_vaults.getTabs().size() - 1), tab);
-
-        tab.setContent(new LoginTabContents(tab, This));
+        tp_vaults.getTabs().add(Math.max(0, tp_vaults.getTabs().indexOf(t_newTabCreator)), tab);
 
         // Disable '+' tab, which is the last tab
         if (tp_vaults.getTabs().size() > Properties.CORE.VAULT.MAX_COUNT)
             tp_vaults.getTabs().get(tp_vaults.getTabs().size() - 1).setDisable(true);
 
-        tp_vaults.getSelectionModel().select(tab);
+        return tab;
     }
 
     public static void reload() throws Exceptions

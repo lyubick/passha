@@ -118,8 +118,8 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         {
             VaultTabContent newContent =
                 new VaultTabContent(t_ownTab, VaultManager.getInstance().addVault(password, isNewUser), owner);
-            t_ownTab.setContent_(newContent);
-            t_ownTab.setVaultName(newContent.getVaultName());
+            t_ownTab.setTabContent(newContent);
+            t_ownTab.setVaultName(newContent.getName());
         }
         catch (Exceptions e)
         {
@@ -228,5 +228,11 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     @Override
     public void setName(String name)
     {
+    }
+
+    @Override
+    public String getName()
+    {
+        return Texts.LABEL_UNNAMED.toString().toUpperCase();
     }
 }

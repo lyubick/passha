@@ -9,4 +9,6 @@ public interface TabContent
     public void reload();
 
     public void setName(String name);
+
+    public String getName();
 }
