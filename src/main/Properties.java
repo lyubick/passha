@@ -17,7 +17,8 @@ public final class Properties
     public final class EXTENSIONS
     {
         // PVP = pasSHA Vault Passwords
-        public static final String VAULT = ".pvp";
+        public static final String VAULT  = ".pvp";
+        public static final String EXPORT = ".txt";
     }
 
     public final class CORE

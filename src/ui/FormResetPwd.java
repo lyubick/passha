@@ -98,7 +98,6 @@ public class FormResetPwd extends AbstractForm
         ef_newPassword.setText(newSp.getPassword());
     }
 
-    /* PUBLIC ROUTINE */
     public FormResetPwd(AbstractForm parent) throws Exceptions
     {
         super(parent, Texts.FORM_RESETPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
@@ -147,7 +146,6 @@ public class FormResetPwd extends AbstractForm
         open();
     }
 
-    /* OVERRIDE */
     @Override
     protected void onUserMinimizeRequest()
     {

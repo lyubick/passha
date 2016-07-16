@@ -127,6 +127,8 @@ public class FormVaultsManager extends AbstractForm
         m_help.getItems().addAll(mi_about);
         menuMain.getMenus().addAll(m_file, m_vault, m_help);
 
+        mi_export.setOnAction(getOnExportAction());
+
         mi_settings.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
@@ -471,7 +473,6 @@ public class FormVaultsManager extends AbstractForm
                 {
                     Terminator.terminate(e);
                 }
-
             }
         };
     }
@@ -492,7 +493,6 @@ public class FormVaultsManager extends AbstractForm
                 {
                     Terminator.terminate(e);
                 }
-
             }
         };
     }
@@ -504,8 +504,14 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(ActionEvent event)
             {
-                Logger.printFatal("Feature is causing SEGV on ubuntu!!! PICHALJKA");
-                // new DlgExport(This);
+                try
+                {
+                    new DlgExport(This);
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
             }
         };
     }

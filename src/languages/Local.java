@@ -80,6 +80,9 @@ public class Local
         LABEL_PASSWORD(new String[]
         { "Password", "Пароль" }),
 
+        LABEL_PATH(new String[]
+        { "Path", "Путь" }),
+
         LABEL_REGISTER(new String[]
         { "Register", "Регистрироваться" }),
 
@@ -292,6 +295,16 @@ public class Local
 
         TRAY_MSG_FAILED_TO_UPDATE(new String[]
         { "Update failed.", "Обновление не удалось." }),
+
+        /**************************************************************************************************************
+         * EXPORT FORM
+         *************************************************************************************************************/
+
+        FORM_EXPORT_LABEL_EXPORT(new String[]
+        { "Export", "Экспорт" }),
+
+        FORM_EXPORT_MSG_SELECT_PATH(new String[]
+        { "Select path to save export file.", "Выберите путь для сохранения файла экспорта." }),
 
         /**************************************************************************************************************
          * TEMPLATE

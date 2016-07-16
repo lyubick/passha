@@ -2,6 +2,8 @@ package core;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import languages.Local.Texts;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -38,14 +40,14 @@ public class Vault
         // Generate master hash
         masterHash = hash;
 
-        // Initialise RSA
+        // Initialize RSA
         RSA rsa = new RSA(SHA.getHashString(masterHash, SALT_P), SHA.getHashString(masterHash, SALT_Q),
             SHA.getHashString(masterHash, SALT_E));
 
-        // Initialise Database
+        // Initialize Database
         database = new Database(rsa, SHA.getHashString(masterHash, SALT_FILENAME), isNewUser, this);
 
-        // All initialised, let's clean-up a little
+        // All initialized, let's clean-up a little
         System.gc();
     }
 
@@ -123,37 +125,24 @@ public class Vault
         return Utilities.bytesToHex(tmp);
     }
 
-    // FIXME: enable export features
     public void export(String fileName)
     {
-        final String TAB = "\t";
-        final String FILE_START_TAG = "<file_start>";
-        final String FILE_END_TAG = "</file_end>";
-        final String RECORD_START_TAG = TAB + "<record_start>";
-        final String RECORD_END_TAG = TAB + "</record_end>";
-        final String HASH_CODE_START_TAG = "<hash>";
-        final String HASH_CODE_END_TAG = "</hash>";
-
         Vector<String> exportStrings = new Vector<>();
+        final String delimiter = "-----------------------------------------------";
 
-        exportStrings.add(FILE_START_TAG);
+        exportStrings.add(Texts.LABEL_VAULT.toString() + ": '" + name + "'");
+
         for (SpecialPassword sp : database.getDecrypted())
         {
-            exportStrings.add(RECORD_START_TAG);
-            exportStrings.add(TAB + TAB + "name=" + sp.getName());
-            exportStrings.add(TAB + TAB + "URL=" + sp.getUrl());
-            exportStrings.add(TAB + TAB + "comment=" + sp.getComment());
-            exportStrings.add(TAB + TAB + "SHA cycles=" + sp.getShaCycles());
-            exportStrings.add(TAB + TAB + "password=" + sp.getPassword());
-            exportStrings.add(RECORD_END_TAG);
+            exportStrings.add(delimiter);
+            exportStrings.add(Texts.LABEL_NAME.toString() + ": '" + sp.getName() + "'");
+            if (!sp.getUrl().isEmpty()) exportStrings.add(Texts.LABEL_URL.toString() + ": '" + sp.getUrl() + "'");
+            if (!sp.getComment().isEmpty())
+                exportStrings.add(Texts.LABEL_COMMENT.toString() + ": '" + sp.getComment() + "'");
+            exportStrings.add(Texts.LABEL_PASSWORD.toString() + ": '" + sp.getPassword() + "'");
         }
-        exportStrings.add(FILE_END_TAG);
 
-        int hash = exportStrings.hashCode();
-
-        exportStrings.add(HASH_CODE_START_TAG);
-        exportStrings.add(TAB + hash);
-        exportStrings.add(HASH_CODE_END_TAG);
+        exportStrings.add(delimiter);
 
         try
         {

@@ -1,43 +1,30 @@
 package ui.elements;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.PasswordField;
 import javafx.scene.layout.HBox;
 import languages.Local.Texts;
 import main.Properties;
 
-public class EntryField extends javafx.scene.control.TextField implements LabeledItem
+public class PasswordEntryField extends PasswordField implements LabeledItem
 {
-    public static final class TEXTFIELD
-    {
-        public static final class WIDTH
-        {
-            public static final int XS  = 25;
-            public static final int S   = 50;
-            public static final int M   = 100;
-            public static final int L   = 200;
-            public static final int XL  = 300;
-            public static final int XXL = 350;
-        }
+    private Label                 label   = null;
 
-        public static final class HEIGTH
-        {
-            public static final int M = 30;
-        }
-    }
+    private SimpleBooleanProperty isValid = null;
 
-    private Label label = null;
-
-    public EntryField(Texts label, int maxLength)
+    public PasswordEntryField(Texts label, int maxLength)
     {
         this(label.toString(), maxLength);
         beNormal();
     }
 
-    public EntryField(String label, int maxLength)
+    public PasswordEntryField(String label, int maxLength)
     {
         this.label = new Label(label);
         beNormal();
 
         this.label.visibleProperty().bind(this.visibleProperty());
+        isValid = new SimpleBooleanProperty(false);
 
         this.setMaxWidth(maxLength);
         this.setMinWidth(maxLength);
@@ -74,5 +61,19 @@ public class EntryField extends javafx.scene.control.TextField implements Labele
         label.beNormal();
         this.setFont(Label.FONT_PRIMARY);
         this.setStyle("-fx-text-fill: black; -fx-text-box-border: black;");
+    }
+
+    public void setValid(boolean valid)
+    {
+        isValid.setValue(valid);
+        if (valid == false)
+            beError();
+        else
+            beNormal();
+    }
+
+    public SimpleBooleanProperty isValidProperty()
+    {
+        return isValid;
     }
 }

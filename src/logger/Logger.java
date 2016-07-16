@@ -11,19 +11,19 @@ import main.Exceptions.XC;
 
 public final class Logger
 {
-    private final String  LOG_PATH        = "logs/";
-    private final String  LOG_NAME        = "PASSHA";
-    private final String  LOG_EXT         = ".log";
+    private final String  LOG_PATH          = "logs/";
+    private final String  LOG_NAME          = "PASSHA";
+    private final String  LOG_EXT           = ".log";
 
-    private static Logger self            = null;
+    private static Logger self              = null;
 
-    private PrintWriter   writer          = null;
+    private PrintWriter   writer            = null;
 
-    private int           fileNameWidth   = 20;
-    private int           lineWidth       = 4;
-    private int           methodNameWidth = 20;
+    private int           fileNameWidth     = 20;
+    private int           lineWidth         = 4;
+    private int           methodNameWidth   = 20;
 
-    private LOGLEVELS     minLogLevel     = LOGLEVELS.TRACE;
+    private LOGLEVELS     logLevelThreshold = LOGLEVELS.TRACE;
 
     private enum LOGLEVELS
     {
@@ -89,7 +89,7 @@ public final class Logger
 
     private void prepareAndLog(LOGLEVELS lvl, String msg)
     {
-        if (lvl.compareTo(minLogLevel) < 0) return;
+        if (lvl.compareTo(logLevelThreshold) < 0) return;
 
         StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
         StackTraceElement e = stacktrace[3];
@@ -156,24 +156,24 @@ public final class Logger
             default:       // by default print all logs
             case "ALL":
             case "TRACE":
-                minLogLevel = LOGLEVELS.TRACE;
+                logLevelThreshold = LOGLEVELS.TRACE;
             break;
 
             case "DEBUG":
-                minLogLevel = LOGLEVELS.DEBUG;
+                logLevelThreshold = LOGLEVELS.DEBUG;
             break;
 
             case "ERROR":
-                minLogLevel = LOGLEVELS.ERROR;
+                logLevelThreshold = LOGLEVELS.ERROR;
             break;
 
             case "FATAL":
-                minLogLevel = LOGLEVELS.FATAL;
+                logLevelThreshold = LOGLEVELS.FATAL;
             break;
 
             case "SILENT":
             case "OFF":
-                minLogLevel = LOGLEVELS.SILENT;
+                logLevelThreshold = LOGLEVELS.SILENT;
             break;
         }
     }

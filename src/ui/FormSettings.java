@@ -1,6 +1,3 @@
-/**
- *
- */
 package ui;
 
 import languages.Local.Texts;
@@ -22,10 +19,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 
-/**
- * @author lyubick
- *
- */
 public class FormSettings extends AbstractForm
 {
     private EntryField             ef_clipboard = null;
@@ -36,7 +29,6 @@ public class FormSettings extends AbstractForm
 
     private ObservableList<String> langOptions  = null;
 
-    /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
     {
         return new EventHandler<ActionEvent>()
@@ -64,7 +56,6 @@ public class FormSettings extends AbstractForm
         };
     }
 
-    /* PUBLIC ROUTINE */
     public FormSettings(AbstractForm parent) throws Exceptions
     {
         super(parent, Texts.LABEL_SETTINGS, WindowPriority.ALWAYS_ON_TOP);
@@ -81,8 +72,7 @@ public class FormSettings extends AbstractForm
         cb_autologin = new CheckBox(Texts.LABEL_AUTOLOGIN.toString());
 
         ef_clipboard =
-            new EntryField(Texts.LABEL_DELAY.toString() + " " + Texts.LABEL_SECONDS.toString(),
-                TEXTFIELD.WIDTH.S);
+            new EntryField(Texts.LABEL_DELAY.toString() + " " + Texts.LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
 
         b_ok = new Button(Texts.LABEL_OK.toString());
 
@@ -111,7 +101,6 @@ public class FormSettings extends AbstractForm
         open();
     }
 
-    /* OVERRIDE */
     @Override
     protected void onUserMinimizeRequest()
     {

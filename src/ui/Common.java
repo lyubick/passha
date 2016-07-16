@@ -34,4 +34,12 @@ public final class Common
 
         return imgView;
     }
+
+    public static ImageView getFindFolderImage()
+    {
+        ImageView imgView = new ImageView(new Image(Main.class.getResourceAsStream("/resources/find_folder.png")));
+        imgView.setStyle("-fx-background-color:transparent");
+
+        return imgView;
+    }
 }
