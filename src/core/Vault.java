@@ -1,5 +1,6 @@
 package core;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import languages.Local.Texts;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import db.Database;
 import db.SpecialPassword;
 import db.iSpecialPassword;
+import db.Database.Status;
 import main.Exceptions;
 import main.Exceptions.XC;
 import rsa.RSA;
@@ -182,5 +184,10 @@ public class Vault
     public String getMasterHash(RSA rsa)
     {
         return rsa.encrypt(masterHash);
+    }
+
+    public ObjectProperty<Status> getDBStatusProperty()
+    {
+        return database.getStatusProperty();
     }
 }

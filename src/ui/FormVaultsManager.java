@@ -14,12 +14,15 @@ import java.io.IOException;
 import java.util.Optional;
 
 import db.SpecialPassword;
+import db.Database.Status;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -27,9 +30,13 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import languages.Local.Texts;
 import logger.Logger;
 
@@ -38,7 +45,6 @@ import main.Terminator;
 import main.Exceptions.XC;
 import main.Properties;
 import main.Settings;
-
 import ui.elements.LoginTabContents;
 import ui.elements.Tab;
 import ui.elements.TabContent;
@@ -52,35 +58,41 @@ public class FormVaultsManager extends AbstractForm
         public static final int height = 500;
     }
 
-    private final int           tabpaneMinHeight = WINDOW.height - 150;
-    private final int           tabpaneMinWidth  = WINDOW.width - 200;
+    private final double           STATUS_CIRCLE_RADIUS = 10;
+    private final int              TAB_PANE_MIN_HEIGHT  = WINDOW.height - 150;
+    private final int              TAB_PANE_MIN_WIDTH   = WINDOW.width - 200;
 
-    private static AbstractForm This             = null;
+    private static AbstractForm    This                 = null;
 
-    private ContextMenu         cm_vault         = null;
-    private ContextMenu         cm_default       = null;
+    private HBox                   hb_statusBar         = null;
+    private Circle                 c_dbStatus           = null;
+    private ObjectProperty<Status> op_dbStatusProperty  = null;
+    private Tooltip                tt_dbStatusText      = null;
 
-    private Menu                m_file           = null;
-    private Menu                m_vault          = null;
-    private Menu                m_password       = null;
-    private Menu                m_help           = null;
+    private ContextMenu            cm_vault             = null;
+    private ContextMenu            cm_default           = null;
 
-    private MenuItem            mi_about         = null;
-    private MenuItem            mi_exit          = null;
-    private MenuItem            mi_new           = null;
-    private MenuItem            mi_edit          = null;
-    private MenuItem            mi_reset         = null;
-    private MenuItem            mi_delete        = null;
-    private MenuItem            mi_settings      = null;
-    private MenuItem            mi_copy          = null;
-    private MenuItem            mi_export        = null;
+    private Menu                   m_file               = null;
+    private Menu                   m_vault              = null;
+    private Menu                   m_password           = null;
+    private Menu                   m_help               = null;
 
-    private CheckMenuItem       cmi_autologin    = null;
+    private MenuItem               mi_about             = null;
+    private MenuItem               mi_exit              = null;
+    private MenuItem               mi_new               = null;
+    private MenuItem               mi_edit              = null;
+    private MenuItem               mi_reset             = null;
+    private MenuItem               mi_delete            = null;
+    private MenuItem               mi_settings          = null;
+    private MenuItem               mi_copy              = null;
+    private MenuItem               mi_export            = null;
 
-    private TabPane             tp_vaults        = null;
-    private Tab                 t_newTabCreator  = null;
+    private CheckMenuItem          cmi_autologin        = null;
 
-    static Task<Void>           tsk_pwdLifeTime  = null;
+    private TabPane                tp_vaults            = null;
+    private Tab                    t_newTabCreator      = null;
+
+    static Task<Void>              tsk_pwdLifeTime      = null;
 
     public static FormVaultsManager getInstance() throws Exceptions
     {
@@ -107,6 +119,15 @@ public class FormVaultsManager extends AbstractForm
         });
 
         This = this;
+
+        // ========== STATUS BAR ========== //
+        hb_statusBar = new HBox();
+        hb_statusBar.setAlignment(Pos.CENTER_RIGHT);
+        c_dbStatus = new Circle(STATUS_CIRCLE_RADIUS, Color.GREY);
+        c_dbStatus.setStroke(Color.BLACK);
+        tt_dbStatusText = new Tooltip();
+        Tooltip.install(c_dbStatus, tt_dbStatusText);
+        hb_statusBar.getChildren().add(c_dbStatus);
 
         // ========== MENU ========== //
         menuMain = new MenuBar();
@@ -227,8 +248,8 @@ public class FormVaultsManager extends AbstractForm
         // ========== TAB pane =========== //
 
         tp_vaults = new TabPane();
-        tp_vaults.setMinHeight(tabpaneMinHeight);
-        tp_vaults.setMinWidth(tabpaneMinWidth);
+        tp_vaults.setMinHeight(TAB_PANE_MIN_HEIGHT);
+        tp_vaults.setMinWidth(TAB_PANE_MIN_WIDTH);
 
         tp_vaults.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
@@ -289,6 +310,7 @@ public class FormVaultsManager extends AbstractForm
 
         // ========== GRID ========== //
         grid.add(tp_vaults, 0, 0);
+        grid.add(hb_statusBar, 0, 1);
 
         open();
     }
@@ -300,6 +322,54 @@ public class FormVaultsManager extends AbstractForm
             tp_vaults.setContextMenu(cm_default);
         else
             tp_vaults.setContextMenu(cm_vault);
+    }
+
+    private void setDBStatus(Status status)
+    {
+        Logger.printDebug("DB status changed: " + status.name().toString());
+        switch (status)
+        {
+            default:
+            case SYNCHRONIZATION_FAILED:
+                c_dbStatus.setFill(Color.RED);
+                tt_dbStatusText.setText(Texts.MSG_DB_SYNC_FAILED.toString());
+            break;
+
+            case SYNCHRONIZED:
+                c_dbStatus.setFill(Color.LIGHTGREEN);
+                tt_dbStatusText.setText(Texts.MSG_DB_SYNC_SUCCESS.toString());
+            break;
+
+            case SYNCHRONIZING:
+            case DESYNCHRONIZED:
+                c_dbStatus.setFill(Color.GREY);
+                tt_dbStatusText.setText(Texts.MSG_DB_SYNC_UNAVAILABLE.toString());
+            break;
+        }
+    }
+
+    public void rebindDBStatusProerty(ObjectProperty<Status> statusProperty)
+    {
+        final ChangeListener<Status> listener = new ChangeListener<Status>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Status> observable, Status oldValue, Status newValue)
+            {
+                setDBStatus(newValue);
+            }
+        };
+
+        if (op_dbStatusProperty != null) op_dbStatusProperty.removeListener(listener);
+
+        op_dbStatusProperty = statusProperty;
+        if (op_dbStatusProperty == null)
+        {
+            c_dbStatus.setFill(Color.GREY);
+            return;
+        }
+
+        op_dbStatusProperty.addListener(listener);
+        setDBStatus(op_dbStatusProperty.getValue());
     }
 
     private void AddVaultTab(Vault vault)

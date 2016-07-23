@@ -6,15 +6,47 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Optional;
 
+import core.VaultManager;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.stage.StageStyle;
+import languages.Local.Texts;
 import logger.Logger;
 import main.Exceptions.XC;
+import ui.elements.Label;
 
 public class Terminator
 {
+    private static boolean isExitAllowed()
+    {
+        try
+        {
+            if (!VaultManager.getInstance().isReadyToExit())
+            {
+                Alert alertDlg = new Alert(AlertType.CONFIRMATION);
+                alertDlg.setTitle(Texts.LABEL_EXIT.toString());
+                alertDlg.setHeaderText(null);
+                alertDlg.getDialogPane().setContent(new Label(Texts.MSG_CONFIRM_UNSAFE_EXIT));
+                alertDlg.initStyle(StageStyle.UNIFIED);
+                Optional<ButtonType> response = alertDlg.showAndWait();
+                return response.get() == ButtonType.OK;
+            }
+
+            return true;
+        }
+        catch (Exceptions e)
+        {
+            Terminator.terminate(e);
+        }
+        return false;
+    }
+
     private static void exit(Exceptions e)
     {
-        Logger.printTrace("Bye!");
+        Logger.printFatal("Bye!");
 
         try
         {
@@ -46,12 +78,16 @@ public class Terminator
         Terminator.exit(new Exceptions(XC.END));
     }
 
-    // FIXME: error-reporting, database save, restart, shutdown
     public static void terminate(Exceptions e)
     {
-        if (e.getCode().equals(XC.RESTART)) restart();
+        if (e.getCode().equals(XC.RESTART) || e.getCode().equals(XC.END))
+        {
+            if (!isExitAllowed()) return;
 
-        if (e.getCode().equals(XC.END)) exit(e);
+            if (e.getCode().equals(XC.RESTART)) restart();
+
+            if (e.getCode().equals(XC.END)) exit(e);
+        }
 
         Logger.printFatal("TERMINATOR: FATAL ERROR OCCURED: " + e.getCode().name());
 

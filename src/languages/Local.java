@@ -171,6 +171,18 @@ public class Local
 
         // OTHER
 
+        MSG_CONFIRM_UNSAFE_EXIT(new String[]
+        { "There are unsaved passwords. Quit?", "Есть несохранённые пароли. Выйти?" }),
+
+        MSG_DB_SYNC_FAILED(new String[]
+        { "Database synchronization failed.", "Ошибка синхронизации базы данных." }),
+
+        MSG_DB_SYNC_SUCCESS(new String[]
+        { "Database is synchronized.", "База данных синхронизирована." }),
+
+        MSG_DB_SYNC_UNAVAILABLE(new String[]
+        { "N/A", "Н/Д" }),
+
         MSG_SHORTCUT_IN_USE_BY(new String[]
         { Texts.LABEL_ERROR.toString() + " Shortcut is in use by: ", Texts.LABEL_ERROR.toString() + " Горячая клавиша занята: " }),
 

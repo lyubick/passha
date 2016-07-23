@@ -36,6 +36,12 @@ public final class Properties
 
     }
 
+    public final class DATABASE
+    {
+        public static final int SYNC_RETRY_DELAY_MS = 60 * 1000;
+        public static final int MAX_RETRIES         = 5;
+    }
+
     public final class GUI
     {
         public final class GAP

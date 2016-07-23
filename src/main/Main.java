@@ -35,6 +35,7 @@ public class Main extends Application
         try
         {
             Logger.loggerON(logLevelString);
+            Logger.printFatal("Hello!");
         }
         catch (Exceptions e)
         {

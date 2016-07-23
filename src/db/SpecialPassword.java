@@ -48,7 +48,7 @@ public class SpecialPassword
         own_vault = parentVault;
 
         shaCycles = Long.parseLong(m.getOrDefault("shaCycles", "0"));
-        name = m.getOrDefault("name", "");  // FIXME: name is mandatory
+        name = m.getOrDefault("name", "");
         setAllOptionalFields(m.getOrDefault("comment", ""), m.getOrDefault("url", ""), m.getOrDefault("shortcut", ""));
         length = Integer.parseInt(m.getOrDefault("length", "0"));
         specialChars = m.getOrDefault("specialChars", "");

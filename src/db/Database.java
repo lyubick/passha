@@ -16,6 +16,8 @@ import main.Properties;
 import rsa.RSA;
 import utilities.Utilities;
 import db.SpecialPassword;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 import logger.Logger;
 import main.Terminator;
@@ -31,6 +33,8 @@ public class Database
 
     private Vault                            parentVault = null;
 
+    private int                              retriesLeft = Properties.DATABASE.MAX_RETRIES;
+
     public enum Status
     {
         SYNCHRONIZED,
@@ -39,19 +43,20 @@ public class Database
         SYNCHRONIZATION_FAILED
     };
 
-    // FIXME: Check this upon closing
-    private volatile Status status = null;
+    private volatile SimpleObjectProperty<Status> status = null;
 
-    // FIXME: Separate thread
     public void requestSync()
     {
-        status = Status.DESYNCHRONIZED;
+        status.set(Status.DESYNCHRONIZED);
+        retriesLeft = Properties.DATABASE.MAX_RETRIES;
         sync();
     }
 
     public Database(RSA myRSA, String filename, boolean newUser, Vault vault) throws Exceptions
     {
         parentVault = vault;
+
+        status = new SimpleObjectProperty<Status>(Status.SYNCHRONIZING);
 
         File vaultDir = new File(Properties.PATHS.VAULT);
 
@@ -112,6 +117,8 @@ public class Database
             SpecialPassword pwd = new SpecialPassword(decryptedEntry, vault);
             db.put(pwd, rsa.encrypt(Utilities.objectToBytes(pwd.getMap())));
         }
+
+        status.set(Status.SYNCHRONIZED);
     }
 
     private void validatePassword(SpecialPassword newEntry) throws Exceptions
@@ -183,6 +190,11 @@ public class Database
         }).filter(sp -> sp != null).collect(Collectors.toCollection(() -> new Vector<>()));
     }
 
+    public ObjectProperty<Status> getStatusProperty()
+    {
+        return status;
+    }
+
     private void sync()
     {
         Logger.printDebug("Saving Database to '" + vaultFile.getAbsolutePath() + "'...");
@@ -192,6 +204,7 @@ public class Database
             @Override
             protected Void call() throws Exception
             {
+                status.set(Status.SYNCHRONIZING);
                 try
                 {
                     HashMap<String, String> map = new HashMap<>();
@@ -201,22 +214,36 @@ public class Database
                         db.values().stream().collect(Collectors.toCollection(() -> new Vector<>())),
                         rsa.encrypt(Utilities.objectToBytes(map)));
 
-                    status = Status.SYNCHRONIZED;
                     this.succeeded();
                 }
                 catch (Exceptions e)
                 {
-                    status = Status.SYNCHRONIZATION_FAILED;
                     this.failed();
                 }
                 return null;
             }
         };
 
-        task.setOnSucceeded(EventHandler ->
+        task.setOnSucceeded(event ->
         {
+            status.set(Status.SYNCHRONIZED);
             Logger.printDebug("Saving Database to '" + vaultFile.getAbsolutePath() + "' DONE!");
             Logger.printDebug("Database Synchronization returned status: " + status.toString());
+        });
+
+        task.setOnFailed(event ->
+        {
+            status.set(Status.SYNCHRONIZATION_FAILED);
+            try
+            {
+                Thread.sleep(Properties.DATABASE.SYNC_RETRY_DELAY_MS);
+            }
+            catch (Exception e)
+            {
+                Terminator.terminate(new Exceptions(XC.ERROR));
+            }
+
+            if (--retriesLeft > 0) sync();
         });
 
         Thread thread = new Thread(task);

@@ -110,6 +110,8 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         {
             VaultManager.getInstance().activateVault(vault);
             ((FormVaultsManager) parent).setVaultControlsDisabled(false);
+            ((FormVaultsManager) parent)
+                .rebindDBStatusProerty(VaultManager.getInstance().getActiveVault().getDBStatusProperty());
             Autologin.getInstance().check(vault);
         }
         catch (Exceptions e)

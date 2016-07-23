@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import compatibility.UserFileMigration;
 import cryptosystem.Autologin;
+import db.Database.Status;
 import db.SpecialPassword;
 import logger.Logger;
 import main.Exceptions;
@@ -137,5 +138,13 @@ public class VaultManager
                 Autologin.getInstance().setAutologinOFF(hash);
             }
         }
+    }
+
+    public boolean isReadyToExit()
+    {
+        for (Vault vault : vaults)
+            if (vault.getDBStatusProperty().getValue() != Status.SYNCHRONIZED) return false;
+
+        return true;
     }
 }
