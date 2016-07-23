@@ -124,8 +124,18 @@ public class VaultManager
 
     public void autologin() throws Exceptions
     {
-        // FIXME: Crash if file with autologin entry is deleted
         for (byte[] hash : Autologin.getInstance().getVaults())
-            addVault(hash, false);
+        {
+            try
+            {
+                addVault(hash, false);
+            }
+            catch (Exceptions e)
+            {
+                if (e.getCode() != XC.FILE_DOES_NOT_EXIST && e.getCode() != XC.DIR_DOES_NOT_EXIST) throw e;
+
+                Autologin.getInstance().setAutologinOFF(hash);
+            }
+        }
     }
 }

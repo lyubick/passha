@@ -1,6 +1,7 @@
 package cryptosystem;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
@@ -82,6 +83,21 @@ public class Autologin
         ON.set(true);
     }
 
+    public void setAutologinOFF(byte[] hash)
+    {
+        if (hash == null || enabled == false) return;
+
+        try
+        {
+            for (String cipher : readFromRegistry())
+                if (Arrays.equals(hash, rsa.decrypt(cipher))) deleteFromRegistry(cipher);
+        }
+        catch (Exceptions e)
+        {
+            Logger.printError("Failed to delete auto login with hash: " + Utilities.bytesToHex(hash));
+        }
+    }
+
     public void setAutologinOFF(Vault vault)
     {
         if (vault == null || enabled == false) return;
@@ -89,9 +105,7 @@ public class Autologin
         try
         {
             for (String cipher : readFromRegistry())
-            {
                 if (vault.initializedFrom(rsa.decrypt(cipher))) deleteFromRegistry(cipher);
-            }
         }
         catch (Exceptions e)
         {
