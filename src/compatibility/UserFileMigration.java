@@ -43,7 +43,11 @@ public class UserFileMigration
             + SHA.getHashString((Arrays.toString(masterHash) + SALT_FILENAME).getBytes()) + USER_FILE_EXT);
 
         Logger.printDebug("Searching old user file: " + userFile.getAbsolutePath());
-        if (!userFile.exists()) throw new Exceptions(XC.FILE_DOES_NOT_EXIST);
+        if (!userFile.exists())
+        {
+            if (userFolder.list().length == 0) userFolder.delete();
+            throw new Exceptions(XC.FILE_DOES_NOT_EXIST);
+        }
         Logger.printDebug("Found old user file: " + userFile.getAbsolutePath());
 
         return userFile;
@@ -89,7 +93,7 @@ public class UserFileMigration
                 Logger.printTrace("Migration contained errors!");
 
                 Alert alertDlg = new Alert(AlertType.ERROR);
-                alertDlg.setTitle("Migration error");
+                alertDlg.setTitle(Texts.LABEL_MIGRATION_TITLE.toString());
                 alertDlg.setHeaderText(null);
 
                 alertDlg.getDialogPane().setContent(new VBox(new Label(Texts.MSG_MIGRATION_OCCURED),
@@ -101,6 +105,16 @@ public class UserFileMigration
             {
                 oldFile.delete();
                 if (oldFile.getParentFile().list().length == 0) oldFile.getParentFile().delete();
+
+                Alert alertDlg = new Alert(AlertType.INFORMATION);
+                alertDlg.setTitle(Texts.LABEL_MIGRATION_TITLE.toString());
+                alertDlg.setHeaderText(null);
+
+                alertDlg.getDialogPane().setContent(
+                    new VBox(new Label(Texts.MSG_MIGRATION_OCCURED), new Label(Texts.MSG_MIGRATION_SUCCESS)));
+
+                alertDlg.initStyle(StageStyle.UNIFIED);
+                alertDlg.showAndWait();
 
                 Logger.printTrace("Migration SUCCESSFUL!");
             }

@@ -133,6 +133,9 @@ public class Local
         LABEL_INVALID_PATH(new String[]
         { "Path is missing!", "Путь не указан!" }),
 
+        LABEL_MIGRATION_TITLE(new String[]
+        { "User file migration", "Перенос файла пользователя" }),
+
         LABEL_UNKNOWN_USER(new String[]
         { "Unknown user", "Неизвестный пользователь" }),
 
@@ -145,6 +148,9 @@ public class Local
 
         MSG_MIGRATION_ERRORS(new String[]
         { " password(s) failed to migrate.", " пароль(ей) не удалось перенести." }),
+
+        MSG_MIGRATION_SUCCESS(new String[]
+        { "Successfully migrated user file.", "Файл пользователя успешно перенесён." }),
 
         // ABOUT
 
