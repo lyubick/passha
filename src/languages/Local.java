@@ -138,6 +138,14 @@ public class Local
 
         // MESSAGES
 
+        // MIGRATION
+
+        MSG_MIGRATION_OCCURED(new String[]
+        { "We've found v2.4 user file and tried to migrate to newest version!", "Обнаружен файл пользователя версии 2.4! При попытке переноса произошла(и) ошибка(и)" }),
+
+        MSG_MIGRATION_ERRORS(new String[]
+        { " passwords failed to migrate", " паролей не получилось перенести!" }),
+
         // ABOUT
 
         MSG_COPYRIGHT(new String[]

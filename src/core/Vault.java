@@ -37,7 +37,6 @@ public class Vault
 
     public Vault(byte[] hash, boolean isNewUser) throws Exceptions
     {
-        // Generate master hash
         masterHash = hash;
 
         // Initialize RSA
@@ -69,7 +68,7 @@ public class Vault
         return null;
     }
 
-    public void addPassowrd(SpecialPassword password) throws Exceptions
+    public void addPassword(SpecialPassword password) throws Exceptions
     {
         database.addEntry(password);
         password.setParentVault(this);

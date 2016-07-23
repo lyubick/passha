@@ -2,6 +2,7 @@ package core;
 
 import java.util.Vector;
 
+import compatibility.UserFileMigration;
 import cryptosystem.Autologin;
 import db.SpecialPassword;
 import logger.Logger;
@@ -38,7 +39,23 @@ public class VaultManager
 
     public Vault addVault(String password, boolean isNewUser) throws Exceptions
     {
-        return addVault(SHA.getHashBytes(password.getBytes()), isNewUser);
+        try
+        {
+            return addVault(SHA.getHashBytes(password.getBytes()), isNewUser);
+        }
+        catch (Exceptions e)
+        {
+            if (e.getCode() != XC.FILE_DOES_NOT_EXIST) throw e;
+
+            try
+            {
+                return UserFileMigration.tryMigrate(password);
+            }
+            catch (Exceptions ignore)
+            {
+                throw e;
+            }
+        }
     }
 
     public Vault addVault(byte[] hash, boolean isNewUser) throws Exceptions
@@ -47,9 +64,7 @@ public class VaultManager
             if (vault.initializedFrom(hash)) throw new Exceptions(XC.VAULT_OPENED);
 
         Vault newVault = new Vault(hash, isNewUser);
-
         vaults.addElement(newVault);
-
         return newVault;
     }
 
@@ -109,6 +124,7 @@ public class VaultManager
 
     public void autologin() throws Exceptions
     {
+        // FIXME: Crash if file with autologin entry is deleted
         for (byte[] hash : Autologin.getInstance().getVaults())
             addVault(hash, false);
     }

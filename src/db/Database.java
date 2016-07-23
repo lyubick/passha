@@ -86,7 +86,7 @@ public class Database
             }
         }
 
-        // RSA initialised and created by Vault, DB has only pointer
+        // RSA initialized and created by Vault, DB has only pointer
         rsa = myRSA;
 
         db = new TreeMap<>(new Comparator<SpecialPassword>()
