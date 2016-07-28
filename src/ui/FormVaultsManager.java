@@ -58,9 +58,9 @@ public class FormVaultsManager extends AbstractForm
         public static final int height = 500;
     }
 
-    private final double           STATUS_CIRCLE_RADIUS = 10;
-    private final int              TAB_PANE_MIN_HEIGHT  = WINDOW.height - 150;
-    private final int              TAB_PANE_MIN_WIDTH   = WINDOW.width - 200;
+    private static final double    STATUS_CIRCLE_RADIUS = 10;
+    private static final int       TAB_PANE_MIN_HEIGHT  = WINDOW.height - 150;
+    private static final int       TAB_PANE_MIN_WIDTH   = WINDOW.width - 200;
 
     private static AbstractForm    This                 = null;
 
@@ -94,6 +94,8 @@ public class FormVaultsManager extends AbstractForm
 
     static Task<Void>              tsk_pwdLifeTime      = null;
 
+    ChangeListener<Status>         dbStatusListener     = null;
+
     public static FormVaultsManager getInstance() throws Exceptions
     {
         if (This == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
@@ -119,6 +121,15 @@ public class FormVaultsManager extends AbstractForm
         });
 
         This = this;
+
+        dbStatusListener = new ChangeListener<Status>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Status> observable, Status oldValue, Status newValue)
+            {
+                setDBStatus(newValue);
+            }
+        };
 
         // ========== STATUS BAR ========== //
         hb_statusBar = new HBox();
@@ -292,14 +303,48 @@ public class FormVaultsManager extends AbstractForm
 
         tp_vaults.getTabs().add(t_newTabCreator);
 
+        VaultManager.getInstance().getActiveVaultProperty().addListener(new ChangeListener<Vault>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Vault> observable, Vault oldValue, Vault newValue)
+            {
+                if (newValue == null)
+                {
+                    setVaultControlsDisabled(true);
+                    rebindDBStatusProperty(null);
+                    return;
+                }
+
+                setVaultControlsDisabled(false);
+
+                try
+                {
+                    rebindDBStatusProperty(newValue.getDBStatusProperty());
+                    Autologin.getInstance().check(newValue);
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
+
+                Logger.printDebug("Active vault changed from '" + (oldValue == null ? "null" : oldValue.getName())
+                    + "' to '" + newValue.getName() + "'.");
+
+                Optional<javafx.scene.control.Tab> tabWithVault =
+                    tp_vaults.getTabs().stream().filter(tab -> tab.getContent() instanceof VaultTabContent)
+                        .filter(vaultTab -> ((VaultTabContent) vaultTab.getContent()).hasVault(newValue)).findFirst();
+                if (tabWithVault.isPresent())
+                    tp_vaults.getSelectionModel().select(tabWithVault.get());
+                else
+                    Logger.printTrace("Couldn't find activated vault in tabs.");
+            }
+        });
+
         try
         {
             VaultManager.getInstance().deactivateVault();
             for (int i = 0; i < VaultManager.getInstance().size(); ++i)
-            {
-                VaultManager.getInstance().activateNextVault();
-                AddVaultTab(VaultManager.getInstance().getActiveVault());
-            }
+                AddVaultTab(VaultManager.getInstance().activateNextVault());
 
             tp_vaults.getTabs().remove(0);
         }
@@ -315,7 +360,7 @@ public class FormVaultsManager extends AbstractForm
         open();
     }
 
-    public void setVaultControlsDisabled(boolean value)
+    private void setVaultControlsDisabled(boolean value)
     {
         m_vault.setDisable(value);
         if (value)
@@ -348,18 +393,9 @@ public class FormVaultsManager extends AbstractForm
         }
     }
 
-    public void rebindDBStatusProerty(ObjectProperty<Status> statusProperty)
+    private void rebindDBStatusProperty(ObjectProperty<Status> statusProperty)
     {
-        final ChangeListener<Status> listener = new ChangeListener<Status>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Status> observable, Status oldValue, Status newValue)
-            {
-                setDBStatus(newValue);
-            }
-        };
-
-        if (op_dbStatusProperty != null) op_dbStatusProperty.removeListener(listener);
+        if (op_dbStatusProperty != null) op_dbStatusProperty.removeListener(dbStatusListener);
 
         op_dbStatusProperty = statusProperty;
         if (op_dbStatusProperty == null)
@@ -368,14 +404,14 @@ public class FormVaultsManager extends AbstractForm
             return;
         }
 
-        op_dbStatusProperty.addListener(listener);
+        op_dbStatusProperty.addListener(dbStatusListener);
         setDBStatus(op_dbStatusProperty.getValue());
     }
 
     private void AddVaultTab(Vault vault)
     {
         Tab tab = AddTab();
-        tab.setTabContent(new VaultTabContent(tab, vault, This));
+        tab.setTabContent(new VaultTabContent(tab, vault));
         tp_vaults.getSelectionModel().select(tab);
     }
 
@@ -383,7 +419,7 @@ public class FormVaultsManager extends AbstractForm
     private void AddLoginTab()
     {
         Tab tab = AddTab();
-        tab.setTabContent(new LoginTabContents(tab, This));
+        tab.setTabContent(new LoginTabContents(tab));
         tp_vaults.getSelectionModel().select(tab);
     }
 

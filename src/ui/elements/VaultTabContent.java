@@ -2,7 +2,6 @@ package ui.elements;
 
 import core.Vault;
 import core.VaultManager;
-import cryptosystem.Autologin;
 import db.iSpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,14 +11,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import languages.Local.Texts;
 import main.Exceptions;
 import main.Terminator;
-import ui.AbstractForm;
-import ui.FormVaultsManager;
 
 public class VaultTabContent extends TableView<iSpecialPassword> implements TabContent
 {
-    private Vault        vault    = null;
-    private AbstractForm parent   = null;
-    private Tab          t_ownTab = null;
+    private Vault vault    = null;
+    private Tab   t_ownTab = null;
 
     private ChangeListener<Object> getSelectedItemPropertyListener()
     {
@@ -46,10 +42,9 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         };
     }
 
-    public VaultTabContent(Tab ownerTab, Vault vault, AbstractForm parent)
+    public VaultTabContent(Tab ownerTab, Vault vault)
     {
         this.vault = vault;
-        this.parent = parent;
         t_ownTab = ownerTab;
 
         t_ownTab.setRenameEnabled(true);
@@ -109,10 +104,6 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         try
         {
             VaultManager.getInstance().activateVault(vault);
-            ((FormVaultsManager) parent).setVaultControlsDisabled(false);
-            ((FormVaultsManager) parent)
-                .rebindDBStatusProerty(VaultManager.getInstance().getActiveVault().getDBStatusProperty());
-            Autologin.getInstance().check(vault);
         }
         catch (Exceptions e)
         {
@@ -145,5 +136,10 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
     {
         String name = vault.getName();
         return name.isEmpty() ? Texts.LABEL_UNNAMED.toString().toUpperCase() : name;
+    }
+
+    public boolean hasVault(Vault vault)
+    {
+        return this.vault == vault;
     }
 }

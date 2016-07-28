@@ -6,6 +6,8 @@ import compatibility.UserFileMigration;
 import cryptosystem.Autologin;
 import db.Database.Status;
 import db.SpecialPassword;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import logger.Logger;
 import main.Exceptions;
 import main.Exceptions.XC;
@@ -14,16 +16,17 @@ import main.Properties;
 
 public class VaultManager
 {
-    static private VaultManager self        = null;
+    static private VaultManager         self                = null;
 
-    private Vector<Vault>       vaults      = null;
+    private Vector<Vault>               vaults              = null;
 
-    private Vault               activeVault = null;
+    private SimpleObjectProperty<Vault> activeVaultProperty = null;
 
     private VaultManager()
     {
         vaults = new Vector<>();
         self = this;
+        activeVaultProperty = new SimpleObjectProperty<Vault>(null);
     }
 
     static public void init()
@@ -76,20 +79,28 @@ public class VaultManager
 
     public void removeVault()
     {
-        if (activeVault != null)
-            vaults.remove(activeVault);
+        if (activeVaultProperty.get() != null)
+        {
+            vaults.remove(activeVaultProperty.get());
+            deactivateVault();
+        }
         else
             Logger.printError("Attempt to close null-vault...");
     }
 
     public void activateVault(Vault vault)
     {
-        activeVault = vault;
+        activeVaultProperty.set(vault);
     }
 
     public Vault getActiveVault()
     {
-        return activeVault;
+        return activeVaultProperty.get();
+    }
+
+    public ObjectProperty<Vault> getActiveVaultProperty()
+    {
+        return activeVaultProperty;
     }
 
     public void deactivateVault()
@@ -111,16 +122,16 @@ public class VaultManager
     {
         if (vaults.isEmpty()) throw new Exceptions(XC.VAULTS_NOT_FOUND);
 
-        if (activeVault == null)
+        if (activeVaultProperty.get() == null)
             activateVault(vaults.firstElement());
         else
         {
-            Logger.printDebug(
-                "Index of active vault: " + vaults.indexOf(activeVault) + "; Vault name: " + activeVault.getName());
-            activateVault(vaults.get((vaults.indexOf(activeVault) + 1) % vaults.size()));
+            Logger.printDebug("Index of active vault: " + vaults.indexOf(activeVaultProperty.get()) + "; Vault name: "
+                + activeVaultProperty.get().getName());
+            activateVault(vaults.get((vaults.indexOf(activeVaultProperty.get()) + 1) % vaults.size()));
         }
 
-        return activeVault;
+        return activeVaultProperty.get();
     }
 
     public void autologin() throws Exceptions

@@ -14,8 +14,6 @@ import logger.Logger;
 import main.Exceptions;
 import main.Terminator;
 import main.Exceptions.XC;
-import ui.AbstractForm;
-import ui.FormVaultsManager;
 import ui.elements.EntryField.TEXTFIELD;
 
 public class LoginTabContents extends ui.elements.GridPane implements TabContent
@@ -27,8 +25,6 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
     private Button        b_login            = null;
     private Button        b_register         = null;
     private Tab           t_ownTab           = null;
-
-    private AbstractForm  parent              = null;
 
     private EventHandler<ActionEvent> getOnLoginBtnAction()
     {
@@ -117,7 +113,7 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         try
         {
             VaultTabContent newContent =
-                new VaultTabContent(t_ownTab, VaultManager.getInstance().addVault(password, isNewUser), parent);
+                new VaultTabContent(t_ownTab, VaultManager.getInstance().addVault(password, isNewUser));
             t_ownTab.setTabContent(newContent);
             t_ownTab.setVaultName(newContent.getName());
         }
@@ -130,9 +126,8 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         }
     }
 
-    public LoginTabContents(Tab ownTab, AbstractForm parentForm)
+    public LoginTabContents(Tab ownTab)
     {
-        this.parent = parentForm;
         t_ownTab = ownTab;
 
         // ========== LABELS ========== //
@@ -211,8 +206,6 @@ public class LoginTabContents extends ui.elements.GridPane implements TabContent
         try
         {
             VaultManager.getInstance().deactivateVault();
-            ((FormVaultsManager) parent).setVaultControlsDisabled(true);
-            ((FormVaultsManager) parent).rebindDBStatusProerty(null);
             Platform.runLater(() -> pf_password.requestFocus());
         }
         catch (Exceptions e)
