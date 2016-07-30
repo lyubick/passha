@@ -69,18 +69,6 @@ public class FormResetPwd extends AbstractForm
         };
     }
 
-    private EventHandler<ActionEvent> getOnRegenerateBtnAction()
-    {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                showPassword();
-            }
-        };
-    }
-
     private void showPassword()
     {
         try
@@ -139,7 +127,7 @@ public class FormResetPwd extends AbstractForm
 
         b_ok.setOnAction(getOnOKBtnAction());
         b_cancel.setOnAction(getOnCancelBtnAction());
-        b_regenerate.setOnAction(getOnRegenerateBtnAction());
+        b_regenerate.setOnAction(event -> showPassword());
 
         showPassword();
 

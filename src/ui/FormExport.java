@@ -4,8 +4,6 @@ import java.io.File;
 
 import core.Vault;
 import core.VaultManager;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
@@ -81,16 +79,12 @@ public class FormExport extends AbstractForm
             if (file != null) ef_path.setText(file.getAbsolutePath());
         });
 
-        ef_path.textProperty().addListener(new ChangeListener<String>()
+        ef_path.textProperty().addListener((observable, oldValue, newValue) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
-            {
-                if (!newValue.isEmpty())
-                    ef_path.beNormal();
-                else
-                    ef_path.beError();
-            }
+            if (!newValue.isEmpty())
+                ef_path.beNormal();
+            else
+                ef_path.beError();
         });
 
         b_cancel.setOnAction(event -> close());
@@ -106,18 +100,14 @@ public class FormExport extends AbstractForm
                 .or(ef_path.textProperty().isEmpty())               // Path must be defined
                 .or(pef_password.focusedProperty()));               // Focus must not be on password field
 
-        pef_password.focusedProperty().addListener(new ChangeListener<Boolean>()
+        pef_password.focusedProperty().addListener((observable, oldValue, newValue) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+            // On lost focus check if password is correct
+            if (newValue == false)
             {
-                // On lost focus check if password is correct
-                if (newValue == false)
-                {
-                    pef_password.setValid(
-                        currentActiveVault.initializedFrom(SHA.getHashBytes(pef_password.getText().getBytes())));
-                    if (!pef_password.isValid()) pef_password.clear();
-                }
+                pef_password
+                    .setValid(currentActiveVault.initializedFrom(SHA.getHashBytes(pef_password.getText().getBytes())));
+                if (!pef_password.isValid()) pef_password.clear();
             }
         });
 

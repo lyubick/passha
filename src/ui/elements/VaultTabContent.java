@@ -17,16 +17,17 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
     private Vault vault    = null;
     private Tab   t_ownTab = null;
 
-    private ChangeListener<Object> getSelectedItemPropertyListener()
+    private ChangeListener<iSpecialPassword> getSelectedItemPropertyListener()
     {
-        return new ChangeListener<Object>()
+        return new ChangeListener<iSpecialPassword>()
         {
             @Override
-            public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue)
+            public void changed(ObservableValue<? extends iSpecialPassword> observable, iSpecialPassword oldValue,
+                iSpecialPassword newValue)
             {
                 if (oldValue != null)
                 {
-                    ((iSpecialPassword) oldValue).setPasswordVisible(false);
+                    oldValue.setPasswordVisible(false);
                     refresh();
                 }
 
@@ -36,8 +37,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
                     return;
                 }
 
-                vault.setSelected(((iSpecialPassword) newValue).getOrigin());
-
+                vault.setSelected(newValue.getOrigin());
             }
         };
     }

@@ -64,8 +64,7 @@ public class VaultManager
 
     public Vault addVault(byte[] hash, boolean isNewUser) throws Exceptions
     {
-        for (Vault vault : vaults)
-            if (vault.initializedFrom(hash)) throw new Exceptions(XC.VAULT_OPENED);
+        if (vaults.stream().anyMatch(vault -> vault.initializedFrom(hash))) throw new Exceptions(XC.VAULT_OPENED);
 
         Vault newVault = new Vault(hash, isNewUser);
         vaults.addElement(newVault);
@@ -118,6 +117,10 @@ public class VaultManager
         return vaults.size();
     }
 
+    /**
+     * @throws Exceptions
+     *             VAULTS_NOT_FOUND
+     */
     public Vault activateNextVault() throws Exceptions
     {
         if (vaults.isEmpty()) throw new Exceptions(XC.VAULTS_NOT_FOUND);
@@ -153,9 +156,6 @@ public class VaultManager
 
     public boolean isReadyToExit()
     {
-        for (Vault vault : vaults)
-            if (vault.getDBStatusProperty().getValue() != Status.SYNCHRONIZED) return false;
-
-        return true;
+        return vaults.stream().allMatch(vault -> vault.getDBStatus() == Status.SYNCHRONIZED);
     }
 }

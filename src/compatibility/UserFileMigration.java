@@ -74,6 +74,7 @@ public class UserFileMigration
 
             int numberOfErrors = 0;
             Vault vault = VaultManager.getInstance().addVault(SHA.getHashBytes(masterPassword.getBytes()), true);
+
             for (String encryptedPassword : Utilities.readStringsFromFile(oldFile.getAbsolutePath()))
             {
                 try

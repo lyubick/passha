@@ -1,7 +1,7 @@
 package ui.elements;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import java.util.Arrays;
+
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -32,14 +32,7 @@ public class Label extends javafx.scene.control.Label
 
         Label tmp = this;
 
-        this.textProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
-            {
-                tmp.setWidth(calcLength(newValue));
-            }
-        });
+        this.textProperty().addListener((observable, oldValue, newValue) -> tmp.setWidth(calcLength(newValue)));
     }
 
     private void setUpWrap(String name, int maxWidth)
@@ -129,12 +122,7 @@ public class Label extends javafx.scene.control.Label
 
     public static double calcMaxLength(String... names)
     {
-        double maxWidth = 0;
-
-        for (String n : names)
-        {
-            maxWidth = Math.max(maxWidth, Label.calcLength(n));
-        }
+        double maxWidth = Arrays.stream(names).mapToDouble(Label::calcLength).max().orElse(0);
         Logger.printDebug("MAX LENGTH is : " + maxWidth);
         return maxWidth;
     }

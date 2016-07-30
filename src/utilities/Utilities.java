@@ -13,9 +13,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Vector;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import logger.Logger;
 import main.Exceptions;
@@ -154,12 +158,7 @@ public final class Utilities
 
     public static void writeToFile(String fileName, Vector<String> outStrings, String... strings) throws Exceptions
     {
-        Vector<String> tmp = new Vector<String>(outStrings);
-
-        for (String str : strings)
-            tmp.add(str);
-
-        writeToFile(fileName, tmp);
+        writeToFile(fileName, Arrays.stream(strings).collect(Collectors.toCollection(() -> new Vector<String>())));
     }
 
     public static void writeToFile(String fileName, Vector<String> outStrings) throws Exceptions
@@ -231,15 +230,7 @@ public final class Utilities
 
         try
         {
-            BufferedReader inFile = new BufferedReader(new FileReader(fileName));
-            String tmpString = null;
-
-            while ((tmpString = inFile.readLine()) != null)
-            {
-                inLines.add(tmpString);
-            }
-            inFile.close();
-
+            Files.lines(Paths.get(fileName)).collect(Collectors.toCollection(() -> inLines));
         }
         catch (IOException e)
         {

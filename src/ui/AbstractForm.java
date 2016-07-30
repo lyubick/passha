@@ -1,5 +1,6 @@
 package ui;
 
+import java.util.Optional;
 import java.util.Vector;
 
 import ui.elements.GridPane;
@@ -11,7 +12,6 @@ import main.Properties;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
@@ -23,7 +23,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
 
 public abstract class AbstractForm
 {
@@ -35,7 +34,7 @@ public abstract class AbstractForm
     };
 
     protected AbstractForm         parent   = null;
-    protected Vector<AbstractForm> childs   = null;
+    protected Vector<AbstractForm> children = null;
     protected WindowPriority       priority = null;
 
     protected static class Coords
@@ -68,19 +67,15 @@ public abstract class AbstractForm
     // Method will create reference to this instance in parent instance
     protected void open()
     {
-        if (parent != null) parent.childs.add(this);
+        if (parent != null) parent.children.add(this);
         stage.show();
     }
 
     // Method will delete references to this from parent instance
     protected void close()
     {
-        if (parent != null) parent.childs.remove(this);
-        if (childs != null)
-        {
-            for (AbstractForm child : childs)
-                child.close();
-        }
+        if (parent != null) parent.children.remove(this);
+        if (children != null) children.stream().forEach(child -> child.close());
         stage.close();
         if (parent != null) parent.stage.requestFocus();
     }
@@ -91,20 +86,12 @@ public abstract class AbstractForm
         stage.setIconified(false);
         stage.requestFocus();
         Coords.recall(stage);
-        if (childs != null)
-        {
-            for (AbstractForm child : childs)
-                child.restore();
-        }
+        if (children != null) children.stream().forEach(child -> child.restore());
     }
 
     public void minimize()
     {
-        if (childs != null)
-        {
-            for (AbstractForm child : childs)
-                child.minimize();
-        }
+        if (children != null) children.stream().forEach(child -> child.minimize());
         Coords.remember(stage);
         stage.hide();
     }
@@ -128,17 +115,6 @@ public abstract class AbstractForm
     }
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
-    private EventHandler<WindowEvent> getOnCloseRequest()
-    {
-        return new EventHandler<WindowEvent>()
-        {
-            @Override
-            public void handle(WindowEvent event)
-            {
-                onUserCloseRequest();
-            }
-        };
-    }
 
     private ChangeListener<Boolean> getIconifiedPropertyListener()
     {
@@ -164,29 +140,26 @@ public abstract class AbstractForm
 
                 if (newValue && priority == WindowPriority.ALWAYS_ON_TOP) return;
 
-                // Check if we have Children with highest priorities
-                if (!childs.isEmpty())
                 {
-                    for (AbstractForm child : childs)
+                    // Check if we have Children with highest priorities
+                    Optional<AbstractForm> childOnTop = children.stream()
+                        .filter(child -> child.priority.equals(WindowPriority.ALWAYS_ON_TOP)).limit(1).findAny();
+                    if (childOnTop.isPresent())
                     {
-                        if (child.priority.equals(WindowPriority.ALWAYS_ON_TOP))
-                        {
-                            child.stage.requestFocus();
-                            return;
-                        }
+                        childOnTop.get().stage.requestFocus();
+                        return;
                     }
                 }
 
                 // No, we have no children with higher priority. Maybe brothers?
-                if ((parent != null) && (!parent.childs.isEmpty()))
+                if ((parent != null) && (!parent.children.isEmpty()))
                 {
-                    for (AbstractForm child : parent.childs)
+                    Optional<AbstractForm> childOnTop = parent.children.stream()
+                        .filter(child -> child.priority.equals(WindowPriority.ALWAYS_ON_TOP)).limit(1).findAny();
+                    if (childOnTop.isPresent())
                     {
-                        if (child.priority.equals(WindowPriority.ALWAYS_ON_TOP))
-                        {
-                            child.stage.requestFocus();
-                            return;
-                        }
+                        childOnTop.get().stage.requestFocus();
+                        return;
                     }
                 }
 
@@ -204,7 +177,7 @@ public abstract class AbstractForm
 
         if (this.priority == WindowPriority.ONLY_ONE_OPENED && this.parent != null)
         {
-            for (AbstractForm brother : this.parent.childs)
+            for (AbstractForm brother : this.parent.children)
             {
                 if (brother.getClass().getName().equals(this.getClass().getName()))
                 {
@@ -215,7 +188,7 @@ public abstract class AbstractForm
         }
 
         // Initialize everything to avoid NullPointerExceptions
-        childs = new Vector<>();
+        children = new Vector<>();
 
         grid = new GridPane();
 
@@ -272,7 +245,7 @@ public abstract class AbstractForm
         stage.setTitle(title + " - " + Properties.SOFTWARE.NAME + " (" + Texts.LABEL_VERSION.toString() + ")");
         stage.setResizable(true);
 
-        stage.setOnCloseRequest(getOnCloseRequest());
+        stage.setOnCloseRequest(event -> onUserCloseRequest());
         stage.iconifiedProperty().addListener(getIconifiedPropertyListener());
         stage.focusedProperty().addListener(getFocusedPropertyListener());
 

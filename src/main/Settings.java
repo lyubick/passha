@@ -1,6 +1,3 @@
-/**
- *
- */
 package main;
 
 import java.util.HashMap;
@@ -8,10 +5,6 @@ import java.util.HashMap;
 import main.Exceptions.XC;
 import utilities.Utilities;
 
-/**
- * @author lyubick
- *
- */
 public class Settings
 {
     private static Settings self            = null;

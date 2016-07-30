@@ -60,6 +60,13 @@ public class FormShortcuts extends AbstractForm
                     case TAB:
                         try
                         {
+                            // ignore TAB - no other vaults to switch to
+                            if (VaultManager.getInstance().size() == 1)
+                            {
+                                keyEvent.consume();
+                                return;
+                            }
+
                             VaultManager.getInstance().activateNextVault();
                             close();
                             new FormShortcuts(parent);
@@ -121,7 +128,7 @@ public class FormShortcuts extends AbstractForm
     private void fillFormWithPwds() throws Exceptions
     {
         Vault vault = VaultManager.getInstance().getActiveVault();
-        if (vault == null) vault = VaultManager.getInstance().activateNextVault();
+        if (vault == null) vault = VaultManager.getInstance().activateNextVault();  // throws if no vaults open
 
         String vaultName = VaultManager.getInstance().getActiveVault().getName();
         if (vaultName.isEmpty()) vaultName = Texts.LABEL_UNNAMED.toString().toUpperCase();
@@ -137,8 +144,8 @@ public class FormShortcuts extends AbstractForm
 
         grid.addHElement(l_vaultName, 0, 2);
 
-        Vector<SpecialPassword> tmp = vault.getPasswordsWithShortcut();
-        if (tmp.size() == 0)
+        Vector<SpecialPassword> passwordsWithShortcuts = vault.getPasswordsWithShortcut();
+        if (passwordsWithShortcuts.size() == 0)
         {
             Label l_error = new Label(Texts.MSG_SHORTCUTS_MISSING);
             l_error.beError();
@@ -149,16 +156,18 @@ public class FormShortcuts extends AbstractForm
 
         grid.addHElements(0, l_passwordName, l_shortcut);
 
-        for (SpecialPassword sp : tmp)
+        passwordsWithShortcuts.stream().map(sp ->
         {
             EntryField ef = new EntryField(sp.getName(), TEXTFIELD.WIDTH.XS);
             ef.setEditable(false);
             ef.setText(sp.getShortcut());
+            return ef;
+        }).forEach(ef ->
+        {
             GridPane.setHalignment(ef, HPos.CENTER);
-            grid.addHElement((LabeledItem) ef);
-
             ef.getLabel().setAlignment(Pos.CENTER);
-        }
+            grid.addHElement((LabeledItem) ef);
+        });
 
         grid.getChildren().get(0).requestFocus(); // Remove focus from EntryField
     }

@@ -58,18 +58,6 @@ public class FormEditPwd extends AbstractForm
         };
     }
 
-    private EventHandler<ActionEvent> getOnCancelBtnAction()
-    {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                close();
-            }
-        };
-    }
-
     /* PUBLIC ROUTINE */
     public FormEditPwd(AbstractForm parent) throws Exceptions
     {
@@ -111,7 +99,7 @@ public class FormEditPwd extends AbstractForm
         GridPane.setHalignment(b_cancel, HPos.RIGHT);
 
         b_ok.setOnAction(getOnOKBtnAction());
-        b_cancel.setOnAction(getOnCancelBtnAction());
+        b_cancel.setOnAction(event -> close());
 
         open();
         ef_shortcut.requestFocus();

@@ -1,8 +1,6 @@
 package ui.elements;
 
 import javafx.animation.PauseTransition;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.util.Duration;
@@ -67,16 +65,16 @@ public class Button extends javafx.scene.control.Button
             case S:
                 width = BUTTON.WIDTH.S;
                 height = BUTTON.HEIGHT.S;
-                break;
+            break;
             case M:
                 width = BUTTON.WIDTH.M;
                 height = BUTTON.HEIGHT.M;
-                break;
+            break;
             case L:
                 width = BUTTON.WIDTH.L;
                 height = BUTTON.HEIGHT.M;
             default:
-                break;
+            break;
         }
 
         setMinWidth(width);
@@ -97,33 +95,24 @@ public class Button extends javafx.scene.control.Button
 
     public Button(String name, String... names)
     {
-        this(name, Math.max(Label.calcLength(name), Label.calcMaxLength(names))
-                + BUTTON.WIDTH.RESERVE, BUTTON.HEIGHT.M);
+        this(name, Math.max(Label.calcLength(name), Label.calcMaxLength(names)) + BUTTON.WIDTH.RESERVE,
+            BUTTON.HEIGHT.M);
     }
 
-    public static void setButtonShortcut(final Button btn, KeyCodeCombination cmb)
-            throws Exceptions
+    public static void setButtonShortcut(final Button btn, KeyCodeCombination cmb) throws Exceptions
     {
         if (btn.getScene() == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
-        btn.getScene().getAccelerators().put(cmb, new Runnable()
+        btn.getScene().getAccelerators().put(cmb, () ->
         {
-            @Override
-            public void run()
+            // Do it with style - show animation
+            btn.arm();
+            PauseTransition pt = new PauseTransition(Duration.millis(BUTTON.holdTime));
+            pt.setOnFinished(event ->
             {
-                // Do it with style - show animation
-                btn.arm();
-                PauseTransition pt = new PauseTransition(Duration.millis(BUTTON.holdTime));
-                pt.setOnFinished(new EventHandler<ActionEvent>()
-                {
-                    @Override
-                    public void handle(ActionEvent event)
-                    {
-                        btn.fire();
-                        btn.disarm();
-                    }
-                });
-                pt.play();
-            }
+                btn.fire();
+                btn.disarm();
+            });
+            pt.play();
         });
     }
 }

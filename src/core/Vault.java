@@ -8,7 +8,6 @@ import languages.Local.Texts;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
@@ -62,12 +61,8 @@ public class Vault
 
     public SpecialPassword getPasswordByShortcut(String shortcut)
     {
-        Optional<SpecialPassword> pwd =
-            database.getDecrypted().stream().filter(sp -> sp.getShortcut().equals(shortcut)).findFirst();
-
-        if (pwd.isPresent()) return pwd.get();
-
-        return null;
+        return database.getDecrypted().stream().filter(sp -> sp.getShortcut().equals(shortcut)).limit(1).findAny()
+            .orElse(null);
     }
 
     public void addPassword(SpecialPassword password) throws Exceptions
@@ -189,5 +184,10 @@ public class Vault
     public ObjectProperty<Status> getDBStatusProperty()
     {
         return database.getStatusProperty();
+    }
+
+    public Status getDBStatus()
+    {
+        return database.getStatus();
     }
 }

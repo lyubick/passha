@@ -122,8 +122,9 @@ public class Autologin
         try
         {
             ON.set(true);
-            for (String cipher : readFromRegistry())
-                if (vault.initializedFrom(rsa.decrypt(cipher))) return;
+
+            if (readFromRegistry().stream().map(cipher -> rsa.decrypt(cipher))
+                .anyMatch(hash -> vault.initializedFrom(hash))) return;
 
             ON.set(false);
         }
@@ -178,7 +179,7 @@ public class Autologin
 
             output = new StringBuilder();
 
-            for (int i = 0; i < Utilities.DEFAULT_BUFFER_SIZE; i++)
+            for (int i = 0; i < b.length; i++)
                 if ((Character.isLetterOrDigit((char) b[i]))) output.append((char) b[i]);
 
             Logger.printDebug("output: '" + output.toString() + "'");

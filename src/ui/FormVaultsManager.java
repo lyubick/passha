@@ -20,7 +20,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckMenuItem;
@@ -111,13 +110,9 @@ public class FormVaultsManager extends AbstractForm
         stage.setWidth(WINDOW.width);
         stage.setMinHeight(WINDOW.height);
         stage.setMinWidth(WINDOW.width);
-        stage.focusedProperty().addListener(new ChangeListener<Boolean>()
+        stage.focusedProperty().addListener((observable, oldValue, newValue) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
-            {
-                if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).reload();
-            }
+            if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).reload();
         });
 
         This = this;
@@ -194,33 +189,22 @@ public class FormVaultsManager extends AbstractForm
             }
         });
 
-        mi_settings.setOnAction(new EventHandler<ActionEvent>()
+        mi_settings.setOnAction(event ->
         {
-            @Override
-            public void handle(ActionEvent event)
+            try
             {
-                try
-                {
-                    new FormSettings(This);
-                }
-                catch (Exceptions e)
-                {
-                    if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
-                        ; // Ignore
-                    else
-                        Logger.printError("Unhandled exception: " + e.getCode());
-                }
+                new FormSettings(This);
+            }
+            catch (Exceptions e)
+            {
+                if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
+                    ; // Ignore
+                else
+                    Logger.printError("Unhandled exception: " + e.getCode());
             }
         });
 
-        mi_exit.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                Terminator.terminate(new Exceptions(XC.END));
-            }
-        });
+        mi_exit.setOnAction(event -> Terminator.terminate(new Exceptions(XC.END)));
 
         mi_new.setOnAction(getOnNewAction());
         mi_edit.setOnAction(getOnEditAction());
@@ -230,22 +214,18 @@ public class FormVaultsManager extends AbstractForm
 
         mi_copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
 
-        mi_about.setOnAction(new EventHandler<ActionEvent>()
+        mi_about.setOnAction(event ->
         {
-            @Override
-            public void handle(ActionEvent event)
+            try
             {
-                try
-                {
-                    new FormAbout(This);
-                }
-                catch (Exceptions e)
-                {
-                    if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
-                        ; // Ignore
-                    else
-                        Logger.printError("Unhandled exception: " + e.getCode());
-                }
+                new FormAbout(This);
+            }
+            catch (Exceptions e)
+            {
+                if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
+                    ; // Ignore
+                else
+                    Logger.printError("Unhandled exception: " + e.getCode());
             }
         });
 
@@ -262,13 +242,9 @@ public class FormVaultsManager extends AbstractForm
         tp_vaults.setMinHeight(TAB_PANE_MIN_HEIGHT);
         tp_vaults.setMinWidth(TAB_PANE_MIN_WIDTH);
 
-        tp_vaults.focusedProperty().addListener(new ChangeListener<Boolean>()
+        tp_vaults.focusedProperty().addListener((observable, oldValue, newValue) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
-            {
-                if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).activateTab();
-            }
+            if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).activateTab();
         });
 
         t_newTabCreator = new Tab();
@@ -276,68 +252,54 @@ public class FormVaultsManager extends AbstractForm
         t_newTabCreator.setClosable(false);
         t_newTabCreator.setLabelText("+");
         t_newTabCreator.setRenameEnabled(false);
-        t_newTabCreator.setOnSelectionChanged(new EventHandler<Event>()
+        t_newTabCreator.setOnSelectionChanged(event ->
         {
-            @Override
-            public void handle(Event event)
-            {
-                if (t_newTabCreator.isSelected()) AddLoginTab();
-                event.consume();
-            }
+            if (t_newTabCreator.isSelected()) AddLoginTab();
+            event.consume();
         });
 
-        tp_vaults.setOnContextMenuRequested(new EventHandler<Event>()
+        tp_vaults.setOnContextMenuRequested(event ->
         {
-            @Override
-            public void handle(Event event)
-            {
-                Optional<AbstractForm> form =
-                    childs.stream().filter(p -> p.priority == WindowPriority.ALWAYS_ON_TOP).findFirst();
+            Optional<AbstractForm> form =
+                children.stream().filter(p -> p.priority == WindowPriority.ALWAYS_ON_TOP).findFirst();
 
-                if (form.isPresent())
-                {
-                    stage.requestFocus();
-                }
+            if (form.isPresent())
+            {
+                stage.requestFocus();
             }
         });
 
         tp_vaults.getTabs().add(t_newTabCreator);
 
-        VaultManager.getInstance().getActiveVaultProperty().addListener(new ChangeListener<Vault>()
+        VaultManager.getInstance().getActiveVaultProperty().addListener((observable, oldValue, newValue) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Vault> observable, Vault oldValue, Vault newValue)
+            if (newValue == null)
             {
-                if (newValue == null)
-                {
-                    setVaultControlsDisabled(true);
-                    rebindDBStatusProperty(null);
-                    return;
-                }
-
-                setVaultControlsDisabled(false);
-
-                try
-                {
-                    rebindDBStatusProperty(newValue.getDBStatusProperty());
-                    Autologin.getInstance().check(newValue);
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-
-                Logger.printDebug("Active vault changed from '" + (oldValue == null ? "null" : oldValue.getName())
-                    + "' to '" + newValue.getName() + "'.");
-
-                Optional<javafx.scene.control.Tab> tabWithVault =
-                    tp_vaults.getTabs().stream().filter(tab -> tab.getContent() instanceof VaultTabContent)
-                        .filter(vaultTab -> ((VaultTabContent) vaultTab.getContent()).hasVault(newValue)).findFirst();
-                if (tabWithVault.isPresent())
-                    tp_vaults.getSelectionModel().select(tabWithVault.get());
-                else
-                    Logger.printTrace("Couldn't find activated vault in tabs.");
+                setVaultControlsDisabled(true);
+                rebindDBStatusProperty(null);
+                return;
             }
+
+            setVaultControlsDisabled(false);
+
+            try
+            {
+                rebindDBStatusProperty(newValue.getDBStatusProperty());
+                Autologin.getInstance().check(newValue);
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
+            }
+
+            Logger.printDebug("Active vault changed from '" + (oldValue == null ? "null" : oldValue.getName())
+                + "' to '" + newValue.getName() + "'.");
+
+            tp_vaults.getTabs().stream().filter(tab ->
+            {
+                return tab.getContent() instanceof VaultTabContent
+                    && ((VaultTabContent) tab.getContent()).hasVault(newValue);
+            }).limit(1).findAny().ifPresent(tab -> tp_vaults.getSelectionModel().select(tab));
         });
 
         try
@@ -427,26 +389,15 @@ public class FormVaultsManager extends AbstractForm
     {
         Tab tab = new Tab();
 
-        tab.setOnSelectionChanged(new EventHandler<Event>()
+        tab.setOnSelectionChanged(event ->
         {
-            @Override
-            public void handle(Event event)
-            {
-                if (tab.isSelected())
-                {
-                    if (tab.getContent() != null) ((TabContent) tab.getContent()).activateTab();
-                }
-            }
+            if (tab.isSelected() && tab.getContent() != null) ((TabContent) tab.getContent()).activateTab();
         });
 
-        tab.setOnCloseRequest(new EventHandler<Event>()
+        tab.setOnCloseRequest(event ->
         {
-            @Override
-            public void handle(Event event)
-            {
-                ((TabContent) tab.getContent()).closeTab();
-                tp_vaults.getTabs().get(tp_vaults.getTabs().size() - 1).setDisable(false);
-            }
+            ((TabContent) tab.getContent()).closeTab();
+            tp_vaults.getTabs().get(tp_vaults.getTabs().size() - 1).setDisable(false);
         });
 
         tp_vaults.getTabs().add(Math.max(0, tp_vaults.getTabs().indexOf(t_newTabCreator)), tab);
@@ -505,7 +456,6 @@ public class FormVaultsManager extends AbstractForm
             @Override
             protected Void call() throws Exception
             {
-
                 updateProgress(9, 10);
 
                 int timeToLive = 0;
@@ -541,7 +491,7 @@ public class FormVaultsManager extends AbstractForm
             }
         };
 
-        tsk_pwdLifeTime.setOnSucceeded(EventHandler ->
+        tsk_pwdLifeTime.setOnSucceeded(event ->
         {
             Logger.printTrace("PWDCLIP -> Successfully finished.");
             try
@@ -559,10 +509,7 @@ public class FormVaultsManager extends AbstractForm
             }
         });
 
-        tsk_pwdLifeTime.setOnCancelled(EventHandler ->
-        {
-            Logger.printTrace("PWDCLIP -> Cancelled finished");
-        });
+        tsk_pwdLifeTime.setOnCancelled(event -> Logger.printTrace("PWDCLIP -> Cancelled finished"));
         Thread calculatePasswordThread = new Thread(tsk_pwdLifeTime);
         calculatePasswordThread.setDaemon(false);
         calculatePasswordThread.start();

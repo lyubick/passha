@@ -134,7 +134,7 @@ public class Database
         if (!newEntry.getShortcut().isEmpty())
         {
             Optional<SpecialPassword> optSp =
-                db.keySet().stream().filter(sp -> sp.getShortcut().equals(newEntry.getShortcut())).findFirst();
+                db.keySet().stream().filter(sp -> sp.getShortcut().equals(newEntry.getShortcut())).limit(1).findAny();
 
             if (optSp.isPresent() && (oldEntry == null || !newEntry.getShortcut().equals(oldEntry.getShortcut())))
                 throw new Exceptions(XC.PASSWORD_SHORTCUT_IN_USE, optSp.get());
@@ -193,6 +193,11 @@ public class Database
     public ObjectProperty<Status> getStatusProperty()
     {
         return status;
+    }
+
+    public Status getStatus()
+    {
+        return status.get();
     }
 
     private void sync()

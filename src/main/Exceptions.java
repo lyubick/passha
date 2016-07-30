@@ -1,17 +1,7 @@
-/**
- *
- */
 package main;
 
-/**
- * @author lyubick
- *
- */
 public final class Exceptions extends Throwable
 {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     private XC                code;

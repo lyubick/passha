@@ -1,12 +1,5 @@
-/**
- *
- */
 package db;
 
-/**
- * @author lyubick
- *
- */
 public class iSpecialPassword
 {
     private final SpecialPassword origin;

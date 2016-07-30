@@ -37,18 +37,6 @@ public class FormAbout extends AbstractForm
     private final int WRAP_WIDTH       = 600;
 
     /* EVENT HANDLERS & CHANGE LISTENERS */
-    private EventHandler<ActionEvent> getOnOKBtnAction()
-    {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                close();
-            }
-        };
-    }
-
     private EventHandler<ActionEvent> getOnLicenseBtnAction()
     {
         return new EventHandler<ActionEvent>()
@@ -58,7 +46,7 @@ public class FormAbout extends AbstractForm
             {
                 try
                 {
-                    Logger.printDebug("URI" + System.getProperty("user.dir") + File.separator + "GNUGPLv3.txt");
+                    Logger.printDebug("URI: '" + System.getProperty("user.dir") + File.separator + "GNUGPLv3.txt'");
                     Desktop.getDesktop()
                         .edit(new File(System.getProperty("user.dir") + File.separator + "GNUGPLv3.txt"));
                 }
@@ -147,7 +135,7 @@ public class FormAbout extends AbstractForm
 
         grid.addAll(0, b_ok, b_license, b_github);
 
-        b_ok.setOnAction(getOnOKBtnAction());
+        b_ok.setOnAction(event -> close());
         b_license.setOnAction(getOnLicenseBtnAction());
         b_github.setOnAction(getOnGithubBtnAction());
 

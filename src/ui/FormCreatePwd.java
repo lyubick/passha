@@ -109,18 +109,6 @@ public class FormCreatePwd extends AbstractForm
         };
     }
 
-    private EventHandler<ActionEvent> getOnUpperCaseCBChanged()
-    {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                showPasswordPreview();
-            }
-        };
-    }
-
     private ChangeListener<Boolean> getLengthTFFocusedPropertyListener()
     {
         return new ChangeListener<Boolean>()
@@ -187,30 +175,6 @@ public class FormCreatePwd extends AbstractForm
 
                     b_ok.setDisable(false);
                 }
-            }
-        };
-    }
-
-    private EventHandler<ActionEvent> getOnRegenerateBtnAction()
-    {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                showPasswordPreview();
-            }
-        };
-    }
-
-    private EventHandler<ActionEvent> getOnCancelBtnAction()
-    {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                close();
             }
         };
     }
@@ -350,11 +314,11 @@ public class FormCreatePwd extends AbstractForm
         ef_length.focusedProperty().addListener(getLengthTFFocusedPropertyListener());
 
         cb_specialChars.setOnAction(getOnSpecialCharactersCBChanged());
-        cb_upperCaseChar.setOnAction(getOnUpperCaseCBChanged());
+        cb_upperCaseChar.setOnAction(event -> showPasswordPreview());
 
         b_ok.setOnAction(getOnOKBtnAction());
-        b_cancel.setOnAction(getOnCancelBtnAction());
-        b_regeneratePassword.setOnAction(getOnRegenerateBtnAction());
+        b_cancel.setOnAction(event -> close());
+        b_regeneratePassword.setOnAction(event -> showPasswordPreview());
 
         b_ok.setDisable(true);
         ef_length.setText(Integer.toString(DEFAULT_PASSWORD_LENGTH));

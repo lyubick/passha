@@ -179,9 +179,6 @@ final public class SHA
         return output;
     }
 
-    /*
-     * Public main functions
-     */
     static public synchronized byte[] getHashBytes(final byte[] input)
     {
         initializeSHA512();
@@ -199,9 +196,6 @@ final public class SHA
         return getResult();
     }
 
-    /*
-     * Public interface functions
-     */
     static public synchronized String getHashString(final byte[] input)
     {
         return Utilities.bytesToHex(getHashBytes(input));

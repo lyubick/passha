@@ -23,10 +23,6 @@ public final class RSA
     /* Certainty that generated Number is PRIME. (1 - (1/2) ^ Certainty) */
     private static final int RSA_PRIME_CERTAINCY               = 1000;
 
-    /*
-     * Public Main functions
-     */
-
     public String encrypt(byte[] message)
     {
         StringBuilder cipher = new StringBuilder("");
@@ -86,10 +82,6 @@ public final class RSA
         return decipher.toByteArray();
     }
 
-    /*
-     * Private main functions
-     */
-
     private void test() throws Exceptions
     {
         // SHA-512 from "Test hash for RSA" x2
@@ -139,10 +131,6 @@ public final class RSA
         this.d = new BigInteger("0");
         init();
     }
-
-    /*
-     * Interface methods
-     */
 
     public String encrypt(String msg)
     {
