@@ -11,8 +11,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.Optional;
-
 import db.SpecialPassword;
 import db.Database.Status;
 import javafx.beans.property.ObjectProperty;
@@ -159,6 +157,7 @@ public class FormVaultsManager extends AbstractForm
 
         m_file.getItems().addAll(mi_settings, new SeparatorMenuItem(), mi_exit);
         m_vault.getItems().addAll(m_password, mi_export, new SeparatorMenuItem(), cmi_autologin);
+        m_vault.setDisable(true);
         m_password.getItems().addAll(mi_new, mi_edit, mi_delete, new SeparatorMenuItem(), mi_reset,
             new SeparatorMenuItem(), mi_copy);
         m_help.getItems().addAll(mi_about);
@@ -260,13 +259,7 @@ public class FormVaultsManager extends AbstractForm
 
         tp_vaults.setOnContextMenuRequested(event ->
         {
-            Optional<AbstractForm> form =
-                children.stream().filter(p -> p.priority == WindowPriority.ALWAYS_ON_TOP).findFirst();
-
-            if (form.isPresent())
-            {
-                stage.requestFocus();
-            }
+            if (children.stream().anyMatch(p -> p.priority == WindowPriority.ALWAYS_ON_TOP)) stage.requestFocus();
         });
 
         tp_vaults.getTabs().add(t_newTabCreator);
@@ -564,6 +557,14 @@ public class FormVaultsManager extends AbstractForm
             @Override
             public void handle(ActionEvent arg0)
             {
+                try
+                {
+                    if (VaultManager.getSelectedPassword() == null) return;
+                }
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
                 This.minimize();
                 copyToClipboard();
             }

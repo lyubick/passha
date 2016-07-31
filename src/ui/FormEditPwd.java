@@ -62,6 +62,7 @@ public class FormEditPwd extends AbstractForm
     public FormEditPwd(AbstractForm parent) throws Exceptions
     {
         super(parent, Texts.FORM_EDITPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
+        stage.setResizable(false);
 
         l_header = new Label(Texts.FORM_EDITPWD_LABEL_HEADER);
         l_header.beHeader();

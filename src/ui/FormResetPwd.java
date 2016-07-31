@@ -89,6 +89,7 @@ public class FormResetPwd extends AbstractForm
     public FormResetPwd(AbstractForm parent) throws Exceptions
     {
         super(parent, Texts.FORM_RESETPWD_NAME, WindowPriority.ALWAYS_ON_TOP);
+        stage.setResizable(false);
 
         // ========== BUTTONS ========== //
 

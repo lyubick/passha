@@ -1,13 +1,11 @@
 package utilities;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Vector;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import logger.Logger;
@@ -158,7 +155,8 @@ public final class Utilities
 
     public static void writeToFile(String fileName, Vector<String> outStrings, String... strings) throws Exceptions
     {
-        writeToFile(fileName, Arrays.stream(strings).collect(Collectors.toCollection(() -> new Vector<String>())));
+        writeToFile(fileName,
+            Arrays.stream(strings).collect(Collectors.toCollection(() -> new Vector<String>(outStrings))));
     }
 
     public static void writeToFile(String fileName, Vector<String> outStrings) throws Exceptions

@@ -79,6 +79,7 @@ public class FormDeletePwd extends AbstractForm
     public FormDeletePwd(AbstractForm parent) throws Exceptions
     {
         super(parent, Texts.LABEL_PASSWORD, WindowPriority.ALWAYS_ON_TOP);
+        stage.setResizable(false);
 
         confirmationText = new String(Texts.FORM_DELETEPWD_MSG_CONFIRMATION.toString());
         l_header = new Label(Texts.LABEL_PASSWORD.toString());

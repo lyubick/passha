@@ -71,18 +71,19 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
 
         this.setOnMouseClicked(event ->
         {
-            if (event.getClickCount() < 2)
+            iSpecialPassword selectedItem = this.getSelectionModel().getSelectedItem();
+
+            if (selectedItem == null || event.getClickCount() < 2)
             {
                 event.consume();
                 return;
             }
 
-            this.getSelectionModel().getSelectedItem().setPasswordVisible(true);
+            selectedItem.setPasswordVisible(true);
 
             this.getColumns().get(0).setVisible(false);
             this.getColumns().get(0).setVisible(true);
         });
-
     }
 
     @Override

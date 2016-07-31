@@ -102,6 +102,7 @@ public class FormAbout extends AbstractForm
     protected FormAbout(AbstractForm parent) throws Exceptions
     {
         super(parent, Texts.LABEL_ABOUT, WindowPriority.ALWAYS_ON_TOP);
+        stage.setResizable(false);
 
         l_header = new Label(Properties.SOFTWARE.NAME + " v." + Properties.SOFTWARE.VERSION);
         l_header.beHeader();

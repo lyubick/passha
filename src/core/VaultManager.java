@@ -78,18 +78,20 @@ public class VaultManager
 
     public void removeVault()
     {
-        if (activeVaultProperty.get() != null)
+        Vault active = activeVaultProperty.get();
+        if (active != null)
         {
-            vaults.remove(activeVaultProperty.get());
+            vaults.remove(active);
             deactivateVault();
         }
         else
             Logger.printError("Attempt to close null-vault...");
     }
 
-    public void activateVault(Vault vault)
+    public Vault activateVault(Vault vault)
     {
         activeVaultProperty.set(vault);
+        return vault;
     }
 
     public Vault getActiveVault()
@@ -125,16 +127,17 @@ public class VaultManager
     {
         if (vaults.isEmpty()) throw new Exceptions(XC.VAULTS_NOT_FOUND);
 
-        if (activeVaultProperty.get() == null)
-            activateVault(vaults.firstElement());
+        Vault active = activeVaultProperty.get();
+
+        if (active == null)
+            active = activateVault(vaults.firstElement());
         else
         {
-            Logger.printDebug("Index of active vault: " + vaults.indexOf(activeVaultProperty.get()) + "; Vault name: "
-                + activeVaultProperty.get().getName());
-            activateVault(vaults.get((vaults.indexOf(activeVaultProperty.get()) + 1) % vaults.size()));
+            Logger.printDebug("Index of active vault: " + vaults.indexOf(active) + "; Vault name: " + active.getName());
+            activateVault(vaults.get((vaults.indexOf(active) + 1) % vaults.size()));
         }
 
-        return activeVaultProperty.get();
+        return active;
     }
 
     public void autologin() throws Exceptions
