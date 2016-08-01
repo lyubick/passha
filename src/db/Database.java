@@ -218,12 +218,10 @@ public class Database
                     Utilities.writeToFile(vaultFile.getAbsolutePath(),
                         db.values().stream().collect(Collectors.toCollection(() -> new Vector<>())),
                         rsa.encrypt(Utilities.objectToBytes(map)));
-
-                    this.succeeded();
                 }
                 catch (Exceptions e)
                 {
-                    this.failed();
+                    throw new Exception();
                 }
                 return null;
             }
