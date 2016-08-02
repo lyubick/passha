@@ -102,7 +102,7 @@ public class FormVaultsManager extends AbstractForm
     public FormVaultsManager() throws Exceptions
     {
         // No parents it is a main Form
-        super(null, Texts.FORM_MANAGEPWD_NAME, WindowPriority.ONLY_ONE_OPENED);
+        super(null, Texts.FORM_MANAGEPWD_NAME, WindowPriority.ONLY_ONE_OPENED, true);
 
         stage.setHeight(WINDOW.height);
         stage.setWidth(WINDOW.width);

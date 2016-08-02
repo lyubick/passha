@@ -174,7 +174,7 @@ public class FormShortcuts extends AbstractForm
 
     public FormShortcuts(AbstractForm parent) throws Exceptions
     {
-        super(parent, Texts.LABEL_EMPTY, WindowPriority.NORMAL);
+        super(parent, Texts.LABEL_EMPTY, WindowPriority.NORMAL, false);
         stage.initStyle(StageStyle.UNDECORATED);
 
         stage.focusedProperty().addListener(getFocusedPropertyListner());

@@ -168,7 +168,8 @@ public abstract class AbstractForm
         };
     }
 
-    protected AbstractForm(AbstractForm parent, Texts titleTextId, WindowPriority priority) throws Exceptions
+    protected AbstractForm(AbstractForm parent, Texts titleTextId, WindowPriority priority, boolean resizable)
+        throws Exceptions
     {
         this.parent = parent;
         this.priority = priority;
@@ -243,7 +244,7 @@ public abstract class AbstractForm
 
         stage.getIcons().add(new Image(Properties.PATHS.TRAY_ICON));
         stage.setTitle(title + " - " + Properties.SOFTWARE.NAME + " (" + Texts.LABEL_VERSION.toString() + ")");
-        stage.setResizable(true);
+        stage.setResizable(resizable);
 
         stage.setOnCloseRequest(event -> onUserCloseRequest());
         stage.iconifiedProperty().addListener(getIconifiedPropertyListener());

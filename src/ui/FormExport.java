@@ -35,8 +35,7 @@ public class FormExport extends AbstractForm
 
     public FormExport(AbstractForm parent) throws Exceptions
     {
-        super(parent, Texts.FORM_EXPORT_LABEL_EXPORT, WindowPriority.ALWAYS_ON_TOP);
-        stage.setResizable(false);
+        super(parent, Texts.FORM_EXPORT_LABEL_EXPORT, WindowPriority.ALWAYS_ON_TOP, false);
 
         currentActiveVault = VaultManager.getInstance().getActiveVault();
         if (currentActiveVault == null) throw new Exceptions(XC.NULL);

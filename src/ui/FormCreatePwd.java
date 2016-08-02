@@ -224,8 +224,7 @@ public class FormCreatePwd extends AbstractForm
 
     public FormCreatePwd(AbstractForm parent) throws Exceptions
     {
-        super(parent, Texts.FORM_CREATEPWD_NAME, WindowPriority.ONLY_ONE_OPENED);
-        stage.setResizable(false);
+        super(parent, Texts.FORM_CREATEPWD_NAME, WindowPriority.ONLY_ONE_OPENED, false);
 
         // ========== BUTTONS ========== //
 

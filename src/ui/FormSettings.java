@@ -54,8 +54,7 @@ public class FormSettings extends AbstractForm
 
     public FormSettings(AbstractForm parent) throws Exceptions
     {
-        super(parent, Texts.LABEL_SETTINGS, WindowPriority.ALWAYS_ON_TOP);
-        stage.setResizable(false);
+        super(parent, Texts.LABEL_SETTINGS, WindowPriority.ALWAYS_ON_TOP, false);
 
         l_header = new Label(Texts.LABEL_SETTINGS.toString());
         l_header.setTextAlignment(TextAlignment.CENTER);
