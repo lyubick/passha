@@ -34,8 +34,6 @@ public class Vault
     private Database        database         = null;
     private SpecialPassword selectedPassword = null;
 
-    private String          name             = "";
-
     public Vault(byte[] hash, boolean isNewUser) throws Exceptions
     {
         masterHash = hash;
@@ -126,7 +124,7 @@ public class Vault
         Vector<String> exportStrings = new Vector<>();
         final String delimiter = "-----------------------------------------------";
 
-        exportStrings.add(Texts.LABEL_VAULT.toString() + ": '" + name + "'");
+        exportStrings.add(Texts.LABEL_VAULT.toString() + ": '" + database.getName() + "'");
 
         for (SpecialPassword sp : database.getDecrypted())
         {
@@ -158,17 +156,12 @@ public class Vault
 
     public String getName()
     {
-        return name;
+        return database.getName();
     }
 
     public void setName(String name)
     {
-        if (this.name.equals(name)) return;
-
-        this.name = name;
-
-        // Most likely database is now setting name while creating
-        if (database != null) database.requestSync();
+        database.setName(name);
     }
 
     public boolean initializedFrom(byte[] hash)

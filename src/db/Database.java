@@ -2,7 +2,6 @@ package db;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -29,9 +28,9 @@ public class Database
 
     private File                             vaultFile   = null;
 
-    private RSA                              rsa         = null;
+    private String                           name        = "";
 
-    private Vault                            parentVault = null;
+    private RSA                              rsa         = null;
 
     private int                              retriesLeft = Properties.DATABASE.MAX_RETRIES;
 
@@ -54,8 +53,6 @@ public class Database
 
     public Database(RSA myRSA, String filename, boolean newUser, Vault vault) throws Exceptions
     {
-        parentVault = vault;
-
         status = new SimpleObjectProperty<Status>(Status.SYNCHRONIZING);
 
         File vaultDir = new File(Properties.PATHS.VAULT);
@@ -94,14 +91,7 @@ public class Database
         // RSA initialized and created by Vault, DB has only pointer
         rsa = myRSA;
 
-        db = new TreeMap<>(new Comparator<SpecialPassword>()
-        {
-            @Override
-            public int compare(SpecialPassword o1, SpecialPassword o2)
-            {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        db = new TreeMap<>((o1, o2) -> o1.getName().compareTo(o2.getName()));
 
         for (String entry : Utilities.readStringsFromFile(vaultFile.getAbsolutePath()))
         {
@@ -110,7 +100,7 @@ public class Database
 
             if (decryptedEntry.containsKey("vaultName"))
             {
-                parentVault.setName(decryptedEntry.get("vaultName"));
+                name = decryptedEntry.get("vaultName");
                 continue;
             }
 
@@ -202,6 +192,7 @@ public class Database
 
     private void sync()
     {
+
         Logger.printDebug("Saving Database to '" + vaultFile.getAbsolutePath() + "'...");
 
         Task<Void> task = new Task<Void>()
@@ -213,7 +204,7 @@ public class Database
                 try
                 {
                     HashMap<String, String> map = new HashMap<>();
-                    map.put("vaultName", parentVault.getName());
+                    map.put("vaultName", name);
 
                     Utilities.writeToFile(vaultFile.getAbsolutePath(),
                         db.values().stream().collect(Collectors.toCollection(() -> new Vector<>())),
@@ -251,5 +242,18 @@ public class Database
 
         Thread thread = new Thread(task);
         thread.start();
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        if (name.equals(this.name)) return;
+
+        this.name = name;
+        requestSync();
     }
 }
