@@ -84,7 +84,7 @@ public class Functional
             rsa = new RSA(SHA.getHashString(masterHash, SALT_P), SHA.getHashString(masterHash, SALT_Q),
                 SHA.getHashString(masterHash, SALT_E));
 
-            fileName = "testFile" + num.incrementAndGet();
+            fileName = "testFunctionalFile" + num.incrementAndGet();
 
             vaultFile = new File(Properties.PATHS.VAULT + fileName + Properties.EXTENSIONS.VAULT);
             if (vaultFile.exists()) vaultFile.delete();
@@ -94,7 +94,7 @@ public class Functional
         }
         catch (Exceptions e)
         {
-            throw new Exception("pi4alka");
+            throw new Exception("pi4alka: " + e.getCode().toString());
         }
     }
 
