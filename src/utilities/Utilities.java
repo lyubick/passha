@@ -93,7 +93,7 @@ public final class Utilities
         BitSet b = new BitSet();
         // String format: "{x1, x2, ... xN}"
 
-        if (s.length() > 0 && s.charAt(0) == '{' && s.charAt(s.length() - 1) == '}')
+        if (!s.isEmpty() && s.charAt(0) == '{' && s.charAt(s.length() - 1) == '}' && s.length() > 2)
         {
             Arrays.stream(s.substring(1, s.length() - 1).split(",")).map(String::trim).mapToInt(Integer::parseInt)
                 .forEach((int e) -> b.set(e));

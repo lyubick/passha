@@ -15,7 +15,7 @@ import main.Properties;
 
 public class SpecialPassword
 {
-    public enum PARAMS_MASK_BITS
+    public static enum PARAMS_MASK_BITS
     {
         HAS_SPECIAL_CHARACTERS,
         HAS_CAPITALS,
@@ -24,6 +24,33 @@ public class SpecialPassword
         HAS_NUMBERS,
 
         TOTAL_COUNT,
+    }
+
+    protected static enum MapKeys
+    {
+        SHA_CYCLES("shaCycles"),
+        NAME("name"),
+        COMMENT("comment"),
+        URL("url"),
+        SHORTCUT("shortcut"),
+        LENGTH("length"),
+        SPECIAL_CHARS("specialChars"),
+        PARAMS_MASK("paramsMask")
+
+        ;
+
+        private final String text;
+
+        private MapKeys(final String text)
+        {
+            this.text = text;
+        }
+
+        @Override
+        public String toString()
+        {
+            return text;
+        }
     }
 
     private long          shaCycles             = 0;
@@ -47,12 +74,13 @@ public class SpecialPassword
 
         own_vault = parentVault;
 
-        shaCycles = Long.parseLong(m.getOrDefault("shaCycles", "0"));
-        name = m.getOrDefault("name", "");
-        setAllOptionalFields(m.getOrDefault("comment", ""), m.getOrDefault("url", ""), m.getOrDefault("shortcut", ""));
-        length = Integer.parseInt(m.getOrDefault("length", "0"));
-        specialChars = m.getOrDefault("specialChars", "");
-        paramsMask = Utilities.getBitSet(m.getOrDefault("paramsMask", ""));
+        shaCycles = Long.parseLong(m.getOrDefault(MapKeys.SHA_CYCLES.toString(), "0"));
+        name = m.getOrDefault(MapKeys.NAME.toString(), "");
+        setAllOptionalFields(m.getOrDefault(MapKeys.COMMENT.toString(), ""), m.getOrDefault(MapKeys.URL.toString(), ""),
+            m.getOrDefault(MapKeys.SHORTCUT.toString(), ""));
+        length = Integer.parseInt(m.getOrDefault(MapKeys.LENGTH.toString(), "0"));
+        specialChars = m.getOrDefault(MapKeys.SPECIAL_CHARS.toString(), "");
+        paramsMask = Utilities.getBitSet(m.getOrDefault(MapKeys.PARAMS_MASK.toString(), ""));
 
         Logger.printTrace("SpecialPassword constructor from Map END");
     }
@@ -61,14 +89,14 @@ public class SpecialPassword
     {
 
         HashMap<String, String> m = new HashMap<>();
-        m.put("shaCycles", "" + shaCycles);
-        m.put("name", name);
-        m.put("comment", comment);
-        m.put("url", url);
-        m.put("length", "" + length);
-        m.put("specialChars", specialChars);
-        m.put("paramsMask", paramsMask.toString());
-        m.put("shortcut", shortcut);
+        m.put(MapKeys.SHA_CYCLES.toString(), "" + shaCycles);
+        m.put(MapKeys.NAME.toString(), name);
+        m.put(MapKeys.COMMENT.toString(), comment);
+        m.put(MapKeys.URL.toString(), url);
+        m.put(MapKeys.LENGTH.toString(), "" + length);
+        m.put(MapKeys.SPECIAL_CHARS.toString(), specialChars);
+        m.put(MapKeys.PARAMS_MASK.toString(), paramsMask.toString());
+        m.put(MapKeys.SHORTCUT.toString(), shortcut);
 
         Logger.printDebug("Created map: " + m.toString());
 
@@ -212,6 +240,11 @@ public class SpecialPassword
     public String getShortcut()
     {
         return shortcut;
+    }
+
+    public int getLength()
+    {
+        return length;
     }
 
     @Override
