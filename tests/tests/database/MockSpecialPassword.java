@@ -1,8 +1,5 @@
 package tests.database;
 
-import java.util.HashMap;
-
-import core.Vault;
 import db.SpecialPassword;
 
 /**
@@ -11,7 +8,7 @@ import db.SpecialPassword;
  */
 public class MockSpecialPassword extends SpecialPassword
 {
-    public MockSpecialPassword(HashMap<String, String> m, Vault parentVault)
+    public MockSpecialPassword()
     {
         super(null, null);
         throw new RuntimeException("Dont use this !!!!");
@@ -69,5 +66,11 @@ public class MockSpecialPassword extends SpecialPassword
         String shaCycles)
     {
         return cmpAllFields(sp, name, comment, url, Integer.parseInt(length), Integer.parseInt(shaCycles));
+    }
+
+    public static boolean cmpAllFields(SpecialPassword sp, SpecialPassword another)
+    {
+        return cmpAllFields(sp, another.getName(), another.getComment(), another.getUrl(), another.getLength(),
+            (int) another.getShaCycles());
     }
 }

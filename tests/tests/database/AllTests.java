@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 { Construction.class, Functional.class })
-public class TestSuite
+public class AllTests
 {
     // holder for annotations
 }

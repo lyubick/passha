@@ -24,15 +24,17 @@ import main.Terminator;
 public class Database
 {
     // Keys compared only by SpecialPassword::getName();
-    private TreeMap<SpecialPassword, String> db          = null;
+    private TreeMap<SpecialPassword, String> db             = null;
 
-    private File                             vaultFile   = null;
+    private File                             vaultFile      = null;
 
-    private String                           name        = "";
+    private String                           name           = "";
 
-    private RSA                              rsa         = null;
+    private RSA                              rsa            = null;
 
-    private int                              retriesLeft = Properties.DATABASE.MAX_RETRIES;
+    private int                              retriesLeft    = Properties.DATABASE.MAX_RETRIES;
+
+    protected final static String            VAULT_NAME_KEY = "vaultName";
 
     public enum Status
     {
@@ -98,9 +100,9 @@ public class Database
             HashMap<String, String> decryptedEntry =
                 (HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(entry));
 
-            if (decryptedEntry.containsKey("vaultName"))
+            if (decryptedEntry.containsKey(VAULT_NAME_KEY))
             {
-                name = decryptedEntry.get("vaultName");
+                name = decryptedEntry.get(VAULT_NAME_KEY);
                 continue;
             }
 

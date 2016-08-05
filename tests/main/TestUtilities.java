@@ -1,6 +1,5 @@
 package main;
 
-import main.Exceptions.XC;
 import utilities.Utilities;
 
 public final class TestUtilities
@@ -16,7 +15,7 @@ public final class TestUtilities
         }
         catch (Exceptions e)
         {
-            throw new RuntimeException(XC.OBJECT_DESERIALIZATION_FAILED.toString());
+            throw new RuntimeException(e.getCode().toString());
         }
     }
 }
