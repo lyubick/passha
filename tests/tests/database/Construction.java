@@ -66,10 +66,11 @@ public class Construction
         {
             Logger.loggerON("");
         }
-        catch (Exceptions e1)
+        catch (Exceptions e)
         {
             System.out.println("Failed to turn on logger");
         }
+
         try
         {
             masterHash = SHA.getHashBytes(masterPassword.getBytes());
@@ -81,7 +82,7 @@ public class Construction
         }
         catch (Exceptions e)
         {
-            throw new Exception("pichaljka");
+            throw new Exception("pichaljka: " + e.getCode().toString());
         }
     }
 
@@ -92,6 +93,7 @@ public class Construction
         fileName = null;
         vaultFile.delete();
         vaultFile = null;
+        masterHash = null;
         try
         {
             Logger.getInstance().loggerOFF();
@@ -161,7 +163,7 @@ public class Construction
             Database db = new Database(rsa, fileName, false, null);
 
             assertEquals(Status.SYNCHRONIZED, db.getStatus());
-            assertEquals(0, db.getDecrypted().size());
+            assertTrue(db.getDecrypted().isEmpty());
             assertEquals(vaultNameTestData.vaultName, db.getName());
         }
         catch (Exceptions e)
@@ -181,6 +183,7 @@ public class Construction
         {
             fail("Can't create vault file for test: " + e.toString());
         }
+
         try
         {
             Utilities.writeToFile(vaultFile.getAbsolutePath(), passwordTestData.cipherText);

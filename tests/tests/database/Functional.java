@@ -126,6 +126,8 @@ public class Functional
         vaultFile = null;
         rsa = null;
         fileName = null;
+        db = null;
+        masterHash = null;
     }
 
     private CompletableFuture<Status> attachDbSync(CompletableFuture<Status> future)
@@ -215,12 +217,10 @@ public class Functional
         }
 
         // verify that SpecialPassword is added to vault file
-        assertTrue(streamPwdsFromDbFile()
-            .anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp, name, comment, url, length, shaCycles)));
+        assertTrue(streamPwdsFromDbFile().anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp, pwd)));
 
         // verify that added password is returned in getDecrypted
-        assertTrue(db.getDecrypted().stream()
-            .anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp, name, comment, url, length, shaCycles)));
+        assertTrue(db.getDecrypted().stream().anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp, pwd)));
     }
 
     @Test
@@ -291,10 +291,8 @@ public class Functional
     @Test
     public void testDeleteEntrySuccess()
     {
-        SpecialPassword pwd = createSpecialPassword(DatabaseSetUp.presetPwds[0].name,
-            DatabaseSetUp.presetPwds[0].comment, Integer.toString(DatabaseSetUp.presetPwds[0].length),
-            Integer.toString(DatabaseSetUp.presetPwds[0].shaCycles), DatabaseSetUp.presetPwds[0].url,
-            DatabaseSetUp.presetPwds[0].shortcut);
+        SpecialPassword pwd = createSpecialPassword(DatabaseSetUp.presetPwds[0]);
+
         // delete
         try
         {
@@ -355,10 +353,7 @@ public class Functional
     @Test
     public void testReplaceEntrySuccess()
     {
-        SpecialPassword pwd = createSpecialPassword(DatabaseSetUp.presetPwds[0].name,
-            DatabaseSetUp.presetPwds[0].comment, Integer.toString(DatabaseSetUp.presetPwds[0].length),
-            Integer.toString(DatabaseSetUp.presetPwds[0].shaCycles), DatabaseSetUp.presetPwds[0].url,
-            DatabaseSetUp.presetPwds[0].shortcut);
+        SpecialPassword pwd = createSpecialPassword(DatabaseSetUp.presetPwds[0]);
 
         final String newComment = "Dat comment!";
         final String newUrl = "www.pornhub.com";
@@ -443,10 +438,7 @@ public class Functional
     @Test
     public void testReplaceEntryFailNewNameTaken()
     {
-        SpecialPassword pwd = createSpecialPassword(DatabaseSetUp.presetPwds[0].name,
-            DatabaseSetUp.presetPwds[0].comment, Integer.toString(DatabaseSetUp.presetPwds[0].length),
-            Integer.toString(DatabaseSetUp.presetPwds[0].shaCycles), DatabaseSetUp.presetPwds[0].url,
-            DatabaseSetUp.presetPwds[0].shortcut);
+        SpecialPassword pwd = createSpecialPassword(DatabaseSetUp.presetPwds[0]);
 
         final String newName = DatabaseSetUp.presetPwds[1].name;
         final String newComment = "Dat comment!";
