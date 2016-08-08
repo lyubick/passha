@@ -172,6 +172,11 @@ public class SpecialPassword
         setParentVault(null);
     }
 
+    public Vault getParentVault()
+    {
+        return own_vault;
+    }
+
     public void changeCycles() throws Exceptions
     {
         do

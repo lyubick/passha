@@ -24,14 +24,14 @@ import main.Terminator;
 
 public class Vault
 {
-    private final String    SALT_FILENAME    = "FILENAME";
+    protected final String  SALT_FILENAME    = "FILENAME";
     private final String    SALT_P           = "P";
     private final String    SALT_Q           = "Q";
     private final String    SALT_E           = "E";
 
     private byte[]          masterHash       = null;
 
-    private Database        database         = null;
+    protected Database      database         = null;
     private SpecialPassword selectedPassword = null;
 
     public Vault(byte[] hash, boolean isNewUser) throws Exceptions
@@ -51,10 +51,8 @@ public class Vault
 
     public ObservableList<iSpecialPassword> getIface()
     {
-        ObservableList<iSpecialPassword> pSet = FXCollections.observableArrayList();
-        database.getDecrypted().stream().map(sp -> new iSpecialPassword(sp))
-            .collect(Collectors.toCollection(() -> pSet));
-        return pSet;
+        return database.getDecrypted().stream().map(sp -> new iSpecialPassword(sp))
+            .collect(Collectors.toCollection(() -> FXCollections.observableArrayList()));
     }
 
     public SpecialPassword getPasswordByShortcut(String shortcut)

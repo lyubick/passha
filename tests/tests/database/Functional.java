@@ -128,6 +128,15 @@ public class Functional
         fileName = null;
         db = null;
         masterHash = null;
+
+        try
+        {
+            Logger.getInstance().loggerOFF();
+        }
+        catch (Exceptions e)
+        {
+            System.out.println("Can't close logger");
+        }
     }
 
     private CompletableFuture<Status> attachDbSync(CompletableFuture<Status> future)
