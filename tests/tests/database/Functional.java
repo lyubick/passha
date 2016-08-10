@@ -33,6 +33,8 @@ import main.Exceptions.XC;
 import main.JfxRunner;
 import main.Properties;
 import main.TestUtilities;
+import reflections.DatabaseReflection;
+import reflections.SpecialPasswordReflection;
 
 @RunWith(JfxRunner.class)
 public class Functional
@@ -77,14 +79,16 @@ public class Functional
                 "secondTestPassword", "second test comment", "http://goturussia.ru", "", 16, 0) };
     }
 
-    private Database     db         = null;
-    private RSA          rsa        = null;
-    private byte[]       masterHash = null;
+    SpecialPasswordReflection specialPasswordReflection = SpecialPasswordReflection.getInstance();
 
-    private String       fileName   = null;
-    private File         vaultFile  = null;
+    private Database          db                        = null;
+    private RSA               rsa                       = null;
+    private byte[]            masterHash                = null;
 
-    static AtomicInteger num        = new AtomicInteger(0);
+    private String            fileName                  = null;
+    private File              vaultFile                 = null;
+
+    static AtomicInteger      num                       = new AtomicInteger(0);
 
     @Before
     public void setUp() throws Exception
@@ -192,12 +196,20 @@ public class Functional
         String url, String shortcut)
     {
         HashMap<String, String> pwdMap = new HashMap<String, String>();
-        pwdMap.put(MockSpecialPassword.getMapKeyName(), name);
-        pwdMap.put(MockSpecialPassword.getMapKeyComment(), comment);
-        pwdMap.put(MockSpecialPassword.getMapKeyLength(), length);
-        pwdMap.put(MockSpecialPassword.getMapKeyShaCycles(), shaCycles);
-        pwdMap.put(MockSpecialPassword.getMapKeyUrl(), url);
-        pwdMap.put(MockSpecialPassword.getMapKeyShortcut(), shortcut);
+
+        try
+        {
+            pwdMap.put(specialPasswordReflection.NAME().get(null).toString(), name);
+            pwdMap.put(specialPasswordReflection.COMMENT().get(null).toString(), comment);
+            pwdMap.put(specialPasswordReflection.LENGTH().get(null).toString(), length);
+            pwdMap.put(specialPasswordReflection.SHA_CYCLES().get(null).toString(), shaCycles);
+            pwdMap.put(specialPasswordReflection.URL().get(null).toString(), url);
+            pwdMap.put(specialPasswordReflection.SHORTCUT().get(null).toString(), shortcut);
+        }
+        catch (IllegalArgumentException | IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
         return new SpecialPassword(pwdMap, null);
     }
 
@@ -226,10 +238,10 @@ public class Functional
         }
 
         // verify that SpecialPassword is added to vault file
-        assertTrue(streamPwdsFromDbFile().anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp, pwd)));
+        assertTrue(streamPwdsFromDbFile().anyMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, pwd)));
 
         // verify that added password is returned in getDecrypted
-        assertTrue(db.getDecrypted().stream().anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp, pwd)));
+        assertTrue(db.getDecrypted().stream().anyMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, pwd)));
     }
 
     @Test
@@ -255,8 +267,8 @@ public class Functional
             assertEquals(XC.PASSWORD_NAME_EXISTS, e.getCode());
             assertEquals(Status.SYNCHRONIZED, db.getStatus());
             // and password not added (overwrite or add)
-            assertTrue(streamPwdsFromDbFile()
-                .noneMatch(sp -> MockSpecialPassword.cmpAllFields(sp, null, comment, url, length, shaCycles)));
+            assertTrue(streamPwdsFromDbFile().noneMatch(
+                sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, null, comment, url, length, shaCycles)));
         }
     }
 
@@ -283,17 +295,17 @@ public class Functional
             assertEquals(XC.PASSWORD_SHORTCUT_IN_USE, e.getCode());
 
             // verify that conflicting password is returned
-            assertTrue(MockSpecialPassword.cmpAllFields(((SpecialPassword) e.getObject()),
+            assertTrue(TestUtilities.SpecialPassword.cmpAllFields(((SpecialPassword) e.getObject()),
                 DatabaseSetUp.presetPwds[0].name, DatabaseSetUp.presetPwds[0].comment, DatabaseSetUp.presetPwds[0].url,
                 DatabaseSetUp.presetPwds[0].length, DatabaseSetUp.presetPwds[0].shaCycles));
 
             // and password not added (overwrite or add)
             assertEquals(Status.SYNCHRONIZED, db.getStatus());
-            assertTrue(streamPwdsFromDbFile()
-                .noneMatch(sp -> MockSpecialPassword.cmpAllFields(sp, name, comment, url, length, shaCycles)));
+            assertTrue(streamPwdsFromDbFile().noneMatch(
+                sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, name, comment, url, length, shaCycles)));
 
-            assertTrue(db.getDecrypted().stream()
-                .noneMatch(sp -> MockSpecialPassword.cmpAllFields(sp, name, comment, url, length, shaCycles)));
+            assertTrue(db.getDecrypted().stream().noneMatch(
+                sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, name, comment, url, length, shaCycles)));
         }
     }
 
@@ -310,10 +322,10 @@ public class Functional
             waitDbSync(future);
 
             // verify that file no longer contains entry
-            assertTrue(streamPwdsFromDbFile().noneMatch(sp -> MockSpecialPassword.cmpAllFields(sp, pwd)));
+            assertTrue(streamPwdsFromDbFile().noneMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, pwd)));
 
             // and getDecrypted() does not return pwd
-            assertTrue(db.getDecrypted().stream().noneMatch(sp -> MockSpecialPassword.cmpAllFields(sp, pwd)));
+            assertTrue(db.getDecrypted().stream().noneMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, pwd)));
         }
         catch (Exceptions e)
         {
@@ -347,13 +359,13 @@ public class Functional
             assertEquals(Status.SYNCHRONIZED, db.getStatus());
 
             // verify that file contains entry
-            assertTrue(streamPwdsFromDbFile().anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp,
+            assertTrue(streamPwdsFromDbFile().anyMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp,
                 DatabaseSetUp.presetPwds[0].name, DatabaseSetUp.presetPwds[0].comment, DatabaseSetUp.presetPwds[0].url,
                 DatabaseSetUp.presetPwds[0].length, DatabaseSetUp.presetPwds[0].shaCycles)));
 
             // and getDecrypted() return pwd
             assertTrue(db.getDecrypted().stream()
-                .anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp, DatabaseSetUp.presetPwds[0].name,
+                .anyMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, DatabaseSetUp.presetPwds[0].name,
                     DatabaseSetUp.presetPwds[0].comment, DatabaseSetUp.presetPwds[0].url,
                     DatabaseSetUp.presetPwds[0].length, DatabaseSetUp.presetPwds[0].shaCycles)));
         }
@@ -378,16 +390,17 @@ public class Functional
             waitDbSync(future);
 
             // verify that file no longer contains old password
-            assertTrue(streamPwdsFromDbFile().noneMatch(sp -> MockSpecialPassword.cmpAllFields(sp, pwd)));
+            assertTrue(streamPwdsFromDbFile().noneMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, pwd)));
 
             // and getDecrypted() does not return old pwd
-            assertTrue(db.getDecrypted().stream().noneMatch(sp -> MockSpecialPassword.cmpAllFields(sp, pwd)));
+            assertTrue(db.getDecrypted().stream().noneMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, pwd)));
 
             // verify that file contains new password
-            assertTrue(streamPwdsFromDbFile().anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp, newPwd)));
+            assertTrue(streamPwdsFromDbFile().anyMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, newPwd)));
 
             // and getDecrypted() return new pwd
-            assertTrue(db.getDecrypted().stream().anyMatch(sp -> MockSpecialPassword.cmpAllFields(sp, newPwd)));
+            assertTrue(
+                db.getDecrypted().stream().anyMatch(sp -> TestUtilities.SpecialPassword.cmpAllFields(sp, newPwd)));
         }
         catch (Exceptions e)
         {
@@ -436,11 +449,11 @@ public class Functional
             assertEquals(dbDecripted.size(), db.getDecrypted().size());
             assertEquals(fileDecripted.size(), streamPwdsFromDbFile().count());
 
-            assertTrue(streamPwdsFromDbFile()
-                .allMatch(sp -> fileDecripted.stream().anyMatch(sp2 -> MockSpecialPassword.cmpAllFields(sp, sp2))));
+            assertTrue(streamPwdsFromDbFile().allMatch(
+                sp -> fileDecripted.stream().anyMatch(sp2 -> TestUtilities.SpecialPassword.cmpAllFields(sp, sp2))));
 
-            assertTrue(db.getDecrypted().stream()
-                .allMatch(sp -> dbDecripted.stream().anyMatch(sp2 -> MockSpecialPassword.cmpAllFields(sp, sp2))));
+            assertTrue(db.getDecrypted().stream().allMatch(
+                sp -> dbDecripted.stream().anyMatch(sp2 -> TestUtilities.SpecialPassword.cmpAllFields(sp, sp2))));
         }
     }
 
@@ -480,11 +493,11 @@ public class Functional
             assertEquals(dbDecripted.size(), db.getDecrypted().size());
             assertEquals(fileDecripted.size(), streamPwdsFromDbFile().count());
 
-            assertTrue(streamPwdsFromDbFile()
-                .allMatch(sp -> fileDecripted.stream().anyMatch(sp2 -> MockSpecialPassword.cmpAllFields(sp, sp2))));
+            assertTrue(streamPwdsFromDbFile().allMatch(
+                sp -> fileDecripted.stream().anyMatch(sp2 -> TestUtilities.SpecialPassword.cmpAllFields(sp, sp2))));
 
-            assertTrue(db.getDecrypted().stream()
-                .allMatch(sp -> dbDecripted.stream().anyMatch(sp2 -> MockSpecialPassword.cmpAllFields(sp, sp2))));
+            assertTrue(db.getDecrypted().stream().allMatch(
+                sp -> dbDecripted.stream().anyMatch(sp2 -> TestUtilities.SpecialPassword.cmpAllFields(sp, sp2))));
         }
     }
 
@@ -522,11 +535,11 @@ public class Functional
             assertEquals(dbDecripted.size(), db.getDecrypted().size());
             assertEquals(fileDecripted.size(), streamPwdsFromDbFile().count());
 
-            assertTrue(streamPwdsFromDbFile()
-                .allMatch(sp -> fileDecripted.stream().anyMatch(sp2 -> MockSpecialPassword.cmpAllFields(sp, sp2))));
+            assertTrue(streamPwdsFromDbFile().allMatch(
+                sp -> fileDecripted.stream().anyMatch(sp2 -> TestUtilities.SpecialPassword.cmpAllFields(sp, sp2))));
 
-            assertTrue(db.getDecrypted().stream()
-                .allMatch(sp -> dbDecripted.stream().anyMatch(sp2 -> MockSpecialPassword.cmpAllFields(sp, sp2))));
+            assertTrue(db.getDecrypted().stream().allMatch(
+                sp -> dbDecripted.stream().anyMatch(sp2 -> TestUtilities.SpecialPassword.cmpAllFields(sp, sp2))));
         }
     }
 
@@ -540,12 +553,21 @@ public class Functional
         db.setName(name);
         waitDbSync(future);
 
-        // verify that name entry is added to file
-        assertTrue(streamMapsFromDbFile().filter(map -> map.containsKey(MockDatabase.getKeyVaultName()))
-            .map(map -> map.get(MockDatabase.getKeyVaultName())).allMatch(n -> n.equals(name)));
+        try
+        {
+            String vaultNameKey = (String) DatabaseReflection.getInstance().VAULT_NAME_KEY().get(null);
+            // verify that name entry is added to file
+            assertTrue(streamMapsFromDbFile().filter(map -> map.containsKey(vaultNameKey))
+                .map(map -> map.get(vaultNameKey)).allMatch(n -> n.equals(name)));
 
-        // get name equals to set name
-        assertEquals(name, db.getName());
+            // get name equals to set name
+            assertEquals(name, db.getName());
+        }
+        catch (IllegalArgumentException | IllegalAccessException e)
+        {
+            fail(e.toString());
+        }
+
     }
 
     @Test

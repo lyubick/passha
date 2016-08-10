@@ -24,14 +24,14 @@ import main.Terminator;
 
 public class Vault
 {
-    protected final String  SALT_FILENAME    = "FILENAME";
+    private final String    SALT_FILENAME    = "FILENAME";
     private final String    SALT_P           = "P";
     private final String    SALT_Q           = "Q";
     private final String    SALT_E           = "E";
 
     private byte[]          masterHash       = null;
 
-    protected Database      database         = null;
+    private Database        database         = null;
     private SpecialPassword selectedPassword = null;
 
     public Vault(byte[] hash, boolean isNewUser) throws Exceptions

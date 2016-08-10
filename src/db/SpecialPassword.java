@@ -26,7 +26,7 @@ public class SpecialPassword
         TOTAL_COUNT,
     }
 
-    protected static enum MapKeys
+    private static enum MapKeys
     {
         SHA_CYCLES("shaCycles"),
         NAME("name"),

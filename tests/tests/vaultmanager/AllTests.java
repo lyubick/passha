@@ -1,12 +1,12 @@
-package main;
+package tests.vaultmanager;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-// List all test suites below
+// List all test classes below
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
-{ tests.database.AllTests.class, tests.vault.AllTests.class, tests.vaultmanager.AllTests.class })
+{ Functional.class })
 public class AllTests
 {
     // holder for annotations

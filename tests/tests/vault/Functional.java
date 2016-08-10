@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import core.Vault;
 import db.Database;
 import db.SpecialPassword;
 import db.iSpecialPassword;
@@ -28,6 +29,7 @@ import main.Exceptions;
 import main.JfxRunner;
 import main.Properties;
 import main.Settings;
+import reflections.VaultReflection;
 import sha.SHA;
 
 /**
@@ -39,7 +41,7 @@ public class Functional
     private byte[]                  masterHash     = null;
     private String                  databaseFilename;
 
-    private TestVault               vault          = null;
+    private Vault                   vault          = null;
     private Database                vaultsDatabase = null;
     private File                    vaultFile      = null;
 
@@ -64,9 +66,10 @@ public class Functional
         try
         {
             masterHash = SHA.getHashBytes(("This is test!" + num.incrementAndGet()).getBytes());
-            vault = new TestVault(masterHash, true);
-            vaultsDatabase = vault.getDatabase();
-            databaseFilename = Properties.PATHS.VAULT + SHA.getHashString(masterHash, vault.getSaltFilename())
+            vault = new Vault(masterHash, true);
+            vaultsDatabase = (Database) VaultReflection.getInstance().database().get(vault);
+            databaseFilename = Properties.PATHS.VAULT
+                + SHA.getHashString(masterHash, (String) VaultReflection.getInstance().SALT_FILENAME().get(vault))
                 + Properties.EXTENSIONS.VAULT;
             vaultFile = new File(databaseFilename);
             passwords = new Vector<SpecialPassword>();
@@ -286,8 +289,6 @@ public class Functional
 
             m.remove(Texts.LABEL_VAULT.toString());
             m.remove("");   // empty key contains delimiters
-            m.values().stream().forEach(list -> Logger.printDebug("" + list.size()));
-
             assertTrue(m.values().stream().allMatch(list -> list.size() == 10));
         }
         catch (IOException e)

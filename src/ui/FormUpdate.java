@@ -1,3 +1,25 @@
+
+/**
+ * // Code to download from google drive
+ *
+ *
+ * try
+ * {
+ * final String fileId = "0ByKXzamHKjIqMHZMV1ZsV0xpS1U";
+ *
+ * final String googleDriveUrl = "https://drive.google.com/";
+ * final String googleDriveDownloadCommand = "uc?export=download";
+ * final String googleDriveFileId = "id=" + fileId;
+ *
+ * URL website = new URL(googleDriveUrl + googleDriveDownloadCommand + "&" + googleDriveFileId);
+ * Files.copy(website.openStream(), Paths.get("Retrieved.txt"), StandardCopyOption.REPLACE_EXISTING);
+ * }
+ * catch (IOException e1)
+ * {
+ * fail("didnt retrieve file");
+ * }
+ */
+
 // package ui;
 //
 // import java.awt.TrayIcon.MessageType;
