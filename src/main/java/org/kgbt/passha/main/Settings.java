@@ -28,7 +28,7 @@ public class Settings
 
         private final String text;
 
-        private PREFIX(final String text)
+        PREFIX(final String text)
         {
             this.text = text;
         }

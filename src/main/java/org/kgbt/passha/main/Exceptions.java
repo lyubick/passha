@@ -10,7 +10,7 @@ public final class Exceptions extends Throwable
 
     private Object            object           = null;
 
-    public static enum XC
+    public enum XC
     {
         //
         VAULT_OPENED,

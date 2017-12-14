@@ -415,7 +415,7 @@ public class FormVaultsManager extends AbstractForm
 
         if (This != null)
         {
-            ((FormVaultsManager) This).close();
+            This.close();
         }
         new FormVaultsManager();
     }

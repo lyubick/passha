@@ -42,7 +42,7 @@ public class Database
         DESYNCHRONIZED,
         SYNCHRONIZING,
         SYNCHRONIZATION_FAILED
-    };
+    }
 
     private volatile SimpleObjectProperty<Status> status = null;
 

@@ -15,7 +15,7 @@ import org.kgbt.passha.main.Properties;
 
 public class SpecialPassword
 {
-    public static enum PARAMS_MASK_BITS
+    public enum PARAMS_MASK_BITS
     {
         HAS_SPECIAL_CHARACTERS,
         HAS_CAPITALS,
@@ -26,7 +26,7 @@ public class SpecialPassword
         TOTAL_COUNT,
     }
 
-    private static enum MapKeys
+    private enum MapKeys
     {
         SHA_CYCLES("shaCycles"),
         NAME("name"),
@@ -41,7 +41,7 @@ public class SpecialPassword
 
         private final String text;
 
-        private MapKeys(final String text)
+        MapKeys(final String text)
         {
             this.text = text;
         }
@@ -262,9 +262,7 @@ public class SpecialPassword
         SpecialPassword otherCasted = (SpecialPassword) other;
 
         if (otherCasted.name.equals(this.name) == false) return false;
-        if (otherCasted.shaCycles != this.shaCycles) return false;
-
-        return true;
+        return otherCasted.shaCycles == this.shaCycles;
     }
 
     @Override

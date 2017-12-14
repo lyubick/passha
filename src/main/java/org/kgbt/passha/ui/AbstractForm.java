@@ -31,7 +31,7 @@ public abstract class AbstractForm
         NORMAL,
         ONLY_ONE_OPENED,
         ALWAYS_ON_TOP,
-    };
+    }
 
     protected AbstractForm         parent   = null;
     protected Vector<AbstractForm> children = null;
@@ -200,7 +200,7 @@ public abstract class AbstractForm
         grid.setPadding(new Insets(Properties.GUI.PADDING.top, Properties.GUI.PADDING.right,
             Properties.GUI.PADDING.bottom, Properties.GUI.PADDING.left));
 
-        grid.setGridLinesVisible(Main.DEBUG ? true : false);
+        grid.setGridLinesVisible(Main.DEBUG);
 
         group = new VBox();
 

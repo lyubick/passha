@@ -2,13 +2,13 @@ package org.kgbt.passha.ui.elements;
 
 public interface TabContent
 {
-    public void activateTab();
+    void activateTab();
 
-    public void closeTab();
+    void closeTab();
 
-    public void reload();
+    void reload();
 
-    public void setName(String name);
+    void setName(String name);
 
-    public String getName();
+    String getName();
 }

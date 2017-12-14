@@ -348,7 +348,7 @@ public class Local
 
         private final String text[];
 
-        private Texts(final String[] text)
+        Texts(final String[] text)
         {
             this.text = text;
         }

@@ -48,7 +48,7 @@ public final class Properties
         {
             public static final int H = 10;
             public static final int V = 10;
-        };
+        }
 
         public final class PADDING
         {
@@ -56,7 +56,7 @@ public final class Properties
             public static final int top    = 10;
             public static final int right  = 10;
             public static final int left   = 10;
-        };
+        }
 
         public final class STANDARD
         {
@@ -65,6 +65,6 @@ public final class Properties
                 public static final double WIDTH  = 300.0;
                 public static final double HEIGHT = 30.0;
             }
-        };
+        }
     }
 }

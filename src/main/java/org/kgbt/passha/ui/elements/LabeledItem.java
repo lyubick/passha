@@ -4,14 +4,14 @@ import javafx.scene.Node;
 
 public interface LabeledItem
 {
-    public default javafx.scene.Node getSelf()
+    default javafx.scene.Node getSelf()
     {
         return (Node) this;
     }
 
-    public Label getLabel();
+    Label getLabel();
 
-    public void beError();
+    void beError();
 
-    public void beNormal();
+    void beNormal();
 }
