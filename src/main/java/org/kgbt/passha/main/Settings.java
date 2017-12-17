@@ -21,8 +21,8 @@ public class Settings
 
     private enum PREFIX
     {
-        LANGUAGE(new String("language=")),
-        CLIPBOARD_TIME(new String("clipboardLiveTime=")),
+        LANGUAGE("language="),
+        CLIPBOARD_TIME("clipboardLiveTime="),
 
         ;
 
@@ -46,7 +46,7 @@ public class Settings
         RUSSIAN,
     }
 
-    private HashMap<String, Object> settings = new HashMap<String, Object>();
+    private HashMap<String, Object> settings = new HashMap<>();
 
     private Settings()
     {

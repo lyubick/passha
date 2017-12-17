@@ -32,29 +32,24 @@ public class FormEditPwd extends AbstractForm
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
+        return event -> {
+            try
             {
-                try
-                {
-                    pwd.setAllOptionalFields(ef_comment.getText(), ef_url.getText(), ef_shortcut.getText());
-                    VaultManager.getInstance().getActiveVault().replacePassword(pwd);
-                    close();
-                }
-                catch (Exceptions e)
-                {
-                    if (e.getCode() == XC.PASSWORD_SHORTCUT_IN_USE)
-                    {
-                        ef_errorLabel.setVisible(true);
-                        ef_errorLabel.setText(((SpecialPassword) e.getObject()).getName());
-                        return;
-                    }
-                    Terminator.terminate(e);
-                }
-
+                pwd.setAllOptionalFields(ef_comment.getText(), ef_url.getText(), ef_shortcut.getText());
+                VaultManager.getInstance().getActiveVault().replacePassword(pwd);
+                close();
             }
+            catch (Exceptions e)
+            {
+                if (e.getCode() == XC.PASSWORD_SHORTCUT_IN_USE)
+                {
+                    ef_errorLabel.setVisible(true);
+                    ef_errorLabel.setText(((SpecialPassword) e.getObject()).getName());
+                    return;
+                }
+                Terminator.terminate(e);
+            }
+
         };
     }
 

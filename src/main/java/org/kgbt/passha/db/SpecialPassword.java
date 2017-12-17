@@ -148,12 +148,12 @@ public class SpecialPassword
 
         own_vault = other.own_vault;
 
-        this.name = other.name.toString();
+        this.name = other.name;
         this.length = other.length;
         this.paramsMask = (BitSet) other.paramsMask.clone();
-        this.specialChars = other.specialChars.toString();
+        this.specialChars = other.specialChars;
 
-        setAllOptionalFields(other.comment.toString(), other.url.toString(), other.shortcut.toString());
+        setAllOptionalFields(other.comment, other.url, other.shortcut);
 
         this.shaCycles = other.shaCycles;
 
@@ -177,8 +177,7 @@ public class SpecialPassword
         return own_vault;
     }
 
-    public void changeCycles() throws Exceptions
-    {
+    public void changeCycles() {
         do
         {
             if (randomizer == null)
@@ -261,7 +260,7 @@ public class SpecialPassword
 
         SpecialPassword otherCasted = (SpecialPassword) other;
 
-        if (otherCasted.name.equals(this.name) == false) return false;
+        if (!otherCasted.name.equals(this.name)) return false;
         return otherCasted.shaCycles == this.shaCycles;
     }
 
@@ -328,8 +327,7 @@ public class SpecialPassword
     {
         int count = getSpecialCharactersCount();
 
-        int specialCharacterPosition = 0;
-        int insertPosition = 0;
+        int insertPosition;
 
         while (count-- > 0)
         {
@@ -338,7 +336,7 @@ public class SpecialPassword
                 insertPosition = (getNumberFromHashAt(hash, idx++) % password.length());
             } while (specialChars.indexOf(password.charAt(insertPosition)) != -1);
 
-            specialCharacterPosition = (getNumberFromHashAt(hash, idx++) % specialChars.length());
+            int specialCharacterPosition = (getNumberFromHashAt(hash, idx++) % specialChars.length());
 
             if (specialChars.length() >= getSpecialCharactersCount())
             {
@@ -382,19 +380,14 @@ public class SpecialPassword
 
     public String getPassword()
     {
-        String passwordHash = null;
-        String specialHash = null;
-
         StringBuilder password = new StringBuilder("");
 
-        int modificationIdx = 0;
-
-        passwordHash = own_vault.getHashForPassword(shaCycles, name);
-        specialHash = SHA.getHashString(passwordHash, SALT_SPECIAL_PASSWORD);
+        String passwordHash = own_vault.getHashForPassword(shaCycles, name);
+        String specialHash = SHA.getHashString(passwordHash, SALT_SPECIAL_PASSWORD);
 
         /* STAGE 1 */
         Logger.printTrace("Password generation. STAGE 1. START");
-        modificationIdx = getAlphaNumeric(password, passwordHash);
+        int modificationIdx = getAlphaNumeric(password, passwordHash);
         Logger.printTrace("Password generation. STAGE 1. DONE");
 
         /* STAGE 2 */

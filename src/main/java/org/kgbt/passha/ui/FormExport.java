@@ -103,7 +103,7 @@ public class FormExport extends AbstractForm
         pef_password.focusedProperty().addListener((observable, oldValue, newValue) ->
         {
             // On lost focus check if password is correct
-            if (newValue == false)
+            if (!newValue)
             {
                 pef_password
                     .setValid(currentActiveVault.initializedFrom(SHA.getHashBytes(pef_password.getText().getBytes())));

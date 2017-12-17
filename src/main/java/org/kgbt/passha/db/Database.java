@@ -2,10 +2,8 @@ package org.kgbt.passha.db;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kgbt.passha.core.Vault;
@@ -55,11 +53,11 @@ public class Database
 
     public Database(RSA myRSA, String filename, boolean newUser, Vault vault) throws Exceptions
     {
-        status = new SimpleObjectProperty<Status>(Status.SYNCHRONIZING);
+        status = new SimpleObjectProperty<>(Status.SYNCHRONIZING);
 
         File vaultDir = new File(Properties.PATHS.VAULT);
 
-        if (!vaultDir.exists() && vaultDir.mkdirs() != true)
+        if (!vaultDir.exists() && !vaultDir.mkdirs())
         {
             Logger.printError("Failed to create/access " + vaultDir.getAbsolutePath());
             throw new Exceptions(XC.DIR_DOES_NOT_EXIST);
@@ -93,7 +91,7 @@ public class Database
         // RSA initialized and created by Vault, DB has only pointer
         rsa = myRSA;
 
-        db = new TreeMap<>((o1, o2) -> o1.getName().compareTo(o2.getName()));
+        db = new TreeMap<>(Comparator.comparing(SpecialPassword::getName));
 
         for (String entry : Utilities.readStringsFromFile(vaultFile.getAbsolutePath()))
         {
@@ -179,7 +177,7 @@ public class Database
                 Terminator.terminate(e);
             }
             return null;
-        }).filter(sp -> sp != null).collect(Collectors.toCollection(() -> new Vector<>()));
+        }).filter(Objects::nonNull).collect(Collectors.toCollection(Vector::new));
     }
 
     public ObjectProperty<Status> getStatusProperty()
@@ -209,7 +207,7 @@ public class Database
                     map.put("vaultName", name);
 
                     Utilities.writeToFile(vaultFile.getAbsolutePath(),
-                        db.values().stream().collect(Collectors.toCollection(() -> new Vector<>())),
+                        db.values().stream().collect(Collectors.toCollection((Supplier<Vector<String>>) Vector::new)),
                         rsa.encrypt(Utilities.objectToBytes(map)));
                 }
                 catch (Exceptions e)

@@ -39,62 +39,47 @@ public class FormAbout extends AbstractForm
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnLicenseBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
+        return event -> {
+            try
             {
-                try
-                {
-                    Logger.printDebug("URI: '" + System.getProperty("user.dir") + File.separator + "GNUGPLv3.txt'");
-                    Desktop.getDesktop()
-                        .edit(new File(System.getProperty("user.dir") + File.separator + "GNUGPLv3.txt"));
-                }
-                catch (IOException e)
-                {
-                    Logger.printError("Failed to open Licence! " + e.getMessage());
-                }
-
+                Logger.printDebug("URI: '" + System.getProperty("user.dir") + File.separator + "GNUGPLv3.txt'");
+                Desktop.getDesktop()
+                    .edit(new File(System.getProperty("user.dir") + File.separator + "GNUGPLv3.txt"));
             }
+            catch (IOException e)
+            {
+                Logger.printError("Failed to open Licence! " + e.getMessage());
+            }
+
         };
     }
 
     private EventHandler<ActionEvent> getOnGithubBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
+        return event -> {
+            try
             {
-                try
-                {
-                    Desktop.getDesktop().browse(new URI("https://github.com/lyubick/passha"));
-                }
-                catch (URISyntaxException | IOException e)
-                {
-                    Logger.printError("Failed to open github! " + e.getMessage());
-                }
+                Desktop.getDesktop().browse(new URI("https://github.com/lyubick/passha"));
+            }
+            catch (URISyntaxException | IOException e)
+            {
+                Logger.printError("Failed to open github! " + e.getMessage());
             }
         };
     }
 
     private EventHandler<ActionEvent> getOnHyperlinkMailAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
+        return event -> {
+            String subject = Properties.SOFTWARE.NAME + " v." + Properties.SOFTWARE.VERSION + "user report.";
+            try
             {
-                String subject = Properties.SOFTWARE.NAME + " v." + Properties.SOFTWARE.VERSION + "user report.";
-                try
-                {
-                    Desktop.getDesktop().mail(URI.create("mailto:" + e_mail_a.getText() + ";" + e_mail_v.getText()
-                        + "?subject=" + URLEncoder.encode(subject, "UTF-8")));
-                }
-                catch (IOException e)
-                {
-                    Logger.printError("Failed to open mail client! " + e.getMessage());
-                }
+                Desktop.getDesktop().mail(URI.create("mailto:" + e_mail_a.getText() + ";" + e_mail_v.getText()
+                    + "?subject=" + URLEncoder.encode(subject, "UTF-8")));
+            }
+            catch (IOException e)
+            {
+                Logger.printError("Failed to open mail client! " + e.getMessage());
             }
         };
     }

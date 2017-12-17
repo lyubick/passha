@@ -124,8 +124,7 @@ public class Functional
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() {
         vaultFile.delete();
         vaultFile = null;
         rsa = null;
@@ -178,7 +177,7 @@ public class Functional
         {
             fail("Failed to stream file: " + e.getMessage());
         }
-        return null;
+        return Stream.empty();
     }
 
     private Stream<SpecialPassword> streamPwdsFromDbFile()
@@ -195,7 +194,7 @@ public class Functional
     private SpecialPassword createSpecialPassword(String name, String comment, String length, String shaCycles,
         String url, String shortcut)
     {
-        HashMap<String, String> pwdMap = new HashMap<String, String>();
+        HashMap<String, String> pwdMap = new HashMap<>();
 
         try
         {
@@ -228,7 +227,7 @@ public class Functional
 
         try
         {
-            CompletableFuture<Status> future = attachDbSync(new CompletableFuture<Status>());
+            CompletableFuture<Status> future = attachDbSync(new CompletableFuture<>());
             db.addEntry(pwd);
             waitDbSync(future);
         }
@@ -317,7 +316,7 @@ public class Functional
         // delete
         try
         {
-            CompletableFuture<Status> future = attachDbSync(new CompletableFuture<Status>());
+            CompletableFuture<Status> future = attachDbSync(new CompletableFuture<>());
             db.deleteEntry(pwd);
             waitDbSync(future);
 
@@ -385,7 +384,7 @@ public class Functional
         {
             SpecialPassword newPwd = new SpecialPassword(pwd);
             newPwd.setAllOptionalFields(newComment, newUrl, newShortcut);
-            CompletableFuture<Status> future = attachDbSync(new CompletableFuture<Status>());
+            CompletableFuture<Status> future = attachDbSync(new CompletableFuture<>());
             db.replaceEntry(newPwd, pwd);
             waitDbSync(future);
 
@@ -425,15 +424,14 @@ public class Functional
         final String newUrl = "www.pornhub.com";
         final String newShortcut = "f";
 
-        SpecialPassword newPwd = null;
         Vector<SpecialPassword> fileDecripted =
-            streamPwdsFromDbFile().collect(Collectors.toCollection(() -> new Vector<SpecialPassword>()));
+            streamPwdsFromDbFile().collect(Collectors.toCollection(Vector::new));
         Vector<SpecialPassword> dbDecripted = db.getDecrypted();
 
         // replace
         try
         {
-            newPwd = new SpecialPassword(pwd);
+            SpecialPassword newPwd = new SpecialPassword(pwd);
             newPwd.setAllOptionalFields(newComment, newUrl, newShortcut);
             db.replaceEntry(newPwd, pwd);
             fail("Expected exception");
@@ -467,16 +465,14 @@ public class Functional
         final String newUrl = "www.pornhub.com";
         final String newShortcut = "f";
 
-        SpecialPassword newPwd = null;
-
         Vector<SpecialPassword> fileDecripted =
-            streamPwdsFromDbFile().collect(Collectors.toCollection(() -> new Vector<SpecialPassword>()));
+            streamPwdsFromDbFile().collect(Collectors.toCollection(Vector::new));
         Vector<SpecialPassword> dbDecripted = db.getDecrypted();
 
         // replace
         try
         {
-            newPwd = new SpecialPassword(pwd);
+            SpecialPassword newPwd = new SpecialPassword(pwd);
             newPwd.setName(newName);
             newPwd.setAllOptionalFields(newComment, newUrl, newShortcut);
             db.replaceEntry(newPwd, pwd);
@@ -510,16 +506,14 @@ public class Functional
         final String newUrl = "www.pornhub.com";
         final String newShortcut = DatabaseSetUp.presetPwds[0].shortcut;
 
-        SpecialPassword newPwd = null;
-
         Vector<SpecialPassword> fileDecripted =
-            streamPwdsFromDbFile().collect(Collectors.toCollection(() -> new Vector<SpecialPassword>()));
+            streamPwdsFromDbFile().collect(Collectors.toCollection(Vector::new));
         Vector<SpecialPassword> dbDecripted = db.getDecrypted();
 
         // replace
         try
         {
-            newPwd = new SpecialPassword(pwd);
+            SpecialPassword newPwd = new SpecialPassword(pwd);
             newPwd.setAllOptionalFields(newComment, newUrl, newShortcut);
             db.replaceEntry(newPwd, pwd);
             fail("Expected exception");
@@ -549,7 +543,7 @@ public class Functional
         final String name = "somename";
 
         // set name
-        CompletableFuture<Status> future = attachDbSync(new CompletableFuture<Status>());
+        CompletableFuture<Status> future = attachDbSync(new CompletableFuture<>());
         db.setName(name);
         waitDbSync(future);
 

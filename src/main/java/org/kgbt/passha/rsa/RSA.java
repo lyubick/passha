@@ -48,11 +48,9 @@ public final class RSA
                 padding[0] = Utilities.toByte(r.nextInt());
             }
 
-            for (int j = 0; j < RSA_BYTE_PADDING_LENGTH; j++)
-                chunk[j] = padding[j];
+            System.arraycopy(padding, 0, chunk, 0, RSA_BYTE_PADDING_LENGTH);
 
-            for (int j = 0; j < blockLength; j++)
-                chunk[RSA_BYTE_PADDING_LENGTH + j] = message[messagegBlockStart + j];
+            System.arraycopy(message, messagegBlockStart, chunk, 11, blockLength);
 
             StringBuilder fCipher = new StringBuilder(new BigInteger(chunk).modPow(e, n).toString());
 
@@ -87,9 +85,7 @@ public final class RSA
         // SHA-512 from "Test hash for RSA" x2
         String alphabet =
             "4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db94dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510adfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a";
-        String cipher = "";
-
-        cipher = encrypt(alphabet);
+        String cipher = encrypt(alphabet);
         cipher = decryptToString(cipher);
 
         if (!cipher.equals(alphabet)) throw new Exceptions(XC.INIT_FAILURE);

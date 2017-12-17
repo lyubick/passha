@@ -72,7 +72,7 @@ public class Functional
                 + SHA.getHashString(masterHash, (String) VaultReflection.getInstance().SALT_FILENAME().get(vault))
                 + Properties.EXTENSIONS.VAULT;
             vaultFile = new File(databaseFilename);
-            passwords = new Vector<SpecialPassword>();
+            passwords = new Vector<>();
         }
         catch (Exceptions e)
         {
@@ -81,8 +81,7 @@ public class Functional
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() {
         vault = null;
         vaultsDatabase = null;
         databaseFilename = null;
@@ -130,7 +129,7 @@ public class Functional
         }
         catch (Exceptions e)
         {
-            new RuntimeException(e.getCode().toString());
+            throw new RuntimeException(e.getCode().toString());
         }
     }
 
@@ -139,7 +138,7 @@ public class Functional
     {
         numStream.limit(3).map(number -> newSpecialPassword("V" + number))
             .collect(Collectors.toCollection(() -> passwords));
-        passwords.stream().forEach(pwd -> addPasswordToDatabase(pwd));
+        passwords.forEach(this::addPasswordToDatabase);
 
         ObservableList<iSpecialPassword> list = vault.getIface();
         assertEquals(passwords.size(), list.size());
@@ -158,7 +157,7 @@ public class Functional
     {
         numStream.limit(3).map(number -> newSpecialPassword("V" + number, Integer.toString(number)))
             .collect(Collectors.toCollection(() -> passwords));
-        passwords.stream().forEach(pwd -> addPasswordToDatabase(pwd));
+        passwords.forEach(this::addPasswordToDatabase);
 
         SpecialPassword pwd = vault.getPasswordByShortcut("2");
         assertNotEquals(pwd, null);
@@ -171,7 +170,7 @@ public class Functional
     {
         numStream.limit(3).map(number -> newSpecialPassword("V" + number, Integer.toString(number)))
             .collect(Collectors.toCollection(() -> passwords));
-        passwords.stream().forEach(pwd -> addPasswordToDatabase(pwd));
+        passwords.forEach(this::addPasswordToDatabase);
 
     }
 
@@ -272,7 +271,7 @@ public class Functional
 
         numStream.limit(10).map(number -> newSpecialPassword("V" + number, "C" + number, "U" + number, ""))
             .collect(Collectors.toCollection(() -> passwords));
-        passwords.stream().forEach(pwd -> addPasswordToDatabase(pwd));
+        passwords.forEach(this::addPasswordToDatabase);
 
         final String exportFilname = "exportTest.txt";
         File outfile = new File(exportFilname);
@@ -305,11 +304,11 @@ public class Functional
         numStream.limit(10)
             .map(number -> newSpecialPassword("V" + number, number % 2 == 0 ? Integer.toString(number) : ""))
             .collect(Collectors.toCollection(() -> passwords));
-        passwords.stream().forEach(pwd -> addPasswordToDatabase(pwd));
+        passwords.forEach(this::addPasswordToDatabase);
 
         Vector<SpecialPassword> pwds = vault.getPasswordsWithShortcut();
         assertEquals(5, pwds.size());
-        assertTrue(pwds.stream().distinct().allMatch(p -> !p.getShortcut().isEmpty()));
+        assertTrue(pwds.stream().distinct().noneMatch(p -> p.getShortcut().isEmpty()));
     }
 
     @Test

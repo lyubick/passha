@@ -85,23 +85,18 @@ public class TrayAgent
             @Override
             public void singleClick(MouseEvent e)
             {
-                Platform.runLater(new Runnable()
-                {
-                    @Override
-                    public void run()
+                Platform.runLater(() -> {
+                    try
                     {
-                        try
-                        {
-                            new FormShortcuts(null);
-                        }
-                        catch (Exceptions e)
-                        {
-                            if (e.getCode() == XC.VAULTS_NOT_FOUND)
-                                self.showNotification(Texts.MSG_VAULTS_MISSING, Texts.MSG_VAULTS_MISSING_ACTION,
-                                    MessageType.WARNING);
-                            else
-                                Terminator.terminate(e);
-                        }
+                        new FormShortcuts(null);
+                    }
+                    catch (Exceptions e12)
+                    {
+                        if (e12.getCode() == XC.VAULTS_NOT_FOUND)
+                            self.showNotification(Texts.MSG_VAULTS_MISSING, Texts.MSG_VAULTS_MISSING_ACTION,
+                                MessageType.WARNING);
+                        else
+                            Terminator.terminate(e12);
                     }
                 });
             }
@@ -109,19 +104,14 @@ public class TrayAgent
             @Override
             public void doubleClick(MouseEvent e)
             {
-                Platform.runLater(new Runnable()
-                {
-                    @Override
-                    public void run()
+                Platform.runLater(() -> {
+                    try
                     {
-                        try
-                        {
-                            FormVaultsManager.getInstance().onUserRestoreRequest();
-                        }
-                        catch (Exceptions e)
-                        {
-                            Logger.printFatal("Manage Passwords not yet created");
-                        }
+                        FormVaultsManager.getInstance().onUserRestoreRequest();
+                    }
+                    catch (Exceptions e1)
+                    {
+                        Logger.printFatal("Manage Passwords not yet created");
                     }
                 });
             }
@@ -130,21 +120,7 @@ public class TrayAgent
 
     private ActionListener onExit()
     {
-        return new ActionListener()
-        {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent arg0)
-            {
-                Platform.runLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        Terminator.terminate(new Exceptions(XC.END));
-                    }
-                });
-            }
-        };
+        return arg0 -> Platform.runLater(() -> Terminator.terminate(new Exceptions(XC.END)));
     }
 
     private TrayAgent() throws Exceptions

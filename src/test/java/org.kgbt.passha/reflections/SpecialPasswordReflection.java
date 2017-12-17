@@ -28,6 +28,7 @@ public class SpecialPasswordReflection
             }
         }
 
+        assert enumClass != null;
         keyShaCycles = enumClass.getDeclaredField("SHA_CYCLES");
         keyComment = enumClass.getDeclaredField("COMMENT");
         keyLength = enumClass.getDeclaredField("LENGTH");

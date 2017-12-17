@@ -69,7 +69,7 @@ public class Autologin
 
     public void setAutologinON(Vault vault)
     {
-        if (vault == null || enabled == false) return;
+        if (vault == null || !enabled) return;
 
         try
         {
@@ -85,7 +85,7 @@ public class Autologin
 
     public void setAutologinOFF(byte[] hash)
     {
-        if (hash == null || enabled == false) return;
+        if (hash == null || !enabled) return;
 
         try
         {
@@ -100,7 +100,7 @@ public class Autologin
 
     public void setAutologinOFF(Vault vault)
     {
-        if (vault == null || enabled == false) return;
+        if (vault == null || !enabled) return;
 
         try
         {
@@ -117,14 +117,14 @@ public class Autologin
 
     public void check(Vault vault)
     {
-        if (vault == null || enabled == false) return;
+        if (vault == null || !enabled) return;
 
         try
         {
             ON.set(true);
 
             if (readFromRegistry().stream().map(cipher -> rsa.decrypt(cipher))
-                .anyMatch(hash -> vault.initializedFrom(hash))) return;
+                .anyMatch(vault::initializedFrom)) return;
 
             ON.set(false);
         }
@@ -140,7 +140,7 @@ public class Autologin
         try
         {
             return readFromRegistry().stream().map(val -> rsa.decrypt(val))
-                .collect(Collectors.toCollection(() -> new Vector<byte[]>()));
+                .collect(Collectors.toCollection(Vector::new));
         }
         catch (Exceptions e)
         {
@@ -179,8 +179,7 @@ public class Autologin
 
             output = new StringBuilder();
 
-            for (int i = 0; i < b.length; i++)
-                if ((Character.isLetterOrDigit((char) b[i]))) output.append((char) b[i]);
+            for (byte aB : b) if ((Character.isLetterOrDigit((char) aB))) output.append((char) aB);
 
             Logger.printDebug("output: '" + output.toString() + "'");
 
@@ -222,7 +221,7 @@ public class Autologin
     {
         try
         {
-            Vector<String> output = new Vector<String>();
+            Vector<String> output = new Vector<>();
 
             for (String str : executeCommand("reg query " + REG_PATH).split(RECORD_END))
             {

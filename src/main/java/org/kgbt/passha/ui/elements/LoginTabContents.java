@@ -8,7 +8,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
-import org.kgbt.passha.languages.Local;
 import org.kgbt.passha.languages.Local.Texts;
 import org.kgbt.passha.logger.Logger;
 import org.kgbt.passha.main.Exceptions;
@@ -28,42 +27,37 @@ public class LoginTabContents extends org.kgbt.passha.ui.elements.GridPane imple
 
     private EventHandler<ActionEvent> getOnLoginBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
+        return arg0 -> {
+            if (pf_password.getText().length() != 0)
             {
-                if (pf_password.getText().length() != 0)
-                {
-                    if (!pf_passwordConfirm.isVisible())
-                        try
-                        {
-                            init(pf_password.getText().toString(), false);
-                        }
-                        catch (Exceptions e)
-                        {
-                            if (e.getCode() == XC.USER_UNKNOWN)
-                            {
-                                b_register.setVisible(true);
-
-                                pf_passwordConfirm.setVisible(true);
-                                pf_password.setDisable(true);
-
-                                l_warning.setText(Texts.FORM_LOGIN_MSG_INCORRECT_PWD);
-                            }
-                            else if (e.getCode() == XC.VAULT_OPENED)
-                            {
-                                l_warning.setText(Local.Texts.MSG_VAULT_ALREADY_OPENED.toString());
-                            }
-                            else
-                            {
-                                Terminator.terminate(e);
-                            }
-                        }
-                    else
+                if (!pf_passwordConfirm.isVisible())
+                    try
                     {
-                        reset();
+                        init(pf_password.getText(), false);
                     }
+                    catch (Exceptions e)
+                    {
+                        if (e.getCode() == XC.USER_UNKNOWN)
+                        {
+                            b_register.setVisible(true);
+
+                            pf_passwordConfirm.setVisible(true);
+                            pf_password.setDisable(true);
+
+                            l_warning.setText(Texts.FORM_LOGIN_MSG_INCORRECT_PWD);
+                        }
+                        else if (e.getCode() == XC.VAULT_OPENED)
+                        {
+                            l_warning.setText(Texts.MSG_VAULT_ALREADY_OPENED.toString());
+                        }
+                        else
+                        {
+                            Terminator.terminate(e);
+                        }
+                    }
+                else
+                {
+                    reset();
                 }
             }
         };
@@ -71,27 +65,22 @@ public class LoginTabContents extends org.kgbt.passha.ui.elements.GridPane imple
 
     private EventHandler<ActionEvent> getOnRegisterBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                Logger.printTrace("b_Register button pressed");
+        return arg0 -> {
+            Logger.printTrace("b_Register button pressed");
 
-                try
+            try
+            {
+                if (pf_password.getText().equals(pf_passwordConfirm.getText()))
+                    init(pf_passwordConfirm.getText(), true);
+                else
                 {
-                    if (pf_password.getText().equals(pf_passwordConfirm.getText()))
-                        init(pf_passwordConfirm.getText(), true);
-                    else
-                    {
-                        reset();
-                        l_warning.setText(Texts.FORM_LOGIN_MSG_PWDS_DONT_MATCH);
-                    }
+                    reset();
+                    l_warning.setText(Texts.FORM_LOGIN_MSG_PWDS_DONT_MATCH);
                 }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
             }
         };
     }

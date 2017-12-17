@@ -45,7 +45,8 @@ public class UserFileMigration
         Logger.printDebug("Searching old user file: " + userFile.getAbsolutePath());
         if (!userFile.exists())
         {
-            if (userFolder.list().length == 0) userFolder.delete();
+            String[] list  = userFolder.list();
+            if (list != null && list.length == 0) userFolder.delete();
             throw new Exceptions(XC.FILE_DOES_NOT_EXIST);
         }
         Logger.printDebug("Found old user file: " + userFile.getAbsolutePath());
@@ -105,7 +106,8 @@ public class UserFileMigration
             else
             {
                 oldFile.delete();
-                if (oldFile.getParentFile().list().length == 0) oldFile.getParentFile().delete();
+                String[] list = oldFile.getParentFile().list();
+                if (list != null && list.length == 0) oldFile.getParentFile().delete();
 
                 Alert alertDlg = new Alert(AlertType.INFORMATION);
                 alertDlg.setTitle(Texts.LABEL_MIGRATION_TITLE.toString());

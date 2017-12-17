@@ -54,12 +54,11 @@ public class Tab extends javafx.scene.control.Tab
             }
 
             event.consume();
-            return;
         });
 
         tf_newName.focusedProperty().addListener((observable, oldValue, newValue) ->
         {
-            if (newValue == false)
+            if (!newValue)
             {
                 l_tabName.setText(Local.Texts.LABEL_VAULT_WITH_COLLS.toString() + tf_newName.getText());
                 This.setGraphic(l_tabName);

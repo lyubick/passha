@@ -66,7 +66,7 @@ public class PasswordEntryField extends PasswordField implements LabeledItem
     public void setValid(boolean valid)
     {
         isValid.setValue(valid);
-        if (valid == false)
+        if (!valid)
             beError();
         else
             beNormal();

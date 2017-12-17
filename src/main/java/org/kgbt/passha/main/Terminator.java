@@ -32,7 +32,7 @@ public class Terminator
                 alertDlg.getDialogPane().setContent(new Label(Texts.MSG_CONFIRM_UNSAFE_EXIT));
                 alertDlg.initStyle(StageStyle.UNIFIED);
                 Optional<ButtonType> response = alertDlg.showAndWait();
-                return response.get() == ButtonType.OK;
+                return response.isPresent() && response.get() == ButtonType.OK;
             }
 
             return true;
@@ -52,7 +52,7 @@ public class Terminator
         {
             Logger.getInstance().loggerOFF();
         }
-        catch (Exceptions e1)
+        catch (Exceptions ignored)
         {}
 
         System.exit(e.getCode().ordinal());

@@ -17,8 +17,7 @@ public class Functional
     private DatabaseReflection     databaseReflection     = DatabaseReflection.getInstance();
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() {
         VaultManager.init();
 
         try

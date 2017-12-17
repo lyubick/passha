@@ -15,7 +15,6 @@ import org.kgbt.passha.db.SpecialPassword;
 import org.kgbt.passha.db.Database.Status;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -115,14 +114,7 @@ public class FormVaultsManager extends AbstractForm
 
         This = this;
 
-        dbStatusListener = new ChangeListener<Status>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Status> observable, Status oldValue, Status newValue)
-            {
-                setDBStatus(newValue);
-            }
-        };
+        dbStatusListener = (observable, oldValue, newValue) -> setDBStatus(newValue);
 
         // ========== STATUS BAR ========== //
         hb_statusBar = new HBox();
@@ -289,10 +281,8 @@ public class FormVaultsManager extends AbstractForm
                 + "' to '" + newValue.getName() + "'.");
 
             tp_vaults.getTabs().stream().filter(tab ->
-            {
-                return tab.getContent() instanceof VaultTabContent
-                    && ((VaultTabContent) tab.getContent()).hasVault(newValue);
-            }).limit(1).findAny().ifPresent(tab -> tp_vaults.getSelectionModel().select(tab));
+                                                        tab.getContent() instanceof VaultTabContent
+                                                            && ((VaultTabContent) tab.getContent()).hasVault(newValue)).limit(1).findAny().ifPresent(tab -> tp_vaults.getSelectionModel().select(tab));
         });
 
         try
@@ -326,7 +316,7 @@ public class FormVaultsManager extends AbstractForm
 
     private void setDBStatus(Status status)
     {
-        Logger.printDebug("DB status changed: " + status.name().toString());
+        Logger.printDebug("DB status changed: " + status.name());
         switch (status)
         {
             default:
@@ -510,122 +500,92 @@ public class FormVaultsManager extends AbstractForm
 
     public EventHandler<ActionEvent> getOnNewAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent ae)
+        return ae -> {
+            try
             {
-                try
-                {
-                    new FormCreatePwd(This);
-                }
-                catch (Exceptions e)
-                {
-                    if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
-                        ; // Ignore
-                    else
-                        Logger.printError("Unhandled exception: " + e.getCode());
-                }
+                new FormCreatePwd(This);
+            }
+            catch (Exceptions e)
+            {
+                if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
+                    ; // Ignore
+                else
+                    Logger.printError("Unhandled exception: " + e.getCode());
             }
         };
     }
 
     public EventHandler<ActionEvent> getOnEditAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
+        return event -> {
+            try
             {
-                try
-                {
-                    if (VaultManager.getSelectedPassword() == null) return;
-                    new FormEditPwd(This);
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                if (VaultManager.getSelectedPassword() == null) return;
+                new FormEditPwd(This);
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
             }
         };
     }
 
     public EventHandler<ActionEvent> getOnCopyAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
+        return arg0 -> {
+            try
             {
-                try
-                {
-                    if (VaultManager.getSelectedPassword() == null) return;
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-                This.minimize();
-                copyToClipboard();
+                if (VaultManager.getSelectedPassword() == null) return;
             }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
+            }
+            This.minimize();
+            copyToClipboard();
         };
     }
 
     public EventHandler<ActionEvent> getOnDeleteAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
+        return arg0 -> {
+            try
             {
-                try
-                {
-                    if (VaultManager.getSelectedPassword() == null) return;
-                    new FormDeletePwd(This);
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                if (VaultManager.getSelectedPassword() == null) return;
+                new FormDeletePwd(This);
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
             }
         };
     }
 
     public EventHandler<ActionEvent> getOnResetAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
+        return arg0 -> {
+            try
             {
-                try
-                {
-                    if (VaultManager.getSelectedPassword() == null) return;
-                    new FormResetPwd(This);
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                if (VaultManager.getSelectedPassword() == null) return;
+                new FormResetPwd(This);
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
             }
         };
     }
 
     public EventHandler<ActionEvent> getOnExportAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
+        return event -> {
+            try
             {
-                try
-                {
-                    new FormExport(This);
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                new FormExport(This);
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
             }
         };
     }

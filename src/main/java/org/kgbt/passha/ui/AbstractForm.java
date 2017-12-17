@@ -11,7 +11,6 @@ import org.kgbt.passha.main.Main;
 import org.kgbt.passha.main.Properties;
 
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
@@ -75,7 +74,7 @@ public abstract class AbstractForm
     protected void close()
     {
         if (parent != null) parent.children.remove(this);
-        if (children != null) children.stream().forEach(child -> child.close());
+        if (children != null) children.forEach(AbstractForm::close);
         stage.close();
         if (parent != null) parent.stage.requestFocus();
     }
@@ -86,12 +85,12 @@ public abstract class AbstractForm
         stage.setIconified(false);
         stage.requestFocus();
         Coords.recall(stage);
-        if (children != null) children.stream().forEach(child -> child.restore());
+        if (children != null) children.forEach(AbstractForm::restore);
     }
 
     public void minimize()
     {
-        if (children != null) children.stream().forEach(child -> child.minimize());
+        if (children != null) children.forEach(AbstractForm::minimize);
         Coords.remember(stage);
         stage.hide();
     }
@@ -118,53 +117,39 @@ public abstract class AbstractForm
 
     private ChangeListener<Boolean> getIconifiedPropertyListener()
     {
-        return new ChangeListener<Boolean>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValule, Boolean newValue)
-            {
-                if (newValue) onUserMinimizeRequest();
-                stage.setIconified(false);
-            }
+        return (observable, oldValule, newValue) -> {
+            if (newValue) onUserMinimizeRequest();
+            stage.setIconified(false);
         };
     }
 
     private ChangeListener<Boolean> getFocusedPropertyListener()
     {
-        return new ChangeListener<Boolean>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+        return (observable, oldValue, newValue) -> {
+            if (!newValue && priority == WindowPriority.NORMAL) return;
+
+            if (newValue && priority == WindowPriority.ALWAYS_ON_TOP) return;
+
             {
-                if (!newValue && priority == WindowPriority.NORMAL) return;
-
-                if (newValue && priority == WindowPriority.ALWAYS_ON_TOP) return;
-
+                // Check if we have Children with highest priorities
+                Optional<AbstractForm> childOnTop = children.stream()
+                    .filter(child -> child.priority.equals(WindowPriority.ALWAYS_ON_TOP)).limit(1).findAny();
+                if (childOnTop.isPresent())
                 {
-                    // Check if we have Children with highest priorities
-                    Optional<AbstractForm> childOnTop = children.stream()
-                        .filter(child -> child.priority.equals(WindowPriority.ALWAYS_ON_TOP)).limit(1).findAny();
-                    if (childOnTop.isPresent())
-                    {
-                        childOnTop.get().stage.requestFocus();
-                        return;
-                    }
+                    childOnTop.get().stage.requestFocus();
+                    return;
                 }
-
-                // No, we have no children with higher priority. Maybe brothers?
-                if ((parent != null) && (!parent.children.isEmpty()))
-                {
-                    Optional<AbstractForm> childOnTop = parent.children.stream()
-                        .filter(child -> child.priority.equals(WindowPriority.ALWAYS_ON_TOP)).limit(1).findAny();
-                    if (childOnTop.isPresent())
-                    {
-                        childOnTop.get().stage.requestFocus();
-                        return;
-                    }
-                }
-
-                // No! Let focus! :)
             }
+
+            // No, we have no children with higher priority. Maybe brothers?
+            if ((parent != null) && (!parent.children.isEmpty()))
+            {
+                Optional<AbstractForm> childOnTop = parent.children.stream()
+                    .filter(child -> child.priority.equals(WindowPriority.ALWAYS_ON_TOP)).limit(1).findAny();
+                childOnTop.ifPresent(abstractForm -> abstractForm.stage.requestFocus());
+            }
+
+            // No! Let focus! :)
         };
     }
 

@@ -158,10 +158,7 @@ final public class SHA
 
         MessageBlock = new byte[128 * hashBlocksCount];
 
-        for (int i = 0; i < length; i++)
-        {
-            MessageBlock[i] = input[i];
-        }
+        System.arraycopy(input, 0, MessageBlock, 0, length);
 
         MessageBlock[length] = (byte) 0x80;
 
@@ -186,10 +183,7 @@ final public class SHA
         for (int i = 0; i < hashBlocksCount; i++)
         {
             int offset = i * 128;
-            for (int j = 0; j < 128; j++)
-            {
-                hashBlock[j] = MessageBlock[j + offset];
-            }
+            System.arraycopy(MessageBlock, offset, hashBlock, 0, 128);
             compressSHA512();
         }
 

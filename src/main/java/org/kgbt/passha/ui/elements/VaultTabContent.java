@@ -4,7 +4,6 @@ import org.kgbt.passha.core.Vault;
 import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.db.iSpecialPassword;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -19,26 +18,20 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
 
     private ChangeListener<iSpecialPassword> getSelectedItemPropertyListener()
     {
-        return new ChangeListener<iSpecialPassword>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends iSpecialPassword> observable, iSpecialPassword oldValue,
-                iSpecialPassword newValue)
+        return (observable, oldValue, newValue) -> {
+            if (oldValue != null)
             {
-                if (oldValue != null)
-                {
-                    oldValue.setPasswordVisible(false);
-                    refresh();
-                }
-
-                if (newValue == null)
-                {
-                    vault.setSelected(null);
-                    return;
-                }
-
-                vault.setSelected(newValue.getOrigin());
+                oldValue.setPasswordVisible(false);
+                refresh();
             }
+
+            if (newValue == null)
+            {
+                vault.setSelected(null);
+                return;
+            }
+
+            vault.setSelected(newValue.getOrigin());
         };
     }
 
@@ -59,11 +52,11 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
 
         getColumns().addAll(cName, cShortcut, cComment, cUrl, cPassword);
 
-        cName.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("name"));
-        cComment.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("comment"));
-        cUrl.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("url"));
-        cShortcut.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("shortcut"));
-        cPassword.setCellValueFactory(new PropertyValueFactory<iSpecialPassword, String>("password"));
+        cName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        cComment.setCellValueFactory(new PropertyValueFactory<>("comment"));
+        cUrl.setCellValueFactory(new PropertyValueFactory<>("url"));
+        cShortcut.setCellValueFactory(new PropertyValueFactory<>("shortcut"));
+        cPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
 
         getSelectionModel().selectedItemProperty().addListener(getSelectedItemPropertyListener());
 

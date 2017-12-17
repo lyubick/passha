@@ -45,9 +45,8 @@ public final class Logger
         {
             Logger.getInstance().prepareAndLog(LOGLEVELS.FATAL, msg);
         }
-        catch (Exceptions e)
+        catch (Exceptions ignored)
         {
-            return;
         }
     }
 
@@ -57,9 +56,8 @@ public final class Logger
         {
             Logger.getInstance().prepareAndLog(LOGLEVELS.ERROR, msg);
         }
-        catch (Exceptions e)
+        catch (Exceptions ignored)
         {
-            return;
         }
     }
 
@@ -69,9 +67,8 @@ public final class Logger
         {
             Logger.getInstance().prepareAndLog(LOGLEVELS.DEBUG, msg);
         }
-        catch (Exceptions e)
+        catch (Exceptions ignored)
         {
-            return;
         }
     }
 
@@ -81,9 +78,8 @@ public final class Logger
         {
             Logger.getInstance().prepareAndLog(LOGLEVELS.TRACE, msg);
         }
-        catch (Exceptions e)
+        catch (Exceptions ignored)
         {
-            return;
         }
     }
 
@@ -197,9 +193,8 @@ public final class Logger
         {
             Logger.getInstance().end();
         }
-        catch (Exceptions e)
+        catch (Exceptions ignored)
         {
-            return;
         }
     }
 

@@ -51,8 +51,8 @@ public class Vault
 
     public ObservableList<iSpecialPassword> getIface()
     {
-        return database.getDecrypted().stream().map(sp -> new iSpecialPassword(sp))
-            .collect(Collectors.toCollection(() -> FXCollections.observableArrayList()));
+        return database.getDecrypted().stream().map(iSpecialPassword::new)
+            .collect(Collectors.toCollection(FXCollections::observableArrayList));
     }
 
     public SpecialPassword getPasswordByShortcut(String shortcut)
@@ -79,8 +79,6 @@ public class Vault
     {
         if (entry == null) entry = selectedPassword;
         database.deleteEntry(entry);
-
-        entry = null;
     }
 
     public void setSelected(SpecialPassword password)
@@ -149,7 +147,7 @@ public class Vault
     public Vector<SpecialPassword> getPasswordsWithShortcut()
     {
         return database.getDecrypted().stream().filter(sp -> !sp.getShortcut().isEmpty())
-            .collect(Collectors.toCollection(() -> new Vector<>()));
+            .collect(Collectors.toCollection(Vector::new));
     }
 
     public String getName()

@@ -13,7 +13,6 @@ import org.kgbt.passha.core.Vault;
 import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -54,127 +53,95 @@ public class FormCreatePwd extends AbstractForm
 
     private EventHandler<KeyEvent> getLengthTFFilter()
     {
-        return new EventHandler<KeyEvent>()
-        {
-            @Override
-            public void handle(KeyEvent keyEvent)
+        return keyEvent -> {
+            String lengthFieldText = ef_length.getText();
+            if (!"0123456789".contains(keyEvent.getCharacter()) || lengthFieldText.length() >= 2)
             {
-                String lengthFieldText = ef_length.getText();
-                if (!"0123456789".contains(keyEvent.getCharacter()) || lengthFieldText.length() >= 2)
-                {
-                    keyEvent.consume();
-                }
+                keyEvent.consume();
             }
         };
     }
 
     private EventHandler<KeyEvent> getSpecialCharTFFilter()
     {
-        return new EventHandler<KeyEvent>()
-        {
-            @Override
-            public void handle(KeyEvent keyEvent)
+        return keyEvent -> {
+            if (!SPECIAL_CHARACTERS_DEFAULT_SET.contains(keyEvent.getCharacter())
+                || ef_specialChars.getText().contains(keyEvent.getCharacter()))
             {
-                if (!SPECIAL_CHARACTERS_DEFAULT_SET.contains(keyEvent.getCharacter())
-                    || ef_specialChars.getText().contains(keyEvent.getCharacter()))
-                {
-                    keyEvent.consume();
-                }
+                keyEvent.consume();
             }
         };
     }
 
     private ChangeListener<String> getPasswordParameterListener()
     {
-        return new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
-            {
-                showPasswordPreview();
-            }
-        };
+        return (observable, oldValue, newValue) -> showPasswordPreview();
     }
 
     private EventHandler<ActionEvent> getOnSpecialCharactersCBChanged()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                ef_specialChars.setDisable(!ef_specialChars.isDisabled());
-                showPasswordPreview();
-            }
+        return event -> {
+            ef_specialChars.setDisable(!ef_specialChars.isDisabled());
+            showPasswordPreview();
         };
     }
 
     private ChangeListener<Boolean> getLengthTFFocusedPropertyListener()
     {
-        return new ChangeListener<Boolean>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+        return (observable, oldValue, newValue) -> {
+            if (newValue)
             {
-                if (newValue)
-                {
-                    ef_length.setText("");
-                    b_ok.setDisable(true);
-                }
-                else
-                {
-                    b_ok.setDisable(false);
-                    if (ef_length.getText().length() == 0)
-                        ef_length.setText(Integer.toString(DEFAULT_PASSWORD_LENGTH));
-                    else if (Integer.parseInt(ef_length.getText()) > MAX_PASSWORD_LENGTH)
-                        ef_length.setText(Integer.toString(MAX_PASSWORD_LENGTH));
-                    else if (Integer.parseInt(ef_length.getText()) < MIN_PASSWORD_LENGTH)
-                        ef_length.setText(Integer.toString(MIN_PASSWORD_LENGTH));
-                }
+                ef_length.setText("");
+                b_ok.setDisable(true);
+            }
+            else
+            {
+                b_ok.setDisable(false);
+                if (ef_length.getText().length() == 0)
+                    ef_length.setText(Integer.toString(DEFAULT_PASSWORD_LENGTH));
+                else if (Integer.parseInt(ef_length.getText()) > MAX_PASSWORD_LENGTH)
+                    ef_length.setText(Integer.toString(MAX_PASSWORD_LENGTH));
+                else if (Integer.parseInt(ef_length.getText()) < MIN_PASSWORD_LENGTH)
+                    ef_length.setText(Integer.toString(MIN_PASSWORD_LENGTH));
             }
         };
     }
 
     private EventHandler<ActionEvent> getOnOKBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
+        return arg0 -> {
+            b_ok.setDisable(true);
+
+            try
             {
-                b_ok.setDisable(true);
-
-                try
+                Vault activeVault = VaultManager.getInstance().getActiveVault();
+                if (password != null)
                 {
-                    Vault activeVault = VaultManager.getInstance().getActiveVault();
-                    if (password != null)
-                    {
-                        password.setAllOptionalFields(ef_comment.getText(), ef_url.getText(), ef_shortcut.getText());
-                        activeVault.addPassword(password);
-                    }
-                    else
-                        activeVault
-                            .addPassword(new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
-                                ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
-                                ef_specialChars.getText(), ef_shortcut.getText(), activeVault));
-                    close();
+                    password.setAllOptionalFields(ef_comment.getText(), ef_url.getText(), ef_shortcut.getText());
+                    activeVault.addPassword(password);
                 }
-                catch (Exceptions e)
+                else
+                    activeVault
+                        .addPassword(new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
+                            ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
+                            ef_specialChars.getText(), ef_shortcut.getText(), activeVault));
+                close();
+            }
+            catch (Exceptions e)
+            {
+                if (e.getCode() == XC.PASSWORD_NAME_EXISTS)
                 {
-                    if (e.getCode() == XC.PASSWORD_NAME_EXISTS)
-                    {
-                        l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_NAME_EXISTS);
-                        ef_name.beError();
-                    }
-                    else if (e.getCode() == XC.PASSWORD_SHORTCUT_IN_USE)
-                    {
-                        l_errorLabel.setText(
-                            Texts.MSG_SHORTCUT_IN_USE_BY.toString() + ((SpecialPassword) e.getObject()).getName());
-                        ef_shortcut.beError();
-                    }
-
-                    b_ok.setDisable(false);
+                    l_errorLabel.setText(Texts.FORM_CREATEPWD_MSG_NAME_EXISTS);
+                    ef_name.beError();
                 }
+                else if (e.getCode() == XC.PASSWORD_SHORTCUT_IN_USE)
+                {
+                    l_errorLabel.setText(
+                        Texts.MSG_SHORTCUT_IN_USE_BY.toString() + ((SpecialPassword) e.getObject()).getName());
+                    ef_shortcut.beError();
+                }
+
+                b_ok.setDisable(false);
             }
         };
     }

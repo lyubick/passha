@@ -16,7 +16,6 @@ import org.kgbt.passha.main.Exceptions;
 import org.kgbt.passha.main.Exceptions.XC;
 import org.kgbt.passha.db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -31,96 +30,86 @@ public class FormShortcuts extends AbstractForm
 
     private ChangeListener<Boolean> getFocusedPropertyListner()
     {
-        return new ChangeListener<Boolean>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
-            {
-                if (oldValue) close();
-            }
+        return (observable, oldValue, newValue) -> {
+            if (oldValue) close();
         };
     }
 
     private EventHandler<KeyEvent> getOnKeyPressed()
     {
-        return new EventHandler<KeyEvent>()
-        {
-            @Override
-            public void handle(KeyEvent keyEvent)
+        return keyEvent -> {
+            Logger.printDebug(
+                "Key pressed: '" + keyEvent.getText().toLowerCase() + "' keyCode = " + keyEvent.getCode());
+
+            switch (keyEvent.getCode())
             {
-                Logger.printDebug(
-                    "Key pressed: '" + keyEvent.getText().toLowerCase() + "' keyCode = " + keyEvent.getCode());
+                case ESCAPE:
+                    close();
+                break;
 
-                switch (keyEvent.getCode())
-                {
-                    case ESCAPE:
+                case TAB:
+                    try
+                    {
+                        // ignore TAB - no other vaults to switch to
+                        if (VaultManager.getInstance().size() == 1)
+                        {
+                            keyEvent.consume();
+                            return;
+                        }
+
+                        VaultManager.getInstance().activateNextVault();
                         close();
-                    break;
-
-                    case TAB:
+                        new FormShortcuts(parent);
+                    }
+                    catch (Exceptions e)
+                    {
                         try
                         {
-                            // ignore TAB - no other vaults to switch to
-                            if (VaultManager.getInstance().size() == 1)
-                            {
-                                keyEvent.consume();
-                                return;
-                            }
-
-                            VaultManager.getInstance().activateNextVault();
-                            close();
-                            new FormShortcuts(parent);
+                            if (e.getCode() == XC.VAULTS_NOT_FOUND)
+                                TrayAgent.getInstance().showNotification(Texts.MSG_VAULTS_MISSING,
+                                    Texts.MSG_VAULTS_MISSING_ACTION, MessageType.WARNING);
+                            else
+                                Terminator.terminate(e);
                         }
-                        catch (Exceptions e)
+                        catch (Exceptions e1)
                         {
-                            try
-                            {
-                                if (e.getCode() == XC.VAULTS_NOT_FOUND)
-                                    TrayAgent.getInstance().showNotification(Texts.MSG_VAULTS_MISSING,
-                                        Texts.MSG_VAULTS_MISSING_ACTION, MessageType.WARNING);
-                                else
-                                    Terminator.terminate(e);
-                            }
-                            catch (Exceptions e1)
-                            {
-                                Terminator.terminate(e1);
-                            }
+                            Terminator.terminate(e1);
                         }
-                        return;
+                    }
+                    return;
 
-                    default:
-                    break;
-                }
+                default:
+                break;
+            }
 
-                if (keyEvent.getText().isEmpty())
+            if (keyEvent.getText().isEmpty())
+            {
+                keyEvent.consume();
+                return;
+            }
+
+            try
+            {
+                Vault vault = VaultManager.getInstance().getActiveVault();
+                vault.setSelected(vault.getPasswordByShortcut(keyEvent.getText().toLowerCase()));
+
+                if (vault.getSelected() == null)
                 {
+                    Logger.printError("No password with this shortcut '" + keyEvent.getText().toLowerCase()
+                        + "' in " + vault.getName());
                     keyEvent.consume();
                     return;
                 }
 
-                try
-                {
-                    Vault vault = VaultManager.getInstance().getActiveVault();
-                    vault.setSelected(vault.getPasswordByShortcut(keyEvent.getText().toLowerCase()));
+                FormVaultsManager.copyToClipboard();
 
-                    if (vault.getSelected() == null)
-                    {
-                        Logger.printError("No password with this shortcut '" + keyEvent.getText().toLowerCase()
-                            + "' in " + vault.getName());
-                        keyEvent.consume();
-                        return;
-                    }
-
-                    FormVaultsManager.copyToClipboard();
-
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
-
-                close();
             }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
+            }
+
+            close();
         };
 
     }

@@ -38,34 +38,24 @@ public class FormResetPwd extends AbstractForm
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private EventHandler<ActionEvent> getOnOKBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
+        return arg0 -> {
+            try
             {
-                try
-                {
-                    VaultManager.getInstance().getActiveVault().replacePassword(newSp);
-                    close();
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+                VaultManager.getInstance().getActiveVault().replacePassword(newSp);
+                close();
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
             }
         };
     }
 
     private EventHandler<ActionEvent> getOnCancelBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent arg0)
-            {
-                newSp = null;
-                close();
-            }
+        return arg0 -> {
+            newSp = null;
+            close();
         };
     }
 

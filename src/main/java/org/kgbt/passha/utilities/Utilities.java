@@ -2,14 +2,9 @@ package org.kgbt.passha.utilities;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -49,43 +44,40 @@ public final class Utilities
 
     public static byte[] objectToBytes(Object object) throws Exceptions
     {
-        byte[] bytes = null;
-
         try
         {
             ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
             ObjectOutputStream outObject = new ObjectOutputStream(byteArrayStream);
             outObject.writeObject(object);
 
-            bytes = byteArrayStream.toByteArray();
+            byte[] bytes = byteArrayStream.toByteArray();
 
             byteArrayStream.close();
             outObject.close();
+
+            return bytes;
         }
         catch (IOException e)
         {
             throw new Exceptions(XC.OBJECT_SERIALIZATION_FAILED);
         }
-
-        return bytes;
     }
 
     public static Object bytesToObject(byte[] bytes) throws Exceptions
     {
-        Object object = null;
-
         try
         {
             ByteArrayInputStream byteArrayStream = new ByteArrayInputStream(bytes);
             ObjectInputStream inpObject = new ObjectInputStream(byteArrayStream);
-            object = inpObject.readObject();
+            Object object = inpObject.readObject();
+            inpObject.close();
+            byteArrayStream.close();
+            return object;
         }
         catch (IOException | ClassNotFoundException e)
         {
             throw new Exceptions(XC.OBJECT_DESERIALIZATION_FAILED);
         }
-
-        return object;
     }
 
     public static BitSet getBitSet(String s)
@@ -96,7 +88,7 @@ public final class Utilities
         if (!s.isEmpty() && s.charAt(0) == '{' && s.charAt(s.length() - 1) == '}' && s.length() > 2)
         {
             Arrays.stream(s.substring(1, s.length() - 1).split(",")).map(String::trim).mapToInt(Integer::parseInt)
-                .forEach((int e) -> b.set(e));
+                .forEach(b::set);
         }
 
         return b;
@@ -129,7 +121,7 @@ public final class Utilities
 
     public static long toLong(int in)
     {
-        return (long) in & 0xFFFFFFFF;
+        return (long) in;
     }
 
     public static String bytesToHex(byte[] bytes)
@@ -150,30 +142,23 @@ public final class Utilities
 
     public static void writeToFile(String fileName, String... strings) throws Exceptions
     {
-        writeToFile(fileName, new Vector<String>(), strings);
+        writeToFile(fileName, new Vector<>(), strings);
     }
 
     public static void writeToFile(String fileName, Vector<String> outStrings, String... strings) throws Exceptions
     {
         writeToFile(fileName,
-            Arrays.stream(strings).collect(Collectors.toCollection(() -> new Vector<String>(outStrings))));
+            Arrays.stream(strings).collect(Collectors.toCollection(() -> new Vector<>(outStrings))));
     }
 
     public static void writeToFile(String fileName, Vector<String> outStrings) throws Exceptions
     {
         Logger.printDebug("Writing to '" + fileName + "'; " + outStrings.size() + " lines.");
-
         try
         {
-            PrintWriter writer = new PrintWriter(fileName);
-
-            for (String s : outStrings)
-                writer.println(s);
-
-            writer.flush();
-            writer.close();
+            Files.write(Paths.get(fileName), outStrings);
         }
-        catch (FileNotFoundException e)
+        catch (IOException e)
         {
             throw new Exceptions(XC.FILE_WRITE_ERROR);
         }
@@ -187,9 +172,7 @@ public final class Utilities
 
         try
         {
-            FileOutputStream fos = new FileOutputStream(fileName);
-            fos.write(writeable);
-            fos.close();
+            Files.write(Paths.get(fileName), writeable);
         }
         catch (IOException e)
         {
@@ -201,28 +184,19 @@ public final class Utilities
 
     public static byte[] readBytesFromFile(String fileName) throws Exceptions
     {
-        Logger.printDebug("Reading bytes from '" + fileName + "'...");
-
-        byte[] readable = new byte[(int) new File(fileName).length()];
-
-        try
-        {
-            FileInputStream fis = new FileInputStream(fileName);
-            fis.read(readable);
-            fis.close();
-        }
-        catch (IOException e)
-        {
+        try {
+            Logger.printDebug("Reading bytes from '" + fileName + "'...");
+            byte[] data = Files.readAllBytes(Paths.get(fileName));
+            Logger.printDebug("Reading bytes from '" + fileName + "'" + "DONE!");
+            return data;
+        } catch (IOException ignore) {
             throw new Exceptions(XC.FILE_READ_ERROR);
         }
-        Logger.printDebug("Reading bytes from '" + fileName + "'" + "DONE!");
-
-        return readable;
     }
 
     public static Vector<String> readStringsFromFile(String fileName) throws Exceptions
     {
-        Vector<String> inLines = new Vector<String>();
+        Vector<String> inLines = new Vector<>();
 
         Logger.printDebug("Reading from '" + fileName + "'");
 
@@ -243,7 +217,6 @@ public final class Utilities
     public static BigInteger hexToInt(String hexValue)
     {
         BigInteger out = new BigInteger("0");
-        BigInteger curr = null;
         BigInteger power = new BigInteger("16");
 
         int i = hexValue.length() - 1;
@@ -251,7 +224,7 @@ public final class Utilities
 
         for (; i >= 0; --i)
         {
-            curr = new BigInteger(hexValue.substring(i, i + 1), 16);
+            BigInteger curr = new BigInteger(hexValue.substring(i, i + 1), 16);
             out = out.add(curr.multiply(power.pow(pwr++)));
         }
 

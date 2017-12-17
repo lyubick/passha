@@ -26,7 +26,7 @@ public class VaultManager
     {
         vaults = new Vector<>();
         self = this;
-        activeVaultProperty = new SimpleObjectProperty<Vault>(null);
+        activeVaultProperty = new SimpleObjectProperty<>(null);
     }
 
     static public void init()

@@ -29,25 +29,20 @@ public class FormSettings extends AbstractForm
 
     private EventHandler<ActionEvent> getOnOKBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
+        return event -> {
+            try
             {
-                try
-                {
-                    Settings.getInstance().setLanguage(cb_language.getValue());
-                    Settings.getInstance().setClipboardLiveTime(ef_clipboard.getText());
-                    Settings.getInstance().saveSettings();
+                Settings.getInstance().setLanguage(cb_language.getValue());
+                Settings.getInstance().setClipboardLiveTime(ef_clipboard.getText());
+                Settings.getInstance().saveSettings();
 
-                    close();
-                    if (Settings.getInstance().isRestartRequired()) FormVaultsManager.reload();
+                close();
+                if (Settings.getInstance().isRestartRequired()) FormVaultsManager.reload();
 
-                }
-                catch (Exceptions e)
-                {
-                    Terminator.terminate(e);
-                }
+            }
+            catch (Exceptions e)
+            {
+                Terminator.terminate(e);
             }
         };
     }

@@ -8,7 +8,6 @@ import org.kgbt.passha.ui.elements.Label;
 import org.kgbt.passha.ui.elements.LabeledItem;
 import org.kgbt.passha.ui.elements.EntryField.TEXTFIELD;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -32,46 +31,36 @@ public class FormDeletePwd extends AbstractForm
     /* EVENT HANDLERS & CHANGE LISTENERS */
     private ChangeListener<String> getConfirmationTFListener()
     {
-        return new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+        return (observable, oldValue, newValue) -> {
+            if (newValue.equals(confirmationText))
             {
-                if (newValue.equals(confirmationText))
-                {
-                    b_confirm.setText(Texts.LABEL_DELETE.toString());
-                    confirmed = true;
-                }
-                else
-                {
-                    b_confirm.setText(Texts.LABEL_CANCEL.toString());
-                    confirmed = false;
-                }
+                b_confirm.setText(Texts.LABEL_DELETE.toString());
+                confirmed = true;
+            }
+            else
+            {
+                b_confirm.setText(Texts.LABEL_CANCEL.toString());
+                confirmed = false;
             }
         };
     }
 
     private EventHandler<ActionEvent> getOnConfirmBtnAction()
     {
-        return new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
+        return event -> {
+            if (confirmed)
             {
-                if (confirmed)
+                try
                 {
-                    try
-                    {
-                        VaultManager.getInstance().getActiveVault().removePassword(null);
-                    }
-                    catch (Exceptions e)
-                    {
-                        Terminator.terminate(e);
-                    }
+                    VaultManager.getInstance().getActiveVault().removePassword(null);
                 }
-
-                close();
+                catch (Exceptions e)
+                {
+                    Terminator.terminate(e);
+                }
             }
+
+            close();
         };
     }
 
@@ -80,7 +69,7 @@ public class FormDeletePwd extends AbstractForm
     {
         super(parent, Texts.LABEL_PASSWORD, WindowPriority.ALWAYS_ON_TOP, false);
 
-        confirmationText = new String(Texts.FORM_DELETEPWD_MSG_CONFIRMATION.toString());
+        confirmationText = Texts.FORM_DELETEPWD_MSG_CONFIRMATION.toString();
         l_header = new Label(Texts.LABEL_PASSWORD.toString());
         l_header.beHeader();
 
