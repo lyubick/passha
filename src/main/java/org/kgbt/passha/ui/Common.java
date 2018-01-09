@@ -24,7 +24,7 @@ public final class Common
 
     public static ImageView getRegenerateImage()
     {
-        ImageView imgView = new ImageView(new Image(Main.class.getResourceAsStream("/resources/regenerate.png")));
+        ImageView imgView = new ImageView(new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("regenerate.png")));
         imgView.setStyle("-fx-background-color:transparent");
 
         return imgView;
@@ -32,7 +32,7 @@ public final class Common
 
     public static ImageView getFindFolderImage()
     {
-        ImageView imgView = new ImageView(new Image(Main.class.getResourceAsStream("/resources/find_folder.png")));
+        ImageView imgView = new ImageView(new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("find_folder.png")));
         imgView.setStyle("-fx-background-color:transparent");
 
         return imgView;
