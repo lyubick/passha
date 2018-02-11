@@ -108,7 +108,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
     public void reload()
     {
         getSelectionModel().clearSelection();
-        setItems(vault.getIface());
+        setItems(iSpecialPassword.getIface(vault.getPasswords()));
     }
 
     public void refresh()

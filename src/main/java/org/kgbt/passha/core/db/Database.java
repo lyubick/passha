@@ -3,6 +3,7 @@ package org.kgbt.passha.core.db;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -11,26 +12,25 @@ import org.kgbt.passha.core.common.Exceptions.XC;
 import org.kgbt.passha.core.common.cfg.Properties;
 import org.kgbt.passha.core.rsa.RSA;
 import org.kgbt.passha.core.common.Utilities;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.concurrent.Task;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Terminator;
 
 public class Database
 {
     // Keys compared only by SpecialPassword::getName();
-    private TreeMap<SpecialPassword, String> db             = null;
+    private TreeMap<SpecialPassword, String> db = null;
 
-    private File                             vaultFile      = null;
+    private File vaultFile = null;
 
-    private String                           name           = "";
+    private String name = "";
 
-    private RSA                              rsa            = null;
+    private RSA rsa = null;
 
-    private int                              retriesLeft    = Properties.DATABASE.MAX_RETRIES;
+    private int retriesLeft = Properties.DATABASE.MAX_RETRIES;
 
-    protected final static String            VAULT_NAME_KEY = "vaultName";
+    protected final static String VAULT_NAME_KEY = "vaultName";
+
+    private Consumer<Status> onStatusChanged = null;
 
     public enum Status
     {
@@ -40,18 +40,23 @@ public class Database
         SYNCHRONIZATION_FAILED
     }
 
-    private volatile SimpleObjectProperty<Status> status = null;
+    private volatile Status status = null;
 
     public void requestSync()
     {
-        status.set(Status.DESYNCHRONIZED);
+        updateStatus(Status.DESYNCHRONIZED);
         retriesLeft = Properties.DATABASE.MAX_RETRIES;
         sync();
     }
 
+    public void setOnStatusChanged(Consumer<Status> consumer)
+    {
+        onStatusChanged = consumer;
+    }
+
     public Database(RSA myRSA, String filename, boolean newUser, Vault vault) throws Exceptions
     {
-        status = new SimpleObjectProperty<>(Status.SYNCHRONIZING);
+        updateStatus(Status.SYNCHRONIZING);
 
         File vaultDir = new File(Properties.PATHS.VAULT);
 
@@ -106,7 +111,7 @@ public class Database
             db.put(pwd, rsa.encrypt(Utilities.objectToBytes(pwd.getMap())));
         }
 
-        status.set(Status.SYNCHRONIZED);
+        updateStatus(Status.SYNCHRONIZED);
     }
 
     private void validatePassword(SpecialPassword newEntry) throws Exceptions
@@ -140,7 +145,8 @@ public class Database
 
     public void deleteEntry(SpecialPassword entry) throws Exceptions
     {
-        if (!db.containsKey(entry)) throw new Exceptions(XC.PASSWORD_NOT_FOUND);
+        if (!db.containsKey(entry))
+            throw new Exceptions(XC.PASSWORD_NOT_FOUND);
         db.remove(entry);
 
         requestSync();
@@ -151,7 +157,8 @@ public class Database
         // All checks should be before anything else to avoid loosing oldEntry
         // (either replace is completed fully, or not at all)
 
-        if (!db.containsKey(oldEntry)) throw new Exceptions(XC.PASSWORD_NOT_FOUND);
+        if (!db.containsKey(oldEntry))
+            throw new Exceptions(XC.PASSWORD_NOT_FOUND);
 
         validatePassword(newEntry, oldEntry);
 
@@ -163,82 +170,63 @@ public class Database
 
     public Vector<SpecialPassword> getDecrypted()
     {
-        return db.keySet().stream().map(sp ->
-        {
+        return db.keySet().stream().map(sp -> {
             try
             {
                 return new SpecialPassword(sp);
             }
             catch (Exceptions e)
             {
-                if (e.getCode() == XC.NULL) Logger.printError("Database entry is null!");
+                if (e.getCode() == XC.NULL)
+                    Logger.printError("Database entry is null!");
                 Terminator.terminate(e);
             }
             return null;
         }).filter(Objects::nonNull).collect(Collectors.toCollection(Vector::new));
     }
 
-    public ObjectProperty<Status> getStatusProperty()
+    public Status getStatus()
     {
         return status;
     }
 
-    public Status getStatus()
-    {
-        return status.get();
-    }
-
     private void sync()
     {
-
         Logger.printDebug("Saving Database to '" + vaultFile.getAbsolutePath() + "'...");
 
-        Task<Void> task = new Task<Void>()
-        {
-            @Override
-            protected Void call() throws Exception
-            {
-                status.set(Status.SYNCHRONIZING);
-                try
-                {
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("vaultName", name);
-
-                    Utilities.writeToFile(vaultFile.getAbsolutePath(),
-                        db.values().stream().collect(Collectors.toCollection((Supplier<Vector<String>>) Vector::new)),
-                        rsa.encrypt(Utilities.objectToBytes(map)));
-                }
-                catch (Exceptions e)
-                {
-                    throw new Exception();
-                }
-                return null;
-            }
-        };
-
-        task.setOnSucceeded(event ->
-        {
-            status.set(Status.SYNCHRONIZED);
-            Logger.printDebug("Saving Database to '" + vaultFile.getAbsolutePath() + "' DONE!");
-            Logger.printDebug("Database Synchronization returned status: " + status.toString());
-        });
-
-        task.setOnFailed(event ->
-        {
-            status.set(Status.SYNCHRONIZATION_FAILED);
+        Thread thread = new Thread(() -> {
+            updateStatus(Status.SYNCHRONIZING);
             try
             {
-                Thread.sleep(Properties.DATABASE.SYNC_RETRY_DELAY_MS);
-            }
-            catch (Exception e)
-            {
-                Terminator.terminate(new Exceptions(XC.ERROR));
-            }
+                HashMap<String, String> map = new HashMap<>();
+                map.put("vaultName", name);
 
-            if (--retriesLeft > 0) sync();
+                Utilities.writeToFile(vaultFile.getAbsolutePath(),
+                    db.values().stream().collect(Collectors.toCollection((Supplier<Vector<String>>) Vector::new)),
+                    rsa.encrypt(Utilities.objectToBytes(map)));
+
+                updateStatus(Status.SYNCHRONIZED);
+                Logger.printDebug("Saving Database to '" + vaultFile.getAbsolutePath() + "' DONE!");
+                Logger.printDebug("Database Synchronization returned status: " + status.toString());
+            }
+            catch (Exceptions e)
+            {
+                Logger.printError(e.getText());
+                updateStatus(Status.SYNCHRONIZATION_FAILED);
+                try
+                {
+                    Thread.sleep(Properties.DATABASE.SYNC_RETRY_DELAY_MS);
+                }
+                catch (Exception e1)
+                {
+                    Terminator.terminate(new Exceptions(XC.ERROR));
+                }
+
+                if (--retriesLeft > 0)
+                    sync();
+            }
         });
 
-        Thread thread = new Thread(task);
         thread.start();
     }
 
@@ -249,9 +237,17 @@ public class Database
 
     public void setName(String name)
     {
-        if (name.equals(this.name)) return;
+        if (name.equals(this.name))
+            return;
 
         this.name = name;
         requestSync();
+    }
+
+    private void updateStatus(Status newStatus)
+    {
+        status = newStatus;
+        if (onStatusChanged != null)
+            onStatusChanged.accept(status);
     }
 }

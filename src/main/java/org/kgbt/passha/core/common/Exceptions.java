@@ -16,6 +16,7 @@ public final class Exceptions extends Throwable
         VAULT_OPENED,
         VAULTS_NOT_FOUND,
         FORM_ALREADY_OPEN,
+        NO_SUCH_VAULT,
 
         // ONLY Initialization failure
         INIT_FAILURE,

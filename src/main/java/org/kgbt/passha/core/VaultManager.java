@@ -1,33 +1,37 @@
 package org.kgbt.passha.core;
 
 import java.util.Vector;
+import java.util.function.BiConsumer;
 
 import org.kgbt.passha.core.common.cfg.Properties;
 import org.kgbt.passha.core.compatibility.UserFileMigration;
 import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.desktop.Autologin;
 import org.kgbt.passha.core.db.Database.Status;
 import org.kgbt.passha.core.db.SpecialPassword;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Exceptions.XC;
 import org.kgbt.passha.core.sha.SHA;
 
 public class VaultManager
 {
-    static private VaultManager         self                = null;
+    static private VaultManager self = null;
 
     private Vector<Vault> vaults = null;
 
-    private SimpleObjectProperty<Vault> activeVaultProperty = null;
+    private Vault                    activeVault;
+    private BiConsumer<Vault, Vault> onActiveVaultChanged;
 
     private VaultManager()
     {
         vaults = new Vector<>();
         self = this;
-        activeVaultProperty = new SimpleObjectProperty<>(null);
+        activeVault = null;
+    }
+
+    public void setOnActiveVaultChanged(BiConsumer<Vault, Vault> onActiveVaultChanged)
+    {
+        this.onActiveVaultChanged = onActiveVaultChanged;
     }
 
     static public void init()
@@ -37,7 +41,8 @@ public class VaultManager
 
     static public VaultManager getInstance() throws Exceptions
     {
-        if (self == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
+        if (self == null)
+            throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
 
         return self;
     }
@@ -50,7 +55,8 @@ public class VaultManager
         }
         catch (Exceptions e)
         {
-            if (e.getCode() != XC.FILE_DOES_NOT_EXIST) throw e;
+            if (e.getCode() != XC.FILE_DOES_NOT_EXIST)
+                throw e;
 
             try
             {
@@ -65,7 +71,8 @@ public class VaultManager
 
     public Vault addVault(byte[] hash, boolean isNewUser) throws Exceptions
     {
-        if (vaults.stream().anyMatch(vault -> vault.initializedFrom(hash))) throw new Exceptions(XC.VAULT_OPENED);
+        if (vaults.stream().anyMatch(vault -> vault.initializedFrom(hash)))
+            throw new Exceptions(XC.VAULT_OPENED);
 
         Vault newVault = new Vault(hash, isNewUser);
         vaults.addElement(newVault);
@@ -79,7 +86,7 @@ public class VaultManager
 
     public void removeVault()
     {
-        Vault active = activeVaultProperty.get();
+        Vault active = activeVault;
         if (active != null)
         {
             vaults.remove(active);
@@ -91,23 +98,26 @@ public class VaultManager
 
     public Vault activateVault(Vault vault)
     {
-        activeVaultProperty.set(vault);
+        if (onActiveVaultChanged != null)
+            onActiveVaultChanged.accept(activeVault, vault);
+        activeVault = vault;
         return vault;
+    }
+
+    public Vault activateVault(String vaultName) throws Throwable
+    {
+        return activateVault(vaults.stream().filter(vault -> vault.getName().equals(vaultName)).findFirst()
+            .orElseThrow(() -> new Exceptions(XC.NO_SUCH_VAULT)));
     }
 
     public Vault getActiveVault()
     {
-        return activeVaultProperty.get();
-    }
-
-    public ObjectProperty<Vault> getActiveVaultProperty()
-    {
-        return activeVaultProperty;
+        return activeVault;
     }
 
     public void deactivateVault()
     {
-        activateVault(null);
+        activateVault((Vault) null);
     }
 
     public boolean isFull()
@@ -121,14 +131,14 @@ public class VaultManager
     }
 
     /**
-     * @throws Exceptions
-     *             VAULTS_NOT_FOUND
+     * @throws Exceptions VAULTS_NOT_FOUND
      */
     public Vault activateNextVault() throws Exceptions
     {
-        if (vaults.isEmpty()) throw new Exceptions(XC.VAULTS_NOT_FOUND);
+        if (vaults.isEmpty())
+            throw new Exceptions(XC.VAULTS_NOT_FOUND);
 
-        Vault active = activeVaultProperty.get();
+        Vault active = activeVault;
 
         if (active == null)
             active = activateVault(vaults.firstElement());
@@ -139,23 +149,6 @@ public class VaultManager
         }
 
         return active;
-    }
-
-    public void autologin() throws Exceptions
-    {
-        for (byte[] hash : Autologin.getInstance().getVaults())
-        {
-            try
-            {
-                addVault(hash, false);
-            }
-            catch (Exceptions e)
-            {
-                if (e.getCode() != XC.FILE_DOES_NOT_EXIST && e.getCode() != XC.DIR_DOES_NOT_EXIST) throw e;
-
-                Autologin.getInstance().setAutologinOFF(hash);
-            }
-        }
     }
 
     public boolean isReadyToExit()

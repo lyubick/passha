@@ -1,12 +1,24 @@
 package org.kgbt.passha.desktop.ui.interfaces;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.kgbt.passha.core.db.SpecialPassword;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class iSpecialPassword
 {
     private final SpecialPassword origin;
 
-    private boolean               passowordVisible = false;
+    private boolean passowordVisible = false;
+
+    public static ObservableList<iSpecialPassword> getIface(Collection<SpecialPassword> passwords)
+    {
+        return passwords.stream().map(iSpecialPassword::new)
+            .collect(Collectors.toCollection(FXCollections::observableArrayList));
+    }
 
     public iSpecialPassword(SpecialPassword example)
     {

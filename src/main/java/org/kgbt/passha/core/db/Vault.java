@@ -1,17 +1,13 @@
 package org.kgbt.passha.core.db;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import org.kgbt.passha.desktop.languages.Local.Texts;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import org.kgbt.passha.desktop.ui.interfaces.iSpecialPassword;
 import org.kgbt.passha.core.db.Database.Status;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
@@ -22,12 +18,12 @@ import org.kgbt.passha.core.common.Terminator;
 
 public class Vault
 {
-    private final String    SALT_FILENAME    = "FILENAME";
-    private final String    SALT_P           = "P";
-    private final String    SALT_Q           = "Q";
-    private final String    SALT_E           = "E";
+    private final String SALT_FILENAME = "FILENAME";
+    private final String SALT_P        = "P";
+    private final String SALT_Q        = "Q";
+    private final String SALT_E        = "E";
 
-    private byte[]          masterHash       = null;
+    private byte[] masterHash = null;
 
     private Database        database         = null;
     private SpecialPassword selectedPassword = null;
@@ -47,10 +43,15 @@ public class Vault
         System.gc();
     }
 
-    public ObservableList<iSpecialPassword> getIface()
+    public Vector<SpecialPassword> getDecryptedPasswords()
     {
-        return database.getDecrypted().stream().map(iSpecialPassword::new)
-            .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        return database.getDecrypted();
+    }
+
+    // Android specific
+    public Collection<SpecialPassword> getPasswords()
+    {
+        return database.getDecrypted();
     }
 
     public SpecialPassword getPasswordByShortcut(String shortcut)
@@ -75,7 +76,8 @@ public class Vault
 
     public void removePassword(SpecialPassword entry) throws Exceptions
     {
-        if (entry == null) entry = selectedPassword;
+        if (entry == null)
+            entry = selectedPassword;
         database.deleteEntry(entry);
     }
 
@@ -113,21 +115,23 @@ public class Vault
         return Utilities.bytesToHex(tmp);
     }
 
-    public void export(String fileName)
+    public void export(String vaultLabel, String nameLabel, String urlLabel, String commentLabel, String passwordLabel,
+        String fileName)
     {
         Vector<String> exportStrings = new Vector<>();
         final String delimiter = "-----------------------------------------------";
 
-        exportStrings.add(Texts.LABEL_VAULT.toString() + ": '" + database.getName() + "'");
+        exportStrings.add(vaultLabel + ": '" + database.getName() + "'");
 
         for (SpecialPassword sp : database.getDecrypted())
         {
             exportStrings.add(delimiter);
-            exportStrings.add(Texts.LABEL_NAME.toString() + ": '" + sp.getName() + "'");
-            if (!sp.getUrl().isEmpty()) exportStrings.add(Texts.LABEL_URL.toString() + ": '" + sp.getUrl() + "'");
+            exportStrings.add(nameLabel + ": '" + sp.getName() + "'");
+            if (!sp.getUrl().isEmpty())
+                exportStrings.add(urlLabel + ": '" + sp.getUrl() + "'");
             if (!sp.getComment().isEmpty())
-                exportStrings.add(Texts.LABEL_COMMENT.toString() + ": '" + sp.getComment() + "'");
-            exportStrings.add(Texts.LABEL_PASSWORD.toString() + ": '" + sp.getPassword() + "'");
+                exportStrings.add(commentLabel + ": '" + sp.getComment() + "'");
+            exportStrings.add(passwordLabel + ": '" + sp.getPassword() + "'");
         }
 
         exportStrings.add(delimiter);
@@ -168,9 +172,9 @@ public class Vault
         return rsa.encrypt(masterHash);
     }
 
-    public ObjectProperty<Status> getDBStatusProperty()
+    public void setOnDbStatusChanged(Consumer<Status> onDbStatusChanged)
     {
-        return database.getStatusProperty();
+        database.setOnStatusChanged(onDbStatusChanged);
     }
 
     public Status getDBStatus()

@@ -104,7 +104,21 @@ public class Main extends Application
 
         try
         {
-            VaultManager.getInstance().autologin();
+            for (byte[] hash : Autologin.getInstance().getVaults())
+            {
+                try
+                {
+                    VaultManager.getInstance().addVault(hash, false);
+                }
+                catch (Exceptions e)
+                {
+                    if (e.getCode() != Exceptions.XC.FILE_DOES_NOT_EXIST
+                        && e.getCode() != Exceptions.XC.DIR_DOES_NOT_EXIST)
+                        throw e;
+
+                    Autologin.getInstance().setAutologinOFF(hash);
+                }
+            }
         }
         catch (Exceptions e1)
         {

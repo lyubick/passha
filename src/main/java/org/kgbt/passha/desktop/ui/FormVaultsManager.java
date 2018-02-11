@@ -256,12 +256,13 @@ public class FormVaultsManager extends AbstractForm
 
         tp_vaults.getTabs().add(t_newTabCreator);
 
-        VaultManager.getInstance().getActiveVaultProperty().addListener((observable, oldValue, newValue) ->
-        {
+        VaultManager.getInstance().setOnActiveVaultChanged((oldValue, newValue) -> {
             if (newValue == null)
             {
                 setVaultControlsDisabled(true);
-                rebindDBStatusProperty(null);
+                if (oldValue != null)
+                    oldValue.setOnDbStatusChanged(null);
+                c_dbStatus.setFill(Color.GREY);
                 return;
             }
 
@@ -269,7 +270,8 @@ public class FormVaultsManager extends AbstractForm
 
             try
             {
-                rebindDBStatusProperty(newValue.getDBStatusProperty());
+                newValue.setOnDbStatusChanged(this::setDBStatus);
+                setDBStatus(newValue.getDBStatus());
                 Autologin.getInstance().check(newValue);
             }
             catch (Exceptions e)
@@ -336,21 +338,6 @@ public class FormVaultsManager extends AbstractForm
                 tt_dbStatusText.setText(Texts.MSG_DB_SYNC_UNAVAILABLE.toString());
             break;
         }
-    }
-
-    private void rebindDBStatusProperty(ObjectProperty<Status> statusProperty)
-    {
-        if (op_dbStatusProperty != null) op_dbStatusProperty.removeListener(dbStatusListener);
-
-        op_dbStatusProperty = statusProperty;
-        if (op_dbStatusProperty == null)
-        {
-            c_dbStatus.setFill(Color.GREY);
-            return;
-        }
-
-        op_dbStatusProperty.addListener(dbStatusListener);
-        setDBStatus(op_dbStatusProperty.getValue());
     }
 
     private void AddVaultTab(Vault vault)

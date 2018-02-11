@@ -38,18 +38,18 @@ import org.kgbt.passha.core.sha.SHA;
 @RunWith(JfxRunner.class)
 public class Functional
 {
-    private byte[]                  masterHash     = null;
-    private String                  databaseFilename;
+    private byte[] masterHash = null;
+    private String databaseFilename;
 
-    private Vault                   vault          = null;
-    private Database                vaultsDatabase = null;
-    private File                    vaultFile      = null;
+    private Vault    vault          = null;
+    private Database vaultsDatabase = null;
+    private File     vaultFile      = null;
 
-    private final Stream<Integer>   numStream      = Stream.iterate(0, n -> n + 1);
+    private final Stream<Integer> numStream = Stream.iterate(0, n -> n + 1);
 
-    static AtomicInteger            num            = new AtomicInteger(0);
+    static AtomicInteger num = new AtomicInteger(0);
 
-    private Vector<SpecialPassword> passwords      = null;
+    private Vector<SpecialPassword> passwords = null;
 
     @Before
     public void setUp() throws Exception
@@ -68,8 +68,8 @@ public class Functional
             masterHash = SHA.getHashBytes(("This is test!" + num.incrementAndGet()).getBytes());
             vault = new Vault(masterHash, true);
             vaultsDatabase = (Database) VaultReflection.getInstance().database().get(vault);
-            databaseFilename = Properties.PATHS.VAULT
-                + SHA.getHashString(masterHash, (String) VaultReflection.getInstance().SALT_FILENAME().get(vault))
+            databaseFilename = Properties.PATHS.VAULT + SHA
+                .getHashString(masterHash, (String) VaultReflection.getInstance().SALT_FILENAME().get(vault))
                 + Properties.EXTENSIONS.VAULT;
             vaultFile = new File(databaseFilename);
             passwords = new Vector<>();
@@ -81,7 +81,8 @@ public class Functional
     }
 
     @After
-    public void tearDown() {
+    public void tearDown()
+    {
         vault = null;
         vaultsDatabase = null;
         databaseFilename = null;
@@ -140,7 +141,7 @@ public class Functional
             .collect(Collectors.toCollection(() -> passwords));
         passwords.forEach(this::addPasswordToDatabase);
 
-        ObservableList<iSpecialPassword> list = vault.getIface();
+        ObservableList<iSpecialPassword> list = iSpecialPassword.getIface(vault.getPasswords());
         assertEquals(passwords.size(), list.size());
         assertTrue(passwords.stream().allMatch(pwd -> list.stream().anyMatch(ipwd -> pwd.equals(ipwd.getOrigin()))));
     }
@@ -148,7 +149,7 @@ public class Functional
     @Test
     public void testGetIfaceNoPasswords()
     {
-        ObservableList<iSpecialPassword> list = vault.getIface();
+        ObservableList<iSpecialPassword> list = iSpecialPassword.getIface(vault.getPasswords());
         assertTrue(list.isEmpty());
     }
 
@@ -275,9 +276,11 @@ public class Functional
 
         final String exportFilname = "exportTest.txt";
         File outfile = new File(exportFilname);
-        if (outfile.exists()) outfile.delete();
+        if (outfile.exists())
+            outfile.delete();
 
-        vault.export(exportFilname);
+        vault.export(Texts.LABEL_VAULT.toString(), Texts.LABEL_NAME.toString(), Texts.LABEL_URL.toString(),
+            Texts.LABEL_COMMENT.toString(), Texts.LABEL_PASSWORD.toString(), exportFilname);
 
         assertTrue(outfile.exists());
 

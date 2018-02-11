@@ -38,7 +38,8 @@ public class FormExport extends AbstractForm
         super(parent, Texts.FORM_EXPORT_LABEL_EXPORT, WindowPriority.ALWAYS_ON_TOP, false);
 
         currentActiveVault = VaultManager.getInstance().getActiveVault();
-        if (currentActiveVault == null) throw new Exceptions(XC.NULL);
+        if (currentActiveVault == null)
+            throw new Exceptions(XC.NULL);
 
         l_header = new Label(Texts.FORM_EXPORT_LABEL_EXPORT);
         l_header.setTextAlignment(TextAlignment.CENTER);
@@ -69,18 +70,17 @@ public class FormExport extends AbstractForm
         grid.addHElement((LabeledItem) ef_path);
         grid.addHElements(0, b_ok, b_cancel);
 
-        b_findFolder.setOnAction(event ->
-        {
+        b_findFolder.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle(Texts.FORM_EXPORT_MSG_SELECT_PATH.toString());
             fileChooser.setInitialFileName(currentActiveVault.getName() + Properties.EXTENSIONS.EXPORT);
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
             File file = fileChooser.showSaveDialog(new Stage(StageStyle.UNIFIED));
-            if (file != null) ef_path.setText(file.getAbsolutePath());
+            if (file != null)
+                ef_path.setText(file.getAbsolutePath());
         });
 
-        ef_path.textProperty().addListener((observable, oldValue, newValue) ->
-        {
+        ef_path.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.isEmpty())
                 ef_path.beNormal();
             else
@@ -89,25 +89,25 @@ public class FormExport extends AbstractForm
 
         b_cancel.setOnAction(event -> close());
 
-        b_ok.setOnAction(event ->
-        {
-            currentActiveVault.export(ef_path.getText());
+        b_ok.setOnAction(event -> {
+            currentActiveVault
+                .export(Texts.LABEL_VAULT.toString(), Texts.LABEL_NAME.toString(), Texts.LABEL_URL.toString(),
+                    Texts.LABEL_COMMENT.toString(), Texts.LABEL_PASSWORD.toString(), ef_path.getText());
             close();
         });
 
-        b_ok.disableProperty()
-            .bind(pef_password.isValidProperty().not()              // Password must be valid
-                .or(ef_path.textProperty().isEmpty())               // Path must be defined
-                .or(pef_password.focusedProperty()));               // Focus must not be on password field
+        b_ok.disableProperty().bind(pef_password.isValidProperty().not()              // Password must be valid
+            .or(ef_path.textProperty().isEmpty())               // Path must be defined
+            .or(pef_password.focusedProperty()));               // Focus must not be on password field
 
-        pef_password.focusedProperty().addListener((observable, oldValue, newValue) ->
-        {
+        pef_password.focusedProperty().addListener((observable, oldValue, newValue) -> {
             // On lost focus check if password is correct
             if (!newValue)
             {
                 pef_password
                     .setValid(currentActiveVault.initializedFrom(SHA.getHashBytes(pef_password.getText().getBytes())));
-                if (!pef_password.isValid()) pef_password.clear();
+                if (!pef_password.isValid())
+                    pef_password.clear();
             }
         });
 
