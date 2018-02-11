@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
@@ -74,6 +76,7 @@ public class DatabaseConstruction
             rsa = new RSA(SHA.getHashString(masterHash, SALT_P), SHA.getHashString(masterHash, SALT_Q),
                 SHA.getHashString(masterHash, SALT_E));
             fileName = "testFile" + num.incrementAndGet();
+            Files.createDirectories(Paths.get(Properties.PATHS.VAULT));
             vaultFile = new File(Properties.PATHS.VAULT + fileName + Properties.EXTENSIONS.VAULT);
             if (vaultFile.exists()) vaultFile.delete();
         }
