@@ -1,7 +1,7 @@
 package org.kgbt.passha.reflections;
 
 import java.lang.reflect.Field;
-import org.kgbt.passha.db.SpecialPassword;
+import org.kgbt.passha.core.db.SpecialPassword;
 
 public class SpecialPasswordReflection
 {

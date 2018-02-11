@@ -2,23 +2,24 @@ package org.kgbt.passha.core;
 
 import java.util.Vector;
 
-import org.kgbt.passha.compatibility.UserFileMigration;
-import org.kgbt.passha.cryptosystem.Autologin;
-import org.kgbt.passha.db.Database.Status;
-import org.kgbt.passha.db.SpecialPassword;
+import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.core.compatibility.UserFileMigration;
+import org.kgbt.passha.core.db.Vault;
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.desktop.Autologin;
+import org.kgbt.passha.core.db.Database.Status;
+import org.kgbt.passha.core.db.SpecialPassword;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import org.kgbt.passha.logger.Logger;
-import org.kgbt.passha.main.Exceptions;
-import org.kgbt.passha.main.Exceptions.XC;
-import org.kgbt.passha.sha.SHA;
-import org.kgbt.passha.main.Properties;
+import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.core.sha.SHA;
 
 public class VaultManager
 {
     static private VaultManager         self                = null;
 
-    private Vector<Vault>               vaults              = null;
+    private Vector<Vault> vaults = null;
 
     private SimpleObjectProperty<Vault> activeVaultProperty = null;
 

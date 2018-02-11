@@ -2,7 +2,7 @@ package org.kgbt.passha.reflections;
 
 import java.lang.reflect.Field;
 
-import org.kgbt.passha.core.Vault;
+import org.kgbt.passha.core.db.Vault;
 
 public class VaultReflection
 {

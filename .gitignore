@@ -1,3 +1,6 @@
 /logs/
 /vaults/
 settings.passha
+.idea/workspace.xml
+out/
+target/

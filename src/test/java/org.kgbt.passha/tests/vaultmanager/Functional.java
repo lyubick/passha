@@ -1,11 +1,12 @@
 package org.kgbt.passha.tests.vaultmanager;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kgbt.passha.core.VaultManager;
-import org.kgbt.passha.logger.Logger;
-import org.kgbt.passha.main.Exceptions;
+import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.reflections.DatabaseReflection;
 import org.kgbt.passha.reflections.VaultManagerReflection;
 import org.kgbt.passha.reflections.VaultReflection;
@@ -49,6 +50,7 @@ public class Functional
      public void testAddVaultStringBoolean()
      {
          //TODO: Implement tests
+         System.out.println("no test");
 
         //fail("Not yet implemented");
      }

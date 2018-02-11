@@ -1,6 +1,7 @@
 package org.kgbt.passha.main;
 
-import org.kgbt.passha.utilities.Utilities;
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Utilities;
 
 public final class TestUtilities
 {
@@ -22,7 +23,7 @@ public final class TestUtilities
     public static class SpecialPassword
     {
 
-        public static boolean cmpAllFields(org.kgbt.passha.db.SpecialPassword sp, String name, String comment, String url, int length,
+        public static boolean cmpAllFields(org.kgbt.passha.core.db.SpecialPassword sp, String name, String comment, String url, int length,
             int shaCycles)
         {
             return (name == null || sp.getName().equals(name)) && (comment == null || sp.getComment().equals(comment))
@@ -30,13 +31,14 @@ public final class TestUtilities
                 && (shaCycles == -1 || sp.getShaCycles() == shaCycles);
         }
 
-        public static boolean cmpAllFields(org.kgbt.passha.db.SpecialPassword sp, String name, String comment, String url,
+        public static boolean cmpAllFields(org.kgbt.passha.core.db.SpecialPassword sp, String name, String comment, String url,
             String length, String shaCycles)
         {
             return cmpAllFields(sp, name, comment, url, Integer.parseInt(length), Integer.parseInt(shaCycles));
         }
 
-        public static boolean cmpAllFields(org.kgbt.passha.db.SpecialPassword sp, org.kgbt.passha.db.SpecialPassword another)
+        public static boolean cmpAllFields(
+            org.kgbt.passha.core.db.SpecialPassword sp, org.kgbt.passha.core.db.SpecialPassword another)
         {
             return cmpAllFields(sp, another.getName(), another.getComment(), another.getUrl(), another.getLength(),
                 (int) another.getShaCycles());

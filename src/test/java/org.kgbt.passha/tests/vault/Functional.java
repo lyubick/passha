@@ -18,19 +18,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.kgbt.passha.core.Vault;
-import org.kgbt.passha.db.Database;
-import org.kgbt.passha.db.SpecialPassword;
-import org.kgbt.passha.db.iSpecialPassword;
+import org.kgbt.passha.core.db.Vault;
+import org.kgbt.passha.core.db.Database;
+import org.kgbt.passha.core.db.SpecialPassword;
+import org.kgbt.passha.desktop.ui.interfaces.iSpecialPassword;
 import javafx.collections.ObservableList;
-import org.kgbt.passha.languages.Local.Texts;
-import org.kgbt.passha.logger.Logger;
-import org.kgbt.passha.main.Exceptions;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.main.JfxRunner;
-import org.kgbt.passha.main.Properties;
-import org.kgbt.passha.main.Settings;
+import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.core.common.cfg.Settings;
 import org.kgbt.passha.reflections.VaultReflection;
-import org.kgbt.passha.sha.SHA;
+import org.kgbt.passha.core.sha.SHA;
 
 /**
  * Vault tests expects that underlying Database works correctly.
