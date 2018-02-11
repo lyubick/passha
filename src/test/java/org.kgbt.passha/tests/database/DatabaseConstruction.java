@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import org.kgbt.passha.core.db.Database;
 import org.kgbt.passha.core.db.Database.Status;
@@ -17,14 +16,12 @@ import org.kgbt.passha.core.db.SpecialPassword;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
-import org.kgbt.passha.main.JfxRunner;
 import org.kgbt.passha.core.common.cfg.Properties;
 import org.kgbt.passha.core.rsa.RSA;
 import org.kgbt.passha.core.sha.SHA;
 import org.kgbt.passha.core.common.Utilities;
 
-@RunWith(JfxRunner.class)
-public class Construction
+public class DatabaseConstruction
 {
     private final String masterPassword = "12345";
     private final String SALT_P         = "P";

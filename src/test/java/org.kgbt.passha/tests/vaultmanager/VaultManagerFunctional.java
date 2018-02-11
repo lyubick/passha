@@ -1,6 +1,5 @@
 package org.kgbt.passha.tests.vaultmanager;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +10,7 @@ import org.kgbt.passha.reflections.DatabaseReflection;
 import org.kgbt.passha.reflections.VaultManagerReflection;
 import org.kgbt.passha.reflections.VaultReflection;
 
-public class Functional
+public class VaultManagerFunctional
 {
     private VaultManagerReflection vaultManagerReflection = VaultManagerReflection.getInstance();
     private VaultReflection        vaultReflection        = VaultReflection.getInstance();

@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import org.kgbt.passha.core.rsa.RSA;
 import org.kgbt.passha.core.sha.SHA;
@@ -30,14 +29,12 @@ import org.kgbt.passha.core.db.SpecialPassword;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
-import org.kgbt.passha.main.JfxRunner;
 import org.kgbt.passha.core.common.cfg.Properties;
 import org.kgbt.passha.main.TestUtilities;
 import org.kgbt.passha.reflections.DatabaseReflection;
 import org.kgbt.passha.reflections.SpecialPasswordReflection;
 
-@RunWith(JfxRunner.class)
-public class Functional
+public class DatabaseFunctional
 {
     private final static class DatabaseSetUp
     {

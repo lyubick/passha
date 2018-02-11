@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.db.Database;
@@ -26,7 +25,6 @@ import javafx.collections.ObservableList;
 import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.main.JfxRunner;
 import org.kgbt.passha.core.common.cfg.Properties;
 import org.kgbt.passha.core.common.cfg.Settings;
 import org.kgbt.passha.reflections.VaultReflection;
@@ -35,8 +33,7 @@ import org.kgbt.passha.core.sha.SHA;
 /**
  * Vault tests expects that underlying Database works correctly.
  */
-@RunWith(JfxRunner.class)
-public class Functional
+public class VaultFunctional
 {
     private byte[] masterHash = null;
     private String databaseFilename;
