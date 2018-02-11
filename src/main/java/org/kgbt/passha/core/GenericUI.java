@@ -53,4 +53,8 @@ public abstract class GenericUI
      * @throws URISyntaxException
      */
     public abstract void restart() throws IOException, URISyntaxException;
+
+    public abstract void reportMigrationErrors(int numberOfErrors);
+
+    public abstract void reportMigrationSuccess();
 }

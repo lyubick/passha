@@ -3,21 +3,17 @@ package org.kgbt.passha.core.compatibility;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import org.kgbt.passha.core.GenericUI;
 import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.db.SpecialPassword;
-import javafx.stage.StageStyle;
-import org.kgbt.passha.desktop.languages.Local.Texts;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.VBox;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Exceptions.XC;
 import org.kgbt.passha.core.common.Terminator;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.rsa.RSA;
 import org.kgbt.passha.core.sha.SHA;
-import org.kgbt.passha.desktop.ui.elements.Label;
 import org.kgbt.passha.core.common.Utilities;
 
 public class UserFileMigration
@@ -94,14 +90,7 @@ public class UserFileMigration
             {
                 Logger.printTrace("Migration contained errors!");
 
-                Alert alertDlg = new Alert(AlertType.ERROR);
-                alertDlg.setTitle(Texts.LABEL_MIGRATION_TITLE.toString());
-                alertDlg.setHeaderText(null);
-
-                alertDlg.getDialogPane().setContent(new VBox(new Label(Texts.MSG_MIGRATION_OCCURED),
-                    new Label("" + numberOfErrors + Texts.MSG_MIGRATION_ERRORS.toString())));
-                alertDlg.initStyle(StageStyle.UNIFIED);
-                alertDlg.showAndWait();
+                GenericUI.getInstance().reportMigrationErrors(numberOfErrors);
             }
             else
             {
@@ -109,15 +98,7 @@ public class UserFileMigration
                 String[] list = oldFile.getParentFile().list();
                 if (list != null && list.length == 0) oldFile.getParentFile().delete();
 
-                Alert alertDlg = new Alert(AlertType.INFORMATION);
-                alertDlg.setTitle(Texts.LABEL_MIGRATION_TITLE.toString());
-                alertDlg.setHeaderText(null);
-
-                alertDlg.getDialogPane().setContent(
-                    new VBox(new Label(Texts.MSG_MIGRATION_OCCURED), new Label(Texts.MSG_MIGRATION_SUCCESS)));
-
-                alertDlg.initStyle(StageStyle.UNIFIED);
-                alertDlg.showAndWait();
+                GenericUI.getInstance().reportMigrationSuccess();
 
                 Logger.printTrace("Migration SUCCESSFUL!");
             }
