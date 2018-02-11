@@ -1,23 +1,14 @@
 package org.kgbt.passha.core.common;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Optional;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.stage.StageStyle;
+import org.kgbt.passha.core.GenericUI;
 import org.kgbt.passha.core.VaultManager;
-import org.kgbt.passha.desktop.Main;
-import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Exceptions.XC;
-import org.kgbt.passha.desktop.ui.elements.Label;
 
 public class Terminator
 {
@@ -25,18 +16,7 @@ public class Terminator
     {
         try
         {
-            if (!VaultManager.getInstance().isReadyToExit())
-            {
-                Alert alertDlg = new Alert(AlertType.CONFIRMATION);
-                alertDlg.setTitle(Texts.LABEL_EXIT.toString());
-                alertDlg.setHeaderText(null);
-                alertDlg.getDialogPane().setContent(new Label(Texts.MSG_CONFIRM_UNSAFE_EXIT));
-                alertDlg.initStyle(StageStyle.UNIFIED);
-                Optional<ButtonType> response = alertDlg.showAndWait();
-                return response.isPresent() && response.get() == ButtonType.OK;
-            }
-
-            return true;
+            return VaultManager.getInstance().isReadyToExit() || GenericUI.getInstance().confirmUnsafeExit();
         }
         catch (Exceptions e)
         {
@@ -54,7 +34,8 @@ public class Terminator
             Logger.getInstance().loggerOFF();
         }
         catch (Exceptions ignored)
-        {}
+        {
+        }
 
         System.exit(e.getCode().ordinal());
     }
@@ -63,15 +44,9 @@ public class Terminator
     {
         try
         {
-            File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            final ArrayList<String> command = new ArrayList<>();
-            command.add(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
-            command.add("-jar");
-            command.add(currentJar.getPath());
-            final ProcessBuilder builder = new ProcessBuilder(command);
-            builder.start();
+            GenericUI.getInstance().restart();
         }
-        catch (URISyntaxException | IOException e)
+        catch (URISyntaxException | IOException | Exceptions e)
         {
             Terminator.terminate(new Exceptions(XC.RESTART_FAILED));
         }
@@ -83,11 +58,14 @@ public class Terminator
     {
         if (e.getCode().equals(XC.RESTART) || e.getCode().equals(XC.END))
         {
-            if (!isExitAllowed()) return;
+            if (!isExitAllowed())
+                return;
 
-            if (e.getCode().equals(XC.RESTART)) restart();
+            if (e.getCode().equals(XC.RESTART))
+                restart();
 
-            if (e.getCode().equals(XC.END)) exit(e);
+            if (e.getCode().equals(XC.END))
+                exit(e);
         }
 
         Logger.printFatal("TERMINATOR: FATAL ERROR OCCURED: " + e.getCode().name());

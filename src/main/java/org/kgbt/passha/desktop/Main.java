@@ -3,6 +3,7 @@ package org.kgbt.passha.desktop;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import org.kgbt.passha.core.GenericUI;
 import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Exceptions;
@@ -19,7 +20,7 @@ public class Main extends Application
     private static final String ARG_LOGLEVEL = "--loglevel=";
     private static final String ARG_DEBUG    = "--debug";
 
-    public static boolean       DEBUG        = false;
+    public static boolean DEBUG = false;
 
     public static void main(String[] args)
     {
@@ -28,8 +29,10 @@ public class Main extends Application
 
         for (String arg : args)
         {
-            if (arg.equals(ARG_DEBUG)) DEBUG = true;
-            if (arg.startsWith(ARG_LOGLEVEL)) logLevelString = arg.substring(ARG_LOGLEVEL.length());
+            if (arg.equals(ARG_DEBUG))
+                DEBUG = true;
+            if (arg.startsWith(ARG_LOGLEVEL))
+                logLevelString = arg.substring(ARG_LOGLEVEL.length());
         }
 
         /* 1. Switch ON logs */
@@ -66,8 +69,8 @@ public class Main extends Application
         try
         {
             TrayAgent.init();
-            if (info != null) TrayAgent.getInstance().showNotification(
-                Local.Texts.LABEL_ERROR, info, TrayIcon.MessageType.ERROR);
+            if (info != null)
+                TrayAgent.getInstance().showNotification(Local.Texts.LABEL_ERROR, info, TrayIcon.MessageType.ERROR);
         }
         catch (Exceptions e)
         {
@@ -96,7 +99,9 @@ public class Main extends Application
     {
         Platform.setImplicitExit(DEBUG);
 
+        GenericUI.init(CoreUiInterface::new);
         VaultManager.init();
+
         try
         {
             VaultManager.getInstance().autologin();
