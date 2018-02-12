@@ -99,7 +99,7 @@ public class Database
         for (String entry : Utilities.readStringsFromFile(vaultFile.getAbsolutePath()))
         {
             HashMap<String, String> decryptedEntry =
-                (HashMap<String, String>) Utilities.bytesToObject(rsa.decrypt(entry));
+                Utilities.bytesToObject(rsa.decrypt(entry));
 
             if (decryptedEntry.containsKey(VAULT_NAME_KEY))
             {

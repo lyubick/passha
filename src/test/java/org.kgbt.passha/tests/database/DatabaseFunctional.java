@@ -168,7 +168,7 @@ public class DatabaseFunctional
         try
         {
             return Files.lines(Paths.get(vaultFile.getAbsolutePath())).map(cipher -> rsa.decrypt(cipher))
-                .map(bytes -> (HashMap<String, String>) TestUtilities.bytesToObject(bytes));
+                .map(TestUtilities::bytesToObject);
         }
         catch (IOException e)
         {

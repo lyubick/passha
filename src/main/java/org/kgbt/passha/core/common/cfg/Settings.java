@@ -110,13 +110,12 @@ public class Settings
         Utilities.writeToFile(SETTINGS_FILE_NAME, Utilities.objectToBytes(settings));
     }
 
-    @SuppressWarnings("unchecked")
     public void loadSettings() throws Exceptions
     {
         try
         {
             settings =
-                (HashMap<String, Object>) Utilities.bytesToObject(Utilities.readBytesFromFile(SETTINGS_FILE_NAME));
+                    Utilities.bytesToObject(Utilities.readBytesFromFile(SETTINGS_FILE_NAME));
         }
         catch (Exceptions e)
         {

@@ -8,7 +8,7 @@ public final class TestUtilities
     /**
      * Use this in Streams, since they only support RuntimeExceptions
      */
-    public static Object bytesToObject(byte[] bytes)
+    public static <T> T bytesToObject(byte[] bytes)
     {
         try
         {

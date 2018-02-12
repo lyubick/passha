@@ -271,13 +271,13 @@ public class VaultFunctional
             .collect(Collectors.toCollection(() -> passwords));
         passwords.forEach(this::addPasswordToDatabase);
 
-        final String exportFilname = "exportTest.txt";
-        File outfile = new File(exportFilname);
+        final String exportFilename = "exportTest.txt";
+        File outfile = new File(exportFilename);
         if (outfile.exists())
             outfile.delete();
 
         vault.export(Texts.LABEL_VAULT.toString(), Texts.LABEL_NAME.toString(), Texts.LABEL_URL.toString(),
-            Texts.LABEL_COMMENT.toString(), Texts.LABEL_PASSWORD.toString(), exportFilname);
+            Texts.LABEL_COMMENT.toString(), Texts.LABEL_PASSWORD.toString(), exportFilename);
 
         assertTrue(outfile.exists());
 

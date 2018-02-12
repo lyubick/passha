@@ -68,7 +68,7 @@ public class Terminator
                 exit(e);
         }
 
-        Logger.printFatal("TERMINATOR: FATAL ERROR OCCURED: " + e.getCode().name());
+        Logger.printFatal("TERMINATOR: FATAL ERROR OCCURRED: " + e.getCode().name());
 
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         if (stackTrace.length >= 3)

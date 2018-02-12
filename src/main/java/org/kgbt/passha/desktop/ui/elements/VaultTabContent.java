@@ -1,32 +1,30 @@
 package org.kgbt.passha.desktop.ui.elements;
 
-import org.kgbt.passha.core.db.Vault;
-import org.kgbt.passha.core.VaultManager;
-import org.kgbt.passha.desktop.ui.interfaces.iSpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.db.Vault;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.desktop.ui.interfaces.iSpecialPassword;
 
-public class VaultTabContent extends TableView<iSpecialPassword> implements TabContent
-{
-    private Vault vault    = null;
-    private Tab   t_ownTab = null;
+import java.util.Arrays;
 
-    private ChangeListener<iSpecialPassword> getSelectedItemPropertyListener()
-    {
+public class VaultTabContent extends TableView<iSpecialPassword> implements TabContent {
+    private Vault vault = null;
+    private Tab t_ownTab = null;
+
+    private ChangeListener<iSpecialPassword> getSelectedItemPropertyListener() {
         return (observable, oldValue, newValue) -> {
-            if (oldValue != null)
-            {
+            if (oldValue != null) {
                 oldValue.setPasswordVisible(false);
                 refresh();
             }
 
-            if (newValue == null)
-            {
+            if (newValue == null) {
                 vault.setSelected(null);
                 return;
             }
@@ -35,8 +33,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         };
     }
 
-    public VaultTabContent(Tab ownerTab, Vault vault)
-    {
+    public VaultTabContent(Tab ownerTab, Vault vault) {
         this.vault = vault;
         t_ownTab = ownerTab;
 
@@ -50,7 +47,8 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
 
         TableColumn<iSpecialPassword, String> cPassword = new TableColumn<>("Password");
 
-        getColumns().addAll(cName, cShortcut, cComment, cUrl, cPassword);
+        // Array.asList is used to avoid "Unchecked..." warning
+        getColumns().addAll(Arrays.asList(cName, cShortcut, cComment, cUrl, cPassword));
 
         cName.setCellValueFactory(new PropertyValueFactory<>("name"));
         cComment.setCellValueFactory(new PropertyValueFactory<>("comment"));
@@ -58,82 +56,79 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         cShortcut.setCellValueFactory(new PropertyValueFactory<>("shortcut"));
         cPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
 
-        getSelectionModel().selectedItemProperty().addListener(getSelectedItemPropertyListener());
+        getSelectionModel().selectedItemProperty()
+                           .addListener(getSelectedItemPropertyListener());
 
         reload();
 
         this.setOnMouseClicked(event ->
-        {
-            iSpecialPassword selectedItem = this.getSelectionModel().getSelectedItem();
+                               {
+                                   iSpecialPassword selectedItem = this.getSelectionModel()
+                                                                       .getSelectedItem();
 
-            if (selectedItem == null || event.getClickCount() < 2)
-            {
-                event.consume();
-                return;
-            }
+                                   if (selectedItem == null || event.getClickCount() < 2) {
+                                       event.consume();
+                                       return;
+                                   }
 
-            selectedItem.setPasswordVisible(true);
+                                   selectedItem.setPasswordVisible(true);
 
-            this.getColumns().get(0).setVisible(false);
-            this.getColumns().get(0).setVisible(true);
-        });
+                                   this.getColumns()
+                                       .get(0)
+                                       .setVisible(false);
+                                   this.getColumns()
+                                       .get(0)
+                                       .setVisible(true);
+                               });
     }
 
     @Override
-    public void closeTab()
-    {
-        try
-        {
-            VaultManager.getInstance().removeVault();
-        }
-        catch (Exceptions e)
-        {
+    public void closeTab() {
+        try {
+            VaultManager.getInstance()
+                        .removeVault();
+        } catch (Exceptions e) {
             Terminator.terminate(e);
         }
     }
 
     @Override
-    public void activateTab()
-    {
-        try
-        {
-            VaultManager.getInstance().activateVault(vault);
-        }
-        catch (Exceptions e)
-        {
+    public void activateTab() {
+        try {
+            VaultManager.getInstance()
+                        .activateVault(vault);
+        } catch (Exceptions e) {
             Terminator.terminate(e);
         }
     }
 
-    public void reload()
-    {
+    public void reload() {
         getSelectionModel().clearSelection();
         setItems(iSpecialPassword.getIface(vault.getPasswords()));
     }
 
-    public void refresh()
-    {
+    public void refresh() {
         if (getColumns().isEmpty()) return;
 
-        getColumns().get(0).setVisible(false);
-        getColumns().get(0).setVisible(true);
+        getColumns().get(0)
+                    .setVisible(false);
+        getColumns().get(0)
+                    .setVisible(true);
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         vault.setName(name);
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         String name = vault.getName();
-        return name.isEmpty() ? Texts.LABEL_UNNAMED.toString().toUpperCase() : name;
+        return name.isEmpty() ? Texts.LABEL_UNNAMED.toString()
+                                                   .toUpperCase() : name;
     }
 
-    public boolean hasVault(Vault vault)
-    {
+    public boolean hasVault(Vault vault) {
         return this.vault == vault;
     }
 }

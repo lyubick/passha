@@ -2,7 +2,6 @@ package org.kgbt.passha.core.compatibility;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.kgbt.passha.core.GenericUI;
 import org.kgbt.passha.core.db.Vault;
@@ -57,7 +56,6 @@ public class UserFileMigration
      * @return vault added to VaultManager
      * @throws Exceptions
      */
-    @SuppressWarnings("unchecked")
     public static Vault tryMigrate(String masterPassword) throws Exceptions
     {
         Logger.printTrace("Migration STARTED!");
@@ -77,7 +75,7 @@ public class UserFileMigration
                 try
                 {
                     vault.addPassword(new SpecialPassword(
-                        (HashMap<String, String>) Utilities.bytesToObject(oldRSA.decrypt(encryptedPassword)), vault));
+                            Utilities.bytesToObject(oldRSA.decrypt(encryptedPassword)), vault));
                 }
                 catch (Exceptions e)        // if one password failed - don't need to abort all migration
                 {

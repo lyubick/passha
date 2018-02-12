@@ -62,7 +62,7 @@ public final class Utilities
         }
     }
 
-    public static Object bytesToObject(byte[] bytes) throws Exceptions
+    public static <T> T bytesToObject(byte[] bytes) throws Exceptions
     {
         try
         {
@@ -71,9 +71,9 @@ public final class Utilities
             Object object = inpObject.readObject();
             inpObject.close();
             byteArrayStream.close();
-            return object;
+            return (T) object;
         }
-        catch (IOException | ClassNotFoundException e)
+        catch (IOException | ClassNotFoundException | ClassCastException e)
         {
             throw new Exceptions(XC.OBJECT_DESERIALIZATION_FAILED);
         }

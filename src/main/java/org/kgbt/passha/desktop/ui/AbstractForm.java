@@ -117,7 +117,7 @@ public abstract class AbstractForm
 
     private ChangeListener<Boolean> getIconifiedPropertyListener()
     {
-        return (observable, oldValule, newValue) -> {
+        return (observable, oldValue, newValue) -> {
             if (newValue) onUserMinimizeRequest();
             stage.setIconified(false);
         };
