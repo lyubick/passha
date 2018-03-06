@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -20,9 +21,6 @@ import org.junit.Test;
 import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.db.Database;
 import org.kgbt.passha.core.db.SpecialPassword;
-import org.kgbt.passha.desktop.ui.interfaces.iSpecialPassword;
-import javafx.collections.ObservableList;
-import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.cfg.Properties;
@@ -138,15 +136,15 @@ public class VaultFunctional
             .collect(Collectors.toCollection(() -> passwords));
         passwords.forEach(this::addPasswordToDatabase);
 
-        ObservableList<iSpecialPassword> list = iSpecialPassword.getIface(vault.getPasswords());
+        Collection<SpecialPassword> list = vault.getPasswords();
         assertEquals(passwords.size(), list.size());
-        assertTrue(passwords.stream().allMatch(pwd -> list.stream().anyMatch(ipwd -> pwd.equals(ipwd.getOrigin()))));
+        assertTrue(passwords.stream().allMatch(pwd -> list.stream().anyMatch(pwd::equals)));
     }
 
     @Test
     public void testGetIfaceNoPasswords()
     {
-        ObservableList<iSpecialPassword> list = iSpecialPassword.getIface(vault.getPasswords());
+        Collection<SpecialPassword> list = vault.getPasswords();
         assertTrue(list.isEmpty());
     }
 
@@ -257,6 +255,12 @@ public class VaultFunctional
     @Test
     public void testExport()
     {
+        String vaultLabel = "XXXXXXXX";
+        String nameLabel = "YYYYYYYY";
+        String urlLabel = "ZZZZZZZZZZ";
+        String commentLabel = "WWWWWWW";
+        String pwdLabel = "GGGGGGG";
+
         try
         {
             // Settings are required for Language, that is required for labels in export file
@@ -276,8 +280,8 @@ public class VaultFunctional
         if (outfile.exists())
             outfile.delete();
 
-        vault.export(Texts.LABEL_VAULT.toString(), Texts.LABEL_NAME.toString(), Texts.LABEL_URL.toString(),
-            Texts.LABEL_COMMENT.toString(), Texts.LABEL_PASSWORD.toString(), exportFilename);
+        vault.export(vaultLabel, nameLabel, urlLabel,
+            commentLabel, pwdLabel, exportFilename);
 
         assertTrue(outfile.exists());
 
@@ -286,7 +290,7 @@ public class VaultFunctional
             Map<String, List<String>> m = Files.lines(Paths.get(outfile.getAbsolutePath()))
                 .collect(Collectors.groupingBy(line -> line.substring(0, Math.max(0, line.indexOf(':')))));
 
-            m.remove(Texts.LABEL_VAULT.toString());
+            m.remove(vaultLabel);
             m.remove("");   // empty key contains delimiters
             assertTrue(m.values().stream().allMatch(list -> list.size() == 10));
         }
