@@ -157,8 +157,7 @@ public class VaultFunctional
 
         SpecialPassword pwd = vault.getPasswordByShortcut("2");
         assertNotEquals(pwd, null);
-        assertTrue(
-            pwd.equals(passwords.stream().filter(p -> p.getShortcut().equals("2")).limit(1).findAny().orElse(null)));
+        assertEquals(pwd, passwords.stream().filter(p -> p.getShortcut().equals("2")).limit(1).findAny().orElse(null));
     }
 
     @Test

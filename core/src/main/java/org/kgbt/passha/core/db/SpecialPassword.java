@@ -65,7 +65,7 @@ public class SpecialPassword
 
     private Vault         own_vault             = null;
 
-    private String        SALT_SPECIAL_PASSWORD = "SPECIAL";
+    private final String        SALT_SPECIAL_PASSWORD = "SPECIAL";
 
     public SpecialPassword(HashMap<String, String> m, Vault parentVault)
     {
@@ -379,7 +379,7 @@ public class SpecialPassword
 
     public String getPassword()
     {
-        StringBuilder password = new StringBuilder("");
+        StringBuilder password = new StringBuilder();
 
         String passwordHash = own_vault.getHashForPassword(shaCycles, name);
         String specialHash = SHA.getHashString(passwordHash, SALT_SPECIAL_PASSWORD);

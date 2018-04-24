@@ -25,7 +25,7 @@ public final class RSA
 
     public String encrypt(byte[] message)
     {
-        StringBuilder cipher = new StringBuilder("");
+        StringBuilder cipher = new StringBuilder();
         Random r = new Random();
 
         int messageBlockCount = (message.length / RSA_BYTE_MESSAGE_BLOCK_LENGTH)
