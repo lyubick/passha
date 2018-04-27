@@ -12,7 +12,7 @@ import android.content.Context.CLIPBOARD_SERVICE
 import org.kgbt.passha.core.VaultManager
 import org.kgbt.passha.core.db.SpecialPassword
 import org.kgbt.passha.core.db.Vault
-import org.kgbt.passhamobile.R
+import org.kgbt.passha.android.R
 
 
 class VaultActivity : AppCompatActivity() {

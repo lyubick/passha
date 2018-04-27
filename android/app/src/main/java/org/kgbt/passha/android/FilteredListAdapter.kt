@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import org.kgbt.passha.core.db.SpecialPassword
-import org.kgbt.passhamobile.R
+import org.kgbt.passha.android.R
 
 class FilteredListAdapter(context: Context?, resource: Int, objects: List<SpecialPassword>?) : BaseAdapter(), Filterable {
 

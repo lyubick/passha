@@ -23,7 +23,7 @@ import org.kgbt.passha.core.VaultManager
 import org.kgbt.passha.core.common.Exceptions
 import org.kgbt.passha.core.logger.Logger
 import org.kgbt.passha.core.logger.Output
-import org.kgbt.passhamobile.R
+import org.kgbt.passha.android.R
 
 
 class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
