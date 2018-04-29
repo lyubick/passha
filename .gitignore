@@ -1,6 +1,9 @@
-/logs/
-/vaults/
+core/logs/
+desktop/vaults/
 settings.passha
 .idea/workspace.xml
+logs/
 out/
 target/
+core/.idea/workspace.xml
+desktop/.idea/workspace.xml
