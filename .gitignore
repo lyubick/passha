@@ -1,9 +1,17 @@
-core/logs/
-desktop/vaults/
+# Projects specific
+/**/.idea
+/**/.gradle
+/**/*.iml
+/**/gradlew
+/**/gradlew.bat
+/**/gradle
+
+# Build
+/**/build
+/**/out
+
+# Application Run-time
+/vaults
+/logs
+PASSHA*.log
 settings.passha
-.idea/workspace.xml
-logs/
-out/
-target/
-core/.idea/workspace.xml
-desktop/.idea/workspace.xml
