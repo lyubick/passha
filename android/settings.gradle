@@ -1,3 +1,0 @@
-include ':app', "core"
-
-project(':core').projectDir = new File('../core')

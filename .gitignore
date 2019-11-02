@@ -9,6 +9,10 @@
 # Build
 /**/build
 /**/out
+/**/target
+
+# Gradle
+local.properties
 
 # Application Run-time
 /vaults
