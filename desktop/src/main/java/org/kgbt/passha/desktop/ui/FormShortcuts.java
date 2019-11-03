@@ -101,8 +101,9 @@ public class FormShortcuts extends AbstractForm
                     return;
                 }
 
-                FormVaultsManager.copyToClipboard();
-
+                // TODO: Another combination for that?
+                // FormVaultsManager.copyToClipboard();
+                FormVaultsManager.autoType(true);
             }
             catch (Exceptions e)
             {

@@ -260,6 +260,9 @@ public class Local
         FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD(new String[]
         { "Copy To Clipboard", "��������� � ����� ������" }),
 
+        FORM_MANAGEPWD_LABEL_AUTO_TYPE(new String[]
+        { "Auto-Type", "Авто-ввод" }),
+
         FORM_MANAGEPWD_LABEL_EXPORT(new String[]
         { "Export", "��������������" }),
 

@@ -4,13 +4,18 @@ import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.desktop.Autologin;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.TrayIcon.MessageType;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kgbt.passha.core.db.SpecialPassword;
 import org.kgbt.passha.core.db.Database.Status;
 import javafx.beans.property.ObjectProperty;
@@ -33,6 +38,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import org.kgbt.passha.desktop.autotype.KeyMapper;
 import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.core.logger.Logger;
 
@@ -46,60 +52,57 @@ import org.kgbt.passha.desktop.ui.elements.Tab;
 import org.kgbt.passha.desktop.ui.elements.TabContent;
 import org.kgbt.passha.desktop.ui.elements.VaultTabContent;
 
-public class FormVaultsManager extends AbstractForm
-{
-    private final class WINDOW
-    {
-        public static final int width  = 900;
+public class FormVaultsManager extends AbstractForm {
+    private final class WINDOW {
+        public static final int width = 900;
         public static final int height = 500;
     }
 
-    private static final double    STATUS_CIRCLE_RADIUS = 10;
-    private static final int       TAB_PANE_MIN_HEIGHT  = WINDOW.height - 150;
-    private static final int       TAB_PANE_MIN_WIDTH   = WINDOW.width - 200;
+    private static final double STATUS_CIRCLE_RADIUS = 10;
+    private static final int TAB_PANE_MIN_HEIGHT = WINDOW.height - 150;
+    private static final int TAB_PANE_MIN_WIDTH = WINDOW.width - 200;
 
-    private static AbstractForm    This                 = null;
+    private static AbstractForm This = null;
 
-    private HBox                   hb_statusBar         = null;
-    private Circle                 c_dbStatus           = null;
-    private ObjectProperty<Status> op_dbStatusProperty  = null;
-    private Tooltip                tt_dbStatusText      = null;
+    private HBox hb_statusBar = null;
+    private Circle c_dbStatus = null;
+    private ObjectProperty<Status> op_dbStatusProperty = null;
+    private Tooltip tt_dbStatusText = null;
 
-    private ContextMenu            cm_vault             = null;
-    private ContextMenu            cm_default           = null;
+    private ContextMenu cm_vault = null;
+    private ContextMenu cm_default = null;
 
-    private Menu                   m_file               = null;
-    private Menu                   m_vault              = null;
-    private Menu                   m_password           = null;
-    private Menu                   m_help               = null;
+    private Menu m_file = null;
+    private Menu m_vault = null;
+    private Menu m_password = null;
+    private Menu m_help = null;
 
-    private MenuItem               mi_about             = null;
-    private MenuItem               mi_exit              = null;
-    private MenuItem               mi_new               = null;
-    private MenuItem               mi_edit              = null;
-    private MenuItem               mi_reset             = null;
-    private MenuItem               mi_delete            = null;
-    private MenuItem               mi_settings          = null;
-    private MenuItem               mi_copy              = null;
-    private MenuItem               mi_export            = null;
+    private MenuItem mi_about = null;
+    private MenuItem mi_exit = null;
+    private MenuItem mi_new = null;
+    private MenuItem mi_edit = null;
+    private MenuItem mi_reset = null;
+    private MenuItem mi_delete = null;
+    private MenuItem mi_settings = null;
+    private MenuItem mi_copy = null;
+    private MenuItem mi_autotype = null;
+    private MenuItem mi_export = null;
 
-    private CheckMenuItem          cmi_autologin        = null;
+    private CheckMenuItem cmi_autologin = null;
 
-    private TabPane                tp_vaults            = null;
-    private Tab                    t_newTabCreator      = null;
+    private TabPane tp_vaults = null;
+    private Tab t_newTabCreator = null;
 
-    static Task<Void>              tsk_pwdLifeTime      = null;
+    static Task<Void> tsk_pwdLifeTime = null;
 
-    ChangeListener<Status>         dbStatusListener     = null;
+    ChangeListener<Status> dbStatusListener = null;
 
-    public static FormVaultsManager getInstance() throws Exceptions
-    {
+    public static FormVaultsManager getInstance() throws Exceptions {
         if (This == null) throw new Exceptions(XC.INSTANCE_DOES_NOT_EXISTS);
         return (FormVaultsManager) This;
     }
 
-    public FormVaultsManager() throws Exceptions
-    {
+    public FormVaultsManager() throws Exceptions {
         // No parents it is a main Form
         super(null, Texts.FORM_MANAGEPWD_NAME, WindowPriority.ONLY_ONE_OPENED, true);
 
@@ -140,6 +143,7 @@ public class FormVaultsManager extends AbstractForm
         mi_reset = new MenuItem(Texts.FORM_MANAGEPWD_LABEL_RESET.toString());
         mi_delete = new MenuItem(Texts.LABEL_DELETE.toString());
         mi_copy = new MenuItem(Texts.FORM_MANAGEPWD_LABEL_COPY_TO_CLIPBOARD.toString());
+        mi_autotype = new MenuItem(Texts.FORM_MANAGEPWD_LABEL_AUTO_TYPE.toString());
         mi_export = new MenuItem(Texts.FORM_MANAGEPWD_LABEL_EXPORT.toString());
 
         mi_about = new MenuItem(Texts.LABEL_ABOUT.toString());
@@ -151,7 +155,7 @@ public class FormVaultsManager extends AbstractForm
         m_vault.getItems().addAll(m_password, mi_export, new SeparatorMenuItem(), cmi_autologin);
         m_vault.setDisable(true);
         m_password.getItems().addAll(mi_new, mi_edit, mi_delete, new SeparatorMenuItem(), mi_reset,
-            new SeparatorMenuItem(), mi_copy);
+                new SeparatorMenuItem(), mi_copy, mi_autotype);
         m_help.getItems().addAll(mi_about);
         menuMain.getMenus().addAll(m_file, m_vault, m_help);
 
@@ -159,10 +163,8 @@ public class FormVaultsManager extends AbstractForm
 
         cmi_autologin.setOnAction(event ->
         {
-            try
-            {
-                if (VaultManager.getInstance().getActiveVault() == null)
-                {
+            try {
+                if (VaultManager.getInstance().getActiveVault() == null) {
                     Logger.printError("No active vault selected for autologin! Ignoring...");
                     cmi_autologin.setSelected(false);
                     event.consume();
@@ -173,21 +175,16 @@ public class FormVaultsManager extends AbstractForm
                     Autologin.getInstance().setAutologinON(VaultManager.getInstance().getActiveVault());
                 else
                     Autologin.getInstance().setAutologinOFF(VaultManager.getInstance().getActiveVault());
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 Terminator.terminate(e);
             }
         });
 
         mi_settings.setOnAction(event ->
         {
-            try
-            {
+            try {
                 new FormSettings(This);
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
                     ; // Ignore
                 else
@@ -202,17 +199,16 @@ public class FormVaultsManager extends AbstractForm
         mi_reset.setOnAction(getOnResetAction());
         mi_delete.setOnAction(getOnDeleteAction());
         mi_copy.setOnAction(getOnCopyAction());
+        mi_autotype.setOnAction(getOnAutoType());
 
         mi_copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
+        mi_autotype.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN));
 
         mi_about.setOnAction(event ->
         {
-            try
-            {
+            try {
                 new FormAbout(This);
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
                     ; // Ignore
                 else
@@ -257,8 +253,7 @@ public class FormVaultsManager extends AbstractForm
         tp_vaults.getTabs().add(t_newTabCreator);
 
         VaultManager.getInstance().setOnActiveVaultChanged((oldValue, newValue) -> {
-            if (newValue == null)
-            {
+            if (newValue == null) {
                 setVaultControlsDisabled(true);
                 if (oldValue != null)
                     oldValue.setOnDbStatusChanged(null);
@@ -268,35 +263,29 @@ public class FormVaultsManager extends AbstractForm
 
             setVaultControlsDisabled(false);
 
-            try
-            {
+            try {
                 newValue.setOnDbStatusChanged(this::setDBStatus);
                 setDBStatus(newValue.getDBStatus());
                 Autologin.getInstance().check(newValue);
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 Terminator.terminate(e);
             }
 
             Logger.printDebug("Active vault changed from '" + (oldValue == null ? "null" : oldValue.getName())
-                + "' to '" + newValue.getName() + "'.");
+                    + "' to '" + newValue.getName() + "'.");
 
             tp_vaults.getTabs().stream().filter(tab ->
-                                                        tab.getContent() instanceof VaultTabContent
-                                                            && ((VaultTabContent) tab.getContent()).hasVault(newValue)).limit(1).findAny().ifPresent(tab -> tp_vaults.getSelectionModel().select(tab));
+                    tab.getContent() instanceof VaultTabContent
+                            && ((VaultTabContent) tab.getContent()).hasVault(newValue)).limit(1).findAny().ifPresent(tab -> tp_vaults.getSelectionModel().select(tab));
         });
 
-        try
-        {
+        try {
             VaultManager.getInstance().deactivateVault();
             for (int i = 0; i < VaultManager.getInstance().size(); ++i)
                 AddVaultTab(VaultManager.getInstance().activateNextVault());
 
             tp_vaults.getTabs().remove(0);
-        }
-        catch (Exceptions e)
-        {
+        } catch (Exceptions e) {
             if (e.getCode() != XC.VAULTS_NOT_FOUND) throw e;
         }
 
@@ -307,8 +296,7 @@ public class FormVaultsManager extends AbstractForm
         open();
     }
 
-    private void setVaultControlsDisabled(boolean value)
-    {
+    private void setVaultControlsDisabled(boolean value) {
         m_vault.setDisable(value);
         if (value)
             tp_vaults.setContextMenu(cm_default);
@@ -316,47 +304,42 @@ public class FormVaultsManager extends AbstractForm
             tp_vaults.setContextMenu(cm_vault);
     }
 
-    private void setDBStatus(Status status)
-    {
+    private void setDBStatus(Status status) {
         Logger.printDebug("DB status changed: " + status.name());
-        switch (status)
-        {
+        switch (status) {
             default:
             case SYNCHRONIZATION_FAILED:
                 c_dbStatus.setFill(Color.RED);
                 tt_dbStatusText.setText(Texts.MSG_DB_SYNC_FAILED.toString());
-            break;
+                break;
 
             case SYNCHRONIZED:
                 c_dbStatus.setFill(Color.LIGHTGREEN);
                 tt_dbStatusText.setText(Texts.MSG_DB_SYNC_SUCCESS.toString());
-            break;
+                break;
 
             case SYNCHRONIZING:
             case DESYNCHRONIZED:
                 c_dbStatus.setFill(Color.GREY);
                 tt_dbStatusText.setText(Texts.MSG_DB_SYNC_UNAVAILABLE.toString());
-            break;
+                break;
         }
     }
 
-    private void AddVaultTab(Vault vault)
-    {
+    private void AddVaultTab(Vault vault) {
         Tab tab = AddTab();
         tab.setTabContent(new VaultTabContent(tab, vault));
         tp_vaults.getSelectionModel().select(tab);
     }
 
     // Called when user presses '+' tab or at the start when auto login is off
-    private void AddLoginTab()
-    {
+    private void AddLoginTab() {
         Tab tab = AddTab();
         tab.setTabContent(new LoginTabContents(tab));
         tp_vaults.getSelectionModel().select(tab);
     }
 
-    private Tab AddTab()
-    {
+    private Tab AddTab() {
         Tab tab = new Tab();
 
         tab.setOnSelectionChanged(event ->
@@ -379,37 +362,42 @@ public class FormVaultsManager extends AbstractForm
         return tab;
     }
 
-    public static void reload() throws Exceptions
-    {
-        try
-        {
+    public static void reload() throws Exceptions {
+        try {
             Settings.getInstance().setRestartRequired(false);
-        }
-        catch (Exceptions e)
-        {
+        } catch (Exceptions e) {
             Logger.printError("Settings are not available!");
         }
 
-        if (This != null)
-        {
+        if (This != null) {
             This.close();
         }
         new FormVaultsManager();
     }
 
-    public static synchronized void copyToClipboard()
-    {
+    public static synchronized void autoType(boolean altTab) {
         SpecialPassword sp = null;
-        try
-        {
+        try {
             sp = VaultManager.getSelectedPassword();
-        }
-        catch (Exceptions e)
-        {
+        } catch (Exceptions e) {
             Terminator.terminate(e);
         }
-        if (sp == null)
-        {
+        if (sp == null) {
+            Logger.printError("No password selected");
+            return;
+        }
+
+        KeyMapper.typeString(sp.getPassword(), altTab);
+    }
+
+    public static synchronized void copyToClipboard() {
+        SpecialPassword sp = null;
+        try {
+            sp = VaultManager.getSelectedPassword();
+        } catch (Exceptions e) {
+            Terminator.terminate(e);
+        }
+        if (sp == null) {
             Logger.printError("No password selected");
             return;
         }
@@ -421,38 +409,29 @@ public class FormVaultsManager extends AbstractForm
 
         if (tsk_pwdLifeTime != null) tsk_pwdLifeTime.cancel();
 
-        tsk_pwdLifeTime = new Task<Void>()
-        {
+        tsk_pwdLifeTime = new Task<Void>() {
             @Override
-            protected Void call() throws Exception
-            {
+            protected Void call() throws Exception {
                 updateProgress(9, 10);
 
                 int timeToLive = 0;
 
-                try
-                {
+                try {
                     timeToLive = Settings.getInstance().getClipboardLiveTime();
-                }
-                catch (Exceptions e)
-                {
+                } catch (Exceptions e) {
                     Terminator.terminate(e);
                 }
 
-                try
-                {
+                try {
                     TrayAgent.getInstance().showNotification(Texts.TRAY_MSG_PWD_COPIED_TO_CLIPBOARD,
-                        Texts.TRAY_MSG_TIME_LEFT, ": " + Settings.getInstance().getClipboardLiveTime() / 1000 + " "
-                            + Texts.LABEL_SECONDS.toString(),
-                        MessageType.INFO);
-                }
-                catch (Exceptions e)
-                {
+                            Texts.TRAY_MSG_TIME_LEFT, ": " + Settings.getInstance().getClipboardLiveTime() / 1000 + " "
+                                    + Texts.LABEL_SECONDS.toString(),
+                            MessageType.INFO);
+                } catch (Exceptions e) {
                     Terminator.terminate(e);
                 }
 
-                for (int i = 0; i <= timeToLive && !isCancelled(); i += 100)
-                {
+                for (int i = 0; i <= timeToLive && !isCancelled(); i += 100) {
                     updateProgress(timeToLive - i, timeToLive);
                     Thread.sleep(100);
                 }
@@ -464,17 +443,13 @@ public class FormVaultsManager extends AbstractForm
         tsk_pwdLifeTime.setOnSucceeded(event ->
         {
             Logger.printTrace("PWDCLIP -> Successfully finished.");
-            try
-            {
-                if (pwd.equals(clipboard.getData(DataFlavor.stringFlavor)))
-                {
+            try {
+                if (pwd.equals(clipboard.getData(DataFlavor.stringFlavor))) {
                     clipboard.setContents(new StringSelection(""), null);
                     TrayAgent.getInstance().showNotification(Texts.TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD,
-                        MessageType.INFO);
+                            MessageType.INFO);
                 }
-            }
-            catch (UnsupportedFlavorException | IOException | Exceptions e)
-            {
+            } catch (UnsupportedFlavorException | IOException | Exceptions e) {
                 Terminator.terminate(new Exceptions(XC.ERROR));
             }
         });
@@ -485,15 +460,11 @@ public class FormVaultsManager extends AbstractForm
         calculatePasswordThread.start();
     }
 
-    public EventHandler<ActionEvent> getOnNewAction()
-    {
+    public EventHandler<ActionEvent> getOnNewAction() {
         return ae -> {
-            try
-            {
+            try {
                 new FormCreatePwd(This);
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 if (e.getCode().equals(XC.FORM_ALREADY_OPEN))
                     ; // Ignore
                 else
@@ -502,30 +473,22 @@ public class FormVaultsManager extends AbstractForm
         };
     }
 
-    public EventHandler<ActionEvent> getOnEditAction()
-    {
+    public EventHandler<ActionEvent> getOnEditAction() {
         return event -> {
-            try
-            {
+            try {
                 if (VaultManager.getSelectedPassword() == null) return;
                 new FormEditPwd(This);
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 Terminator.terminate(e);
             }
         };
     }
 
-    public EventHandler<ActionEvent> getOnCopyAction()
-    {
+    public EventHandler<ActionEvent> getOnCopyAction() {
         return arg0 -> {
-            try
-            {
+            try {
                 if (VaultManager.getSelectedPassword() == null) return;
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 Terminator.terminate(e);
             }
             This.minimize();
@@ -533,45 +496,46 @@ public class FormVaultsManager extends AbstractForm
         };
     }
 
-    public EventHandler<ActionEvent> getOnDeleteAction()
-    {
+    public EventHandler<ActionEvent> getOnAutoType() {
+        // FIXME: arg0 is funny, fix it to something fancy
         return arg0 -> {
-            try
-            {
+            try {
+                if (VaultManager.getSelectedPassword() == null) return;
+            } catch (Exceptions e) {
+                Terminator.terminate(e);
+            }
+            This.minimize();
+            autoType(true);
+        };
+    }
+
+    public EventHandler<ActionEvent> getOnDeleteAction() {
+        return arg0 -> {
+            try {
                 if (VaultManager.getSelectedPassword() == null) return;
                 new FormDeletePwd(This);
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 Terminator.terminate(e);
             }
         };
     }
 
-    public EventHandler<ActionEvent> getOnResetAction()
-    {
+    public EventHandler<ActionEvent> getOnResetAction() {
         return arg0 -> {
-            try
-            {
+            try {
                 if (VaultManager.getSelectedPassword() == null) return;
                 new FormResetPwd(This);
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 Terminator.terminate(e);
             }
         };
     }
 
-    public EventHandler<ActionEvent> getOnExportAction()
-    {
+    public EventHandler<ActionEvent> getOnExportAction() {
         return event -> {
-            try
-            {
+            try {
                 new FormExport(This);
-            }
-            catch (Exceptions e)
-            {
+            } catch (Exceptions e) {
                 Terminator.terminate(e);
             }
         };
