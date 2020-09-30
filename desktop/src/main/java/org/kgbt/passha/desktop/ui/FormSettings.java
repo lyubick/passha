@@ -21,7 +21,7 @@ import javafx.scene.text.TextAlignment;
 public class FormSettings extends AbstractForm
 {
     private EntryField             ef_clipboard = null;
-    private ComboBox               cb_language  = null;
+    //private ComboBox               cb_language  = null;
     private Label                  l_header     = null;
     private Button                 b_ok         = null;
 
@@ -32,7 +32,7 @@ public class FormSettings extends AbstractForm
         return event -> {
             try
             {
-                Settings.getInstance().setLanguage(cb_language.getValue());
+                //Settings.getInstance().setLanguage(cb_language.getValue());
                 Settings.getInstance().setClipboardLiveTime(ef_clipboard.getText());
                 Settings.getInstance().saveSettings();
 
@@ -58,7 +58,7 @@ public class FormSettings extends AbstractForm
         langOptions =
             FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
 
-        cb_language = new ComboBox(langOptions, Texts.LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
+        //cb_language = new ComboBox(langOptions, Texts.LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
 
         ef_clipboard =
             new EntryField(Texts.LABEL_DELAY.toString() + " " + Texts.LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
@@ -67,7 +67,7 @@ public class FormSettings extends AbstractForm
 
         try
         {
-            cb_language.setValue(langOptions.get(Settings.getInstance().getLanguage()));
+            //cb_language.setValue(langOptions.get(Settings.getInstance().getLanguage()));
             ef_clipboard.setText(Integer.toString(Settings.getInstance().getClipboardLiveTime() / 1000));
         }
         catch (Exceptions e)
@@ -79,7 +79,7 @@ public class FormSettings extends AbstractForm
 
         grid.addHElement(l_header, 0, 2);
         grid.addHElement((LabeledItem) ef_clipboard);
-        grid.addHElement((LabeledItem) cb_language);
+        //grid.addHElement((LabeledItem) cb_language);
         grid.addHElement(b_ok, 0, 2);
 
         b_ok.setOnAction(getOnOKBtnAction());

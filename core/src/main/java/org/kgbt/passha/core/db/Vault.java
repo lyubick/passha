@@ -28,6 +28,22 @@ public class Vault
     private Database        database         = null;
     private SpecialPassword selectedPassword = null;
 
+    public Vault(byte[] hash, boolean isNewUser, String root) throws Exceptions
+    {
+        masterHash = hash;
+
+        // Initialize RSA
+        RSA rsa = new RSA(SHA.getHashString(masterHash, SALT_P), SHA.getHashString(masterHash, SALT_Q),
+                SHA.getHashString(masterHash, SALT_E));
+
+        // Initialize Database
+        database = new Database(rsa, SHA.getHashString(masterHash, SALT_FILENAME), isNewUser, root, this);
+
+        // All initialized, let's clean-up a little
+        System.gc();
+    }
+
+
     public Vault(byte[] hash, boolean isNewUser) throws Exceptions
     {
         masterHash = hash;
@@ -37,7 +53,7 @@ public class Vault
             SHA.getHashString(masterHash, SALT_E));
 
         // Initialize Database
-        database = new Database(rsa, SHA.getHashString(masterHash, SALT_FILENAME), isNewUser, this);
+        database = new Database(rsa, SHA.getHashString(masterHash, SALT_FILENAME), isNewUser, "", this);
 
         // All initialized, let's clean-up a little
         System.gc();

@@ -68,7 +68,7 @@ public class UserFileMigration
             File oldFile = getOldUserFile(masterPassword);      // might throw
 
             int numberOfErrors = 0;
-            Vault vault = VaultManager.getInstance().addVault(SHA.getHashBytes(masterPassword.getBytes()), true);
+            Vault vault = VaultManager.getInstance().addVault(SHA.getHashBytes(masterPassword.getBytes()), true, ""); //FIXME
 
             for (String encryptedPassword : Utilities.readStringsFromFile(oldFile.getAbsolutePath()))
             {

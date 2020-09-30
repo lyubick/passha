@@ -24,6 +24,7 @@ import org.kgbt.passha.core.common.Exceptions
 import org.kgbt.passha.core.logger.Logger
 import org.kgbt.passha.core.logger.Output
 import org.kgbt.passha.android.R
+import java.io.File
 
 
 class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
@@ -98,7 +99,14 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             try {
                 Logger.loggerON(null, PasshaLogsOutput())
                 VaultManager.init()
-                val vault = VaultManager.getInstance().addVault(password, false)
+
+                File("vaults/").mkdirs()
+
+                println(this.dataDir)
+
+                println(File("vaults/").absolutePath + " and it " + File("vaults/").exists())
+
+                val vault = VaultManager.getInstance().addVault(password, true, this.dataDir.absolutePath)
                 val intent = Intent(baseContext, VaultActivity::class.java);
                 intent.putExtra("VAULT_NAME", vault.name)
                 startActivity(intent)

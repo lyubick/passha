@@ -108,7 +108,7 @@ public class Main extends Application
             {
                 try
                 {
-                    VaultManager.getInstance().addVault(hash, false);
+                    VaultManager.getInstance().addVault(hash, false ,"");
                 }
                 catch (Exceptions e)
                 {

@@ -54,19 +54,22 @@ public class Database
         onStatusChanged = consumer;
     }
 
-    public Database(RSA myRSA, String filename, boolean newUser, Vault vault) throws Exceptions
+    public Database(RSA myRSA, String filename, boolean newUser, String root, Vault vault) throws Exceptions
     {
         updateStatus(Status.SYNCHRONIZING);
 
-        File vaultDir = new File(Properties.PATHS.VAULT);
+        File vaultDir = new File(root + "/" + Properties.PATHS.VAULT);
 
         if (!vaultDir.exists() && !vaultDir.mkdirs())
         {
             Logger.printError("Failed to create/access " + vaultDir.getAbsolutePath());
+
+
+
             throw new Exceptions(XC.DIR_DOES_NOT_EXIST);
         }
 
-        vaultFile = new File(Properties.PATHS.VAULT + filename + Properties.EXTENSIONS.VAULT);
+        vaultFile = new File(root + "/" + Properties.PATHS.VAULT + filename + Properties.EXTENSIONS.VAULT);
 
         Logger.printDebug("Accessing vault file: " + vaultFile.getAbsolutePath());
 

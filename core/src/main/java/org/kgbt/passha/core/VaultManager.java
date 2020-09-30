@@ -47,11 +47,11 @@ public class VaultManager
         return self;
     }
 
-    public Vault addVault(String password, boolean isNewUser) throws Exceptions
+    public Vault addVault(String password, boolean isNewUser, String root) throws Exceptions
     {
         try
         {
-            return addVault(SHA.getHashBytes(password.getBytes()), isNewUser);
+            return addVault(SHA.getHashBytes(password.getBytes()), isNewUser, root);
         }
         catch (Exceptions e)
         {
@@ -69,12 +69,12 @@ public class VaultManager
         }
     }
 
-    public Vault addVault(byte[] hash, boolean isNewUser) throws Exceptions
+    public Vault addVault(byte[] hash, boolean isNewUser, String root) throws Exceptions
     {
         if (vaults.stream().anyMatch(vault -> vault.initializedFrom(hash)))
             throw new Exceptions(XC.VAULT_OPENED);
 
-        Vault newVault = new Vault(hash, isNewUser);
+        Vault newVault = new Vault(hash, isNewUser, root);
         vaults.addElement(newVault);
         return newVault;
     }

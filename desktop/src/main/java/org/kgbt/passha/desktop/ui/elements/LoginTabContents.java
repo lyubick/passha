@@ -101,7 +101,7 @@ public class LoginTabContents extends org.kgbt.passha.desktop.ui.elements.GridPa
         try
         {
             VaultTabContent newContent =
-                new VaultTabContent(t_ownTab, VaultManager.getInstance().addVault(password, isNewUser));
+                new VaultTabContent(t_ownTab, VaultManager.getInstance().addVault(password, isNewUser, ""));
             t_ownTab.setTabContent(newContent);
             t_ownTab.setVaultName(newContent.getName());
         }
