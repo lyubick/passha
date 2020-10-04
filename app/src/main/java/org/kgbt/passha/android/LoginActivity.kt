@@ -66,14 +66,17 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_login_varja)
         requestForPermission()
         // Set up the login form.
-        aPasswordView = findViewById(R.id.password)
-        aLoginFormView = findViewById(R.id.login_form)
+        aPasswordView = findViewById(R.id.et_password)
+        //aLoginFormView = findViewById(R.id.login_form)
 
-        val goButton = findViewById<Button>(R.id.locate_file_button)
+        val goButton = findViewById<TextView>(R.id.b_login_text)
         goButton.setOnClickListener { attemptLogin() }
+
+        val goButton2 = findViewById<View>(R.id.b_rectangle_login)
+        goButton2.setOnClickListener { attemptLogin() }
     }
 
     /**
@@ -85,9 +88,10 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         // Reset errors.
         aPasswordView!!.error = null
 
+        println("Hello!")
+
         // Store values at the time of the login attempt.
         val password = aPasswordView!!.text.toString()
-
 
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {

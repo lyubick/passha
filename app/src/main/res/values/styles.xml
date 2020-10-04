@@ -8,4 +8,36 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="b_login_text">
+
+        <item name="android:textSize">
+            17sp
+        </item>
+
+        <item name="android:letterSpacing">
+            -0.02
+        </item>
+
+        <item name="android:textColor">
+            #333333
+        </item>
+
+    </style>
+
+    <style name="password">
+
+        <item name="android:textSize">
+            18sp
+        </item>
+
+        <item name="android:letterSpacing">
+            0.09
+        </item>
+
+        <item name="android:textColor">
+            #FF0300
+        </item>
+
+    </style>
+
 </resources>

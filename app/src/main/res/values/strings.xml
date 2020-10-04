@@ -14,4 +14,10 @@
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+
+    <string name="b_login_text">Login</string>
+    <string name="password">
+
+        PASSWORD
+    </string>
 </resources>
