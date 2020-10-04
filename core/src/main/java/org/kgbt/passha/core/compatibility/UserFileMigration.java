@@ -1,9 +1,12 @@
 package org.kgbt.passha.core.compatibility;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Vector;
 
 import org.kgbt.passha.core.GenericUI;
+import org.kgbt.passha.core.db.Database;
 import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.db.SpecialPassword;
@@ -61,9 +64,12 @@ public class UserFileMigration
         Logger.printTrace("Migration STARTED!");
         try
         {
-            RSA oldRSA = new RSA(Utilities.bytesToHex(SHA.getHashBytes((masterPassword + SALT_P).getBytes())),
+            RSA oldRSA = new RSA(
+                Utilities.bytesToHex(SHA.getHashBytes((masterPassword + SALT_P).getBytes())),
                 Utilities.bytesToHex(SHA.getHashBytes((masterPassword + SALT_Q).getBytes())),
-                Utilities.bytesToHex(SHA.getHashBytes((masterPassword + SALT_E).getBytes())));
+                Utilities.bytesToHex(SHA.getHashBytes((masterPassword + SALT_E).getBytes())),
+                RSA.RSA_SIZE._2048 // FIXME: Just for compilation
+            );
 
             File oldFile = getOldUserFile(masterPassword);      // might throw
 

@@ -10,10 +10,15 @@ import org.kgbt.passha.core.common.Exceptions.XC;
 
 public final class RSA
 {
+    public enum RSA_SIZE {
+        _2048,
+        _4096,
+    }
+
     private BigInteger       p, q, n, f, e, d;
 
     // Length of encrypted message chunk, used in decipher
-    private static final int RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH = 310;
+    private int RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH = 310;
     // Message representative, an integer between 0 and n � 1 (p and q are 64
     // byte long Hex)
     private static final int RSA_BYTE_CHUNK_LENGTH             = 64 - 1;
@@ -50,7 +55,7 @@ public final class RSA
 
             System.arraycopy(padding, 0, chunk, 0, RSA_BYTE_PADDING_LENGTH);
 
-            System.arraycopy(message, messagegBlockStart, chunk, 11, blockLength);
+            System.arraycopy(message, messagegBlockStart, chunk, RSA_BYTE_PADDING_LENGTH, blockLength);
 
             StringBuilder fCipher = new StringBuilder(new BigInteger(chunk).modPow(e, n).toString());
 
@@ -93,15 +98,25 @@ public final class RSA
 
     private void init() throws Exceptions
     {
+        final BigInteger TWO = BigInteger.ONE.add(BigInteger.ONE);
 
-        while (!p.isProbablePrime(RSA_PRIME_CERTAINCY))
+        if (p.mod(TWO).equals(BigInteger.ZERO))
             p = p.add(BigInteger.ONE);
 
-        while (!q.isProbablePrime(RSA_PRIME_CERTAINCY))
+        if (q.mod(TWO).equals(BigInteger.ZERO))
             q = q.add(BigInteger.ONE);
 
-        while (!e.isProbablePrime(RSA_PRIME_CERTAINCY))
+        if (e.mod(TWO).equals(BigInteger.ZERO))
             e = e.add(BigInteger.ONE);
+
+        while (!p.isProbablePrime(RSA_PRIME_CERTAINCY))
+            p = p.add(TWO);
+
+        while (!q.isProbablePrime(RSA_PRIME_CERTAINCY))
+            q = q.add(TWO);
+
+        while (!e.isProbablePrime(RSA_PRIME_CERTAINCY))
+            e = e.add(TWO);
 
         n = p.multiply(q);
 
@@ -116,8 +131,11 @@ public final class RSA
         test();
     }
 
-    public RSA(String p, String q, String e) throws Exceptions
+    public RSA(String p, String q, String e, RSA_SIZE size) throws Exceptions
     {
+        if (size == RSA_SIZE._4096)
+            RSA_BYTE_ENCRYPTED_MESSAGE_LENGTH = 1300;
+
         /* Initial values */
         this.p = new BigInteger(p, 16);
         this.q = new BigInteger(q, 16);
@@ -139,7 +157,7 @@ public final class RSA
         StringBuilder decipher = new StringBuilder(ba.length);
 
         for (byte b : ba)
-            decipher.append(Character.toString((char) b));
+            decipher.append((char) b);
 
         return decipher.toString();
     }

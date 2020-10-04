@@ -58,7 +58,10 @@ public class Database
     {
         updateStatus(Status.SYNCHRONIZING);
 
-        File vaultDir = new File(root + "/" + Properties.PATHS.VAULT);
+        if (!root.isEmpty())
+            root += "/";
+
+        File vaultDir = new File(root + Properties.PATHS.VAULT);
 
         if (!vaultDir.exists() && !vaultDir.mkdirs())
         {
@@ -69,7 +72,10 @@ public class Database
             throw new Exceptions(XC.DIR_DOES_NOT_EXIST);
         }
 
-        vaultFile = new File(root + "/" + Properties.PATHS.VAULT + filename + Properties.EXTENSIONS.VAULT);
+        if (!root.isEmpty()) root += "/";
+
+
+        vaultFile = new File(root + Properties.PATHS.VAULT + filename + Properties.EXTENSIONS.VAULT);
 
         Logger.printDebug("Accessing vault file: " + vaultFile.getAbsolutePath());
 

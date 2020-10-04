@@ -61,7 +61,7 @@ public class VaultFunctional
         try
         {
             masterHash = SHA.getHashBytes(("This is test!" + num.incrementAndGet()).getBytes());
-            vault = new Vault(masterHash, true);
+            vault = new Vault(masterHash, true, "");
             vaultsDatabase = (Database) VaultReflection.getInstance().database().get(vault);
             databaseFilename = Properties.PATHS.VAULT + SHA
                 .getHashString(masterHash, (String) VaultReflection.getInstance().SALT_FILENAME().get(vault))

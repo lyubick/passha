@@ -1,17 +1,15 @@
 package org.kgbt.passha.core.common;
 
-public final class Exceptions extends Throwable
-{
+public final class Exceptions extends Throwable {
     private static final long serialVersionUID = 1L;
 
-    private XC                code;
+    private XC code;
 
-    private String            text             = null;
+    private String text = null;
 
-    private Object            object           = null;
+    private Object object = null;
 
-    public enum XC
-    {
+    public enum XC {
         //
         VAULT_OPENED,
         VAULTS_NOT_FOUND,
@@ -83,41 +81,34 @@ public final class Exceptions extends Throwable
         NULL,
     }
 
-    public XC getCode()
-    {
+    public XC getCode() {
         return code;
     }
 
-    public void setCode(XC code)
-    {
+    public void setCode(XC code) {
         this.code = code;
     }
 
-    public Exceptions(XC code, Object object)
-    {
+    public Exceptions(XC code, Object object) {
         this.code = code;
         this.object = object;
     }
 
-    public Exceptions(XC code)
-    {
+    public Exceptions(XC code) {
         this.code = code;
     }
 
-    public Exceptions setText(String text)
-    {
+    public Exceptions setText(String text) {
         this.text = text;
         return this;
     }
 
-    public String getText()
-    {
+    public String getText() {
         if (text != null) return text;
         return "";
     }
 
-    public Object getObject()
-    {
+    public Object getObject() {
         return object;
     }
 }

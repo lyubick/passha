@@ -8,6 +8,7 @@ import java.util.Vector;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.kgbt.passha.core.compatibility.UserFileMigration;
 import org.kgbt.passha.core.db.Database.Status;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
@@ -28,32 +29,30 @@ public class Vault
     private Database        database         = null;
     private SpecialPassword selectedPassword = null;
 
+    // TODO: Android usage
     public Vault(byte[] hash, boolean isNewUser, String root) throws Exceptions
     {
         masterHash = hash;
 
         // Initialize RSA
-        RSA rsa = new RSA(SHA.getHashString(masterHash, SALT_P), SHA.getHashString(masterHash, SALT_Q),
-                SHA.getHashString(masterHash, SALT_E));
+        RSA rsa = new RSA(
+                SHA.getHashString(masterHash, SALT_P)
+                        + SHA.getHashString(masterHash, "PP")
+                        + SHA.getHashString(masterHash, "PPP")
+                        + SHA.getHashString(masterHash, "PPPP"),
+                SHA.getHashString(masterHash, SALT_Q)
+                        + SHA.getHashString(masterHash, "QQ")
+                        + SHA.getHashString(masterHash, "QQQ")
+                        + SHA.getHashString(masterHash, "QQQQ"),
+                SHA.getHashString(masterHash, SALT_E)
+                        + SHA.getHashString(masterHash, "EE")
+                        + SHA.getHashString(masterHash, "EEE")
+                        + SHA.getHashString(masterHash, "EEEE"),
+                RSA.RSA_SIZE._4096 // FIXME: Just for compilation
+        );
 
         // Initialize Database
         database = new Database(rsa, SHA.getHashString(masterHash, SALT_FILENAME), isNewUser, root, this);
-
-        // All initialized, let's clean-up a little
-        System.gc();
-    }
-
-
-    public Vault(byte[] hash, boolean isNewUser) throws Exceptions
-    {
-        masterHash = hash;
-
-        // Initialize RSA
-        RSA rsa = new RSA(SHA.getHashString(masterHash, SALT_P), SHA.getHashString(masterHash, SALT_Q),
-            SHA.getHashString(masterHash, SALT_E));
-
-        // Initialize Database
-        database = new Database(rsa, SHA.getHashString(masterHash, SALT_FILENAME), isNewUser, "", this);
 
         // All initialized, let's clean-up a little
         System.gc();

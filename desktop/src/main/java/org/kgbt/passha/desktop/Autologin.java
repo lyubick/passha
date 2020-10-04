@@ -51,9 +51,12 @@ public class Autologin
     {
         try
         {
-            rsa = new RSA(SHA.getHashString((executeCommand("wmic baseboard get serialnumber") + SALT_P).getBytes()),
+            rsa = new RSA(
+                SHA.getHashString((executeCommand("wmic baseboard get serialnumber") + SALT_P).getBytes()),
                 SHA.getHashString((executeCommand("wmic diskdrive get serialnumber") + SALT_Q).getBytes()),
-                SHA.getHashString(SALT_E.getBytes()));
+                SHA.getHashString(SALT_E.getBytes()),
+                RSA.RSA_SIZE._2048 // FIXME: Just for compilation
+            );
             enabled = true;
 
             ON = new SimpleBooleanProperty(false);
