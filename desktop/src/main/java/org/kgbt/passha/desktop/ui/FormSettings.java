@@ -20,11 +20,8 @@ import org.kgbt.passha.desktop.ui.elements.LabeledItem;
 public class FormSettings extends AbstractForm
 {
     private EntryField             ef_clipboard = null;
-    //private ComboBox               cb_language  = null;
     private Label                  l_header     = null;
     private Button                 b_ok         = null;
-
-    private ObservableList<String> langOptions  = null;
 
     private EventHandler<ActionEvent> getOnOKBtnAction()
     {
@@ -53,11 +50,6 @@ public class FormSettings extends AbstractForm
         l_header = new Label(Texts.LABEL_SETTINGS.toString());
         l_header.setTextAlignment(TextAlignment.CENTER);
         l_header.beHeader();
-
-        langOptions =
-            FXCollections.observableArrayList(Settings.LANGUAGE.ENGLISH.name(), Settings.LANGUAGE.RUSSIAN.name());
-
-        //cb_language = new ComboBox(langOptions, Texts.LABEL_LANGUAGE, TEXTFIELD.WIDTH.M);
 
         ef_clipboard =
             new EntryField(Texts.LABEL_DELAY.toString() + " " + Texts.LABEL_SECONDS.toString(), TEXTFIELD.WIDTH.S);
