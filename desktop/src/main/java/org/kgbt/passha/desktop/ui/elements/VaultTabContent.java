@@ -72,6 +72,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
                     || event.getCode() == KeyCode.F3
             ) {
                 try {
+                    Logger.printDebug("INNNNN");
                     new FormSearch(FormVaultsManager.getThis(), this, (FilteredList<iSpecialPassword>) this.getItems());
                 } catch (Exceptions e) {
                     Logger.printError("Failed to search with" + e.getMessage());
@@ -79,16 +80,13 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
             }
         });
 
-        this.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue /* false */ && oldValue /* true */) {
-                ((FilteredList<iSpecialPassword>) this.getItems()).setPredicate(p -> true);
-            }
-        });
-
         this.setOnMouseClicked(event ->
         {
-            iSpecialPassword selectedItem = this.getSelectionModel()
-                    .getSelectedItem();
+            iSpecialPassword selectedItem = this.getSelectionModel().getSelectedItem();
+
+            if (selectedItem != null) {
+                ((FilteredList<iSpecialPassword>) this.getItems()).setPredicate(p -> true);
+            }
 
             if (selectedItem == null || event.getClickCount() < 2) {
                 event.consume();

@@ -60,6 +60,11 @@ public class FormDeletePwd extends AbstractForm
                 }
             }
 
+            try {
+                FormVaultsManager.getInstance().reloadDB();
+            } catch (Exceptions e) {
+                Terminator.terminate(e); // FIXME: Review
+            }
             close();
         };
     }

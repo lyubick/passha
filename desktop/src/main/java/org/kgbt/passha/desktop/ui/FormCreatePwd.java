@@ -1,5 +1,6 @@
 package org.kgbt.passha.desktop.ui;
 
+import org.kgbt.passha.core.common.Terminator;
 import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
@@ -125,6 +126,12 @@ public class FormCreatePwd extends AbstractForm
                         .addPassword(new SpecialPassword(ef_name.getText(), ef_comment.getText(), ef_url.getText(),
                             ef_length.getText(), cb_specialChars.isSelected(), cb_upperCaseChar.isSelected(),
                             ef_specialChars.getText(), ef_shortcut.getText(), activeVault));
+
+                try {
+                    FormVaultsManager.getInstance().reloadDB();
+                } catch (Exceptions e) {
+                    Terminator.terminate(e); // FIXME: Review
+                }
                 close();
             }
             catch (Exceptions e)

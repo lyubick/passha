@@ -284,9 +284,6 @@ public class FormVaultsManager extends AbstractForm {
             if (e.getCode() != XC.VAULTS_NOT_FOUND) throw e;
         }
 
-        //
-
-
         // ========== GRID ========== //
         grid.add(tp_vaults, 0, 0);
         grid.add(hb_statusBar, 0, 1);
@@ -537,5 +534,11 @@ public class FormVaultsManager extends AbstractForm {
                 Terminator.terminate(e);
             }
         };
+    }
+
+    // FIXME:
+    @Deprecated
+    public void reloadDB() {
+        ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).reload();
     }
 }
