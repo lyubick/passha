@@ -1,19 +1,19 @@
 package org.kgbt.passha.desktop;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.common.Utilities;
+import org.kgbt.passha.core.db.Vault;
+import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.core.rsa.RSA;
+import org.kgbt.passha.core.sha.SHA;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.stream.Collectors;
-
-import org.kgbt.passha.core.db.Vault;
-import javafx.beans.property.SimpleBooleanProperty;
-import org.kgbt.passha.core.logger.Logger;
-import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.Exceptions.XC;
-import org.kgbt.passha.core.common.Terminator;
-import org.kgbt.passha.core.rsa.RSA;
-import org.kgbt.passha.core.sha.SHA;
-import org.kgbt.passha.core.common.Utilities;
 
 public class Autologin
 {

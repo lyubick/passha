@@ -1,8 +1,8 @@
 package org.kgbt.passha.desktop.ui.elements;
 
 import javafx.collections.ObservableList;
-import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.desktop.languages.Local.Texts;
 
 public class ComboBox extends javafx.scene.control.ComboBox<String> implements LabeledItem
 {

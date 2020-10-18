@@ -1,26 +1,22 @@
 package org.kgbt.passha.desktop.ui;
 
-import java.io.File;
-
-import org.kgbt.passha.core.db.Vault;
-import org.kgbt.passha.core.VaultManager;
 import javafx.geometry.HPos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.cfg.Properties;
 import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.sha.SHA;
-import org.kgbt.passha.desktop.ui.elements.Button;
-import org.kgbt.passha.desktop.ui.elements.EntryField;
-import org.kgbt.passha.desktop.ui.elements.Label;
-import org.kgbt.passha.desktop.ui.elements.LabeledItem;
-import org.kgbt.passha.desktop.ui.elements.PasswordEntryField;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.desktop.ui.elements.*;
 import org.kgbt.passha.desktop.ui.elements.EntryField.TEXTFIELD;
+
+import java.io.File;
 
 public class FormExport extends AbstractForm
 {

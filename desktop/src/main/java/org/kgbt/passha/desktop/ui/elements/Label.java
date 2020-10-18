@@ -1,14 +1,14 @@
 package org.kgbt.passha.desktop.ui.elements;
 
-import java.util.Arrays;
-
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import org.kgbt.passha.desktop.languages.Local.Texts;
-import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+
+import java.util.Arrays;
 
 public class Label extends javafx.scene.control.Label
 {

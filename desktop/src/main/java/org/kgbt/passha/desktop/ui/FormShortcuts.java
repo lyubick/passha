@@ -1,20 +1,5 @@
 package org.kgbt.passha.desktop.ui;
 
-import java.awt.TrayIcon.MessageType;
-import java.util.Vector;
-
-import org.kgbt.passha.core.db.Vault;
-import org.kgbt.passha.core.VaultManager;
-import org.kgbt.passha.desktop.ui.elements.EntryField;
-import org.kgbt.passha.desktop.ui.elements.GridPane;
-import org.kgbt.passha.desktop.ui.elements.LabeledItem;
-import org.kgbt.passha.desktop.ui.elements.EntryField.TEXTFIELD;
-import org.kgbt.passha.desktop.ui.elements.Label;
-import org.kgbt.passha.desktop.languages.Local.Texts;
-import org.kgbt.passha.core.logger.Logger;
-import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.Exceptions.XC;
-import org.kgbt.passha.core.db.SpecialPassword;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -23,7 +8,22 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Screen;
 import javafx.stage.StageStyle;
+import org.kgbt.passha.core.VaultManager;
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Exceptions.XC;
 import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.db.SpecialPassword;
+import org.kgbt.passha.core.db.Vault;
+import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.desktop.ui.elements.EntryField;
+import org.kgbt.passha.desktop.ui.elements.EntryField.TEXTFIELD;
+import org.kgbt.passha.desktop.ui.elements.GridPane;
+import org.kgbt.passha.desktop.ui.elements.Label;
+import org.kgbt.passha.desktop.ui.elements.LabeledItem;
+
+import java.awt.TrayIcon.MessageType;
+import java.util.Vector;
 
 public class FormShortcuts extends AbstractForm
 {

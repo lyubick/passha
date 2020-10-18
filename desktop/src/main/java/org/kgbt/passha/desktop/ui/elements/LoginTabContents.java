@@ -1,17 +1,17 @@
 package org.kgbt.passha.desktop.ui.elements;
 
-import org.kgbt.passha.core.VaultManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
-import org.kgbt.passha.desktop.languages.Local.Texts;
-import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.Terminator;
 import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.desktop.ui.elements.EntryField.TEXTFIELD;
 
 public class LoginTabContents extends org.kgbt.passha.desktop.ui.elements.GridPane implements TabContent

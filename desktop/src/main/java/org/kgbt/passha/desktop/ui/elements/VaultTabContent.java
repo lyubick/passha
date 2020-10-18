@@ -9,14 +9,12 @@ import javafx.scene.input.KeyCode;
 import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Terminator;
-import org.kgbt.passha.core.db.SpecialPassword;
 import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.desktop.ui.FormSearch;
 import org.kgbt.passha.desktop.ui.FormVaultsManager;
 import org.kgbt.passha.desktop.ui.interfaces.iSpecialPassword;
-import sun.rmi.runtime.Log;
 
 import java.util.Arrays;
 

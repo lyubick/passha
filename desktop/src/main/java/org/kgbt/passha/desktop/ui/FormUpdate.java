@@ -1,20 +1,5 @@
 package org.kgbt.passha.desktop.ui;
 
-import java.awt.TrayIcon.MessageType;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -22,15 +7,24 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
-import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.cfg.Properties;
-import org.kgbt.passha.core.common.Terminator;
 import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.common.Utilities;
+import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.desktop.languages.Local;
 import org.kgbt.passha.desktop.ui.elements.Button;
 import org.kgbt.passha.desktop.ui.elements.ProgressBar;
-import org.kgbt.passha.core.common.Utilities;
+
+import java.awt.TrayIcon.MessageType;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class FormUpdate extends AbstractForm {
 

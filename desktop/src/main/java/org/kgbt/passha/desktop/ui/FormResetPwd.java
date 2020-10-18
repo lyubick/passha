@@ -7,17 +7,13 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.text.TextAlignment;
-import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Terminator;
-import org.kgbt.passha.desktop.ui.elements.Button;
-import org.kgbt.passha.desktop.ui.elements.EntryField;
-import org.kgbt.passha.desktop.ui.elements.LabeledItem;
-import org.kgbt.passha.desktop.ui.elements.EntryField.TEXTFIELD;
-import org.kgbt.passha.desktop.ui.elements.GridPane;
-import org.kgbt.passha.desktop.ui.elements.Label;
-import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.db.SpecialPassword;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.desktop.ui.elements.*;
+import org.kgbt.passha.desktop.ui.elements.EntryField.TEXTFIELD;
 
 /**
  * @author curious-odd-man

@@ -1,7 +1,6 @@
 package org.kgbt.passha.desktop.ui.interfaces;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import org.kgbt.passha.core.db.SpecialPassword;
 

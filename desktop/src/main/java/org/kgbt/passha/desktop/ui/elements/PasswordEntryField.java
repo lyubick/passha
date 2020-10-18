@@ -3,8 +3,8 @@ package org.kgbt.passha.desktop.ui.elements;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.HBox;
-import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.desktop.languages.Local.Texts;
 
 public class PasswordEntryField extends PasswordField implements LabeledItem
 {

@@ -1,26 +1,20 @@
 package org.kgbt.passha.desktop.ui;
 
-import java.awt.Image;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
+import javafx.application.Platform;
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.Timer;
-
-import javafx.application.Platform;
-import org.kgbt.passha.desktop.languages.Local.Texts;
-import org.kgbt.passha.core.logger.Logger;
-import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.cfg.Properties;
-import org.kgbt.passha.core.common.Terminator;
-import org.kgbt.passha.core.common.Exceptions.XC;
 
 public class TrayAgent
 {

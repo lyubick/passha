@@ -1,27 +1,22 @@
 package org.kgbt.passha.desktop.ui;
 
-import java.util.Optional;
-import java.util.Vector;
-
-import org.kgbt.passha.desktop.Main;
-import org.kgbt.passha.desktop.ui.elements.GridPane;
-import org.kgbt.passha.desktop.languages.Local.Texts;
-import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.Exceptions.XC;
-import org.kgbt.passha.core.common.cfg.Properties;
-
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.desktop.Main;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.desktop.ui.elements.GridPane;
+
+import java.util.Optional;
+import java.util.Vector;
 
 public abstract class AbstractForm
 {

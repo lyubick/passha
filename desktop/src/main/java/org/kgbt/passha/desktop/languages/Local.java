@@ -1,9 +1,9 @@
 package org.kgbt.passha.desktop.languages;
 
 import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Terminator;
 import org.kgbt.passha.core.common.cfg.Properties;
 import org.kgbt.passha.core.common.cfg.Settings;
-import org.kgbt.passha.core.common.Terminator;
 
 public class Local {
     public enum Texts {

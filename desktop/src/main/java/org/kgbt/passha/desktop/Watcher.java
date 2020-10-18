@@ -1,10 +1,11 @@
 package org.kgbt.passha.desktop;
 
-import java.util.*;
-import java.io.*;
-
-import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.common.cfg.Settings;
+import org.kgbt.passha.core.logger.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.TimerTask;
 
 public abstract class Watcher extends TimerTask
 {

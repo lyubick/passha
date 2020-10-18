@@ -1,15 +1,5 @@
 package org.kgbt.passha.desktop.ui;
 
-import org.kgbt.passha.desktop.languages.Local.Texts;
-import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.cfg.Settings;
-import org.kgbt.passha.core.common.Terminator;
-import org.kgbt.passha.desktop.ui.elements.Button;
-import org.kgbt.passha.desktop.ui.elements.ComboBox;
-import org.kgbt.passha.desktop.ui.elements.EntryField;
-import org.kgbt.passha.desktop.ui.elements.LabeledItem;
-import org.kgbt.passha.desktop.ui.elements.EntryField.TEXTFIELD;
-import org.kgbt.passha.desktop.ui.elements.Label;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,6 +7,15 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.common.cfg.Settings;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.desktop.ui.elements.Button;
+import org.kgbt.passha.desktop.ui.elements.EntryField;
+import org.kgbt.passha.desktop.ui.elements.EntryField.TEXTFIELD;
+import org.kgbt.passha.desktop.ui.elements.Label;
+import org.kgbt.passha.desktop.ui.elements.LabeledItem;
 
 public class FormSettings extends AbstractForm
 {

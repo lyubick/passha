@@ -4,9 +4,9 @@ import javafx.animation.PauseTransition;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.util.Duration;
-import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.desktop.ui.elements.Button.BUTTON.SIZE;
 
 public class Button extends javafx.scene.control.Button

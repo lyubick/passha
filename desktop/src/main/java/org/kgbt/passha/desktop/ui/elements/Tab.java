@@ -1,11 +1,11 @@
 package org.kgbt.passha.desktop.ui.elements;
 
-import org.kgbt.passha.core.VaultManager;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import org.kgbt.passha.desktop.languages.Local;
+import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.desktop.languages.Local;
 
 public class Tab extends javafx.scene.control.Tab
 {

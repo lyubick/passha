@@ -1,27 +1,14 @@
 package org.kgbt.passha.desktop.ui;
 
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.layout.Border;
 import javafx.stage.StageStyle;
 import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.cfg.Properties;
-import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.desktop.languages.Local.Texts;
-import org.kgbt.passha.desktop.ui.elements.*;
-import org.kgbt.passha.desktop.ui.elements.Button;
-import org.kgbt.passha.desktop.ui.elements.Label;
+import org.kgbt.passha.desktop.ui.elements.GridPane;
+import org.kgbt.passha.desktop.ui.elements.Search;
+import org.kgbt.passha.desktop.ui.elements.VaultTabContent;
 import org.kgbt.passha.desktop.ui.interfaces.iSpecialPassword;
-
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
 
 public class FormSearch extends AbstractForm
 {

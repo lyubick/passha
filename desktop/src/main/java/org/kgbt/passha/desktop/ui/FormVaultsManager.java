@@ -1,8 +1,38 @@
 package org.kgbt.passha.desktop.ui;
 
-import org.kgbt.passha.core.db.Vault;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import org.kgbt.passha.core.VaultManager;
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.core.common.cfg.Settings;
+import org.kgbt.passha.core.db.Database.Status;
+import org.kgbt.passha.core.db.SpecialPassword;
+import org.kgbt.passha.core.db.Vault;
+import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.desktop.Autologin;
+import org.kgbt.passha.desktop.autotype.KeyMapper;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.desktop.ui.elements.LoginTabContents;
+import org.kgbt.passha.desktop.ui.elements.Tab;
+import org.kgbt.passha.desktop.ui.elements.TabContent;
+import org.kgbt.passha.desktop.ui.elements.VaultTabContent;
 
 import java.awt.*;
 import java.awt.TrayIcon.MessageType;
@@ -10,47 +40,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.kgbt.passha.core.db.SpecialPassword;
-import org.kgbt.passha.core.db.Database.Status;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import org.kgbt.passha.desktop.autotype.KeyMapper;
-import org.kgbt.passha.desktop.languages.Local.Texts;
-import org.kgbt.passha.core.logger.Logger;
-
-import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.Terminator;
-import org.kgbt.passha.core.common.Exceptions.XC;
-import org.kgbt.passha.core.common.cfg.Properties;
-import org.kgbt.passha.core.common.cfg.Settings;
-import org.kgbt.passha.desktop.ui.elements.LoginTabContents;
-import org.kgbt.passha.desktop.ui.elements.Tab;
-import org.kgbt.passha.desktop.ui.elements.TabContent;
-import org.kgbt.passha.desktop.ui.elements.VaultTabContent;
 
 public class FormVaultsManager extends AbstractForm {
     private final class WINDOW {
@@ -536,8 +526,7 @@ public class FormVaultsManager extends AbstractForm {
         };
     }
 
-    // FIXME:
-    @Deprecated
+    // FIXME: Think something else maybe
     public void reloadDB() {
         ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).reload();
     }

@@ -1,10 +1,10 @@
 package org.kgbt.passha.desktop.ui;
 
-import org.kgbt.passha.desktop.ui.elements.EntryField;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import org.kgbt.passha.desktop.ui.elements.EntryField;
 
 public final class Common
 {

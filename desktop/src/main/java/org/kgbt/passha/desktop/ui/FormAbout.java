@@ -1,23 +1,23 @@
 package org.kgbt.passha.desktop.ui;
 
-import java.awt.Desktop;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.scene.control.Hyperlink;
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.desktop.ui.elements.Button;
+import org.kgbt.passha.desktop.ui.elements.GridPane;
+import org.kgbt.passha.desktop.ui.elements.Label;
+
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.HPos;
-import javafx.scene.control.Hyperlink;
-import org.kgbt.passha.desktop.ui.elements.Button;
-import org.kgbt.passha.desktop.ui.elements.GridPane;
-import org.kgbt.passha.desktop.ui.elements.Label;
-import org.kgbt.passha.desktop.languages.Local.Texts;
-import org.kgbt.passha.core.logger.Logger;
-import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.cfg.Properties;
 
 public class FormAbout extends AbstractForm
 {
