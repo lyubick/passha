@@ -10,6 +10,7 @@ import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.cfg.Settings;
 import org.kgbt.passha.core.common.Terminator;
 import org.kgbt.passha.desktop.languages.Local;
+import org.kgbt.passha.desktop.ui.FormUpdate;
 import org.kgbt.passha.desktop.ui.FormVaultsManager;
 import org.kgbt.passha.desktop.ui.TrayAgent;
 
@@ -127,7 +128,7 @@ public class Main extends Application
 
         try
         {
-            new FormVaultsManager();
+            new FormUpdate();
         }
         catch (Exceptions e)
         {
