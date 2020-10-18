@@ -16,20 +16,17 @@ import org.kgbt.passha.desktop.ui.TrayAgent;
 
 import java.awt.*;
 
-public class Main extends Application
-{
+public class Main extends Application {
     private static final String ARG_LOGLEVEL = "--loglevel=";
-    private static final String ARG_DEBUG    = "--debug";
+    private static final String ARG_DEBUG = "--debug";
 
     public static boolean DEBUG = false;
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         /* 0. Read incoming arguments */
         String logLevelString = null;
 
-        for (String arg : args)
-        {
+        for (String arg : args) {
             if (arg.equals(ARG_DEBUG))
                 DEBUG = true;
             if (arg.startsWith(ARG_LOGLEVEL))
@@ -37,54 +34,39 @@ public class Main extends Application
         }
 
         /* 1. Switch ON logs */
-        try
-        {
+        try {
             Logger.loggerON(logLevelString);
             Logger.printFatal("Hello!");
-        }
-        catch (Exceptions e)
-        {
+        } catch (Exceptions e) {
             Terminator.terminate(e);
         }
 
         Local.Texts info = null;
 
         /* 2. Load settings */
-        try
-        {
+        try {
             Settings.init().loadSettings();
-        }
-        catch (Exceptions e)
-        {
-            if (e.getCode().equals(Exceptions.XC.DEFAULT_SETTINGS_USED))
-            {
+        } catch (Exceptions e) {
+            if (e.getCode().equals(Exceptions.XC.DEFAULT_SETTINGS_USED)) {
                 info = Local.Texts.TRAY_MSG_FAILED_LOAD_SETTINGS;
-            }
-            else
-            {
+            } else {
                 Terminator.terminate(e);
             }
         }
 
         /* 3. Wake up tray notifications */
-        try
-        {
+        try {
             TrayAgent.init();
             if (info != null)
                 TrayAgent.getInstance().showNotification(Local.Texts.LABEL_ERROR, info, TrayIcon.MessageType.ERROR);
-        }
-        catch (Exceptions e)
-        {
+        } catch (Exceptions e) {
             Terminator.terminate(e);
         }
 
         /* 4. Set up auto login */
-        try
-        {
+        try {
             Autologin.init();
-        }
-        catch (Exceptions e)
-        {
+        } catch (Exceptions e) {
             Terminator.terminate(e);
         }
 
@@ -96,42 +78,34 @@ public class Main extends Application
     }
 
     @Override
-    public void start(Stage primaryStage)
-    {
+    public void start(Stage primaryStage) {
         Platform.setImplicitExit(DEBUG);
 
         GenericUI.init(CoreUiInterface::new);
         VaultManager.init();
 
-        try
-        {
-            for (byte[] hash : Autologin.getInstance().getVaults())
-            {
-                try
-                {
-                    VaultManager.getInstance().addVault(hash, false ,"");
-                }
-                catch (Exceptions e)
-                {
+        try {
+            for (byte[] hash : Autologin.getInstance().getVaults()) {
+                try {
+                    VaultManager.getInstance().addVault(hash, false, "");
+                } catch (Exceptions e) {
                     if (e.getCode() != Exceptions.XC.FILE_DOES_NOT_EXIST
-                        && e.getCode() != Exceptions.XC.DIR_DOES_NOT_EXIST)
+                            && e.getCode() != Exceptions.XC.DIR_DOES_NOT_EXIST)
                         throw e;
 
                     Autologin.getInstance().setAutologinOFF(hash);
                 }
             }
-        }
-        catch (Exceptions e1)
-        {
+        } catch (Exceptions e1) {
             Terminator.terminate(e1);
         }
 
-        try
-        {
-            new FormUpdate();
-        }
-        catch (Exceptions e)
-        {
+        try {
+            if (DEBUG)
+                new FormVaultsManager();
+            else
+                new FormUpdate();
+        } catch (Exceptions e) {
             Logger.printFatal("Unhandled exception: " + e.getCode());
             Terminator.terminate(e);
         }

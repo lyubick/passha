@@ -1,15 +1,22 @@
 package org.kgbt.passha.desktop.ui.elements;
 
 import javafx.beans.value.ChangeListener;
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.db.SpecialPassword;
 import org.kgbt.passha.core.db.Vault;
+import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.desktop.languages.Local.Texts;
+import org.kgbt.passha.desktop.ui.FormSearch;
+import org.kgbt.passha.desktop.ui.FormVaultsManager;
 import org.kgbt.passha.desktop.ui.interfaces.iSpecialPassword;
+import sun.rmi.runtime.Log;
 
 import java.util.Arrays;
 
@@ -56,37 +63,54 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         cShortcut.setCellValueFactory(new PropertyValueFactory<>("shortcut"));
         cPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
 
-        getSelectionModel().selectedItemProperty()
-                           .addListener(getSelectedItemPropertyListener());
+        getSelectionModel().selectedItemProperty().addListener(getSelectedItemPropertyListener());
 
         reload();
 
+        this.setOnKeyReleased(event -> {
+            if ((event.isControlDown() && event.getCode() == KeyCode.F)
+                    || event.getCode() == KeyCode.F3
+            ) {
+                try {
+                    new FormSearch(FormVaultsManager.getThis(), this, (FilteredList<iSpecialPassword>) this.getItems());
+                } catch (Exceptions e) {
+                    Logger.printError("Failed to search with" + e.getMessage());
+                }
+            }
+        });
+
+        this.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue /* false */ && oldValue /* true */) {
+                ((FilteredList<iSpecialPassword>) this.getItems()).setPredicate(p -> true);
+            }
+        });
+
         this.setOnMouseClicked(event ->
-                               {
-                                   iSpecialPassword selectedItem = this.getSelectionModel()
-                                                                       .getSelectedItem();
+        {
+            iSpecialPassword selectedItem = this.getSelectionModel()
+                    .getSelectedItem();
 
-                                   if (selectedItem == null || event.getClickCount() < 2) {
-                                       event.consume();
-                                       return;
-                                   }
+            if (selectedItem == null || event.getClickCount() < 2) {
+                event.consume();
+                return;
+            }
 
-                                   selectedItem.setPasswordVisible(true);
+            selectedItem.setPasswordVisible(true);
 
-                                   this.getColumns()
-                                       .get(0)
-                                       .setVisible(false);
-                                   this.getColumns()
-                                       .get(0)
-                                       .setVisible(true);
-                               });
+            this.getColumns()
+                    .get(0)
+                    .setVisible(false);
+            this.getColumns()
+                    .get(0)
+                    .setVisible(true);
+        });
     }
 
     @Override
     public void closeTab() {
         try {
             VaultManager.getInstance()
-                        .removeVault();
+                    .removeVault();
         } catch (Exceptions e) {
             Terminator.terminate(e);
         }
@@ -96,7 +120,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
     public void activateTab() {
         try {
             VaultManager.getInstance()
-                        .activateVault(vault);
+                    .activateVault(vault);
         } catch (Exceptions e) {
             Terminator.terminate(e);
         }
@@ -111,9 +135,9 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
         if (getColumns().isEmpty()) return;
 
         getColumns().get(0)
-                    .setVisible(false);
+                .setVisible(false);
         getColumns().get(0)
-                    .setVisible(true);
+                .setVisible(true);
     }
 
     @Override
@@ -125,7 +149,7 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
     public String getName() {
         String name = vault.getName();
         return name.isEmpty() ? Texts.LABEL_UNNAMED.toString()
-                                                   .toUpperCase() : name;
+                .toUpperCase() : name;
     }
 
     public boolean hasVault(Vault vault) {

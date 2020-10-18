@@ -64,6 +64,10 @@ public class FormVaultsManager extends AbstractForm {
 
     private static AbstractForm This = null;
 
+    static public AbstractForm getThis() {
+        return This;
+    }
+
     private HBox hb_statusBar = null;
     private Circle c_dbStatus = null;
     private ObjectProperty<Status> op_dbStatusProperty = null;
@@ -110,10 +114,6 @@ public class FormVaultsManager extends AbstractForm {
         stage.setWidth(WINDOW.width);
         stage.setMinHeight(WINDOW.height);
         stage.setMinWidth(WINDOW.width);
-        stage.focusedProperty().addListener((observable, oldValue, newValue) ->
-        {
-            if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).reload();
-        });
 
         This = this;
 
@@ -229,11 +229,6 @@ public class FormVaultsManager extends AbstractForm {
         tp_vaults.setMinHeight(TAB_PANE_MIN_HEIGHT);
         tp_vaults.setMinWidth(TAB_PANE_MIN_WIDTH);
 
-        tp_vaults.focusedProperty().addListener((observable, oldValue, newValue) ->
-        {
-            if (newValue) ((TabContent) tp_vaults.getSelectionModel().getSelectedItem().getContent()).activateTab();
-        });
-
         t_newTabCreator = new Tab();
 
         t_newTabCreator.setClosable(false);
@@ -288,6 +283,9 @@ public class FormVaultsManager extends AbstractForm {
         } catch (Exceptions e) {
             if (e.getCode() != XC.VAULTS_NOT_FOUND) throw e;
         }
+
+        //
+
 
         // ========== GRID ========== //
         grid.add(tp_vaults, 0, 0);
