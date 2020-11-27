@@ -45,12 +45,14 @@ public class Local {
         LABEL_VAULT_WITH_COLLS(new String[]{"Vault: "}),
         LABEL_VERSION(new String[]{"v." + Properties.SOFTWARE.VERSION}),
 
+
         // LABEL MULTI-WORD
         LABEL_ENTER_PASSWORD(new String[]{"Enter password"}),
         LABEL_INVALID_PASSWORD(new String[]{"Password is incorrect!"}),
         LABEL_INVALID_PATH(new String[]{"Path is missing!"}),
         LABEL_MIGRATION_TITLE(new String[]{"User file migration"}),
         LABEL_UNKNOWN_USER(new String[]{"Unknown user"}),
+        LABEL_LOGGING_IN(new String[]{"Logging user in..."}),
 
         // MESSAGES
 

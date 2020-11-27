@@ -1,6 +1,6 @@
 package org.kgbt.passha.core.common;
 
-public final class Exceptions extends Throwable {
+public final class Exceptions extends Exception {
     private static final long serialVersionUID = 1L;
 
     private XC code;
