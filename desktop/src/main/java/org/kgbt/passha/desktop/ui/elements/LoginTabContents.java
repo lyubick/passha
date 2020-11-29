@@ -1,8 +1,8 @@
 package org.kgbt.passha.desktop.ui.elements;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
@@ -10,12 +10,19 @@ import org.kgbt.passha.core.VaultManager;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
 import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.desktop.ui.elements.EntryField.TEXTFIELD;
+import org.kgbt.passha.desktop.ui.tasks.LoggedTask;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class LoginTabContents extends org.kgbt.passha.desktop.ui.elements.GridPane implements TabContent
 {
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     private Label         l_header           = null;
     private Label         l_warning          = null;
     private PasswordField pf_password        = null;
@@ -24,64 +31,62 @@ public class LoginTabContents extends org.kgbt.passha.desktop.ui.elements.GridPa
     private Button        b_register         = null;
     private Tab           t_ownTab           = null;
 
-    private EventHandler<ActionEvent> getOnLoginBtnAction()
+    private void onLoginBtnAction(ActionEvent event)
     {
-        return arg0 -> {
-            if (pf_password.getText().length() != 0)
-            {
-                if (!pf_passwordConfirm.isVisible())
-                    try
-                    {
-                        init(pf_password.getText(), false);
-                    }
-                    catch (Exceptions e)
-                    {
-                        switch (e.getCode())
-                        {
-                            case USER_UNKNOWN:
-                                b_register.setVisible(true);
+        if (pf_password.getText().isEmpty())
+            return;
 
-                                pf_passwordConfirm.setVisible(true);
-                                pf_password.setDisable(true);
+        if (pf_passwordConfirm.isVisible())
+            reset();
+        else
+        {
+            Task<Vault> init = init(pf_password.getText(), false);
+            init.setOnFailed(failedEvent -> {
+                Exceptions e = (Exceptions) init.getException();
+                Platform.runLater(() -> {
+                    t_ownTab.setTabContent(this);
+                    switch (e.getCode())
+                    {
+                        case USER_UNKNOWN:
+                            b_register.setVisible(true);
 
-                                l_warning.setText(Texts.FORM_LOGIN_MSG_INCORRECT_PWD);
-                                break;
-                            case VAULT_OPENED:
-                                l_warning.setText(Texts.MSG_VAULT_ALREADY_OPENED.toString());
-                                break;
-                            default:
-                                Terminator.terminate(e);
-                                break;
-                        }
+                            pf_passwordConfirm.setVisible(true);
+                            pf_password.setDisable(true);
+
+                            l_warning.setText(Texts.FORM_LOGIN_MSG_INCORRECT_PWD);
+                            break;
+                        case VAULT_OPENED:
+                            l_warning.setText(Texts.MSG_VAULT_ALREADY_OPENED.toString());
+                            break;
+                        default:
+                            Terminator.terminate(e);
+                            break;
                     }
-                else
-                {
-                    reset();
-                }
-            }
-        };
+                });
+            });
+
+            executorService.submit(init);
+        }
     }
 
-    private EventHandler<ActionEvent> getOnRegisterBtnAction()
+    private void onRegisterBtnAction(ActionEvent event)
     {
-        return arg0 -> {
-            Logger.printTrace("b_Register button pressed");
+        Logger.printTrace("b_Register button pressed");
 
-            try
-            {
-                if (pf_password.getText().equals(pf_passwordConfirm.getText()))
-                    init(pf_passwordConfirm.getText(), true);
-                else
-                {
-                    reset();
-                    l_warning.setText(Texts.FORM_LOGIN_MSG_PWDS_DONT_MATCH);
-                }
-            }
-            catch (Exceptions e)
-            {
-                Terminator.terminate(e);
-            }
-        };
+        if (pf_password.getText().equals(pf_passwordConfirm.getText()))
+        {
+            Task<Vault> init = init(pf_passwordConfirm.getText(), true);
+            init.setOnFailed(failedEvent -> {
+                Exceptions e = (Exceptions) init.getException();
+                Platform.runLater(() -> Terminator.terminate(e));
+            });
+            executorService.submit(init);
+        }
+        else
+        {
+            reset();
+            l_warning.setText(Texts.FORM_LOGIN_MSG_PWDS_DONT_MATCH);
+        }
     }
 
     private void reset()
@@ -94,24 +99,39 @@ public class LoginTabContents extends org.kgbt.passha.desktop.ui.elements.GridPa
         l_warning.setText("");
     }
 
-    private void init(String password, boolean isNewUser) throws Exceptions
+    private Task<Vault> init(String password, boolean isNewUser)
     {
+        t_ownTab.setTabContent(new LoggingInTabContent());
         Logger.printTrace("init user");
 
-        try
+        Task<Vault> task = new LoggedTask<Vault>()
         {
-            VaultTabContent newContent =
-                new VaultTabContent(t_ownTab, VaultManager.getInstance().addVault(password, isNewUser, ""));
-            t_ownTab.setTabContent(newContent);
-            t_ownTab.setVaultName(newContent.getName());
-        }
-        catch (Exceptions e)
-        {
-            if (e.getCode() == XC.FILE_DOES_NOT_EXIST)
-                throw new Exceptions(XC.USER_UNKNOWN);
-            else
-                throw e;
-        }
+            @Override
+            protected Vault call() throws Exception
+            {
+                try
+                {
+                    return VaultManager.getInstance().addVault(password, isNewUser, "");
+                }
+                catch (Exceptions e)
+                {
+                    if (e.getCode() == XC.FILE_DOES_NOT_EXIST)
+                        throw new Exceptions(XC.USER_UNKNOWN);
+                    else
+                        throw e;
+                }
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            Platform.runLater(() -> {
+                VaultTabContent newContent = new VaultTabContent(t_ownTab, task.getValue());
+                t_ownTab.setTabContent(newContent);
+                t_ownTab.setVaultName(newContent.getName());
+            });
+        });
+
+        return task;
     }
 
     public LoginTabContents(Tab ownTab)
@@ -177,9 +197,9 @@ public class LoginTabContents extends org.kgbt.passha.desktop.ui.elements.GridPa
         GridPane.setHalignment(l_warning, HPos.CENTER);
 
         // ========== LISTENERS ========== //
-        b_login.setOnAction(getOnLoginBtnAction());
+        b_login.setOnAction(this::onLoginBtnAction);
 
-        b_register.setOnAction(getOnRegisterBtnAction());
+        b_register.setOnAction(this::onRegisterBtnAction);
     }
 
     @Override

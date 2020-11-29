@@ -146,7 +146,7 @@ public final class Logger
         StackTraceElement e = stacktrace[3];
 
         String methodName = e.getMethodName();
-        String fileName = "(" + e.getFileName();
+        String fileName = ".(" + e.getFileName();
 
         String line = "" + e.getLineNumber() + ")";
 
