@@ -22,9 +22,6 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class FormUpdate extends AbstractForm {
 
@@ -34,19 +31,28 @@ public class FormUpdate extends AbstractForm {
     private String latestVersion = null;
 
     private File downloaded = null;
-    private File newExecutable = null;
 
     private final String GITHUB_RELEASE_URL = "https://github.com/lyubick/passha/releases";
-    private final String GITHUB_ARCHIVE_URL = "https://github.com/lyubick/passha/archive/";
+    private final String GITHUB_DOWNLOAD_URL = GITHUB_RELEASE_URL + "/download";
 
     private final String RELEASE_VERSION_PREFIX = "/lyubick/passha/tree/";
     private final String RELEASE_VERSION_TEMPLATE = "v0.0.000";
 
-    private final String RELEASE_ARCHIVE_EXTENSION = ".zip";
     private final String RELEASE_EXECUTABLE_NAME = "pasSHA.jar";
 
     private final Button b_update;
     private final Button b_skip;
+
+    private static final String UPDATER_SCRIPT =
+            "@echo off\n" +
+            ":delete\n" +
+            "\tdel pasSHA.jar\n" +
+            "\tif exist \"pasSHA.jar\" goto :delete\n" +
+            ":copy\n" +
+            "\tcopy %1 pasSHA.jar\n" +
+            ":start\n" +
+            "\tstart javaw -jar pasSHA.jar\n" +
+            ":stop";
 
     private void skipUpdate() throws Exceptions {
         new FormVaultsManager();
@@ -95,7 +101,6 @@ public class FormUpdate extends AbstractForm {
 
             // Download latest
             Task<Void> tsk_downloadLatestVersion = downloadLatestVersion();
-            tsk_downloadLatestVersion.setOnSucceeded(getOnDownloadSucceeded());
             tsk_downloadLatestVersion.setOnFailed(getOnUpdateTaskFailed());
 
             pb_progress.rebind(tsk_downloadLatestVersion.progressProperty(), tsk_downloadLatestVersion.messageProperty());
@@ -112,20 +117,6 @@ public class FormUpdate extends AbstractForm {
             } catch (Exceptions exceptions) {
                 exceptions.printStackTrace();
             }
-        };
-    }
-
-    private EventHandler<WorkerStateEvent> getOnDownloadSucceeded() {
-        return event -> {
-            pb_progress.unbind();
-            close();
-
-            // Install latest
-            Task<Void> tsk_installLatestVersion = installLatestVersion();
-            Thread install = new Thread(tsk_installLatestVersion);
-            install.setDaemon(true);
-            Logger.printTrace("install.start();");
-            install.start();
         };
     }
 
@@ -184,34 +175,32 @@ public class FormUpdate extends AbstractForm {
     private Task<Void> downloadLatestVersion() {
         return new Task<Void>() {
             @Override
-            protected Void call() throws Exception {
-                Logger.printTrace("Downloading...");
-                double maxSize;
-                double curSize = 0;
+            protected Void call() {
+                Logger.printDebug("Downloading...");
 
-                updateProgress(0, 1);
                 updateMessage(Local.Texts.FORM_UPDATE_LABEL_DOWNLOAD.toString());
 
                 try {
-                    URL url = new URL(GITHUB_ARCHIVE_URL + latestVersion + RELEASE_ARCHIVE_EXTENSION);
+                    URL url = new URL(GITHUB_DOWNLOAD_URL + "/" + latestVersion + "/" + RELEASE_EXECUTABLE_NAME);
 
                     URLConnection conn = url.openConnection();
 
-                    maxSize = conn.getContentLength();
+                    double maxSize = conn.getContentLength();
+                    double curSize = 0.0;
 
-                    downloaded = File.createTempFile(latestVersion, RELEASE_ARCHIVE_EXTENSION);
+                    downloaded = File.createTempFile(latestVersion, RELEASE_EXECUTABLE_NAME);
 
                     InputStream is = conn.getInputStream();
+
+                    Logger.printDebug("Stream available: " + is.available() + ", temp file: " + downloaded.getAbsolutePath());
                     FileOutputStream fos = new FileOutputStream(downloaded.getCanonicalPath());
 
                     byte[] buffer = new byte[Utilities.DEFAULT_BUFFER_SIZE];
                     int len;
 
                     while ((len = is.read(buffer)) > 0) {
-                        curSize += len;
                         fos.write(buffer, 0, len);
-
-                        updateProgress(curSize, maxSize);
+                        updateProgress( curSize += len, maxSize);
                     }
 
                     is.close();
@@ -226,80 +215,22 @@ public class FormUpdate extends AbstractForm {
                 }
 
                 updateProgress(1, 1);
-                Logger.printTrace("Download OK.");
-
-                updateMessage(Local.Texts.FORM_UPDATE_LABEL_INSTALL.toString());
-                updateProgress(0, 1);
+                Logger.printDebug("Download OK. Installing...");
 
                 try {
-                    Logger.printTrace("Unzipping...");
-                    newExecutable =
-                            new File(FormUpdate.class.getProtectionDomain().getCodeSource()
-                                    .getLocation().toURI().getPath()
-                                    + "~"
-                            );
+                    Logger.printDebug("Creating 'updater.bat' script...");
+                    Utilities.writeToFile("updater.bat", UPDATER_SCRIPT);
+                    Logger.printDebug("Script created. Launching...");
+                    Runtime.getRuntime().exec("updater.bat " + downloaded.getAbsolutePath());
 
-                    ZipFile zip = new ZipFile(downloaded);
-
-                    Enumeration<?> enu = zip.entries();
-
-                    ZipEntry entry = null;
-
-                    // Find executable in archive
-                    //noinspection StatementWithEmptyBody - doing things C/C++ style :)
-                    while (enu.hasMoreElements()
-                            && !(entry = (ZipEntry) enu.nextElement()).toString().contains(RELEASE_EXECUTABLE_NAME)
-                    ) ;
-
-                    InputStream is = zip.getInputStream(entry);
-                    // TODO: zip.getInputStream checks entry != null and throws exception otherwise
-                    //       so we can't reach this point with entry == null.
-                    maxSize = entry.getSize();
-                    curSize = 0;
-
-                    FileOutputStream fos = new FileOutputStream(newExecutable);
-
-                    byte[] buffer = new byte[Utilities.DEFAULT_BUFFER_SIZE];
-                    int len;
-
-                    while ((len = is.read(buffer)) > 0) {
-                        curSize += len;
-                        updateProgress(curSize, maxSize);
-                        fos.write(buffer, 0, len);
-                    }
-
-                    is.close();
-                    fos.close();
-                    zip.close();
-
-                } catch (IOException e1) {
-                    Logger.printError("Update failed! Unable to create file! Hello Linux users !");
+                    Terminator.terminate(new Exceptions(XC.END));
+                } catch (IOException e) {
+                    Logger.printError("Update failed! Failed to start updater script");
+                    this.failed();
+                } catch (Exceptions exceptions) {
+                    Logger.printError("Update failed! Failed to create updater script");
                     this.failed();
                 }
-
-                updateProgress(1, 1);
-                Logger.printTrace("Unzip OK.");
-
-                return null;
-            }
-        };
-    }
-
-    private Task<Void> installLatestVersion() {
-        return new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                new File(FormUpdate.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-
-                newExecutable =
-                        new File(
-                                FormUpdate.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
-                                        + "~"
-                        );
-
-                Runtime.getRuntime().exec("updater.bat");
-
-                Terminator.terminate(new Exceptions(XC.END));
 
                 return null;
             }
