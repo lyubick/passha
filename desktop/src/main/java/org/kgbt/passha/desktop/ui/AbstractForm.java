@@ -11,6 +11,7 @@ import javafx.stage.StageStyle;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
 import org.kgbt.passha.core.common.cfg.Properties;
+import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.desktop.Main;
 import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.desktop.ui.elements.GridPane;
@@ -36,16 +37,17 @@ public abstract class AbstractForm
         private static double x;
         private static double y;
 
-        public static void remember(Stage stage)
-        {
-            x = stage.getX();
-            y = stage.getY();
-        }
+        // TODO: Maybe somehow it could be taken based on some logic
+        public static final double minX = -10.0;
+        public static final double minY = -10.0;
+
+        public static void setX(double x) {Coords.x = Math.max(x, minX);}
+        public static void setY(double y) {Coords.y = Math.max(y, minY);}
 
         public static void recall(Stage stage)
         {
-            stage.setX(x);
-            stage.setY(y);
+            stage.setX(Math.max(x, minX));
+            stage.setY(Math.max(y, minY));
         }
     }
 
@@ -86,7 +88,6 @@ public abstract class AbstractForm
     public void minimize()
     {
         if (children != null) children.forEach(AbstractForm::minimize);
-        Coords.remember(stage);
         stage.hide();
     }
 
@@ -231,5 +232,13 @@ public abstract class AbstractForm
         stage.focusedProperty().addListener(getFocusedPropertyListener());
 
         stage.centerOnScreen();
+
+        // Record coordinates on change to restore after minimize() or close()
+        stage.xProperty().addListener((a, oldX, newX) -> {
+            if (newX.doubleValue() > Coords.minX) Coords.setX(newX.doubleValue());
+        });
+        stage.yProperty().addListener((a, oldY, newY) -> {
+            if (newY.doubleValue() > Coords.minY) Coords.setY(newY.doubleValue());
+        });
     }
 }
