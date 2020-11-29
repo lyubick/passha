@@ -70,7 +70,6 @@ public class VaultTabContent extends TableView<iSpecialPassword> implements TabC
                     || event.getCode() == KeyCode.F3
             ) {
                 try {
-                    Logger.printDebug("INNNNN");
                     new FormSearch(FormVaultsManager.getThis(), this, (FilteredList<iSpecialPassword>) this.getItems());
                 } catch (Exceptions e) {
                     Logger.printError("Failed to search with" + e.getMessage());
