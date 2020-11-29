@@ -127,7 +127,6 @@ public class FormUpdate extends AbstractForm {
                 double maxSize;
                 double curSize;
 
-                updateProgress(0, 1);
                 updateMessage(Local.Texts.FORM_UPDATE_LABEL_CHECK.toString());
 
                 try {
