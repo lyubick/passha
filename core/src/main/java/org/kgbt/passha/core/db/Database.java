@@ -67,7 +67,7 @@ public class Database
         {
             Logger.printError("Failed to create/access " + vaultDir.getAbsolutePath());
 
-
+            Logger.printError(vaultDir.getAbsolutePath());
 
             throw new Exceptions(XC.DIR_DOES_NOT_EXIST);
         }

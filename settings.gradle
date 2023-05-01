@@ -1,1 +1,1 @@
-include ':core', ':desktop', ':app'
+include ':core', ':desktop'

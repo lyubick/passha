@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 
 group = "org.kgbt.passha"
 version = '3.0'
@@ -7,14 +7,25 @@ version = '3.0'
 description = """"""
 
 repositories {
-    maven { url "http://repo.maven.apache.org/maven2" }
+    maven { url "https://repo.maven.apache.org/maven2" }
 }
 
 dependencies {
     implementation project(':core')
+
+    implementation fileTree('./javafx-sdk')
+    // TODO: Understand why it is not working.
+//    implementation 'org.openjfx:javafx-controls:19'
+//    implementation 'org.openjfx:javafx-base:19'
+//    implementation 'org.openjfx:javafx:19'
+//    implementation 'org.openjfx:javafx-fxml:19'
+//    implementation 'org.openjfx:javafx-swing:19'
+//    implementation 'org.openjfx:javafx-web:19'
+//    implementation 'org.openjfx:javafx-graphics:19'
+
 }
 
-task release(type: Jar) {
+tasks.register('release', Jar) {
     manifest {
         attributes 'Main-Class': 'org.kgbt.passha.desktop.Main'
     }
@@ -22,4 +33,9 @@ task release(type: Jar) {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     with jar
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
