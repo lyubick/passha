@@ -30,9 +30,9 @@ final public class SHA
         0x113f9804bef90daeL, 0x1b710b35131c471bL, 0x28db77f523047d84L, 0x32caab7b40c72493L, 0x3c9ebe0a15c9bebcL,
         0x431d67c49c100d4cL, 0x4cc5d4becb3e42b6L, 0x597f299cfc657e2aL, 0x5fcb6fab3ad6faecL, 0x6c44198c4a475817L };
 
-    private static long[]       state                          = new long[8];
+    private static final long[]       state                          = new long[8];
     private static byte[]       MessageBlock                   = null;
-    private static byte[]       hashBlock                      = new byte[128];
+    private static final byte[]       hashBlock                      = new byte[128];
     private static int          hashBlocksCount                = 0;
 
     private final static long   TEN_LESS_SIGNIFICANT_BITS_MASK = 0x3FFFF;
@@ -97,7 +97,7 @@ final public class SHA
 
     private static void compressSHA512()
     {
-        long W[] = new long[80];
+        long[] W = new long[80];
         long a, b, c, d, e, f, g, h;
         long t1, t2;
 
@@ -152,7 +152,7 @@ final public class SHA
     private static void padMessage(byte[] input)
     {
         int length = input.length;
-        long bitLength = length * 8 + 1 + 128;
+        long bitLength = length * 8L + 1 + 128;
 
         hashBlocksCount = (int) ((bitLength >>> 10) + Math.min(bitLength & TEN_LESS_SIGNIFICANT_BITS_MASK, 1));
 
@@ -162,7 +162,7 @@ final public class SHA
 
         MessageBlock[length] = (byte) 0x80;
 
-        Utilities.store64(length * 8, MessageBlock, 128 * hashBlocksCount - 8);
+        Utilities.store64(length * 8L, MessageBlock, 128 * hashBlocksCount - 8);
 
     }
 
@@ -193,11 +193,6 @@ final public class SHA
     static public synchronized String getHashString(final byte[] input)
     {
         return Utilities.bytesToHex(getHashBytes(input));
-    }
-
-    static public synchronized String getHashString(String input)
-    {
-        return getHashString(input.getBytes());
     }
 
     static public synchronized String getHashString(String toHash, String salt)

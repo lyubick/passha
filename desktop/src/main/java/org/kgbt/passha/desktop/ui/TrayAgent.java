@@ -18,7 +18,7 @@ import java.awt.event.MouseEvent;
 
 public class TrayAgent
 {
-    public class ClickListener extends MouseAdapter implements ActionListener
+    public static class ClickListener extends MouseAdapter implements ActionListener
     {
         MouseEvent lastEvent;
         Timer      timer;

@@ -11,7 +11,6 @@ import javafx.stage.StageStyle;
 import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
 import org.kgbt.passha.core.common.cfg.Properties;
-import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.desktop.Main;
 import org.kgbt.passha.desktop.languages.Local.Texts;
 import org.kgbt.passha.desktop.ui.elements.GridPane;
@@ -199,9 +198,6 @@ public abstract class AbstractForm
         grid.getRowConstraints().addAll(r1, r2);
 
         group.setPadding(new Insets(0, 0, 0, 0));
-        // final Background focusBackground =
-        // new Background(new BackgroundFill(Color.web("#ABCDEF"), CornerRadii.EMPTY, Insets.EMPTY));
-        // group.setBackground(focusBackground);
 
         AnchorPane.setRightAnchor(group, 0.0);
         AnchorPane.setBottomAnchor(group, 0.0);

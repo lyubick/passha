@@ -1,5 +1,13 @@
 package org.kgbt.passha.core.db;
 
+import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Exceptions.XC;
+import org.kgbt.passha.core.common.Terminator;
+import org.kgbt.passha.core.common.Utilities;
+import org.kgbt.passha.core.db.Database.Status;
+import org.kgbt.passha.core.rsa.RSA;
+import org.kgbt.passha.core.sha.SHA;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -7,15 +15,6 @@ import java.util.Collection;
 import java.util.Vector;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import org.kgbt.passha.core.compatibility.UserFileMigration;
-import org.kgbt.passha.core.db.Database.Status;
-import org.kgbt.passha.core.common.Exceptions;
-import org.kgbt.passha.core.common.Exceptions.XC;
-import org.kgbt.passha.core.rsa.RSA;
-import org.kgbt.passha.core.sha.SHA;
-import org.kgbt.passha.core.common.Utilities;
-import org.kgbt.passha.core.common.Terminator;
 
 public class Vault
 {

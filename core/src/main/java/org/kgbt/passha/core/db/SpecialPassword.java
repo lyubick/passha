@@ -88,11 +88,11 @@ public class SpecialPassword
     {
 
         HashMap<String, String> m = new HashMap<>();
-        m.put(MapKeys.SHA_CYCLES.toString(), "" + shaCycles);
+        m.put(MapKeys.SHA_CYCLES.toString(), String.valueOf(shaCycles));
         m.put(MapKeys.NAME.toString(), name);
         m.put(MapKeys.COMMENT.toString(), comment);
         m.put(MapKeys.URL.toString(), url);
-        m.put(MapKeys.LENGTH.toString(), "" + length);
+        m.put(MapKeys.LENGTH.toString(), String.valueOf(length));
         m.put(MapKeys.SPECIAL_CHARS.toString(), specialChars);
         m.put(MapKeys.PARAMS_MASK.toString(), paramsMask.toString());
         m.put(MapKeys.SHORTCUT.toString(), shortcut);

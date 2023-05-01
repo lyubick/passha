@@ -1,22 +1,19 @@
 package org.kgbt.passha.core.compatibility;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Vector;
-
 import org.kgbt.passha.core.GenericUI;
-import org.kgbt.passha.core.db.Database;
-import org.kgbt.passha.core.db.Vault;
 import org.kgbt.passha.core.VaultManager;
-import org.kgbt.passha.core.db.SpecialPassword;
-import org.kgbt.passha.core.logger.Logger;
+import org.kgbt.passha.core.common.Exceptions;
 import org.kgbt.passha.core.common.Exceptions.XC;
 import org.kgbt.passha.core.common.Terminator;
-import org.kgbt.passha.core.common.Exceptions;
+import org.kgbt.passha.core.common.Utilities;
+import org.kgbt.passha.core.db.SpecialPassword;
+import org.kgbt.passha.core.db.Vault;
+import org.kgbt.passha.core.logger.Logger;
 import org.kgbt.passha.core.rsa.RSA;
 import org.kgbt.passha.core.sha.SHA;
-import org.kgbt.passha.core.common.Utilities;
+
+import java.io.File;
+import java.util.Arrays;
 
 public class UserFileMigration
 {

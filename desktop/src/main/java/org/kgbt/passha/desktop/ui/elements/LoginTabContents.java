@@ -123,13 +123,11 @@ public class LoginTabContents extends org.kgbt.passha.desktop.ui.elements.GridPa
             }
         };
 
-        task.setOnSucceeded(event -> {
-            Platform.runLater(() -> {
-                VaultTabContent newContent = new VaultTabContent(t_ownTab, task.getValue());
-                t_ownTab.setTabContent(newContent);
-                t_ownTab.setVaultName(newContent.getName());
-            });
-        });
+        task.setOnSucceeded(event -> Platform.runLater(() -> {
+            VaultTabContent newContent = new VaultTabContent(t_ownTab, task.getValue());
+            t_ownTab.setTabContent(newContent);
+            t_ownTab.setVaultName(newContent.getName());
+        }));
 
         return task;
     }

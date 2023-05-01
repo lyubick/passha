@@ -26,7 +26,7 @@ public class Autologin
     private final String          RECORD_START = "START";
     private final String          RECORD_END   = "END";
 
-    private boolean               enabled      = false;
+    private boolean               enabled;
     private RSA                   rsa          = null;
 
     private SimpleBooleanProperty ON           = null;
@@ -184,7 +184,7 @@ public class Autologin
 
             for (byte aB : b) if ((Character.isLetterOrDigit((char) aB))) output.append((char) aB);
 
-            Logger.printDebug("output: '" + output.toString() + "'");
+            Logger.printDebug("output: '" + output + "'");
 
         }
         catch (IOException | InterruptedException e)

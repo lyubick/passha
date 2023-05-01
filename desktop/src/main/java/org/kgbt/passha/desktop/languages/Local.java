@@ -82,11 +82,9 @@ public class Local {
         MSG_DB_SYNC_FAILED(new String[]{"Database synchronization failed.",}),
         MSG_DB_SYNC_SUCCESS(new String[]{"Database is synchronized.",}),
         MSG_DB_SYNC_UNAVAILABLE(new String[]{"N/A"}),
-        MSG_SHORTCUT_IN_USE_BY(new String[]{Texts.LABEL_ERROR.toString() + " Shortcut is in use by: "}),
+        MSG_SHORTCUT_IN_USE_BY(new String[]{Texts.LABEL_ERROR + " Shortcut is in use by: "}),
         MSG_SHORTCUTS_MISSING(new String[]{"No shortcuts!"}),
 
-        // NOTE: not used currently
-        MSG_SHORTCUTS_MISSING_ACTION(new String[]{"To use 'shortcuts menu', it's necessary to bind at least one shortcut in a vault.",}),
         MSG_VAULT_ALREADY_OPENED(new String[]{"Vault already opened!"}),
         MSG_VAULTS_MISSING(new String[]{"There is no open vaults!"}),
         MSG_VAULTS_MISSING_ACTION(new String[]{"To use 'shortcuts menu' it's necessary to login to at least one vault.",}),
@@ -96,17 +94,16 @@ public class Local {
          * CREATE PASSWORD FORM
          *************************************************************************************************************/
         FORM_CREATEPWD_LABEL_HEADER(new String[]{"Enter new password data"}),
-        FORM_CREATEPWD_MSG_MISSING_PARAM(new String[]{Texts.LABEL_ERROR.toString() + "One or more mandatory fields are missing."}),
+        FORM_CREATEPWD_MSG_MISSING_PARAM(new String[]{Texts.LABEL_ERROR + "One or more mandatory fields are missing."}),
         FORM_CREATEPWD_MSG_MUST_HAVE_SPECIAL(new String[]{"Must contain $peci@l characters"}),
         FORM_CREATEPWD_MSG_MUST_HAVE_UPPER(new String[]{"Must have UPPER case character"}),
-        FORM_CREATEPWD_MSG_NAME_EXISTS(new String[]{Texts.LABEL_ERROR.toString() + " Name already taken!"}),
+        FORM_CREATEPWD_MSG_NAME_EXISTS(new String[]{Texts.LABEL_ERROR + " Name already taken!"}),
         FORM_CREATEPWD_NAME(new String[]{"Create new password"}),
 
         /**************************************************************************************************************
          * DELETE PASSWORD FORM
          *************************************************************************************************************/
         FORM_DELETEPWD_MSG_NOTE(new String[]{"Enter this text to confirm deletion:"}),
-        FORM_DELETEPWD_NAME(new String[]{"Delete password"}),
         FORM_DELETEPWD_MSG_CONFIRMATION(new String[]{"DELETE"}),
 
         /**************************************************************************************************************
@@ -140,20 +137,11 @@ public class Local {
         FORM_RESETWD_LABEL_CURRENT(new String[]{"Current"}),
 
         /**************************************************************************************************************
-         * SETTINGS PASSWORD FORM
-         *************************************************************************************************************/
-
-        /**************************************************************************************************************
          * UPDATE FORM
          *************************************************************************************************************/
         FORM_UPDATE_LABEL_CHECK(new String[]{"Searching for available updates..."}),
         FORM_UPDATE_LABEL_DOWNLOAD(new String[]{"Downloading updates..."}),
-        FORM_UPDATE_LABEL_INSTALL(new String[]{"Installing..."}),
         FORM_UPDATE_MSG_UPDATE_AVAILABLE(new String[]{"New version available."}),
-
-        /**************************************************************************************************************
-         * MENU FORM
-         *************************************************************************************************************/
 
         /**************************************************************************************************************
          * TRAY FORM
@@ -162,7 +150,6 @@ public class Local {
         TRAY_MSG_PWD_COPIED_TO_CLIPBOARD(new String[]{"Password copied to Clipboard"}),
         TRAY_MSG_PWD_REMOVED_FROM_CLIPBOARD(new String[]{"Password removed from Clipboard"}),
         TRAY_MSG_TIME_LEFT(new String[]{"Time left"}),
-        TRAY_MSG_FAILED_TO_AUTOLOGIN(new String[]{"Autologin failed."}),
         TRAY_MSG_FAILED_TO_UPDATE(new String[]{"Update failed."}),
 
         /**************************************************************************************************************
@@ -170,12 +157,6 @@ public class Local {
          *************************************************************************************************************/
         FORM_EXPORT_LABEL_EXPORT(new String[]{"Export"}),
         FORM_EXPORT_MSG_SELECT_PATH(new String[]{"Select path to save export file."}),
-
-        /**************************************************************************************************************
-         * TEMPLATE
-         *************************************************************************************************************/
-        Z_ETHALON(new String[]
-                {"", ""}),
 
         ;
 

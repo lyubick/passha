@@ -148,7 +148,7 @@ public final class Logger
         String methodName = e.getMethodName();
         String fileName = ".(" + e.getFileName();
 
-        String line = "" + e.getLineNumber() + ")";
+        String line = e.getLineNumber() + ")";
 
         fileNameWidth = Math.max(fileNameWidth, fileName.length());
         lineWidth = Math.max(lineWidth, line.length());

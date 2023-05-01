@@ -50,7 +50,7 @@ public class CoreUiInterface extends GenericUI
         alertDlg.setHeaderText(null);
 
         alertDlg.getDialogPane().setContent(new VBox(new Label(Texts.MSG_MIGRATION_OCCURED),
-            new Label("" + numberOfErrors + Texts.MSG_MIGRATION_ERRORS.toString())));
+            new Label(numberOfErrors + Texts.MSG_MIGRATION_ERRORS.toString())));
         alertDlg.initStyle(StageStyle.UNIFIED);
         alertDlg.showAndWait();
     }

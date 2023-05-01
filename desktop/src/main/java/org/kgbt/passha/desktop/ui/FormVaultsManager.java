@@ -43,7 +43,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 public class FormVaultsManager extends AbstractForm {
-    private final class WINDOW {
+    private static final class WINDOW {
         public static final int width = 900;
         public static final int height = 500;
     }
@@ -58,7 +58,7 @@ public class FormVaultsManager extends AbstractForm {
         return This;
     }
 
-    private HBox hb_statusBar = null;
+    private HBox hb_statusBar;
     private Circle c_dbStatus = null;
     private ObjectProperty<Status> op_dbStatusProperty = null;
     private Tooltip tt_dbStatusText = null;

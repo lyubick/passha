@@ -18,13 +18,13 @@ import org.kgbt.passha.core.common.Terminator;
 public class Database
 {
     // Keys compared only by SpecialPassword::getName();
-    private TreeMap<SpecialPassword, String> db = null;
+    private final TreeMap<SpecialPassword, String> db;
 
-    private File vaultFile = null;
+    private final File vaultFile;
 
     private String name = "";
 
-    private RSA rsa = null;
+    private final RSA rsa;
 
     private int retriesLeft = Properties.DATABASE.MAX_RETRIES;
 
@@ -85,7 +85,8 @@ public class Database
             {
                 try
                 {
-                    vaultFile.createNewFile();
+                    boolean res = vaultFile.createNewFile();
+                    Logger.printDebug(res ? "File already exists!" : "");
                 }
                 catch (IOException e)
                 {
